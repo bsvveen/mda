@@ -1,33 +1,60 @@
 ﻿// https://www.developersoapbox.com/connecting-to-a-sqlite-database-using-net-core/
-using MDA.Dbo;
+
 using Microsoft.Data.Sqlite;
 using System.Data;
 
 namespace MDA.Infrastructure
 {
-    public static class Sqlite
+    public class Sqlite : ISql
     {
-        public static async Task DropTable(string TableName)
+        public async Task<DataTable> GetTables()
+        {
+            return await ExecuteDataTable("SELECT * FROM sqlite_master where type='table';"); 
+        }        
+
+        public async Task<DataTable> GetColumns(string TableName)
+        {
+            return await ExecuteDataTable($"PRAGMA table_info('{TableName}');"); 
+        }       
+
+        public async Task DropTable(string TableName)
         {
             await ExecuteSql($"DROP TABLE {TableName};");
         }
 
-        public static async Task<ActionResponse> CreateTable(string TableName)
+        public async Task CreateTable(string TableName)
         {
-            return await ExecuteSql($"CREATE TABLE {TableName} (ID uniqueidentifier PRIMARY KEY);");
+            await ExecuteSql($"CREATE TABLE {TableName} (ID uniqueidentifier PRIMARY KEY);");
         }
 
-        public static async Task<ActionResponse> AddColumn(string TableName, string ColumnName, ColumnDataType DataType)
+        public async Task AddColumn(string TableName, string ColumnName, ColumnDataType eDataType, bool notnull)
         {
-            return await ExecuteSql($"ALTER TABLE {TableName} ADD {ColumnName} {DataType?.Value}");            
+            string? datatype;
+            switch (eDataType)
+            {
+                case ColumnDataType.DateTime:
+                    datatype = "DATETIME";
+                    break;
+                case ColumnDataType.INT_255:
+                    datatype = "INT(255)";
+                    break;
+                case ColumnDataType.UNIQUEIDENTIFIER:
+                    datatype = "uniqueidentifier";
+                    break;
+                default:
+                    datatype = "CHAR(255)";
+                    break;
+            }
+
+            await ExecuteSql($"ALTER TABLE {TableName} ADD {ColumnName} {datatype}");
         }
 
-        public static async Task<ActionResponse> DropColumn(string TableName, string ColumnName)
+        public async Task DropColumn(string TableName, string ColumnName)
         {
-            return await ExecuteSql($"ALTER TABLE {TableName} DROP {ColumnName}");
+            await ExecuteSql($"ALTER TABLE {TableName} DROP {ColumnName}");
         }
 
-        public static async Task<ActionResponse> ExecuteSql(string sqlCommand)
+        private static async Task ExecuteSql(string sqlCommand)
         {
             var connectionStringBuilder = new SqliteConnectionStringBuilder();
             connectionStringBuilder.DataSource = "./Database.db";
@@ -38,45 +65,11 @@ namespace MDA.Infrastructure
 
                 var Command = connection.CreateCommand();
                 Command.CommandText = sqlCommand;
-                try
-                {
-                    await Command.ExecuteNonQueryAsync();
-                }
-                catch (Exception ex)
-                {
-                    return new ActionResponse(false, ex.Message);
-                }
-            }
+                await Command.ExecuteNonQueryAsync();               
+            }           
+        }        
 
-            return new ActionResponse(true); ;
-        }
-
-        public static async Task ExecuteTransAction(string[] sqlCommands)
-        {
-            var connectionStringBuilder = new SqliteConnectionStringBuilder();
-            connectionStringBuilder.DataSource = "./Database.db";
-
-            using (var connection = new SqliteConnection(connectionStringBuilder.ConnectionString))
-            {
-                connection.Open();
-
-                //Seed some data:
-                using (var transaction = connection.BeginTransaction())
-                {
-                    var insertCmd = connection.CreateCommand();
-
-                    foreach (string sqlCommand in sqlCommands)
-                    {
-                        insertCmd.CommandText = sqlCommand;
-                        await insertCmd.ExecuteNonQueryAsync();
-                    }
-
-                    transaction.Commit();
-                }
-            }
-        }
-
-        public static async Task<DataTable> ExecuteDataTable(string command)
+        private static async Task<DataTable> ExecuteDataTable(string command)
         {
             var connectionStringBuilder = new SqliteConnectionStringBuilder();
             connectionStringBuilder.DataSource = "./Database.db";

@@ -4,6 +4,11 @@ using System.Text.Json;
 
 namespace MDA.Infrastructure
 {
+    public enum ColumnDataType
+    {
+        CHAR_255, INT_255, DateTime, UNIQUEIDENTIFIER
+    }
+
     public static class Extentions
     {
         public static string ToJSON(this DataTable table)
