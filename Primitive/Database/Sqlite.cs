@@ -1,21 +1,55 @@
 ﻿// https://www.developersoapbox.com/connecting-to-a-sqlite-database-using-net-core/
 
+using MDA.Infrastructure;
 using Microsoft.Data.Sqlite;
 using System.Data;
 
-namespace MDA.Infrastructure
+namespace MDA.Primitive.Database
 {
     public class Sqlite : ISql
     {
-        public async Task<DataTable> GetTables()
+        public async Task<Primitive> GetPrimitive()
         {
-            return await ExecuteDataTable("SELECT * FROM sqlite_master where type='table';"); 
-        }        
+            Primitive Primitive = new Primitive();
 
-        public async Task<DataTable> GetColumns(string TableName)
-        {
-            return await ExecuteDataTable($"PRAGMA table_info('{TableName}');"); 
-        }       
+            Primitive.Tables = new List<Primitive.Table>();
+
+            var tables = await ExecuteDataTable("SELECT * FROM sqlite_master where type='table';");
+            foreach (DataRow dr in tables.Rows)
+            {
+                Primitive.Table table = new Primitive.Table();
+                table.Name = (string)dr["Name"];
+                var columns = await ExecuteDataTable($"PRAGMA table_info('{table.Name}');");
+
+                foreach (DataRow dr2 in columns.Rows)
+                {
+                    var column = new Primitive.Column();
+                    column.Name = (string)dr2["name"];
+                    var columndatatype = dr2["type"];
+                    switch (columndatatype)
+                    {
+                        case "CHAR(255)":
+                            column.Type = ColumnDataType.CHAR_255;
+                            break;
+                        case "DateTime":
+                            column.Type = ColumnDataType.DateTime;
+                            break;
+                        case "INT(255)":
+                            column.Type = ColumnDataType.INT_255;
+                            break;
+                        case "UNIQUEIDENTIFIER":
+                            column.Type = ColumnDataType.UNIQUEIDENTIFIER;
+                            break;
+                    }
+                    column.NotNull = (long)dr2["notnull"] != 0;
+
+                    table.Columns.Add(column);
+                }
+                Primitive.Tables.Add(table);
+            }
+
+            return Primitive;
+        }
 
         public async Task DropTable(string TableName)
         {
@@ -65,9 +99,9 @@ namespace MDA.Infrastructure
 
                 var Command = connection.CreateCommand();
                 Command.CommandText = sqlCommand;
-                await Command.ExecuteNonQueryAsync();               
-            }           
-        }        
+                await Command.ExecuteNonQueryAsync();
+            }
+        }
 
         private static async Task<DataTable> ExecuteDataTable(string command)
         {
@@ -90,6 +124,6 @@ namespace MDA.Infrastructure
 
             return dataTable;
         }
-    }        
+    }
 }
 

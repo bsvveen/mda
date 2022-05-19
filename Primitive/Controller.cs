@@ -1,8 +1,8 @@
 
-using MDA.Infrastructure;
+using MDA.Primitive.Database;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MDA.Dbo
+namespace MDA.Primitive
 {
     [ApiController]
     [Route("[controller]")]

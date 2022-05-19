@@ -1,5 +1,7 @@
 using MDA.Infrastructure;
+using MDA.Primitive.Database;
 using MediatR;
+using Microsoft.Extensions.FileProviders;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +21,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseFileServer(new FileServerOptions
+{
+    FileProvider = new PhysicalFileProvider(
+           Path.Combine(builder.Environment.ContentRootPath, "Model")),
+    RequestPath = "/Primitive",
+    EnableDirectoryBrowsing = true
+});
 
 app.UseAuthorization();
 

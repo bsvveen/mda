@@ -1,6 +1,7 @@
-﻿using System.Data;
+﻿
+using MDA.Infrastructure;
 
-namespace MDA.Infrastructure
+namespace MDA.Primitive.Database
 {
     public interface ISql
     {
@@ -12,8 +13,7 @@ namespace MDA.Infrastructure
 
         Task DropTable(string TableName);
 
-        Task<DataTable> GetColumns(string TableName);
-
-        Task<DataTable> GetTables();
+        Task<Primitive> GetPrimitive();       
     }
+
 }
