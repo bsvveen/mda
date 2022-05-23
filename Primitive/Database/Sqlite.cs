@@ -5,9 +5,9 @@ using Microsoft.Data.Sqlite;
 using System.Data;
 
 namespace MDA.Primitive.Database
-{
+{ 
     public class Sqlite : ISql
-    {
+    { 
         public async Task<Primitive> GetPrimitive()
         {
             Primitive Primitive = new Primitive();
@@ -29,16 +29,16 @@ namespace MDA.Primitive.Database
                     switch (columndatatype)
                     {
                         case "CHAR(255)":
-                            column.Type = ColumnDataType.CHAR_255;
+                            column.Type = ColumnDataType.Text;
                             break;
                         case "DateTime":
                             column.Type = ColumnDataType.DateTime;
                             break;
                         case "INT(255)":
-                            column.Type = ColumnDataType.INT_255;
+                            column.Type = ColumnDataType.Number;
                             break;
                         case "UNIQUEIDENTIFIER":
-                            column.Type = ColumnDataType.UNIQUEIDENTIFIER;
+                            column.Type = ColumnDataType.ID;
                             break;
                     }
                     column.NotNull = (long)dr2["notnull"] != 0;
@@ -69,10 +69,10 @@ namespace MDA.Primitive.Database
                 case ColumnDataType.DateTime:
                     datatype = "DATETIME";
                     break;
-                case ColumnDataType.INT_255:
+                case ColumnDataType.Text:
                     datatype = "INT(255)";
                     break;
-                case ColumnDataType.UNIQUEIDENTIFIER:
+                case ColumnDataType.ID:
                     datatype = "uniqueidentifier";
                     break;
                 default:

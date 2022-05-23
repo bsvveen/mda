@@ -19,9 +19,7 @@ namespace MDA.Primitive
 
         private static Primitive primitive;
 
-        //private readonly string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Model\Primitive.Json");
-        private readonly string path = Path.Combine(Environment.CurrentDirectory, @"Model\Primitive.Json");
-        
+        private readonly string path = Path.Combine(Environment.CurrentDirectory, @"Primitive\Primitive.Json");        
 
         public Primitive Primitive
         {

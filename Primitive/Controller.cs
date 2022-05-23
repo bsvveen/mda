@@ -6,11 +6,11 @@ namespace MDA.Primitive
 {
     [ApiController]
     [Route("[controller]")]
-    public class Controller : ControllerBase
+    public class PrimitiveController : ControllerBase
     {
         public ISql Sql { get; }
 
-        public Controller(ISql sql)
+        public PrimitiveController(ISql sql)
         {
             Sql = sql;
         }
@@ -27,7 +27,7 @@ namespace MDA.Primitive
         }
 
         [HttpGet("GetPrimitive")]
-        public async Task<IActionResult> GetModel()
+        public async Task<IActionResult> GetPrimitive()
         {
             PrimitiveHandler mh = new PrimitiveHandler(Sql);  
 
