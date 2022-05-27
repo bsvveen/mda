@@ -7,6 +7,8 @@ using Newtonsoft.Json.Linq;
 using MDA.Primitive.Database;
 using MDA.Primitive;
 using MDA.Infrastructure;
+using System.Linq;
+using MDA.Model.Database;
 
 namespace MDA.Model
 {
@@ -17,23 +19,7 @@ namespace MDA.Model
         public ModelHandler(ISql sql)
         {
             ph = new PrimitiveHandler(sql);
-        }
-
-        //JSchema schema = new JSchema
-        //{
-        //    Type = JSchemaType.Object,
-        //    Properties =
-        //    {
-        //        { "name", new JSchema { Type = JSchemaType.String } },
-        //        {
-        //            "hobbies", new JSchema
-        //            {
-        //                Type = JSchemaType.Array,
-        //                Items = { new JSchema { Type = JSchemaType.String } }
-        //            }
-        //        }t
-        //    }
-        //};
+        }       
 
         public JSchema AsJSchema
         {
@@ -58,6 +44,34 @@ namespace MDA.Model
 
                 return RootjSchema;
             }
-        }  
+        }
+
+        public bool validateRequest(GetRequest request)
+        {
+            var model = ph.Primitive;
+
+            var entity = model.Tables.SingleOrDefault(tbl => tbl.Name == request.Entity);
+
+            if (entity != null)
+            {
+                var AllPropertiesExists = request.Properties.All(a => entity.Columns.Any(b => b.Name.Equals(a)));
+                var FilterPropertiesExists = entity.Columns.Exists(prop => prop.Name.Equals(request.Filter.Property));
+
+                return AllPropertiesExists && FilterPropertiesExists;
+
+            } else { return false;  }    
+        }
+
+        public async Task<string> Get(GetRequest request)
+        {
+            var requestIsValid = validateRequest(request);
+
+            if (requestIsValid)
+            {
+                return await new SqliteModel().List(request);
+            }
+
+            throw new Exception();
+        }
     }    
 }

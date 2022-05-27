@@ -1,4 +1,5 @@
 
+using MDA.Infrastructure;
 using MDA.Primitive.Database;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,16 +27,12 @@ namespace MDA.Model
             return Ok(modelSchema.ToString());
         }
 
-        [HttpGet("GetModel")]
-        public async Task<IActionResult> GetModel()
-        {    
-            throw new NotImplementedException();           
-        }
-
-        [HttpPost("UpdatePrimitive")]
-        public async Task<IActionResult> UpdateModel(object newModel)
+        [HttpPost("GetModel")]
+        public async Task<IActionResult> GetModel([FromBody] GetRequest request)
         {
-            throw new NotImplementedException();
-        }
+            var modelHandler = new ModelHandler(Sql);
+
+            return Ok(modelHandler.Get(request));
+        }       
     }
 }
