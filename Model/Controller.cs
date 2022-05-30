@@ -32,7 +32,7 @@ namespace MDA.Model
         {
             var modelHandler = new ModelHandler(Sql);
 
-            return Ok(modelHandler.Get(request));
+            return Ok(modelHandler.Get(request).Result);
         }       
     }
 }

@@ -10,8 +10,9 @@ namespace MDA.Model.Database
     {  
         public async Task<string> List(GetRequest request)
         {
-            // SELECT json_group_array(json_object('string', string)) AS json_result FROM(SELECT * FROM string);
-            var propsql = string.Join(',', request.Properties.Select(x => $"'{x}', {x}"));
+            // SELECT json_group_array(
+            // ('string', string)) AS json_result FROM(SELECT * FROM string);
+            var propsql = "'ID', quote(ID), " + string.Join(',', request.Properties.Select(x => $"'{x}', {x}"));
             var sql = $"SELECT json_group_array(json_object({propsql})) AS json_result FROM(SELECT * FROM {request.Entity});";
 
             return ExecuteReader(sql).Result;
@@ -30,8 +31,9 @@ namespace MDA.Model.Database
             var Command = connection.CreateCommand();
             Command.CommandText = sqlCommand;
            
-            var reader = await Command.ExecuteReaderAsync(); 
-            return reader.GetString("json_result");
+            var reader = await Command.ExecuteReaderAsync();
+            reader.Read();
+            return reader["json_result"].ToString();
         }        
     }
 }
