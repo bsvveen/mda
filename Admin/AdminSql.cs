@@ -4,51 +4,51 @@ using MDA.Infrastructure;
 using Microsoft.Data.Sqlite;
 using System.Data;
 
-namespace MDA.Primitive.Database
-{ 
-    public class Sqlite : ISql
-    { 
-        public async Task<Primitive> GetPrimitive()
+namespace MDA.Admin
+{
+    public class AdminSql 
+    {
+        public async Task<Primitive> GetModel()
         {
-            Primitive Primitive = new Primitive();
+            Primitive Model = new Primitive();
 
-            Primitive.Tables = new List<Primitive.Table>();
+            Model.Entities = new List<Primitive.Entity>();
 
-            var tables = await ExecuteDataTable("SELECT * FROM sqlite_master where type='table';");
-            foreach (DataRow dr in tables.Rows)
+            var dbTables = await ExecuteDataTable("SELECT * FROM sqlite_master where type='table';");
+            foreach (DataRow dr in dbTables.Rows)
             {
-                Primitive.Table table = new Primitive.Table();
-                table.Name = (string)dr["Name"];
-                var columns = await ExecuteDataTable($"PRAGMA table_info('{table.Name}');");
+                Primitive.Entity entity = new Primitive.Entity();
+                entity.Name = (string)dr["Name"];
 
-                foreach (DataRow dr2 in columns.Rows)
+                var dbColumns = await ExecuteDataTable($"PRAGMA table_info('{entity.Name}');");
+                foreach (DataRow dr2 in dbColumns.Rows)
                 {
-                    var column = new Primitive.Column();
-                    column.Name = (string)dr2["name"];
-                    var columndatatype = dr2["type"];
-                    switch (columndatatype)
+                    var property = new Primitive.Property();
+                    property.Name = (string)dr2["name"];
+                    switch (dr2["type"])
                     {
                         case "CHAR(255)":
-                            column.Type = ColumnDataType.Text;
+                            property.Type = PropertyDataType.Text;
                             break;
                         case "DateTime":
-                            column.Type = ColumnDataType.DateTime;
+                            property.Type = PropertyDataType.DateTime;
                             break;
                         case "INT(255)":
-                            column.Type = ColumnDataType.Number;
+                            property.Type = PropertyDataType.Number;
                             break;
                         case "UNIQUEIDENTIFIER":
-                            column.Type = ColumnDataType.ID;
+                            property.Type = PropertyDataType.ID;
                             break;
                     }
-                    column.NotNull = (long)dr2["notnull"] != 0;
+                    property.NotNull = (long)dr2["notnull"] != 0;
 
-                    table.Columns.Add(column);
+                    entity.Properties.Add(property);
                 }
-                Primitive.Tables.Add(table);
+
+                Model.Entities.Add(entity);
             }
 
-            return Primitive;
+            return Model;
         }
 
         public async Task DropTable(string TableName)
@@ -61,18 +61,18 @@ namespace MDA.Primitive.Database
             await ExecuteSql($"CREATE TABLE {TableName} (ID uniqueidentifier PRIMARY KEY);");
         }
 
-        public async Task AddColumn(string TableName, string ColumnName, ColumnDataType eDataType, bool notnull)
+        public async Task AddColumn(string TableName, string ColumnName, PropertyDataType eDataType, bool notnull)
         {
             string? datatype;
             switch (eDataType)
             {
-                case ColumnDataType.DateTime:
+                case PropertyDataType.DateTime:
                     datatype = "DATETIME";
                     break;
-                case ColumnDataType.Text:
+                case PropertyDataType.Text:
                     datatype = "INT(255)";
                     break;
-                case ColumnDataType.ID:
+                case PropertyDataType.ID:
                     datatype = "uniqueidentifier";
                     break;
                 default:
@@ -91,7 +91,7 @@ namespace MDA.Primitive.Database
         private static async Task ExecuteSql(string sqlCommand)
         {
             var connectionStringBuilder = new SqliteConnectionStringBuilder();
-            connectionStringBuilder.DataSource = "./Database.db";
+            connectionStringBuilder.DataSource = "./Model/Database.db";
 
             using (var connection = new SqliteConnection(connectionStringBuilder.ConnectionString))
             {
@@ -106,7 +106,7 @@ namespace MDA.Primitive.Database
         private static async Task<DataTable> ExecuteDataTable(string command)
         {
             var connectionStringBuilder = new SqliteConnectionStringBuilder();
-            connectionStringBuilder.DataSource = "./Database.db";
+            connectionStringBuilder.DataSource = "./Model/Database.db";
 
             var dataTable = new DataTable();
 

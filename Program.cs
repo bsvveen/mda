@@ -1,5 +1,5 @@
-using MDA.Infrastructure;
-using MDA.Primitive.Database;
+
+using MDA.Admin;
 using MediatR;
 using Microsoft.Extensions.FileProviders;
 using System.Reflection;
@@ -10,7 +10,6 @@ builder.Services.AddControllers();
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(o => { o.CustomSchemaIds(x => x.FullName); });
-builder.Services.AddTransient<ISql, Sqlite>();
 
 var app = builder.Build();
 
@@ -26,7 +25,7 @@ app.UseFileServer(new FileServerOptions
 {
     FileProvider = new PhysicalFileProvider(
            Path.Combine(builder.Environment.ContentRootPath, "Model")),
-    RequestPath = "/Primitive",
+    RequestPath = "/Model",
     EnableDirectoryBrowsing = true
 });
 

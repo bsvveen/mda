@@ -1,9 +1,12 @@
-﻿namespace MDA.Infrastructure
+﻿
+using static MDA.Admin.Primitive;
+
+namespace MDA.Infrastructure
 {
     public class GetRequest
     {
         public string Entity { get; set; }
-        public List<string> Properties { get; set; }
+        public List<Property> Properties { get; set; }
         public Filter Filter { get; set; }
 
     }

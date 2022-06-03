@@ -1,0 +1,86 @@
+﻿
+using System.Data;
+using System.Text.Json;
+
+namespace MDA.Admin
+{
+    public class ModelHandler
+    {
+        private static Primitive? model;
+
+        private readonly string path = Path.Combine(Environment.CurrentDirectory, @"Model.Json");           
+
+        public Primitive Model
+        {
+            get {
+                if (model == null) {
+                    model = GetModelFromFile();
+                }
+                
+                return model; 
+            }            
+        } 
+
+        public async Task<Primitive> UpdateModel(Primitive newModel)
+        {
+            SaveModelToFile(newModel);
+            await SyncWithDatabase();
+            model = newModel;           
+
+            return model;
+        }      
+        
+
+        private Primitive GetModelFromFile()
+        {            
+            using FileStream openStream = File.OpenRead(path);
+            Primitive? model = JsonSerializer.Deserialize<Primitive>(openStream);
+
+            if (model == null)
+                throw new NullReferenceException("Model could not be loaded from file");
+                    
+            return model;
+        }
+
+        private void SaveModelToFile(Primitive newModel)
+        {
+            using FileStream createStream = File.Create(path);
+            JsonSerializer.Serialize(createStream, newModel);
+            createStream.Dispose();
+        }
+
+        private async Task SyncWithDatabase()
+        { 
+            var Sql = new AdminSql();
+            
+            Primitive dbPrimitive = await Sql.GetModel();
+
+            // Drop tables from database NOT in Primitive
+            dbPrimitive.Entities.Where(dbt => !Model.Entities.Exists(mt => mt.Name == dbt.Name)).ToList().ForEach(async dbt =>
+               await Sql.DropTable(dbt.Name));
+
+            // Update Tables in Primitives AND in Database
+            Model.Entities.Where(mt => dbPrimitive.Entities.Exists(dbt => dbt.Name == mt.Name)).ToList().ForEach(async mt =>
+            {
+                var dbt = dbPrimitive.Entities.Single(dbt => dbt.Name == mt.Name);
+
+                // Drop columns (except ID) from database NOT in Primitive
+                dbt.Properties.Where(dbc => !mt.Properties.Exists(c => c.Name == dbc.Name) && dbc.Name != "ID").ToList().ForEach(async dbc =>
+                   await Sql.DropColumn(dbt.Name, dbc.Name));
+
+                // Add columns to database in Primitive but NOT in database
+                mt.Properties.Where(c => !dbt.Properties.Exists(dbc => dbc.Name == c.Name)).ToList().ForEach(async c =>
+                   await Sql.AddColumn(dbt.Name, c.Name, c.Type, c.NotNull));
+            });
+
+            // Add tables to database in Primitive but NOT in database
+            Model.Entities.Where(t => !dbPrimitive.Entities.Exists(dbt => dbt.Name == t.Name)).ToList().ForEach(async t => {
+                await Sql.CreateTable(t.Name);
+
+                // Add columns from Primitive to database 
+                t.Properties.ToList().ForEach(async c =>
+                   await Sql.AddColumn(t.Name, c.Name, c.Type, c.NotNull));
+            });
+        }       
+    }    
+}
