@@ -1,17 +1,13 @@
 ﻿using MDA.Infrastructure;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace MDA.Admin
 {
     public class Primitive
-    {
-        public Primitive()
-        {
-            Entities = new List<Entity>();
-        }
-
+    {  
         public static JSchema AsJSchema
         {
             get
@@ -21,7 +17,8 @@ namespace MDA.Admin
             }
         }
 
-        [JsonPropertyName("Entity")]
+        [JsonPropertyName("Entities")]
+        [Required]
         public List<Entity> Entities { get; set; }
 
         public class Entity
@@ -31,22 +28,27 @@ namespace MDA.Admin
                 Properties = new List<Property>();
             }
 
-            [JsonPropertyName("Name")]
+            [JsonPropertyName("Name")]          
+            [Required]
             public string Name { get; set; }
 
             [JsonPropertyName("Properties")]
+            [Required]
             public List<Property> Properties { get; set; }
         }
 
         public class Property
         {
             [JsonPropertyName("Name")]
+            [Required]
             public string Name { get; set; }
 
             [JsonPropertyName("Type")]
+            [Required]
             public PropertyDataType Type { get; set; }
 
             [JsonPropertyName("NotNull")]
+            [Required]
             public bool NotNull { get; set; }
         }
     }

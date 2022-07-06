@@ -21,7 +21,7 @@ namespace MDA.Admin
         [HttpGet("GetModel")]
         public IActionResult GetModel()
         {
-            ModelHandler mh = new ModelHandler();
+            AdminServices mh = new AdminServices();
 
             if (mh.Model == null)
                 return NotFound();
@@ -32,7 +32,7 @@ namespace MDA.Admin
         [HttpPost("UpdateModel")]
         public IActionResult UpdateModel(Primitive newModel)
         {
-            ModelHandler mh = new ModelHandler();
+            AdminServices mh = new AdminServices();
 
             var updatedPrimitive = mh.UpdateModel(newModel);
 

@@ -5,16 +5,16 @@ using MDA.Admin;
 
 namespace MDA.User
 {
-    public class DataHandler
+    public class UserServices
     {
-        private readonly ModelHandler ph;     
+        private readonly AdminServices ph;     
        
-        public DataHandler()
+        public UserServices()
         {
-            ph = new ModelHandler();
+            ph = new AdminServices();
         }       
 
-        public JSchema AsJSchema
+        public JSchema ModelJSchema
         {
             get
             {
@@ -39,7 +39,7 @@ namespace MDA.User
             }
         }
 
-        public bool validateRequest(GetRequest request)
+        public bool validateRequest(ListRequest request)
         {
             var model = ph.Model;
 
@@ -55,9 +55,9 @@ namespace MDA.User
             } else { return false;  }    
         }
 
-        public async Task<string> List(GetRequest request)
+        public async Task<string> List(ListRequest request)
         {
             return await new UserSql().List(request);           
-        }
+        }       
     }    
 }

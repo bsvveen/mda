@@ -9,10 +9,10 @@ namespace MDA.User
     public class UserController : ControllerBase
     {       
 
-        [HttpGet("GetPrimitiveSchema")]
+        [HttpGet("GetModelSchema")]
         public IActionResult GetModelSchema()
         {
-            var modelSchema = new DataHandler().AsJSchema;
+            var modelSchema = new UserServices().ModelJSchema;
 
             if (modelSchema == null)
                 return NotFound();
@@ -20,18 +20,18 @@ namespace MDA.User
             return Ok(modelSchema.ToString());
         }
 
-        [HttpPost("GetModel")]
-        public async Task<IActionResult> GetModel([FromBody] GetRequest request)
+        [HttpPost("GetList")]
+        public async Task<IActionResult> GetList([FromBody] ListRequest request)
         {
-            var modelHandler = new DataHandler();
+            var userService = new UserServices();
 
-            var requestIsValid = modelHandler.validateRequest(request);
+            var requestIsValid = userService.validateRequest(request);
             if (!requestIsValid)
             {
                 return BadRequest("GetRequest is not valid, probably an entityname or propertyname does not exists in the model");
             }
 
-            return Ok(modelHandler.List(request).Result);
+            return Ok(userService.List(request).Result);
         }       
     }
 }

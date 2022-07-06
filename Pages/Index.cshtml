@@ -1,0 +1,39 @@
+﻿@page
+@model MDA.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MDA</title>   
+</head>
+<body>
+    <header>
+       
+    </header>
+    <div class="container">
+        <main class="content__main" id="react" module="posts">
+             <!-- React -->
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2022 - MDA
+        </div>
+    </footer>
+
+    <environment names="Development">
+        <script type="text/javascript" src="FrontEnd/dist/index.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script type="text/javascript" src="js/index.js" asp-append-version="true"></script>
+    </environment>
+
+
+    </body>
+</html>

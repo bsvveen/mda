@@ -4,11 +4,11 @@ using System.Text.Json;
 
 namespace MDA.Admin
 {
-    public class ModelHandler
+    public class AdminServices
     {
         private static Primitive? model;
 
-        private readonly string path = Path.Combine(Environment.CurrentDirectory, @"Model.Json");           
+        private readonly string path = Path.Combine(Environment.CurrentDirectory, @"Model\Model.Json");           
 
         public Primitive Model
         {
@@ -32,11 +32,12 @@ namespace MDA.Admin
         
 
         private Primitive GetModelFromFile()
-        {            
-            using FileStream openStream = File.OpenRead(path);
-            Primitive? model = JsonSerializer.Deserialize<Primitive>(openStream);
+        {
+            using FileStream openStream = File.OpenRead(path);         
 
-            if (model == null)
+            Primitive? model = JsonSerializer.Deserialize<Primitive>(openStream);           
+
+            if (model == null || model.Entities == null)
                 throw new NullReferenceException("Model could not be loaded from file");
                     
             return model;

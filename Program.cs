@@ -1,13 +1,9 @@
-
-using MDA.Admin;
-using MediatR;
 using Microsoft.Extensions.FileProviders;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+builder.Services.AddRazorPages();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(o => { o.CustomSchemaIds(x => x.FullName); });
 
@@ -17,20 +13,25 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "FrontEnd")),
+        RequestPath = "/FrontEnd"
+    });
 }
 
 app.UseHttpsRedirection();
 
 app.UseFileServer(new FileServerOptions
 {
-    FileProvider = new PhysicalFileProvider(
-           Path.Combine(builder.Environment.ContentRootPath, "Model")),
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Model")),
     RequestPath = "/Model",
     EnableDirectoryBrowsing = true
 });
 
 app.UseAuthorization();
-
+app.MapRazorPages();
 app.MapControllers();
 
 app.Run();

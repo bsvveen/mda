@@ -8,13 +8,13 @@ namespace MDA.User
 {
     public class UserSql
     {
-        public async Task<string> List(GetRequest request)
+        public async Task<string> List(ListRequest request)
         {            
             var propsql = "'ID', quote(ID), " + string.Join(',', request.Properties.Select(x => $"'{x}', {x}"));
             var sql = $"SELECT json_group_array(json_object({propsql})) AS json_result FROM(SELECT * FROM {request.Entity});";
 
             return await ExecuteReader(sql);
-        }
+        }        
 
         private async Task<string> ExecuteReader(string sqlCommand)
         {
@@ -29,7 +29,12 @@ namespace MDA.User
 
             var reader = await Command.ExecuteReaderAsync();
             reader.Read();
-            return reader["json_result"].ToString();
+            var retValue = reader["json_result"].ToString();
+            reader.Close();
+
+            connection.Close();
+
+            return retValue;
         }
     }
 }
