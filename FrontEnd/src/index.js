@@ -1,4 +1,6 @@
 import React from "react"
-import ReactDOM from "react-dom"
+import ReactDOM from "react-dom/client";
+import MyForm from "./myform"
 
-ReactDOM.render(<h1>Hello world!!!</h1>, document.getElementById("react"))
+const root = ReactDOM.createRoot(document.getElementById("react"));
+root.render(<MyForm />);

@@ -33076,17 +33076,25805 @@ if ("development" === 'production') {
 } else {
   module.exports = require('./cjs/react-dom.development.js');
 }
-},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"index.js":[function(require,module,exports) {
+},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"../node_modules/react-dom/client.js":[function(require,module,exports) {
+'use strict';
+
+var m = require('react-dom');
+
+if ("development" === 'production') {
+  exports.createRoot = m.createRoot;
+  exports.hydrateRoot = m.hydrateRoot;
+} else {
+  var i = m.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+
+  exports.createRoot = function (c, o) {
+    i.usingClientEntryPoint = true;
+
+    try {
+      return m.createRoot(c, o);
+    } finally {
+      i.usingClientEntryPoint = false;
+    }
+  };
+
+  exports.hydrateRoot = function (c, h, o) {
+    i.usingClientEntryPoint = true;
+
+    try {
+      return m.hydrateRoot(c, h, o);
+    } finally {
+      i.usingClientEntryPoint = false;
+    }
+  };
+}
+},{"react-dom":"../node_modules/react-dom/index.js"}],"../node_modules/react-is/cjs/react-is.development.js":[function(require,module,exports) {
+/** @license React v16.13.1
+ * react-is.development.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+'use strict';
+
+if ("development" !== "production") {
+  (function () {
+    'use strict'; // The Symbol used to tag the ReactElement-like types. If there is no native Symbol
+    // nor polyfill, then a plain number is used for performance.
+
+    var hasSymbol = typeof Symbol === 'function' && Symbol.for;
+    var REACT_ELEMENT_TYPE = hasSymbol ? Symbol.for('react.element') : 0xeac7;
+    var REACT_PORTAL_TYPE = hasSymbol ? Symbol.for('react.portal') : 0xeaca;
+    var REACT_FRAGMENT_TYPE = hasSymbol ? Symbol.for('react.fragment') : 0xeacb;
+    var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol.for('react.strict_mode') : 0xeacc;
+    var REACT_PROFILER_TYPE = hasSymbol ? Symbol.for('react.profiler') : 0xead2;
+    var REACT_PROVIDER_TYPE = hasSymbol ? Symbol.for('react.provider') : 0xeacd;
+    var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for('react.context') : 0xeace; // TODO: We don't use AsyncMode or ConcurrentMode anymore. They were temporary
+    // (unstable) APIs that have been removed. Can we remove the symbols?
+
+    var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol.for('react.async_mode') : 0xeacf;
+    var REACT_CONCURRENT_MODE_TYPE = hasSymbol ? Symbol.for('react.concurrent_mode') : 0xeacf;
+    var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for('react.forward_ref') : 0xead0;
+    var REACT_SUSPENSE_TYPE = hasSymbol ? Symbol.for('react.suspense') : 0xead1;
+    var REACT_SUSPENSE_LIST_TYPE = hasSymbol ? Symbol.for('react.suspense_list') : 0xead8;
+    var REACT_MEMO_TYPE = hasSymbol ? Symbol.for('react.memo') : 0xead3;
+    var REACT_LAZY_TYPE = hasSymbol ? Symbol.for('react.lazy') : 0xead4;
+    var REACT_BLOCK_TYPE = hasSymbol ? Symbol.for('react.block') : 0xead9;
+    var REACT_FUNDAMENTAL_TYPE = hasSymbol ? Symbol.for('react.fundamental') : 0xead5;
+    var REACT_RESPONDER_TYPE = hasSymbol ? Symbol.for('react.responder') : 0xead6;
+    var REACT_SCOPE_TYPE = hasSymbol ? Symbol.for('react.scope') : 0xead7;
+
+    function isValidElementType(type) {
+      return typeof type === 'string' || typeof type === 'function' || // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
+      type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE || type.$$typeof === REACT_BLOCK_TYPE);
+    }
+
+    function typeOf(object) {
+      if (typeof object === 'object' && object !== null) {
+        var $$typeof = object.$$typeof;
+
+        switch ($$typeof) {
+          case REACT_ELEMENT_TYPE:
+            var type = object.type;
+
+            switch (type) {
+              case REACT_ASYNC_MODE_TYPE:
+              case REACT_CONCURRENT_MODE_TYPE:
+              case REACT_FRAGMENT_TYPE:
+              case REACT_PROFILER_TYPE:
+              case REACT_STRICT_MODE_TYPE:
+              case REACT_SUSPENSE_TYPE:
+                return type;
+
+              default:
+                var $$typeofType = type && type.$$typeof;
+
+                switch ($$typeofType) {
+                  case REACT_CONTEXT_TYPE:
+                  case REACT_FORWARD_REF_TYPE:
+                  case REACT_LAZY_TYPE:
+                  case REACT_MEMO_TYPE:
+                  case REACT_PROVIDER_TYPE:
+                    return $$typeofType;
+
+                  default:
+                    return $$typeof;
+                }
+
+            }
+
+          case REACT_PORTAL_TYPE:
+            return $$typeof;
+        }
+      }
+
+      return undefined;
+    } // AsyncMode is deprecated along with isAsyncMode
+
+
+    var AsyncMode = REACT_ASYNC_MODE_TYPE;
+    var ConcurrentMode = REACT_CONCURRENT_MODE_TYPE;
+    var ContextConsumer = REACT_CONTEXT_TYPE;
+    var ContextProvider = REACT_PROVIDER_TYPE;
+    var Element = REACT_ELEMENT_TYPE;
+    var ForwardRef = REACT_FORWARD_REF_TYPE;
+    var Fragment = REACT_FRAGMENT_TYPE;
+    var Lazy = REACT_LAZY_TYPE;
+    var Memo = REACT_MEMO_TYPE;
+    var Portal = REACT_PORTAL_TYPE;
+    var Profiler = REACT_PROFILER_TYPE;
+    var StrictMode = REACT_STRICT_MODE_TYPE;
+    var Suspense = REACT_SUSPENSE_TYPE;
+    var hasWarnedAboutDeprecatedIsAsyncMode = false; // AsyncMode should be deprecated
+
+    function isAsyncMode(object) {
+      {
+        if (!hasWarnedAboutDeprecatedIsAsyncMode) {
+          hasWarnedAboutDeprecatedIsAsyncMode = true; // Using console['warn'] to evade Babel and ESLint
+
+          console['warn']('The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 17+. Update your code to use ' + 'ReactIs.isConcurrentMode() instead. It has the exact same API.');
+        }
+      }
+      return isConcurrentMode(object) || typeOf(object) === REACT_ASYNC_MODE_TYPE;
+    }
+
+    function isConcurrentMode(object) {
+      return typeOf(object) === REACT_CONCURRENT_MODE_TYPE;
+    }
+
+    function isContextConsumer(object) {
+      return typeOf(object) === REACT_CONTEXT_TYPE;
+    }
+
+    function isContextProvider(object) {
+      return typeOf(object) === REACT_PROVIDER_TYPE;
+    }
+
+    function isElement(object) {
+      return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+    }
+
+    function isForwardRef(object) {
+      return typeOf(object) === REACT_FORWARD_REF_TYPE;
+    }
+
+    function isFragment(object) {
+      return typeOf(object) === REACT_FRAGMENT_TYPE;
+    }
+
+    function isLazy(object) {
+      return typeOf(object) === REACT_LAZY_TYPE;
+    }
+
+    function isMemo(object) {
+      return typeOf(object) === REACT_MEMO_TYPE;
+    }
+
+    function isPortal(object) {
+      return typeOf(object) === REACT_PORTAL_TYPE;
+    }
+
+    function isProfiler(object) {
+      return typeOf(object) === REACT_PROFILER_TYPE;
+    }
+
+    function isStrictMode(object) {
+      return typeOf(object) === REACT_STRICT_MODE_TYPE;
+    }
+
+    function isSuspense(object) {
+      return typeOf(object) === REACT_SUSPENSE_TYPE;
+    }
+
+    exports.AsyncMode = AsyncMode;
+    exports.ConcurrentMode = ConcurrentMode;
+    exports.ContextConsumer = ContextConsumer;
+    exports.ContextProvider = ContextProvider;
+    exports.Element = Element;
+    exports.ForwardRef = ForwardRef;
+    exports.Fragment = Fragment;
+    exports.Lazy = Lazy;
+    exports.Memo = Memo;
+    exports.Portal = Portal;
+    exports.Profiler = Profiler;
+    exports.StrictMode = StrictMode;
+    exports.Suspense = Suspense;
+    exports.isAsyncMode = isAsyncMode;
+    exports.isConcurrentMode = isConcurrentMode;
+    exports.isContextConsumer = isContextConsumer;
+    exports.isContextProvider = isContextProvider;
+    exports.isElement = isElement;
+    exports.isForwardRef = isForwardRef;
+    exports.isFragment = isFragment;
+    exports.isLazy = isLazy;
+    exports.isMemo = isMemo;
+    exports.isPortal = isPortal;
+    exports.isProfiler = isProfiler;
+    exports.isStrictMode = isStrictMode;
+    exports.isSuspense = isSuspense;
+    exports.isValidElementType = isValidElementType;
+    exports.typeOf = typeOf;
+  })();
+}
+},{}],"../node_modules/react-is/index.js":[function(require,module,exports) {
+'use strict';
+
+if ("development" === 'production') {
+  module.exports = require('./cjs/react-is.production.min.js');
+} else {
+  module.exports = require('./cjs/react-is.development.js');
+}
+},{"./cjs/react-is.development.js":"../node_modules/react-is/cjs/react-is.development.js"}],"../node_modules/object-assign/index.js":[function(require,module,exports) {
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+'use strict';
+/* eslint-disable no-unused-vars */
+
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+  if (val === null || val === undefined) {
+    throw new TypeError('Object.assign cannot be called with null or undefined');
+  }
+
+  return Object(val);
+}
+
+function shouldUseNative() {
+  try {
+    if (!Object.assign) {
+      return false;
+    } // Detect buggy property enumeration order in older V8 versions.
+    // https://bugs.chromium.org/p/v8/issues/detail?id=4118
+
+
+    var test1 = new String('abc'); // eslint-disable-line no-new-wrappers
+
+    test1[5] = 'de';
+
+    if (Object.getOwnPropertyNames(test1)[0] === '5') {
+      return false;
+    } // https://bugs.chromium.org/p/v8/issues/detail?id=3056
+
+
+    var test2 = {};
+
+    for (var i = 0; i < 10; i++) {
+      test2['_' + String.fromCharCode(i)] = i;
+    }
+
+    var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+      return test2[n];
+    });
+
+    if (order2.join('') !== '0123456789') {
+      return false;
+    } // https://bugs.chromium.org/p/v8/issues/detail?id=3056
+
+
+    var test3 = {};
+    'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+      test3[letter] = letter;
+    });
+
+    if (Object.keys(Object.assign({}, test3)).join('') !== 'abcdefghijklmnopqrst') {
+      return false;
+    }
+
+    return true;
+  } catch (err) {
+    // We don't expect any of the above to throw, but better to be safe.
+    return false;
+  }
+}
+
+module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+  var from;
+  var to = toObject(target);
+  var symbols;
+
+  for (var s = 1; s < arguments.length; s++) {
+    from = Object(arguments[s]);
+
+    for (var key in from) {
+      if (hasOwnProperty.call(from, key)) {
+        to[key] = from[key];
+      }
+    }
+
+    if (getOwnPropertySymbols) {
+      symbols = getOwnPropertySymbols(from);
+
+      for (var i = 0; i < symbols.length; i++) {
+        if (propIsEnumerable.call(from, symbols[i])) {
+          to[symbols[i]] = from[symbols[i]];
+        }
+      }
+    }
+  }
+
+  return to;
+};
+},{}],"../node_modules/prop-types/lib/ReactPropTypesSecret.js":[function(require,module,exports) {
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+'use strict';
+
+var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+
+module.exports = ReactPropTypesSecret;
+
+},{}],"../node_modules/prop-types/lib/has.js":[function(require,module,exports) {
+module.exports = Function.call.bind(Object.prototype.hasOwnProperty);
+
+},{}],"../node_modules/prop-types/checkPropTypes.js":[function(require,module,exports) {
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+'use strict';
+
+var printWarning = function () {};
+
+if ("development" !== 'production') {
+  var ReactPropTypesSecret = require('./lib/ReactPropTypesSecret');
+
+  var loggedTypeFailures = {};
+
+  var has = require('./lib/has');
+
+  printWarning = function (text) {
+    var message = 'Warning: ' + text;
+
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {
+      /**/
+    }
+  };
+}
+/**
+ * Assert that the values match with the type specs.
+ * Error messages are memorized and will only be shown once.
+ *
+ * @param {object} typeSpecs Map of name to a ReactPropType
+ * @param {object} values Runtime values that need to be type-checked
+ * @param {string} location e.g. "prop", "context", "child context"
+ * @param {string} componentName Name of the component for error messages.
+ * @param {?Function} getStack Returns the component stack.
+ * @private
+ */
+
+
+function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
+  if ("development" !== 'production') {
+    for (var typeSpecName in typeSpecs) {
+      if (has(typeSpecs, typeSpecName)) {
+        var error; // Prop type validation may throw. In case they do, we don't want to
+        // fail the render phase where it didn't fail before. So we log it.
+        // After these have been cleaned up, we'll let them throw.
+
+        try {
+          // This is intentionally an invariant that gets caught. It's the same
+          // behavior as without this statement except with a better message.
+          if (typeof typeSpecs[typeSpecName] !== 'function') {
+            var err = Error((componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' + 'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.' + 'This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.');
+            err.name = 'Invariant Violation';
+            throw err;
+          }
+
+          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret);
+        } catch (ex) {
+          error = ex;
+        }
+
+        if (error && !(error instanceof Error)) {
+          printWarning((componentName || 'React class') + ': type specification of ' + location + ' `' + typeSpecName + '` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a ' + typeof error + '. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).');
+        }
+
+        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
+          // Only monitor this failure once because there tends to be a lot of the
+          // same error.
+          loggedTypeFailures[error.message] = true;
+          var stack = getStack ? getStack() : '';
+          printWarning('Failed ' + location + ' type: ' + error.message + (stack != null ? stack : ''));
+        }
+      }
+    }
+  }
+}
+/**
+ * Resets warning cache when testing.
+ *
+ * @private
+ */
+
+
+checkPropTypes.resetWarningCache = function () {
+  if ("development" !== 'production') {
+    loggedTypeFailures = {};
+  }
+};
+
+module.exports = checkPropTypes;
+},{"./lib/ReactPropTypesSecret":"../node_modules/prop-types/lib/ReactPropTypesSecret.js","./lib/has":"../node_modules/prop-types/lib/has.js"}],"../node_modules/prop-types/factoryWithTypeCheckers.js":[function(require,module,exports) {
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+'use strict';
+
+var ReactIs = require('react-is');
+
+var assign = require('object-assign');
+
+var ReactPropTypesSecret = require('./lib/ReactPropTypesSecret');
+
+var has = require('./lib/has');
+
+var checkPropTypes = require('./checkPropTypes');
+
+var printWarning = function () {};
+
+if ("development" !== 'production') {
+  printWarning = function (text) {
+    var message = 'Warning: ' + text;
+
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+}
+
+function emptyFunctionThatReturnsNull() {
+  return null;
+}
+
+module.exports = function (isValidElement, throwOnDirectAccess) {
+  /* global Symbol */
+  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
+
+  /**
+   * Returns the iterator method function contained on the iterable object.
+   *
+   * Be sure to invoke the function with the iterable as context:
+   *
+   *     var iteratorFn = getIteratorFn(myIterable);
+   *     if (iteratorFn) {
+   *       var iterator = iteratorFn.call(myIterable);
+   *       ...
+   *     }
+   *
+   * @param {?object} maybeIterable
+   * @return {?function}
+   */
+
+  function getIteratorFn(maybeIterable) {
+    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
+
+    if (typeof iteratorFn === 'function') {
+      return iteratorFn;
+    }
+  }
+  /**
+   * Collection of methods that allow declaration and validation of props that are
+   * supplied to React components. Example usage:
+   *
+   *   var Props = require('ReactPropTypes');
+   *   var MyArticle = React.createClass({
+   *     propTypes: {
+   *       // An optional string prop named "description".
+   *       description: Props.string,
+   *
+   *       // A required enum prop named "category".
+   *       category: Props.oneOf(['News','Photos']).isRequired,
+   *
+   *       // A prop named "dialog" that requires an instance of Dialog.
+   *       dialog: Props.instanceOf(Dialog).isRequired
+   *     },
+   *     render: function() { ... }
+   *   });
+   *
+   * A more formal specification of how these methods are used:
+   *
+   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
+   *   decl := ReactPropTypes.{type}(.isRequired)?
+   *
+   * Each and every declaration produces a function with the same signature. This
+   * allows the creation of custom validation functions. For example:
+   *
+   *  var MyLink = React.createClass({
+   *    propTypes: {
+   *      // An optional string or URI prop named "href".
+   *      href: function(props, propName, componentName) {
+   *        var propValue = props[propName];
+   *        if (propValue != null && typeof propValue !== 'string' &&
+   *            !(propValue instanceof URI)) {
+   *          return new Error(
+   *            'Expected a string or an URI for ' + propName + ' in ' +
+   *            componentName
+   *          );
+   *        }
+   *      }
+   *    },
+   *    render: function() {...}
+   *  });
+   *
+   * @internal
+   */
+
+
+  var ANONYMOUS = '<<anonymous>>'; // Important!
+  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
+
+  var ReactPropTypes = {
+    array: createPrimitiveTypeChecker('array'),
+    bigint: createPrimitiveTypeChecker('bigint'),
+    bool: createPrimitiveTypeChecker('boolean'),
+    func: createPrimitiveTypeChecker('function'),
+    number: createPrimitiveTypeChecker('number'),
+    object: createPrimitiveTypeChecker('object'),
+    string: createPrimitiveTypeChecker('string'),
+    symbol: createPrimitiveTypeChecker('symbol'),
+    any: createAnyTypeChecker(),
+    arrayOf: createArrayOfTypeChecker,
+    element: createElementTypeChecker(),
+    elementType: createElementTypeTypeChecker(),
+    instanceOf: createInstanceTypeChecker,
+    node: createNodeChecker(),
+    objectOf: createObjectOfTypeChecker,
+    oneOf: createEnumTypeChecker,
+    oneOfType: createUnionTypeChecker,
+    shape: createShapeTypeChecker,
+    exact: createStrictShapeTypeChecker
+  };
+  /**
+   * inlined Object.is polyfill to avoid requiring consumers ship their own
+   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+   */
+
+  /*eslint-disable no-self-compare*/
+
+  function is(x, y) {
+    // SameValue algorithm
+    if (x === y) {
+      // Steps 1-5, 7-10
+      // Steps 6.b-6.e: +0 != -0
+      return x !== 0 || 1 / x === 1 / y;
+    } else {
+      // Step 6.a: NaN == NaN
+      return x !== x && y !== y;
+    }
+  }
+  /*eslint-enable no-self-compare*/
+
+  /**
+   * We use an Error-like object for backward compatibility as people may call
+   * PropTypes directly and inspect their output. However, we don't use real
+   * Errors anymore. We don't inspect their stack anyway, and creating them
+   * is prohibitively expensive if they are created too often, such as what
+   * happens in oneOfType() for any type before the one that matched.
+   */
+
+
+  function PropTypeError(message, data) {
+    this.message = message;
+    this.data = data && typeof data === 'object' ? data : {};
+    this.stack = '';
+  } // Make `instanceof Error` still work for returned errors.
+
+
+  PropTypeError.prototype = Error.prototype;
+
+  function createChainableTypeChecker(validate) {
+    if ("development" !== 'production') {
+      var manualPropTypeCallCache = {};
+      var manualPropTypeWarningCount = 0;
+    }
+
+    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
+      componentName = componentName || ANONYMOUS;
+      propFullName = propFullName || propName;
+
+      if (secret !== ReactPropTypesSecret) {
+        if (throwOnDirectAccess) {
+          // New behavior only for users of `prop-types` package
+          var err = new Error('Calling PropTypes validators directly is not supported by the `prop-types` package. ' + 'Use `PropTypes.checkPropTypes()` to call them. ' + 'Read more at http://fb.me/use-check-prop-types');
+          err.name = 'Invariant Violation';
+          throw err;
+        } else if ("development" !== 'production' && typeof console !== 'undefined') {
+          // Old behavior for people using React.PropTypes
+          var cacheKey = componentName + ':' + propName;
+
+          if (!manualPropTypeCallCache[cacheKey] && // Avoid spamming the console because they are often not actionable except for lib authors
+          manualPropTypeWarningCount < 3) {
+            printWarning('You are manually calling a React.PropTypes validation ' + 'function for the `' + propFullName + '` prop on `' + componentName + '`. This is deprecated ' + 'and will throw in the standalone `prop-types` package. ' + 'You may be seeing this warning due to a third-party PropTypes ' + 'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.');
+            manualPropTypeCallCache[cacheKey] = true;
+            manualPropTypeWarningCount++;
+          }
+        }
+      }
+
+      if (props[propName] == null) {
+        if (isRequired) {
+          if (props[propName] === null) {
+            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
+          }
+
+          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
+        }
+
+        return null;
+      } else {
+        return validate(props, propName, componentName, location, propFullName);
+      }
+    }
+
+    var chainedCheckType = checkType.bind(null, false);
+    chainedCheckType.isRequired = checkType.bind(null, true);
+    return chainedCheckType;
+  }
+
+  function createPrimitiveTypeChecker(expectedType) {
+    function validate(props, propName, componentName, location, propFullName, secret) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+
+      if (propType !== expectedType) {
+        // `propValue` being instance of, say, date/regexp, pass the 'object'
+        // check, but we can offer a more precise error message here rather than
+        // 'of type `object`'.
+        var preciseType = getPreciseType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'), {
+          expectedType: expectedType
+        });
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createAnyTypeChecker() {
+    return createChainableTypeChecker(emptyFunctionThatReturnsNull);
+  }
+
+  function createArrayOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
+      }
+
+      var propValue = props[propName];
+
+      if (!Array.isArray(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
+      }
+
+      for (var i = 0; i < propValue.length; i++) {
+        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret);
+
+        if (error instanceof Error) {
+          return error;
+        }
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createElementTypeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+
+      if (!isValidElement(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createElementTypeTypeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+
+      if (!ReactIs.isValidElementType(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement type.'));
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createInstanceTypeChecker(expectedClass) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!(props[propName] instanceof expectedClass)) {
+        var expectedClassName = expectedClass.name || ANONYMOUS;
+        var actualClassName = getClassName(props[propName]);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createEnumTypeChecker(expectedValues) {
+    if (!Array.isArray(expectedValues)) {
+      if ("development" !== 'production') {
+        if (arguments.length > 1) {
+          printWarning('Invalid arguments supplied to oneOf, expected an array, got ' + arguments.length + ' arguments. ' + 'A common mistake is to write oneOf(x, y, z) instead of oneOf([x, y, z]).');
+        } else {
+          printWarning('Invalid argument supplied to oneOf, expected an array.');
+        }
+      }
+
+      return emptyFunctionThatReturnsNull;
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+
+      for (var i = 0; i < expectedValues.length; i++) {
+        if (is(propValue, expectedValues[i])) {
+          return null;
+        }
+      }
+
+      var valuesString = JSON.stringify(expectedValues, function replacer(key, value) {
+        var type = getPreciseType(value);
+
+        if (type === 'symbol') {
+          return String(value);
+        }
+
+        return value;
+      });
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + String(propValue) + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createObjectOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
+      }
+
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
+      }
+
+      for (var key in propValue) {
+        if (has(propValue, key)) {
+          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+
+          if (error instanceof Error) {
+            return error;
+          }
+        }
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createUnionTypeChecker(arrayOfTypeCheckers) {
+    if (!Array.isArray(arrayOfTypeCheckers)) {
+      "development" !== 'production' ? printWarning('Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
+      return emptyFunctionThatReturnsNull;
+    }
+
+    for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+      var checker = arrayOfTypeCheckers[i];
+
+      if (typeof checker !== 'function') {
+        printWarning('Invalid argument supplied to oneOfType. Expected an array of check functions, but ' + 'received ' + getPostfixForTypeWarning(checker) + ' at index ' + i + '.');
+        return emptyFunctionThatReturnsNull;
+      }
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      var expectedTypes = [];
+
+      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+        var checker = arrayOfTypeCheckers[i];
+        var checkerResult = checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret);
+
+        if (checkerResult == null) {
+          return null;
+        }
+
+        if (checkerResult.data && has(checkerResult.data, 'expectedType')) {
+          expectedTypes.push(checkerResult.data.expectedType);
+        }
+      }
+
+      var expectedTypesMessage = expectedTypes.length > 0 ? ', expected one of type [' + expectedTypes.join(', ') + ']' : '';
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`' + expectedTypesMessage + '.'));
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createNodeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!isNode(props[propName])) {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function invalidValidatorError(componentName, location, propFullName, key, type) {
+    return new PropTypeError((componentName || 'React class') + ': ' + location + ' type `' + propFullName + '.' + key + '` is invalid; ' + 'it must be a function, usually from the `prop-types` package, but received `' + type + '`.');
+  }
+
+  function createShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      }
+
+      for (var key in shapeTypes) {
+        var checker = shapeTypes[key];
+
+        if (typeof checker !== 'function') {
+          return invalidValidatorError(componentName, location, propFullName, key, getPreciseType(checker));
+        }
+
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+
+        if (error) {
+          return error;
+        }
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createStrictShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      } // We need to check all keys in case some are required but missing from props.
+
+
+      var allKeys = assign({}, props[propName], shapeTypes);
+
+      for (var key in allKeys) {
+        var checker = shapeTypes[key];
+
+        if (has(shapeTypes, key) && typeof checker !== 'function') {
+          return invalidValidatorError(componentName, location, propFullName, key, getPreciseType(checker));
+        }
+
+        if (!checker) {
+          return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' + '\nBad object: ' + JSON.stringify(props[propName], null, '  ') + '\nValid keys: ' + JSON.stringify(Object.keys(shapeTypes), null, '  '));
+        }
+
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+
+        if (error) {
+          return error;
+        }
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function isNode(propValue) {
+    switch (typeof propValue) {
+      case 'number':
+      case 'string':
+      case 'undefined':
+        return true;
+
+      case 'boolean':
+        return !propValue;
+
+      case 'object':
+        if (Array.isArray(propValue)) {
+          return propValue.every(isNode);
+        }
+
+        if (propValue === null || isValidElement(propValue)) {
+          return true;
+        }
+
+        var iteratorFn = getIteratorFn(propValue);
+
+        if (iteratorFn) {
+          var iterator = iteratorFn.call(propValue);
+          var step;
+
+          if (iteratorFn !== propValue.entries) {
+            while (!(step = iterator.next()).done) {
+              if (!isNode(step.value)) {
+                return false;
+              }
+            }
+          } else {
+            // Iterator will provide entry [k,v] tuples rather than values.
+            while (!(step = iterator.next()).done) {
+              var entry = step.value;
+
+              if (entry) {
+                if (!isNode(entry[1])) {
+                  return false;
+                }
+              }
+            }
+          }
+        } else {
+          return false;
+        }
+
+        return true;
+
+      default:
+        return false;
+    }
+  }
+
+  function isSymbol(propType, propValue) {
+    // Native Symbol.
+    if (propType === 'symbol') {
+      return true;
+    } // falsy value can't be a Symbol
+
+
+    if (!propValue) {
+      return false;
+    } // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
+
+
+    if (propValue['@@toStringTag'] === 'Symbol') {
+      return true;
+    } // Fallback for non-spec compliant Symbols which are polyfilled.
+
+
+    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
+      return true;
+    }
+
+    return false;
+  } // Equivalent of `typeof` but with special handling for array and regexp.
+
+
+  function getPropType(propValue) {
+    var propType = typeof propValue;
+
+    if (Array.isArray(propValue)) {
+      return 'array';
+    }
+
+    if (propValue instanceof RegExp) {
+      // Old webkits (at least until Android 4.0) return 'function' rather than
+      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
+      // passes PropTypes.object.
+      return 'object';
+    }
+
+    if (isSymbol(propType, propValue)) {
+      return 'symbol';
+    }
+
+    return propType;
+  } // This handles more types than `getPropType`. Only used for error messages.
+  // See `createPrimitiveTypeChecker`.
+
+
+  function getPreciseType(propValue) {
+    if (typeof propValue === 'undefined' || propValue === null) {
+      return '' + propValue;
+    }
+
+    var propType = getPropType(propValue);
+
+    if (propType === 'object') {
+      if (propValue instanceof Date) {
+        return 'date';
+      } else if (propValue instanceof RegExp) {
+        return 'regexp';
+      }
+    }
+
+    return propType;
+  } // Returns a string that is postfixed to a warning about an invalid type.
+  // For example, "undefined" or "of type array"
+
+
+  function getPostfixForTypeWarning(value) {
+    var type = getPreciseType(value);
+
+    switch (type) {
+      case 'array':
+      case 'object':
+        return 'an ' + type;
+
+      case 'boolean':
+      case 'date':
+      case 'regexp':
+        return 'a ' + type;
+
+      default:
+        return type;
+    }
+  } // Returns class name of the object, if any.
+
+
+  function getClassName(propValue) {
+    if (!propValue.constructor || !propValue.constructor.name) {
+      return ANONYMOUS;
+    }
+
+    return propValue.constructor.name;
+  }
+
+  ReactPropTypes.checkPropTypes = checkPropTypes;
+  ReactPropTypes.resetWarningCache = checkPropTypes.resetWarningCache;
+  ReactPropTypes.PropTypes = ReactPropTypes;
+  return ReactPropTypes;
+};
+},{"react-is":"../node_modules/react-is/index.js","object-assign":"../node_modules/object-assign/index.js","./lib/ReactPropTypesSecret":"../node_modules/prop-types/lib/ReactPropTypesSecret.js","./lib/has":"../node_modules/prop-types/lib/has.js","./checkPropTypes":"../node_modules/prop-types/checkPropTypes.js"}],"../node_modules/prop-types/index.js":[function(require,module,exports) {
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+if ("development" !== 'production') {
+  var ReactIs = require('react-is'); // By explicitly using `prop-types` you are opting into new development behavior.
+  // http://fb.me/prop-types-in-prod
+
+
+  var throwOnDirectAccess = true;
+  module.exports = require('./factoryWithTypeCheckers')(ReactIs.isElement, throwOnDirectAccess);
+} else {
+  // By explicitly using `prop-types` you are opting into new production behavior.
+  // http://fb.me/prop-types-in-prod
+  module.exports = require('./factoryWithThrowingShims')();
+}
+},{"react-is":"../node_modules/react-is/index.js","./factoryWithTypeCheckers":"../node_modules/prop-types/factoryWithTypeCheckers.js"}],"../node_modules/lodash/isArray.js":[function(require,module,exports) {
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+
+module.exports = isArray;
+
+},{}],"../node_modules/lodash/_freeGlobal.js":[function(require,module,exports) {
+var global = arguments[3];
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+
+module.exports = freeGlobal;
+
+},{}],"../node_modules/lodash/_root.js":[function(require,module,exports) {
+var freeGlobal = require('./_freeGlobal');
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
+
+module.exports = root;
+
+},{"./_freeGlobal":"../node_modules/lodash/_freeGlobal.js"}],"../node_modules/lodash/_Symbol.js":[function(require,module,exports) {
+var root = require('./_root');
+
+/** Built-in value references. */
+var Symbol = root.Symbol;
+
+module.exports = Symbol;
+
+},{"./_root":"../node_modules/lodash/_root.js"}],"../node_modules/lodash/_getRawTag.js":[function(require,module,exports) {
+var Symbol = require('./_Symbol');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString = objectProto.toString;
+
+/** Built-in value references. */
+var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+
+/**
+ * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the raw `toStringTag`.
+ */
+function getRawTag(value) {
+  var isOwn = hasOwnProperty.call(value, symToStringTag),
+      tag = value[symToStringTag];
+
+  try {
+    value[symToStringTag] = undefined;
+    var unmasked = true;
+  } catch (e) {}
+
+  var result = nativeObjectToString.call(value);
+  if (unmasked) {
+    if (isOwn) {
+      value[symToStringTag] = tag;
+    } else {
+      delete value[symToStringTag];
+    }
+  }
+  return result;
+}
+
+module.exports = getRawTag;
+
+},{"./_Symbol":"../node_modules/lodash/_Symbol.js"}],"../node_modules/lodash/_objectToString.js":[function(require,module,exports) {
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString = objectProto.toString;
+
+/**
+ * Converts `value` to a string using `Object.prototype.toString`.
+ *
+ * @private
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ */
+function objectToString(value) {
+  return nativeObjectToString.call(value);
+}
+
+module.exports = objectToString;
+
+},{}],"../node_modules/lodash/_baseGetTag.js":[function(require,module,exports) {
+var Symbol = require('./_Symbol'),
+    getRawTag = require('./_getRawTag'),
+    objectToString = require('./_objectToString');
+
+/** `Object#toString` result references. */
+var nullTag = '[object Null]',
+    undefinedTag = '[object Undefined]';
+
+/** Built-in value references. */
+var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+
+/**
+ * The base implementation of `getTag` without fallbacks for buggy environments.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function baseGetTag(value) {
+  if (value == null) {
+    return value === undefined ? undefinedTag : nullTag;
+  }
+  return (symToStringTag && symToStringTag in Object(value))
+    ? getRawTag(value)
+    : objectToString(value);
+}
+
+module.exports = baseGetTag;
+
+},{"./_Symbol":"../node_modules/lodash/_Symbol.js","./_getRawTag":"../node_modules/lodash/_getRawTag.js","./_objectToString":"../node_modules/lodash/_objectToString.js"}],"../node_modules/lodash/isObjectLike.js":[function(require,module,exports) {
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return value != null && typeof value == 'object';
+}
+
+module.exports = isObjectLike;
+
+},{}],"../node_modules/lodash/isSymbol.js":[function(require,module,exports) {
+var baseGetTag = require('./_baseGetTag'),
+    isObjectLike = require('./isObjectLike');
+
+/** `Object#toString` result references. */
+var symbolTag = '[object Symbol]';
+
+/**
+ * Checks if `value` is classified as a `Symbol` primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+ * @example
+ *
+ * _.isSymbol(Symbol.iterator);
+ * // => true
+ *
+ * _.isSymbol('abc');
+ * // => false
+ */
+function isSymbol(value) {
+  return typeof value == 'symbol' ||
+    (isObjectLike(value) && baseGetTag(value) == symbolTag);
+}
+
+module.exports = isSymbol;
+
+},{"./_baseGetTag":"../node_modules/lodash/_baseGetTag.js","./isObjectLike":"../node_modules/lodash/isObjectLike.js"}],"../node_modules/lodash/_isKey.js":[function(require,module,exports) {
+var isArray = require('./isArray'),
+    isSymbol = require('./isSymbol');
+
+/** Used to match property names within property paths. */
+var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
+    reIsPlainProp = /^\w*$/;
+
+/**
+ * Checks if `value` is a property name and not a property path.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {Object} [object] The object to query keys on.
+ * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
+ */
+function isKey(value, object) {
+  if (isArray(value)) {
+    return false;
+  }
+  var type = typeof value;
+  if (type == 'number' || type == 'symbol' || type == 'boolean' ||
+      value == null || isSymbol(value)) {
+    return true;
+  }
+  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
+    (object != null && value in Object(object));
+}
+
+module.exports = isKey;
+
+},{"./isArray":"../node_modules/lodash/isArray.js","./isSymbol":"../node_modules/lodash/isSymbol.js"}],"../node_modules/lodash/isObject.js":[function(require,module,exports) {
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return value != null && (type == 'object' || type == 'function');
+}
+
+module.exports = isObject;
+
+},{}],"../node_modules/lodash/isFunction.js":[function(require,module,exports) {
+var baseGetTag = require('./_baseGetTag'),
+    isObject = require('./isObject');
+
+/** `Object#toString` result references. */
+var asyncTag = '[object AsyncFunction]',
+    funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    proxyTag = '[object Proxy]';
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  if (!isObject(value)) {
+    return false;
+  }
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 9 which returns 'object' for typed arrays and other constructors.
+  var tag = baseGetTag(value);
+  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+}
+
+module.exports = isFunction;
+
+},{"./_baseGetTag":"../node_modules/lodash/_baseGetTag.js","./isObject":"../node_modules/lodash/isObject.js"}],"../node_modules/lodash/_coreJsData.js":[function(require,module,exports) {
+var root = require('./_root');
+
+/** Used to detect overreaching core-js shims. */
+var coreJsData = root['__core-js_shared__'];
+
+module.exports = coreJsData;
+
+},{"./_root":"../node_modules/lodash/_root.js"}],"../node_modules/lodash/_isMasked.js":[function(require,module,exports) {
+var coreJsData = require('./_coreJsData');
+
+/** Used to detect methods masquerading as native. */
+var maskSrcKey = (function() {
+  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+  return uid ? ('Symbol(src)_1.' + uid) : '';
+}());
+
+/**
+ * Checks if `func` has its source masked.
+ *
+ * @private
+ * @param {Function} func The function to check.
+ * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+ */
+function isMasked(func) {
+  return !!maskSrcKey && (maskSrcKey in func);
+}
+
+module.exports = isMasked;
+
+},{"./_coreJsData":"../node_modules/lodash/_coreJsData.js"}],"../node_modules/lodash/_toSource.js":[function(require,module,exports) {
+/** Used for built-in method references. */
+var funcProto = Function.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
+
+/**
+ * Converts `func` to its source code.
+ *
+ * @private
+ * @param {Function} func The function to convert.
+ * @returns {string} Returns the source code.
+ */
+function toSource(func) {
+  if (func != null) {
+    try {
+      return funcToString.call(func);
+    } catch (e) {}
+    try {
+      return (func + '');
+    } catch (e) {}
+  }
+  return '';
+}
+
+module.exports = toSource;
+
+},{}],"../node_modules/lodash/_baseIsNative.js":[function(require,module,exports) {
+var isFunction = require('./isFunction'),
+    isMasked = require('./_isMasked'),
+    isObject = require('./isObject'),
+    toSource = require('./_toSource');
+
+/**
+ * Used to match `RegExp`
+ * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+ */
+var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+/** Used to detect host constructors (Safari). */
+var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+/** Used for built-in method references. */
+var funcProto = Function.prototype,
+    objectProto = Object.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/** Used to detect if a method is native. */
+var reIsNative = RegExp('^' +
+  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+);
+
+/**
+ * The base implementation of `_.isNative` without bad shim checks.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a native function,
+ *  else `false`.
+ */
+function baseIsNative(value) {
+  if (!isObject(value) || isMasked(value)) {
+    return false;
+  }
+  var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
+  return pattern.test(toSource(value));
+}
+
+module.exports = baseIsNative;
+
+},{"./isFunction":"../node_modules/lodash/isFunction.js","./_isMasked":"../node_modules/lodash/_isMasked.js","./isObject":"../node_modules/lodash/isObject.js","./_toSource":"../node_modules/lodash/_toSource.js"}],"../node_modules/lodash/_getValue.js":[function(require,module,exports) {
+/**
+ * Gets the value at `key` of `object`.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {string} key The key of the property to get.
+ * @returns {*} Returns the property value.
+ */
+function getValue(object, key) {
+  return object == null ? undefined : object[key];
+}
+
+module.exports = getValue;
+
+},{}],"../node_modules/lodash/_getNative.js":[function(require,module,exports) {
+var baseIsNative = require('./_baseIsNative'),
+    getValue = require('./_getValue');
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = getValue(object, key);
+  return baseIsNative(value) ? value : undefined;
+}
+
+module.exports = getNative;
+
+},{"./_baseIsNative":"../node_modules/lodash/_baseIsNative.js","./_getValue":"../node_modules/lodash/_getValue.js"}],"../node_modules/lodash/_nativeCreate.js":[function(require,module,exports) {
+var getNative = require('./_getNative');
+
+/* Built-in method references that are verified to be native. */
+var nativeCreate = getNative(Object, 'create');
+
+module.exports = nativeCreate;
+
+},{"./_getNative":"../node_modules/lodash/_getNative.js"}],"../node_modules/lodash/_hashClear.js":[function(require,module,exports) {
+var nativeCreate = require('./_nativeCreate');
+
+/**
+ * Removes all key-value entries from the hash.
+ *
+ * @private
+ * @name clear
+ * @memberOf Hash
+ */
+function hashClear() {
+  this.__data__ = nativeCreate ? nativeCreate(null) : {};
+  this.size = 0;
+}
+
+module.exports = hashClear;
+
+},{"./_nativeCreate":"../node_modules/lodash/_nativeCreate.js"}],"../node_modules/lodash/_hashDelete.js":[function(require,module,exports) {
+/**
+ * Removes `key` and its value from the hash.
+ *
+ * @private
+ * @name delete
+ * @memberOf Hash
+ * @param {Object} hash The hash to modify.
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function hashDelete(key) {
+  var result = this.has(key) && delete this.__data__[key];
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+module.exports = hashDelete;
+
+},{}],"../node_modules/lodash/_hashGet.js":[function(require,module,exports) {
+var nativeCreate = require('./_nativeCreate');
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Gets the hash value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Hash
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function hashGet(key) {
+  var data = this.__data__;
+  if (nativeCreate) {
+    var result = data[key];
+    return result === HASH_UNDEFINED ? undefined : result;
+  }
+  return hasOwnProperty.call(data, key) ? data[key] : undefined;
+}
+
+module.exports = hashGet;
+
+},{"./_nativeCreate":"../node_modules/lodash/_nativeCreate.js"}],"../node_modules/lodash/_hashHas.js":[function(require,module,exports) {
+var nativeCreate = require('./_nativeCreate');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Checks if a hash value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Hash
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function hashHas(key) {
+  var data = this.__data__;
+  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
+}
+
+module.exports = hashHas;
+
+},{"./_nativeCreate":"../node_modules/lodash/_nativeCreate.js"}],"../node_modules/lodash/_hashSet.js":[function(require,module,exports) {
+var nativeCreate = require('./_nativeCreate');
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/**
+ * Sets the hash `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Hash
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the hash instance.
+ */
+function hashSet(key, value) {
+  var data = this.__data__;
+  this.size += this.has(key) ? 0 : 1;
+  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
+  return this;
+}
+
+module.exports = hashSet;
+
+},{"./_nativeCreate":"../node_modules/lodash/_nativeCreate.js"}],"../node_modules/lodash/_Hash.js":[function(require,module,exports) {
+var hashClear = require('./_hashClear'),
+    hashDelete = require('./_hashDelete'),
+    hashGet = require('./_hashGet'),
+    hashHas = require('./_hashHas'),
+    hashSet = require('./_hashSet');
+
+/**
+ * Creates a hash object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Hash(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `Hash`.
+Hash.prototype.clear = hashClear;
+Hash.prototype['delete'] = hashDelete;
+Hash.prototype.get = hashGet;
+Hash.prototype.has = hashHas;
+Hash.prototype.set = hashSet;
+
+module.exports = Hash;
+
+},{"./_hashClear":"../node_modules/lodash/_hashClear.js","./_hashDelete":"../node_modules/lodash/_hashDelete.js","./_hashGet":"../node_modules/lodash/_hashGet.js","./_hashHas":"../node_modules/lodash/_hashHas.js","./_hashSet":"../node_modules/lodash/_hashSet.js"}],"../node_modules/lodash/_listCacheClear.js":[function(require,module,exports) {
+/**
+ * Removes all key-value entries from the list cache.
+ *
+ * @private
+ * @name clear
+ * @memberOf ListCache
+ */
+function listCacheClear() {
+  this.__data__ = [];
+  this.size = 0;
+}
+
+module.exports = listCacheClear;
+
+},{}],"../node_modules/lodash/eq.js":[function(require,module,exports) {
+/**
+ * Performs a
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * comparison between two values to determine if they are equivalent.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ * var other = { 'a': 1 };
+ *
+ * _.eq(object, object);
+ * // => true
+ *
+ * _.eq(object, other);
+ * // => false
+ *
+ * _.eq('a', 'a');
+ * // => true
+ *
+ * _.eq('a', Object('a'));
+ * // => false
+ *
+ * _.eq(NaN, NaN);
+ * // => true
+ */
+function eq(value, other) {
+  return value === other || (value !== value && other !== other);
+}
+
+module.exports = eq;
+
+},{}],"../node_modules/lodash/_assocIndexOf.js":[function(require,module,exports) {
+var eq = require('./eq');
+
+/**
+ * Gets the index at which the `key` is found in `array` of key-value pairs.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} key The key to search for.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function assocIndexOf(array, key) {
+  var length = array.length;
+  while (length--) {
+    if (eq(array[length][0], key)) {
+      return length;
+    }
+  }
+  return -1;
+}
+
+module.exports = assocIndexOf;
+
+},{"./eq":"../node_modules/lodash/eq.js"}],"../node_modules/lodash/_listCacheDelete.js":[function(require,module,exports) {
+var assocIndexOf = require('./_assocIndexOf');
+
+/** Used for built-in method references. */
+var arrayProto = Array.prototype;
+
+/** Built-in value references. */
+var splice = arrayProto.splice;
+
+/**
+ * Removes `key` and its value from the list cache.
+ *
+ * @private
+ * @name delete
+ * @memberOf ListCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function listCacheDelete(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    return false;
+  }
+  var lastIndex = data.length - 1;
+  if (index == lastIndex) {
+    data.pop();
+  } else {
+    splice.call(data, index, 1);
+  }
+  --this.size;
+  return true;
+}
+
+module.exports = listCacheDelete;
+
+},{"./_assocIndexOf":"../node_modules/lodash/_assocIndexOf.js"}],"../node_modules/lodash/_listCacheGet.js":[function(require,module,exports) {
+var assocIndexOf = require('./_assocIndexOf');
+
+/**
+ * Gets the list cache value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf ListCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function listCacheGet(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  return index < 0 ? undefined : data[index][1];
+}
+
+module.exports = listCacheGet;
+
+},{"./_assocIndexOf":"../node_modules/lodash/_assocIndexOf.js"}],"../node_modules/lodash/_listCacheHas.js":[function(require,module,exports) {
+var assocIndexOf = require('./_assocIndexOf');
+
+/**
+ * Checks if a list cache value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf ListCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function listCacheHas(key) {
+  return assocIndexOf(this.__data__, key) > -1;
+}
+
+module.exports = listCacheHas;
+
+},{"./_assocIndexOf":"../node_modules/lodash/_assocIndexOf.js"}],"../node_modules/lodash/_listCacheSet.js":[function(require,module,exports) {
+var assocIndexOf = require('./_assocIndexOf');
+
+/**
+ * Sets the list cache `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf ListCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the list cache instance.
+ */
+function listCacheSet(key, value) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    ++this.size;
+    data.push([key, value]);
+  } else {
+    data[index][1] = value;
+  }
+  return this;
+}
+
+module.exports = listCacheSet;
+
+},{"./_assocIndexOf":"../node_modules/lodash/_assocIndexOf.js"}],"../node_modules/lodash/_ListCache.js":[function(require,module,exports) {
+var listCacheClear = require('./_listCacheClear'),
+    listCacheDelete = require('./_listCacheDelete'),
+    listCacheGet = require('./_listCacheGet'),
+    listCacheHas = require('./_listCacheHas'),
+    listCacheSet = require('./_listCacheSet');
+
+/**
+ * Creates an list cache object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function ListCache(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `ListCache`.
+ListCache.prototype.clear = listCacheClear;
+ListCache.prototype['delete'] = listCacheDelete;
+ListCache.prototype.get = listCacheGet;
+ListCache.prototype.has = listCacheHas;
+ListCache.prototype.set = listCacheSet;
+
+module.exports = ListCache;
+
+},{"./_listCacheClear":"../node_modules/lodash/_listCacheClear.js","./_listCacheDelete":"../node_modules/lodash/_listCacheDelete.js","./_listCacheGet":"../node_modules/lodash/_listCacheGet.js","./_listCacheHas":"../node_modules/lodash/_listCacheHas.js","./_listCacheSet":"../node_modules/lodash/_listCacheSet.js"}],"../node_modules/lodash/_Map.js":[function(require,module,exports) {
+var getNative = require('./_getNative'),
+    root = require('./_root');
+
+/* Built-in method references that are verified to be native. */
+var Map = getNative(root, 'Map');
+
+module.exports = Map;
+
+},{"./_getNative":"../node_modules/lodash/_getNative.js","./_root":"../node_modules/lodash/_root.js"}],"../node_modules/lodash/_mapCacheClear.js":[function(require,module,exports) {
+var Hash = require('./_Hash'),
+    ListCache = require('./_ListCache'),
+    Map = require('./_Map');
+
+/**
+ * Removes all key-value entries from the map.
+ *
+ * @private
+ * @name clear
+ * @memberOf MapCache
+ */
+function mapCacheClear() {
+  this.size = 0;
+  this.__data__ = {
+    'hash': new Hash,
+    'map': new (Map || ListCache),
+    'string': new Hash
+  };
+}
+
+module.exports = mapCacheClear;
+
+},{"./_Hash":"../node_modules/lodash/_Hash.js","./_ListCache":"../node_modules/lodash/_ListCache.js","./_Map":"../node_modules/lodash/_Map.js"}],"../node_modules/lodash/_isKeyable.js":[function(require,module,exports) {
+/**
+ * Checks if `value` is suitable for use as unique object key.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+ */
+function isKeyable(value) {
+  var type = typeof value;
+  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+    ? (value !== '__proto__')
+    : (value === null);
+}
+
+module.exports = isKeyable;
+
+},{}],"../node_modules/lodash/_getMapData.js":[function(require,module,exports) {
+var isKeyable = require('./_isKeyable');
+
+/**
+ * Gets the data for `map`.
+ *
+ * @private
+ * @param {Object} map The map to query.
+ * @param {string} key The reference key.
+ * @returns {*} Returns the map data.
+ */
+function getMapData(map, key) {
+  var data = map.__data__;
+  return isKeyable(key)
+    ? data[typeof key == 'string' ? 'string' : 'hash']
+    : data.map;
+}
+
+module.exports = getMapData;
+
+},{"./_isKeyable":"../node_modules/lodash/_isKeyable.js"}],"../node_modules/lodash/_mapCacheDelete.js":[function(require,module,exports) {
+var getMapData = require('./_getMapData');
+
+/**
+ * Removes `key` and its value from the map.
+ *
+ * @private
+ * @name delete
+ * @memberOf MapCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function mapCacheDelete(key) {
+  var result = getMapData(this, key)['delete'](key);
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+module.exports = mapCacheDelete;
+
+},{"./_getMapData":"../node_modules/lodash/_getMapData.js"}],"../node_modules/lodash/_mapCacheGet.js":[function(require,module,exports) {
+var getMapData = require('./_getMapData');
+
+/**
+ * Gets the map value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf MapCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function mapCacheGet(key) {
+  return getMapData(this, key).get(key);
+}
+
+module.exports = mapCacheGet;
+
+},{"./_getMapData":"../node_modules/lodash/_getMapData.js"}],"../node_modules/lodash/_mapCacheHas.js":[function(require,module,exports) {
+var getMapData = require('./_getMapData');
+
+/**
+ * Checks if a map value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf MapCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function mapCacheHas(key) {
+  return getMapData(this, key).has(key);
+}
+
+module.exports = mapCacheHas;
+
+},{"./_getMapData":"../node_modules/lodash/_getMapData.js"}],"../node_modules/lodash/_mapCacheSet.js":[function(require,module,exports) {
+var getMapData = require('./_getMapData');
+
+/**
+ * Sets the map `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf MapCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the map cache instance.
+ */
+function mapCacheSet(key, value) {
+  var data = getMapData(this, key),
+      size = data.size;
+
+  data.set(key, value);
+  this.size += data.size == size ? 0 : 1;
+  return this;
+}
+
+module.exports = mapCacheSet;
+
+},{"./_getMapData":"../node_modules/lodash/_getMapData.js"}],"../node_modules/lodash/_MapCache.js":[function(require,module,exports) {
+var mapCacheClear = require('./_mapCacheClear'),
+    mapCacheDelete = require('./_mapCacheDelete'),
+    mapCacheGet = require('./_mapCacheGet'),
+    mapCacheHas = require('./_mapCacheHas'),
+    mapCacheSet = require('./_mapCacheSet');
+
+/**
+ * Creates a map cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function MapCache(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `MapCache`.
+MapCache.prototype.clear = mapCacheClear;
+MapCache.prototype['delete'] = mapCacheDelete;
+MapCache.prototype.get = mapCacheGet;
+MapCache.prototype.has = mapCacheHas;
+MapCache.prototype.set = mapCacheSet;
+
+module.exports = MapCache;
+
+},{"./_mapCacheClear":"../node_modules/lodash/_mapCacheClear.js","./_mapCacheDelete":"../node_modules/lodash/_mapCacheDelete.js","./_mapCacheGet":"../node_modules/lodash/_mapCacheGet.js","./_mapCacheHas":"../node_modules/lodash/_mapCacheHas.js","./_mapCacheSet":"../node_modules/lodash/_mapCacheSet.js"}],"../node_modules/lodash/memoize.js":[function(require,module,exports) {
+var MapCache = require('./_MapCache');
+
+/** Error message constants. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/**
+ * Creates a function that memoizes the result of `func`. If `resolver` is
+ * provided, it determines the cache key for storing the result based on the
+ * arguments provided to the memoized function. By default, the first argument
+ * provided to the memoized function is used as the map cache key. The `func`
+ * is invoked with the `this` binding of the memoized function.
+ *
+ * **Note:** The cache is exposed as the `cache` property on the memoized
+ * function. Its creation may be customized by replacing the `_.memoize.Cache`
+ * constructor with one whose instances implement the
+ * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
+ * method interface of `clear`, `delete`, `get`, `has`, and `set`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to have its output memoized.
+ * @param {Function} [resolver] The function to resolve the cache key.
+ * @returns {Function} Returns the new memoized function.
+ * @example
+ *
+ * var object = { 'a': 1, 'b': 2 };
+ * var other = { 'c': 3, 'd': 4 };
+ *
+ * var values = _.memoize(_.values);
+ * values(object);
+ * // => [1, 2]
+ *
+ * values(other);
+ * // => [3, 4]
+ *
+ * object.a = 2;
+ * values(object);
+ * // => [1, 2]
+ *
+ * // Modify the result cache.
+ * values.cache.set(object, ['a', 'b']);
+ * values(object);
+ * // => ['a', 'b']
+ *
+ * // Replace `_.memoize.Cache`.
+ * _.memoize.Cache = WeakMap;
+ */
+function memoize(func, resolver) {
+  if (typeof func != 'function' || (resolver != null && typeof resolver != 'function')) {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  var memoized = function() {
+    var args = arguments,
+        key = resolver ? resolver.apply(this, args) : args[0],
+        cache = memoized.cache;
+
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    var result = func.apply(this, args);
+    memoized.cache = cache.set(key, result) || cache;
+    return result;
+  };
+  memoized.cache = new (memoize.Cache || MapCache);
+  return memoized;
+}
+
+// Expose `MapCache`.
+memoize.Cache = MapCache;
+
+module.exports = memoize;
+
+},{"./_MapCache":"../node_modules/lodash/_MapCache.js"}],"../node_modules/lodash/_memoizeCapped.js":[function(require,module,exports) {
+var memoize = require('./memoize');
+
+/** Used as the maximum memoize cache size. */
+var MAX_MEMOIZE_SIZE = 500;
+
+/**
+ * A specialized version of `_.memoize` which clears the memoized function's
+ * cache when it exceeds `MAX_MEMOIZE_SIZE`.
+ *
+ * @private
+ * @param {Function} func The function to have its output memoized.
+ * @returns {Function} Returns the new memoized function.
+ */
+function memoizeCapped(func) {
+  var result = memoize(func, function(key) {
+    if (cache.size === MAX_MEMOIZE_SIZE) {
+      cache.clear();
+    }
+    return key;
+  });
+
+  var cache = result.cache;
+  return result;
+}
+
+module.exports = memoizeCapped;
+
+},{"./memoize":"../node_modules/lodash/memoize.js"}],"../node_modules/lodash/_stringToPath.js":[function(require,module,exports) {
+var memoizeCapped = require('./_memoizeCapped');
+
+/** Used to match property names within property paths. */
+var rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
+
+/** Used to match backslashes in property paths. */
+var reEscapeChar = /\\(\\)?/g;
+
+/**
+ * Converts `string` to a property path array.
+ *
+ * @private
+ * @param {string} string The string to convert.
+ * @returns {Array} Returns the property path array.
+ */
+var stringToPath = memoizeCapped(function(string) {
+  var result = [];
+  if (string.charCodeAt(0) === 46 /* . */) {
+    result.push('');
+  }
+  string.replace(rePropName, function(match, number, quote, subString) {
+    result.push(quote ? subString.replace(reEscapeChar, '$1') : (number || match));
+  });
+  return result;
+});
+
+module.exports = stringToPath;
+
+},{"./_memoizeCapped":"../node_modules/lodash/_memoizeCapped.js"}],"../node_modules/lodash/_arrayMap.js":[function(require,module,exports) {
+/**
+ * A specialized version of `_.map` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the new mapped array.
+ */
+function arrayMap(array, iteratee) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      result = Array(length);
+
+  while (++index < length) {
+    result[index] = iteratee(array[index], index, array);
+  }
+  return result;
+}
+
+module.exports = arrayMap;
+
+},{}],"../node_modules/lodash/_baseToString.js":[function(require,module,exports) {
+var Symbol = require('./_Symbol'),
+    arrayMap = require('./_arrayMap'),
+    isArray = require('./isArray'),
+    isSymbol = require('./isSymbol');
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolToString = symbolProto ? symbolProto.toString : undefined;
+
+/**
+ * The base implementation of `_.toString` which doesn't convert nullish
+ * values to empty strings.
+ *
+ * @private
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
+ */
+function baseToString(value) {
+  // Exit early for strings to avoid a performance hit in some environments.
+  if (typeof value == 'string') {
+    return value;
+  }
+  if (isArray(value)) {
+    // Recursively convert values (susceptible to call stack limits).
+    return arrayMap(value, baseToString) + '';
+  }
+  if (isSymbol(value)) {
+    return symbolToString ? symbolToString.call(value) : '';
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+module.exports = baseToString;
+
+},{"./_Symbol":"../node_modules/lodash/_Symbol.js","./_arrayMap":"../node_modules/lodash/_arrayMap.js","./isArray":"../node_modules/lodash/isArray.js","./isSymbol":"../node_modules/lodash/isSymbol.js"}],"../node_modules/lodash/toString.js":[function(require,module,exports) {
+var baseToString = require('./_baseToString');
+
+/**
+ * Converts `value` to a string. An empty string is returned for `null`
+ * and `undefined` values. The sign of `-0` is preserved.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ * @example
+ *
+ * _.toString(null);
+ * // => ''
+ *
+ * _.toString(-0);
+ * // => '-0'
+ *
+ * _.toString([1, 2, 3]);
+ * // => '1,2,3'
+ */
+function toString(value) {
+  return value == null ? '' : baseToString(value);
+}
+
+module.exports = toString;
+
+},{"./_baseToString":"../node_modules/lodash/_baseToString.js"}],"../node_modules/lodash/_castPath.js":[function(require,module,exports) {
+var isArray = require('./isArray'),
+    isKey = require('./_isKey'),
+    stringToPath = require('./_stringToPath'),
+    toString = require('./toString');
+
+/**
+ * Casts `value` to a path array if it's not one.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @param {Object} [object] The object to query keys on.
+ * @returns {Array} Returns the cast property path array.
+ */
+function castPath(value, object) {
+  if (isArray(value)) {
+    return value;
+  }
+  return isKey(value, object) ? [value] : stringToPath(toString(value));
+}
+
+module.exports = castPath;
+
+},{"./isArray":"../node_modules/lodash/isArray.js","./_isKey":"../node_modules/lodash/_isKey.js","./_stringToPath":"../node_modules/lodash/_stringToPath.js","./toString":"../node_modules/lodash/toString.js"}],"../node_modules/lodash/_toKey.js":[function(require,module,exports) {
+var isSymbol = require('./isSymbol');
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/**
+ * Converts `value` to a string key if it's not a string or symbol.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {string|symbol} Returns the key.
+ */
+function toKey(value) {
+  if (typeof value == 'string' || isSymbol(value)) {
+    return value;
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+module.exports = toKey;
+
+},{"./isSymbol":"../node_modules/lodash/isSymbol.js"}],"../node_modules/lodash/_baseGet.js":[function(require,module,exports) {
+var castPath = require('./_castPath'),
+    toKey = require('./_toKey');
+
+/**
+ * The base implementation of `_.get` without support for default values.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path of the property to get.
+ * @returns {*} Returns the resolved value.
+ */
+function baseGet(object, path) {
+  path = castPath(path, object);
+
+  var index = 0,
+      length = path.length;
+
+  while (object != null && index < length) {
+    object = object[toKey(path[index++])];
+  }
+  return (index && index == length) ? object : undefined;
+}
+
+module.exports = baseGet;
+
+},{"./_castPath":"../node_modules/lodash/_castPath.js","./_toKey":"../node_modules/lodash/_toKey.js"}],"../node_modules/lodash/_defineProperty.js":[function(require,module,exports) {
+var getNative = require('./_getNative');
+
+var defineProperty = (function() {
+  try {
+    var func = getNative(Object, 'defineProperty');
+    func({}, '', {});
+    return func;
+  } catch (e) {}
+}());
+
+module.exports = defineProperty;
+
+},{"./_getNative":"../node_modules/lodash/_getNative.js"}],"../node_modules/lodash/_baseAssignValue.js":[function(require,module,exports) {
+var defineProperty = require('./_defineProperty');
+
+/**
+ * The base implementation of `assignValue` and `assignMergeValue` without
+ * value checks.
+ *
+ * @private
+ * @param {Object} object The object to modify.
+ * @param {string} key The key of the property to assign.
+ * @param {*} value The value to assign.
+ */
+function baseAssignValue(object, key, value) {
+  if (key == '__proto__' && defineProperty) {
+    defineProperty(object, key, {
+      'configurable': true,
+      'enumerable': true,
+      'value': value,
+      'writable': true
+    });
+  } else {
+    object[key] = value;
+  }
+}
+
+module.exports = baseAssignValue;
+
+},{"./_defineProperty":"../node_modules/lodash/_defineProperty.js"}],"../node_modules/lodash/_assignValue.js":[function(require,module,exports) {
+var baseAssignValue = require('./_baseAssignValue'),
+    eq = require('./eq');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Assigns `value` to `key` of `object` if the existing value is not equivalent
+ * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * for equality comparisons.
+ *
+ * @private
+ * @param {Object} object The object to modify.
+ * @param {string} key The key of the property to assign.
+ * @param {*} value The value to assign.
+ */
+function assignValue(object, key, value) {
+  var objValue = object[key];
+  if (!(hasOwnProperty.call(object, key) && eq(objValue, value)) ||
+      (value === undefined && !(key in object))) {
+    baseAssignValue(object, key, value);
+  }
+}
+
+module.exports = assignValue;
+
+},{"./_baseAssignValue":"../node_modules/lodash/_baseAssignValue.js","./eq":"../node_modules/lodash/eq.js"}],"../node_modules/lodash/_isIndex.js":[function(require,module,exports) {
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/** Used to detect unsigned integer values. */
+var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+/**
+ * Checks if `value` is a valid array-like index.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+ * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+ */
+function isIndex(value, length) {
+  var type = typeof value;
+  length = length == null ? MAX_SAFE_INTEGER : length;
+
+  return !!length &&
+    (type == 'number' ||
+      (type != 'symbol' && reIsUint.test(value))) &&
+        (value > -1 && value % 1 == 0 && value < length);
+}
+
+module.exports = isIndex;
+
+},{}],"../node_modules/lodash/_baseSet.js":[function(require,module,exports) {
+var assignValue = require('./_assignValue'),
+    castPath = require('./_castPath'),
+    isIndex = require('./_isIndex'),
+    isObject = require('./isObject'),
+    toKey = require('./_toKey');
+
+/**
+ * The base implementation of `_.set`.
+ *
+ * @private
+ * @param {Object} object The object to modify.
+ * @param {Array|string} path The path of the property to set.
+ * @param {*} value The value to set.
+ * @param {Function} [customizer] The function to customize path creation.
+ * @returns {Object} Returns `object`.
+ */
+function baseSet(object, path, value, customizer) {
+  if (!isObject(object)) {
+    return object;
+  }
+  path = castPath(path, object);
+
+  var index = -1,
+      length = path.length,
+      lastIndex = length - 1,
+      nested = object;
+
+  while (nested != null && ++index < length) {
+    var key = toKey(path[index]),
+        newValue = value;
+
+    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+      return object;
+    }
+
+    if (index != lastIndex) {
+      var objValue = nested[key];
+      newValue = customizer ? customizer(objValue, key, nested) : undefined;
+      if (newValue === undefined) {
+        newValue = isObject(objValue)
+          ? objValue
+          : (isIndex(path[index + 1]) ? [] : {});
+      }
+    }
+    assignValue(nested, key, newValue);
+    nested = nested[key];
+  }
+  return object;
+}
+
+module.exports = baseSet;
+
+},{"./_assignValue":"../node_modules/lodash/_assignValue.js","./_castPath":"../node_modules/lodash/_castPath.js","./_isIndex":"../node_modules/lodash/_isIndex.js","./isObject":"../node_modules/lodash/isObject.js","./_toKey":"../node_modules/lodash/_toKey.js"}],"../node_modules/lodash/_basePickBy.js":[function(require,module,exports) {
+var baseGet = require('./_baseGet'),
+    baseSet = require('./_baseSet'),
+    castPath = require('./_castPath');
+
+/**
+ * The base implementation of  `_.pickBy` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Object} object The source object.
+ * @param {string[]} paths The property paths to pick.
+ * @param {Function} predicate The function invoked per property.
+ * @returns {Object} Returns the new object.
+ */
+function basePickBy(object, paths, predicate) {
+  var index = -1,
+      length = paths.length,
+      result = {};
+
+  while (++index < length) {
+    var path = paths[index],
+        value = baseGet(object, path);
+
+    if (predicate(value, path)) {
+      baseSet(result, castPath(path, object), value);
+    }
+  }
+  return result;
+}
+
+module.exports = basePickBy;
+
+},{"./_baseGet":"../node_modules/lodash/_baseGet.js","./_baseSet":"../node_modules/lodash/_baseSet.js","./_castPath":"../node_modules/lodash/_castPath.js"}],"../node_modules/lodash/_baseHasIn.js":[function(require,module,exports) {
+/**
+ * The base implementation of `_.hasIn` without support for deep paths.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {Array|string} key The key to check.
+ * @returns {boolean} Returns `true` if `key` exists, else `false`.
+ */
+function baseHasIn(object, key) {
+  return object != null && key in Object(object);
+}
+
+module.exports = baseHasIn;
+
+},{}],"../node_modules/lodash/_baseIsArguments.js":[function(require,module,exports) {
+var baseGetTag = require('./_baseGetTag'),
+    isObjectLike = require('./isObjectLike');
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]';
+
+/**
+ * The base implementation of `_.isArguments`.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+ */
+function baseIsArguments(value) {
+  return isObjectLike(value) && baseGetTag(value) == argsTag;
+}
+
+module.exports = baseIsArguments;
+
+},{"./_baseGetTag":"../node_modules/lodash/_baseGetTag.js","./isObjectLike":"../node_modules/lodash/isObjectLike.js"}],"../node_modules/lodash/isArguments.js":[function(require,module,exports) {
+var baseIsArguments = require('./_baseIsArguments'),
+    isObjectLike = require('./isObjectLike');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/** Built-in value references. */
+var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+
+/**
+ * Checks if `value` is likely an `arguments` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+ *  else `false`.
+ * @example
+ *
+ * _.isArguments(function() { return arguments; }());
+ * // => true
+ *
+ * _.isArguments([1, 2, 3]);
+ * // => false
+ */
+var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
+  return isObjectLike(value) && hasOwnProperty.call(value, 'callee') &&
+    !propertyIsEnumerable.call(value, 'callee');
+};
+
+module.exports = isArguments;
+
+},{"./_baseIsArguments":"../node_modules/lodash/_baseIsArguments.js","./isObjectLike":"../node_modules/lodash/isObjectLike.js"}],"../node_modules/lodash/isLength.js":[function(require,module,exports) {
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/**
+ * Checks if `value` is a valid array-like length.
+ *
+ * **Note:** This method is loosely based on
+ * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+ * @example
+ *
+ * _.isLength(3);
+ * // => true
+ *
+ * _.isLength(Number.MIN_VALUE);
+ * // => false
+ *
+ * _.isLength(Infinity);
+ * // => false
+ *
+ * _.isLength('3');
+ * // => false
+ */
+function isLength(value) {
+  return typeof value == 'number' &&
+    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+}
+
+module.exports = isLength;
+
+},{}],"../node_modules/lodash/_hasPath.js":[function(require,module,exports) {
+var castPath = require('./_castPath'),
+    isArguments = require('./isArguments'),
+    isArray = require('./isArray'),
+    isIndex = require('./_isIndex'),
+    isLength = require('./isLength'),
+    toKey = require('./_toKey');
+
+/**
+ * Checks if `path` exists on `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path to check.
+ * @param {Function} hasFunc The function to check properties.
+ * @returns {boolean} Returns `true` if `path` exists, else `false`.
+ */
+function hasPath(object, path, hasFunc) {
+  path = castPath(path, object);
+
+  var index = -1,
+      length = path.length,
+      result = false;
+
+  while (++index < length) {
+    var key = toKey(path[index]);
+    if (!(result = object != null && hasFunc(object, key))) {
+      break;
+    }
+    object = object[key];
+  }
+  if (result || ++index != length) {
+    return result;
+  }
+  length = object == null ? 0 : object.length;
+  return !!length && isLength(length) && isIndex(key, length) &&
+    (isArray(object) || isArguments(object));
+}
+
+module.exports = hasPath;
+
+},{"./_castPath":"../node_modules/lodash/_castPath.js","./isArguments":"../node_modules/lodash/isArguments.js","./isArray":"../node_modules/lodash/isArray.js","./_isIndex":"../node_modules/lodash/_isIndex.js","./isLength":"../node_modules/lodash/isLength.js","./_toKey":"../node_modules/lodash/_toKey.js"}],"../node_modules/lodash/hasIn.js":[function(require,module,exports) {
+var baseHasIn = require('./_baseHasIn'),
+    hasPath = require('./_hasPath');
+
+/**
+ * Checks if `path` is a direct or inherited property of `object`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Object
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path to check.
+ * @returns {boolean} Returns `true` if `path` exists, else `false`.
+ * @example
+ *
+ * var object = _.create({ 'a': _.create({ 'b': 2 }) });
+ *
+ * _.hasIn(object, 'a');
+ * // => true
+ *
+ * _.hasIn(object, 'a.b');
+ * // => true
+ *
+ * _.hasIn(object, ['a', 'b']);
+ * // => true
+ *
+ * _.hasIn(object, 'b');
+ * // => false
+ */
+function hasIn(object, path) {
+  return object != null && hasPath(object, path, baseHasIn);
+}
+
+module.exports = hasIn;
+
+},{"./_baseHasIn":"../node_modules/lodash/_baseHasIn.js","./_hasPath":"../node_modules/lodash/_hasPath.js"}],"../node_modules/lodash/_basePick.js":[function(require,module,exports) {
+var basePickBy = require('./_basePickBy'),
+    hasIn = require('./hasIn');
+
+/**
+ * The base implementation of `_.pick` without support for individual
+ * property identifiers.
+ *
+ * @private
+ * @param {Object} object The source object.
+ * @param {string[]} paths The property paths to pick.
+ * @returns {Object} Returns the new object.
+ */
+function basePick(object, paths) {
+  return basePickBy(object, paths, function(value, path) {
+    return hasIn(object, path);
+  });
+}
+
+module.exports = basePick;
+
+},{"./_basePickBy":"../node_modules/lodash/_basePickBy.js","./hasIn":"../node_modules/lodash/hasIn.js"}],"../node_modules/lodash/_arrayPush.js":[function(require,module,exports) {
+/**
+ * Appends the elements of `values` to `array`.
+ *
+ * @private
+ * @param {Array} array The array to modify.
+ * @param {Array} values The values to append.
+ * @returns {Array} Returns `array`.
+ */
+function arrayPush(array, values) {
+  var index = -1,
+      length = values.length,
+      offset = array.length;
+
+  while (++index < length) {
+    array[offset + index] = values[index];
+  }
+  return array;
+}
+
+module.exports = arrayPush;
+
+},{}],"../node_modules/lodash/_isFlattenable.js":[function(require,module,exports) {
+var Symbol = require('./_Symbol'),
+    isArguments = require('./isArguments'),
+    isArray = require('./isArray');
+
+/** Built-in value references. */
+var spreadableSymbol = Symbol ? Symbol.isConcatSpreadable : undefined;
+
+/**
+ * Checks if `value` is a flattenable `arguments` object or array.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is flattenable, else `false`.
+ */
+function isFlattenable(value) {
+  return isArray(value) || isArguments(value) ||
+    !!(spreadableSymbol && value && value[spreadableSymbol]);
+}
+
+module.exports = isFlattenable;
+
+},{"./_Symbol":"../node_modules/lodash/_Symbol.js","./isArguments":"../node_modules/lodash/isArguments.js","./isArray":"../node_modules/lodash/isArray.js"}],"../node_modules/lodash/_baseFlatten.js":[function(require,module,exports) {
+var arrayPush = require('./_arrayPush'),
+    isFlattenable = require('./_isFlattenable');
+
+/**
+ * The base implementation of `_.flatten` with support for restricting flattening.
+ *
+ * @private
+ * @param {Array} array The array to flatten.
+ * @param {number} depth The maximum recursion depth.
+ * @param {boolean} [predicate=isFlattenable] The function invoked per iteration.
+ * @param {boolean} [isStrict] Restrict to values that pass `predicate` checks.
+ * @param {Array} [result=[]] The initial result value.
+ * @returns {Array} Returns the new flattened array.
+ */
+function baseFlatten(array, depth, predicate, isStrict, result) {
+  var index = -1,
+      length = array.length;
+
+  predicate || (predicate = isFlattenable);
+  result || (result = []);
+
+  while (++index < length) {
+    var value = array[index];
+    if (depth > 0 && predicate(value)) {
+      if (depth > 1) {
+        // Recursively flatten arrays (susceptible to call stack limits).
+        baseFlatten(value, depth - 1, predicate, isStrict, result);
+      } else {
+        arrayPush(result, value);
+      }
+    } else if (!isStrict) {
+      result[result.length] = value;
+    }
+  }
+  return result;
+}
+
+module.exports = baseFlatten;
+
+},{"./_arrayPush":"../node_modules/lodash/_arrayPush.js","./_isFlattenable":"../node_modules/lodash/_isFlattenable.js"}],"../node_modules/lodash/flatten.js":[function(require,module,exports) {
+var baseFlatten = require('./_baseFlatten');
+
+/**
+ * Flattens `array` a single level deep.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Array
+ * @param {Array} array The array to flatten.
+ * @returns {Array} Returns the new flattened array.
+ * @example
+ *
+ * _.flatten([1, [2, [3, [4]], 5]]);
+ * // => [1, 2, [3, [4]], 5]
+ */
+function flatten(array) {
+  var length = array == null ? 0 : array.length;
+  return length ? baseFlatten(array, 1) : [];
+}
+
+module.exports = flatten;
+
+},{"./_baseFlatten":"../node_modules/lodash/_baseFlatten.js"}],"../node_modules/lodash/_apply.js":[function(require,module,exports) {
+/**
+ * A faster alternative to `Function#apply`, this function invokes `func`
+ * with the `this` binding of `thisArg` and the arguments of `args`.
+ *
+ * @private
+ * @param {Function} func The function to invoke.
+ * @param {*} thisArg The `this` binding of `func`.
+ * @param {Array} args The arguments to invoke `func` with.
+ * @returns {*} Returns the result of `func`.
+ */
+function apply(func, thisArg, args) {
+  switch (args.length) {
+    case 0: return func.call(thisArg);
+    case 1: return func.call(thisArg, args[0]);
+    case 2: return func.call(thisArg, args[0], args[1]);
+    case 3: return func.call(thisArg, args[0], args[1], args[2]);
+  }
+  return func.apply(thisArg, args);
+}
+
+module.exports = apply;
+
+},{}],"../node_modules/lodash/_overRest.js":[function(require,module,exports) {
+var apply = require('./_apply');
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeMax = Math.max;
+
+/**
+ * A specialized version of `baseRest` which transforms the rest array.
+ *
+ * @private
+ * @param {Function} func The function to apply a rest parameter to.
+ * @param {number} [start=func.length-1] The start position of the rest parameter.
+ * @param {Function} transform The rest array transform.
+ * @returns {Function} Returns the new function.
+ */
+function overRest(func, start, transform) {
+  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
+  return function() {
+    var args = arguments,
+        index = -1,
+        length = nativeMax(args.length - start, 0),
+        array = Array(length);
+
+    while (++index < length) {
+      array[index] = args[start + index];
+    }
+    index = -1;
+    var otherArgs = Array(start + 1);
+    while (++index < start) {
+      otherArgs[index] = args[index];
+    }
+    otherArgs[start] = transform(array);
+    return apply(func, this, otherArgs);
+  };
+}
+
+module.exports = overRest;
+
+},{"./_apply":"../node_modules/lodash/_apply.js"}],"../node_modules/lodash/constant.js":[function(require,module,exports) {
+/**
+ * Creates a function that returns `value`.
+ *
+ * @static
+ * @memberOf _
+ * @since 2.4.0
+ * @category Util
+ * @param {*} value The value to return from the new function.
+ * @returns {Function} Returns the new constant function.
+ * @example
+ *
+ * var objects = _.times(2, _.constant({ 'a': 1 }));
+ *
+ * console.log(objects);
+ * // => [{ 'a': 1 }, { 'a': 1 }]
+ *
+ * console.log(objects[0] === objects[1]);
+ * // => true
+ */
+function constant(value) {
+  return function() {
+    return value;
+  };
+}
+
+module.exports = constant;
+
+},{}],"../node_modules/lodash/identity.js":[function(require,module,exports) {
+/**
+ * This method returns the first argument it receives.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Util
+ * @param {*} value Any value.
+ * @returns {*} Returns `value`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ *
+ * console.log(_.identity(object) === object);
+ * // => true
+ */
+function identity(value) {
+  return value;
+}
+
+module.exports = identity;
+
+},{}],"../node_modules/lodash/_baseSetToString.js":[function(require,module,exports) {
+var constant = require('./constant'),
+    defineProperty = require('./_defineProperty'),
+    identity = require('./identity');
+
+/**
+ * The base implementation of `setToString` without support for hot loop shorting.
+ *
+ * @private
+ * @param {Function} func The function to modify.
+ * @param {Function} string The `toString` result.
+ * @returns {Function} Returns `func`.
+ */
+var baseSetToString = !defineProperty ? identity : function(func, string) {
+  return defineProperty(func, 'toString', {
+    'configurable': true,
+    'enumerable': false,
+    'value': constant(string),
+    'writable': true
+  });
+};
+
+module.exports = baseSetToString;
+
+},{"./constant":"../node_modules/lodash/constant.js","./_defineProperty":"../node_modules/lodash/_defineProperty.js","./identity":"../node_modules/lodash/identity.js"}],"../node_modules/lodash/_shortOut.js":[function(require,module,exports) {
+/** Used to detect hot functions by number of calls within a span of milliseconds. */
+var HOT_COUNT = 800,
+    HOT_SPAN = 16;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeNow = Date.now;
+
+/**
+ * Creates a function that'll short out and invoke `identity` instead
+ * of `func` when it's called `HOT_COUNT` or more times in `HOT_SPAN`
+ * milliseconds.
+ *
+ * @private
+ * @param {Function} func The function to restrict.
+ * @returns {Function} Returns the new shortable function.
+ */
+function shortOut(func) {
+  var count = 0,
+      lastCalled = 0;
+
+  return function() {
+    var stamp = nativeNow(),
+        remaining = HOT_SPAN - (stamp - lastCalled);
+
+    lastCalled = stamp;
+    if (remaining > 0) {
+      if (++count >= HOT_COUNT) {
+        return arguments[0];
+      }
+    } else {
+      count = 0;
+    }
+    return func.apply(undefined, arguments);
+  };
+}
+
+module.exports = shortOut;
+
+},{}],"../node_modules/lodash/_setToString.js":[function(require,module,exports) {
+var baseSetToString = require('./_baseSetToString'),
+    shortOut = require('./_shortOut');
+
+/**
+ * Sets the `toString` method of `func` to return `string`.
+ *
+ * @private
+ * @param {Function} func The function to modify.
+ * @param {Function} string The `toString` result.
+ * @returns {Function} Returns `func`.
+ */
+var setToString = shortOut(baseSetToString);
+
+module.exports = setToString;
+
+},{"./_baseSetToString":"../node_modules/lodash/_baseSetToString.js","./_shortOut":"../node_modules/lodash/_shortOut.js"}],"../node_modules/lodash/_flatRest.js":[function(require,module,exports) {
+var flatten = require('./flatten'),
+    overRest = require('./_overRest'),
+    setToString = require('./_setToString');
+
+/**
+ * A specialized version of `baseRest` which flattens the rest array.
+ *
+ * @private
+ * @param {Function} func The function to apply a rest parameter to.
+ * @returns {Function} Returns the new function.
+ */
+function flatRest(func) {
+  return setToString(overRest(func, undefined, flatten), func + '');
+}
+
+module.exports = flatRest;
+
+},{"./flatten":"../node_modules/lodash/flatten.js","./_overRest":"../node_modules/lodash/_overRest.js","./_setToString":"../node_modules/lodash/_setToString.js"}],"../node_modules/lodash/pick.js":[function(require,module,exports) {
+var basePick = require('./_basePick'),
+    flatRest = require('./_flatRest');
+
+/**
+ * Creates an object composed of the picked `object` properties.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The source object.
+ * @param {...(string|string[])} [paths] The property paths to pick.
+ * @returns {Object} Returns the new object.
+ * @example
+ *
+ * var object = { 'a': 1, 'b': '2', 'c': 3 };
+ *
+ * _.pick(object, ['a', 'c']);
+ * // => { 'a': 1, 'c': 3 }
+ */
+var pick = flatRest(function(object, paths) {
+  return object == null ? {} : basePick(object, paths);
+});
+
+module.exports = pick;
+
+},{"./_basePick":"../node_modules/lodash/_basePick.js","./_flatRest":"../node_modules/lodash/_flatRest.js"}],"../node_modules/lodash/get.js":[function(require,module,exports) {
+var baseGet = require('./_baseGet');
+
+/**
+ * Gets the value at `path` of `object`. If the resolved value is
+ * `undefined`, the `defaultValue` is returned in its place.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.7.0
+ * @category Object
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path of the property to get.
+ * @param {*} [defaultValue] The value returned for `undefined` resolved values.
+ * @returns {*} Returns the resolved value.
+ * @example
+ *
+ * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+ *
+ * _.get(object, 'a[0].b.c');
+ * // => 3
+ *
+ * _.get(object, ['a', '0', 'b', 'c']);
+ * // => 3
+ *
+ * _.get(object, 'a.b.c', 'default');
+ * // => 'default'
+ */
+function get(object, path, defaultValue) {
+  var result = object == null ? undefined : baseGet(object, path);
+  return result === undefined ? defaultValue : result;
+}
+
+module.exports = get;
+
+},{"./_baseGet":"../node_modules/lodash/_baseGet.js"}],"../node_modules/lodash/_isPrototype.js":[function(require,module,exports) {
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Checks if `value` is likely a prototype object.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+ */
+function isPrototype(value) {
+  var Ctor = value && value.constructor,
+      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
+
+  return value === proto;
+}
+
+module.exports = isPrototype;
+
+},{}],"../node_modules/lodash/_overArg.js":[function(require,module,exports) {
+/**
+ * Creates a unary function that invokes `func` with its argument transformed.
+ *
+ * @private
+ * @param {Function} func The function to wrap.
+ * @param {Function} transform The argument transform.
+ * @returns {Function} Returns the new function.
+ */
+function overArg(func, transform) {
+  return function(arg) {
+    return func(transform(arg));
+  };
+}
+
+module.exports = overArg;
+
+},{}],"../node_modules/lodash/_nativeKeys.js":[function(require,module,exports) {
+var overArg = require('./_overArg');
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeKeys = overArg(Object.keys, Object);
+
+module.exports = nativeKeys;
+
+},{"./_overArg":"../node_modules/lodash/_overArg.js"}],"../node_modules/lodash/_baseKeys.js":[function(require,module,exports) {
+var isPrototype = require('./_isPrototype'),
+    nativeKeys = require('./_nativeKeys');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ */
+function baseKeys(object) {
+  if (!isPrototype(object)) {
+    return nativeKeys(object);
+  }
+  var result = [];
+  for (var key in Object(object)) {
+    if (hasOwnProperty.call(object, key) && key != 'constructor') {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+module.exports = baseKeys;
+
+},{"./_isPrototype":"../node_modules/lodash/_isPrototype.js","./_nativeKeys":"../node_modules/lodash/_nativeKeys.js"}],"../node_modules/lodash/_DataView.js":[function(require,module,exports) {
+var getNative = require('./_getNative'),
+    root = require('./_root');
+
+/* Built-in method references that are verified to be native. */
+var DataView = getNative(root, 'DataView');
+
+module.exports = DataView;
+
+},{"./_getNative":"../node_modules/lodash/_getNative.js","./_root":"../node_modules/lodash/_root.js"}],"../node_modules/lodash/_Promise.js":[function(require,module,exports) {
+var getNative = require('./_getNative'),
+    root = require('./_root');
+
+/* Built-in method references that are verified to be native. */
+var Promise = getNative(root, 'Promise');
+
+module.exports = Promise;
+
+},{"./_getNative":"../node_modules/lodash/_getNative.js","./_root":"../node_modules/lodash/_root.js"}],"../node_modules/lodash/_Set.js":[function(require,module,exports) {
+var getNative = require('./_getNative'),
+    root = require('./_root');
+
+/* Built-in method references that are verified to be native. */
+var Set = getNative(root, 'Set');
+
+module.exports = Set;
+
+},{"./_getNative":"../node_modules/lodash/_getNative.js","./_root":"../node_modules/lodash/_root.js"}],"../node_modules/lodash/_WeakMap.js":[function(require,module,exports) {
+var getNative = require('./_getNative'),
+    root = require('./_root');
+
+/* Built-in method references that are verified to be native. */
+var WeakMap = getNative(root, 'WeakMap');
+
+module.exports = WeakMap;
+
+},{"./_getNative":"../node_modules/lodash/_getNative.js","./_root":"../node_modules/lodash/_root.js"}],"../node_modules/lodash/_getTag.js":[function(require,module,exports) {
+var DataView = require('./_DataView'),
+    Map = require('./_Map'),
+    Promise = require('./_Promise'),
+    Set = require('./_Set'),
+    WeakMap = require('./_WeakMap'),
+    baseGetTag = require('./_baseGetTag'),
+    toSource = require('./_toSource');
+
+/** `Object#toString` result references. */
+var mapTag = '[object Map]',
+    objectTag = '[object Object]',
+    promiseTag = '[object Promise]',
+    setTag = '[object Set]',
+    weakMapTag = '[object WeakMap]';
+
+var dataViewTag = '[object DataView]';
+
+/** Used to detect maps, sets, and weakmaps. */
+var dataViewCtorString = toSource(DataView),
+    mapCtorString = toSource(Map),
+    promiseCtorString = toSource(Promise),
+    setCtorString = toSource(Set),
+    weakMapCtorString = toSource(WeakMap);
+
+/**
+ * Gets the `toStringTag` of `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+var getTag = baseGetTag;
+
+// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
+if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag) ||
+    (Map && getTag(new Map) != mapTag) ||
+    (Promise && getTag(Promise.resolve()) != promiseTag) ||
+    (Set && getTag(new Set) != setTag) ||
+    (WeakMap && getTag(new WeakMap) != weakMapTag)) {
+  getTag = function(value) {
+    var result = baseGetTag(value),
+        Ctor = result == objectTag ? value.constructor : undefined,
+        ctorString = Ctor ? toSource(Ctor) : '';
+
+    if (ctorString) {
+      switch (ctorString) {
+        case dataViewCtorString: return dataViewTag;
+        case mapCtorString: return mapTag;
+        case promiseCtorString: return promiseTag;
+        case setCtorString: return setTag;
+        case weakMapCtorString: return weakMapTag;
+      }
+    }
+    return result;
+  };
+}
+
+module.exports = getTag;
+
+},{"./_DataView":"../node_modules/lodash/_DataView.js","./_Map":"../node_modules/lodash/_Map.js","./_Promise":"../node_modules/lodash/_Promise.js","./_Set":"../node_modules/lodash/_Set.js","./_WeakMap":"../node_modules/lodash/_WeakMap.js","./_baseGetTag":"../node_modules/lodash/_baseGetTag.js","./_toSource":"../node_modules/lodash/_toSource.js"}],"../node_modules/lodash/isArrayLike.js":[function(require,module,exports) {
+var isFunction = require('./isFunction'),
+    isLength = require('./isLength');
+
+/**
+ * Checks if `value` is array-like. A value is considered array-like if it's
+ * not a function and has a `value.length` that's an integer greater than or
+ * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+ * @example
+ *
+ * _.isArrayLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isArrayLike(document.body.children);
+ * // => true
+ *
+ * _.isArrayLike('abc');
+ * // => true
+ *
+ * _.isArrayLike(_.noop);
+ * // => false
+ */
+function isArrayLike(value) {
+  return value != null && isLength(value.length) && !isFunction(value);
+}
+
+module.exports = isArrayLike;
+
+},{"./isFunction":"../node_modules/lodash/isFunction.js","./isLength":"../node_modules/lodash/isLength.js"}],"../node_modules/lodash/stubFalse.js":[function(require,module,exports) {
+/**
+ * This method returns `false`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.13.0
+ * @category Util
+ * @returns {boolean} Returns `false`.
+ * @example
+ *
+ * _.times(2, _.stubFalse);
+ * // => [false, false]
+ */
+function stubFalse() {
+  return false;
+}
+
+module.exports = stubFalse;
+
+},{}],"../node_modules/lodash/isBuffer.js":[function(require,module,exports) {
+
+var root = require('./_root'),
+    stubFalse = require('./stubFalse');
+
+/** Detect free variable `exports`. */
+var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+
+/** Detect free variable `module`. */
+var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
+
+/** Detect the popular CommonJS extension `module.exports`. */
+var moduleExports = freeModule && freeModule.exports === freeExports;
+
+/** Built-in value references. */
+var Buffer = moduleExports ? root.Buffer : undefined;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined;
+
+/**
+ * Checks if `value` is a buffer.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.3.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
+ * @example
+ *
+ * _.isBuffer(new Buffer(2));
+ * // => true
+ *
+ * _.isBuffer(new Uint8Array(2));
+ * // => false
+ */
+var isBuffer = nativeIsBuffer || stubFalse;
+
+module.exports = isBuffer;
+
+},{"./_root":"../node_modules/lodash/_root.js","./stubFalse":"../node_modules/lodash/stubFalse.js"}],"../node_modules/lodash/_baseIsTypedArray.js":[function(require,module,exports) {
+var baseGetTag = require('./_baseGetTag'),
+    isLength = require('./isLength'),
+    isObjectLike = require('./isObjectLike');
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]',
+    arrayTag = '[object Array]',
+    boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    errorTag = '[object Error]',
+    funcTag = '[object Function]',
+    mapTag = '[object Map]',
+    numberTag = '[object Number]',
+    objectTag = '[object Object]',
+    regexpTag = '[object RegExp]',
+    setTag = '[object Set]',
+    stringTag = '[object String]',
+    weakMapTag = '[object WeakMap]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    dataViewTag = '[object DataView]',
+    float32Tag = '[object Float32Array]',
+    float64Tag = '[object Float64Array]',
+    int8Tag = '[object Int8Array]',
+    int16Tag = '[object Int16Array]',
+    int32Tag = '[object Int32Array]',
+    uint8Tag = '[object Uint8Array]',
+    uint8ClampedTag = '[object Uint8ClampedArray]',
+    uint16Tag = '[object Uint16Array]',
+    uint32Tag = '[object Uint32Array]';
+
+/** Used to identify `toStringTag` values of typed arrays. */
+var typedArrayTags = {};
+typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
+typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
+typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
+typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
+typedArrayTags[uint32Tag] = true;
+typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
+typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
+typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
+typedArrayTags[errorTag] = typedArrayTags[funcTag] =
+typedArrayTags[mapTag] = typedArrayTags[numberTag] =
+typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
+typedArrayTags[setTag] = typedArrayTags[stringTag] =
+typedArrayTags[weakMapTag] = false;
+
+/**
+ * The base implementation of `_.isTypedArray` without Node.js optimizations.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+ */
+function baseIsTypedArray(value) {
+  return isObjectLike(value) &&
+    isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
+}
+
+module.exports = baseIsTypedArray;
+
+},{"./_baseGetTag":"../node_modules/lodash/_baseGetTag.js","./isLength":"../node_modules/lodash/isLength.js","./isObjectLike":"../node_modules/lodash/isObjectLike.js"}],"../node_modules/lodash/_baseUnary.js":[function(require,module,exports) {
+/**
+ * The base implementation of `_.unary` without support for storing metadata.
+ *
+ * @private
+ * @param {Function} func The function to cap arguments for.
+ * @returns {Function} Returns the new capped function.
+ */
+function baseUnary(func) {
+  return function(value) {
+    return func(value);
+  };
+}
+
+module.exports = baseUnary;
+
+},{}],"../node_modules/lodash/_nodeUtil.js":[function(require,module,exports) {
+var freeGlobal = require('./_freeGlobal');
+
+/** Detect free variable `exports`. */
+var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+
+/** Detect free variable `module`. */
+var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
+
+/** Detect the popular CommonJS extension `module.exports`. */
+var moduleExports = freeModule && freeModule.exports === freeExports;
+
+/** Detect free variable `process` from Node.js. */
+var freeProcess = moduleExports && freeGlobal.process;
+
+/** Used to access faster Node.js helpers. */
+var nodeUtil = (function() {
+  try {
+    // Use `util.types` for Node.js 10+.
+    var types = freeModule && freeModule.require && freeModule.require('util').types;
+
+    if (types) {
+      return types;
+    }
+
+    // Legacy `process.binding('util')` for Node.js < 10.
+    return freeProcess && freeProcess.binding && freeProcess.binding('util');
+  } catch (e) {}
+}());
+
+module.exports = nodeUtil;
+
+},{"./_freeGlobal":"../node_modules/lodash/_freeGlobal.js"}],"../node_modules/lodash/isTypedArray.js":[function(require,module,exports) {
+var baseIsTypedArray = require('./_baseIsTypedArray'),
+    baseUnary = require('./_baseUnary'),
+    nodeUtil = require('./_nodeUtil');
+
+/* Node.js helper references. */
+var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
+
+/**
+ * Checks if `value` is classified as a typed array.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+ * @example
+ *
+ * _.isTypedArray(new Uint8Array);
+ * // => true
+ *
+ * _.isTypedArray([]);
+ * // => false
+ */
+var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
+
+module.exports = isTypedArray;
+
+},{"./_baseIsTypedArray":"../node_modules/lodash/_baseIsTypedArray.js","./_baseUnary":"../node_modules/lodash/_baseUnary.js","./_nodeUtil":"../node_modules/lodash/_nodeUtil.js"}],"../node_modules/lodash/isEmpty.js":[function(require,module,exports) {
+var baseKeys = require('./_baseKeys'),
+    getTag = require('./_getTag'),
+    isArguments = require('./isArguments'),
+    isArray = require('./isArray'),
+    isArrayLike = require('./isArrayLike'),
+    isBuffer = require('./isBuffer'),
+    isPrototype = require('./_isPrototype'),
+    isTypedArray = require('./isTypedArray');
+
+/** `Object#toString` result references. */
+var mapTag = '[object Map]',
+    setTag = '[object Set]';
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Checks if `value` is an empty object, collection, map, or set.
+ *
+ * Objects are considered empty if they have no own enumerable string keyed
+ * properties.
+ *
+ * Array-like values such as `arguments` objects, arrays, buffers, strings, or
+ * jQuery-like collections are considered empty if they have a `length` of `0`.
+ * Similarly, maps and sets are considered empty if they have a `size` of `0`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is empty, else `false`.
+ * @example
+ *
+ * _.isEmpty(null);
+ * // => true
+ *
+ * _.isEmpty(true);
+ * // => true
+ *
+ * _.isEmpty(1);
+ * // => true
+ *
+ * _.isEmpty([1, 2, 3]);
+ * // => false
+ *
+ * _.isEmpty({ 'a': 1 });
+ * // => false
+ */
+function isEmpty(value) {
+  if (value == null) {
+    return true;
+  }
+  if (isArrayLike(value) &&
+      (isArray(value) || typeof value == 'string' || typeof value.splice == 'function' ||
+        isBuffer(value) || isTypedArray(value) || isArguments(value))) {
+    return !value.length;
+  }
+  var tag = getTag(value);
+  if (tag == mapTag || tag == setTag) {
+    return !value.size;
+  }
+  if (isPrototype(value)) {
+    return !baseKeys(value).length;
+  }
+  for (var key in value) {
+    if (hasOwnProperty.call(value, key)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+module.exports = isEmpty;
+
+},{"./_baseKeys":"../node_modules/lodash/_baseKeys.js","./_getTag":"../node_modules/lodash/_getTag.js","./isArguments":"../node_modules/lodash/isArguments.js","./isArray":"../node_modules/lodash/isArray.js","./isArrayLike":"../node_modules/lodash/isArrayLike.js","./isBuffer":"../node_modules/lodash/isBuffer.js","./_isPrototype":"../node_modules/lodash/_isPrototype.js","./isTypedArray":"../node_modules/lodash/isTypedArray.js"}],"../node_modules/@rjsf/core/dist/es/components/ErrorList.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = ErrorList;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function ErrorList(props) {
+  var errors = props.errors;
+  return _react.default.createElement("div", {
+    className: "panel panel-danger errors"
+  }, _react.default.createElement("div", {
+    className: "panel-heading"
+  }, _react.default.createElement("h3", {
+    className: "panel-title"
+  }, "Errors")), _react.default.createElement("ul", {
+    className: "list-group"
+  }, errors.map(function (error, i) {
+    return _react.default.createElement("li", {
+      key: i,
+      className: "list-group-item text-danger"
+    }, error.stack);
+  })));
+}
+},{"react":"../node_modules/react/index.js"}],"../node_modules/lodash/_stackClear.js":[function(require,module,exports) {
+var ListCache = require('./_ListCache');
+
+/**
+ * Removes all key-value entries from the stack.
+ *
+ * @private
+ * @name clear
+ * @memberOf Stack
+ */
+function stackClear() {
+  this.__data__ = new ListCache;
+  this.size = 0;
+}
+
+module.exports = stackClear;
+
+},{"./_ListCache":"../node_modules/lodash/_ListCache.js"}],"../node_modules/lodash/_stackDelete.js":[function(require,module,exports) {
+/**
+ * Removes `key` and its value from the stack.
+ *
+ * @private
+ * @name delete
+ * @memberOf Stack
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function stackDelete(key) {
+  var data = this.__data__,
+      result = data['delete'](key);
+
+  this.size = data.size;
+  return result;
+}
+
+module.exports = stackDelete;
+
+},{}],"../node_modules/lodash/_stackGet.js":[function(require,module,exports) {
+/**
+ * Gets the stack value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Stack
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function stackGet(key) {
+  return this.__data__.get(key);
+}
+
+module.exports = stackGet;
+
+},{}],"../node_modules/lodash/_stackHas.js":[function(require,module,exports) {
+/**
+ * Checks if a stack value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Stack
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function stackHas(key) {
+  return this.__data__.has(key);
+}
+
+module.exports = stackHas;
+
+},{}],"../node_modules/lodash/_stackSet.js":[function(require,module,exports) {
+var ListCache = require('./_ListCache'),
+    Map = require('./_Map'),
+    MapCache = require('./_MapCache');
+
+/** Used as the size to enable large array optimizations. */
+var LARGE_ARRAY_SIZE = 200;
+
+/**
+ * Sets the stack `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Stack
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the stack cache instance.
+ */
+function stackSet(key, value) {
+  var data = this.__data__;
+  if (data instanceof ListCache) {
+    var pairs = data.__data__;
+    if (!Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
+      pairs.push([key, value]);
+      this.size = ++data.size;
+      return this;
+    }
+    data = this.__data__ = new MapCache(pairs);
+  }
+  data.set(key, value);
+  this.size = data.size;
+  return this;
+}
+
+module.exports = stackSet;
+
+},{"./_ListCache":"../node_modules/lodash/_ListCache.js","./_Map":"../node_modules/lodash/_Map.js","./_MapCache":"../node_modules/lodash/_MapCache.js"}],"../node_modules/lodash/_Stack.js":[function(require,module,exports) {
+var ListCache = require('./_ListCache'),
+    stackClear = require('./_stackClear'),
+    stackDelete = require('./_stackDelete'),
+    stackGet = require('./_stackGet'),
+    stackHas = require('./_stackHas'),
+    stackSet = require('./_stackSet');
+
+/**
+ * Creates a stack cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Stack(entries) {
+  var data = this.__data__ = new ListCache(entries);
+  this.size = data.size;
+}
+
+// Add methods to `Stack`.
+Stack.prototype.clear = stackClear;
+Stack.prototype['delete'] = stackDelete;
+Stack.prototype.get = stackGet;
+Stack.prototype.has = stackHas;
+Stack.prototype.set = stackSet;
+
+module.exports = Stack;
+
+},{"./_ListCache":"../node_modules/lodash/_ListCache.js","./_stackClear":"../node_modules/lodash/_stackClear.js","./_stackDelete":"../node_modules/lodash/_stackDelete.js","./_stackGet":"../node_modules/lodash/_stackGet.js","./_stackHas":"../node_modules/lodash/_stackHas.js","./_stackSet":"../node_modules/lodash/_stackSet.js"}],"../node_modules/lodash/_arrayEach.js":[function(require,module,exports) {
+/**
+ * A specialized version of `_.forEach` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns `array`.
+ */
+function arrayEach(array, iteratee) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+
+  while (++index < length) {
+    if (iteratee(array[index], index, array) === false) {
+      break;
+    }
+  }
+  return array;
+}
+
+module.exports = arrayEach;
+
+},{}],"../node_modules/lodash/_copyObject.js":[function(require,module,exports) {
+var assignValue = require('./_assignValue'),
+    baseAssignValue = require('./_baseAssignValue');
+
+/**
+ * Copies properties of `source` to `object`.
+ *
+ * @private
+ * @param {Object} source The object to copy properties from.
+ * @param {Array} props The property identifiers to copy.
+ * @param {Object} [object={}] The object to copy properties to.
+ * @param {Function} [customizer] The function to customize copied values.
+ * @returns {Object} Returns `object`.
+ */
+function copyObject(source, props, object, customizer) {
+  var isNew = !object;
+  object || (object = {});
+
+  var index = -1,
+      length = props.length;
+
+  while (++index < length) {
+    var key = props[index];
+
+    var newValue = customizer
+      ? customizer(object[key], source[key], key, object, source)
+      : undefined;
+
+    if (newValue === undefined) {
+      newValue = source[key];
+    }
+    if (isNew) {
+      baseAssignValue(object, key, newValue);
+    } else {
+      assignValue(object, key, newValue);
+    }
+  }
+  return object;
+}
+
+module.exports = copyObject;
+
+},{"./_assignValue":"../node_modules/lodash/_assignValue.js","./_baseAssignValue":"../node_modules/lodash/_baseAssignValue.js"}],"../node_modules/lodash/_baseTimes.js":[function(require,module,exports) {
+/**
+ * The base implementation of `_.times` without support for iteratee shorthands
+ * or max array length checks.
+ *
+ * @private
+ * @param {number} n The number of times to invoke `iteratee`.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the array of results.
+ */
+function baseTimes(n, iteratee) {
+  var index = -1,
+      result = Array(n);
+
+  while (++index < n) {
+    result[index] = iteratee(index);
+  }
+  return result;
+}
+
+module.exports = baseTimes;
+
+},{}],"../node_modules/lodash/_arrayLikeKeys.js":[function(require,module,exports) {
+var baseTimes = require('./_baseTimes'),
+    isArguments = require('./isArguments'),
+    isArray = require('./isArray'),
+    isBuffer = require('./isBuffer'),
+    isIndex = require('./_isIndex'),
+    isTypedArray = require('./isTypedArray');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Creates an array of the enumerable property names of the array-like `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @param {boolean} inherited Specify returning inherited property names.
+ * @returns {Array} Returns the array of property names.
+ */
+function arrayLikeKeys(value, inherited) {
+  var isArr = isArray(value),
+      isArg = !isArr && isArguments(value),
+      isBuff = !isArr && !isArg && isBuffer(value),
+      isType = !isArr && !isArg && !isBuff && isTypedArray(value),
+      skipIndexes = isArr || isArg || isBuff || isType,
+      result = skipIndexes ? baseTimes(value.length, String) : [],
+      length = result.length;
+
+  for (var key in value) {
+    if ((inherited || hasOwnProperty.call(value, key)) &&
+        !(skipIndexes && (
+           // Safari 9 has enumerable `arguments.length` in strict mode.
+           key == 'length' ||
+           // Node.js 0.10 has enumerable non-index properties on buffers.
+           (isBuff && (key == 'offset' || key == 'parent')) ||
+           // PhantomJS 2 has enumerable non-index properties on typed arrays.
+           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
+           // Skip index properties.
+           isIndex(key, length)
+        ))) {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+module.exports = arrayLikeKeys;
+
+},{"./_baseTimes":"../node_modules/lodash/_baseTimes.js","./isArguments":"../node_modules/lodash/isArguments.js","./isArray":"../node_modules/lodash/isArray.js","./isBuffer":"../node_modules/lodash/isBuffer.js","./_isIndex":"../node_modules/lodash/_isIndex.js","./isTypedArray":"../node_modules/lodash/isTypedArray.js"}],"../node_modules/lodash/keys.js":[function(require,module,exports) {
+var arrayLikeKeys = require('./_arrayLikeKeys'),
+    baseKeys = require('./_baseKeys'),
+    isArrayLike = require('./isArrayLike');
+
+/**
+ * Creates an array of the own enumerable property names of `object`.
+ *
+ * **Note:** Non-object values are coerced to objects. See the
+ * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+ * for more details.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.keys(new Foo);
+ * // => ['a', 'b'] (iteration order is not guaranteed)
+ *
+ * _.keys('hi');
+ * // => ['0', '1']
+ */
+function keys(object) {
+  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+}
+
+module.exports = keys;
+
+},{"./_arrayLikeKeys":"../node_modules/lodash/_arrayLikeKeys.js","./_baseKeys":"../node_modules/lodash/_baseKeys.js","./isArrayLike":"../node_modules/lodash/isArrayLike.js"}],"../node_modules/lodash/_baseAssign.js":[function(require,module,exports) {
+var copyObject = require('./_copyObject'),
+    keys = require('./keys');
+
+/**
+ * The base implementation of `_.assign` without support for multiple sources
+ * or `customizer` functions.
+ *
+ * @private
+ * @param {Object} object The destination object.
+ * @param {Object} source The source object.
+ * @returns {Object} Returns `object`.
+ */
+function baseAssign(object, source) {
+  return object && copyObject(source, keys(source), object);
+}
+
+module.exports = baseAssign;
+
+},{"./_copyObject":"../node_modules/lodash/_copyObject.js","./keys":"../node_modules/lodash/keys.js"}],"../node_modules/lodash/_nativeKeysIn.js":[function(require,module,exports) {
+/**
+ * This function is like
+ * [`Object.keys`](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+ * except that it includes inherited enumerable properties.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ */
+function nativeKeysIn(object) {
+  var result = [];
+  if (object != null) {
+    for (var key in Object(object)) {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+module.exports = nativeKeysIn;
+
+},{}],"../node_modules/lodash/_baseKeysIn.js":[function(require,module,exports) {
+var isObject = require('./isObject'),
+    isPrototype = require('./_isPrototype'),
+    nativeKeysIn = require('./_nativeKeysIn');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * The base implementation of `_.keysIn` which doesn't treat sparse arrays as dense.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ */
+function baseKeysIn(object) {
+  if (!isObject(object)) {
+    return nativeKeysIn(object);
+  }
+  var isProto = isPrototype(object),
+      result = [];
+
+  for (var key in object) {
+    if (!(key == 'constructor' && (isProto || !hasOwnProperty.call(object, key)))) {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+module.exports = baseKeysIn;
+
+},{"./isObject":"../node_modules/lodash/isObject.js","./_isPrototype":"../node_modules/lodash/_isPrototype.js","./_nativeKeysIn":"../node_modules/lodash/_nativeKeysIn.js"}],"../node_modules/lodash/keysIn.js":[function(require,module,exports) {
+var arrayLikeKeys = require('./_arrayLikeKeys'),
+    baseKeysIn = require('./_baseKeysIn'),
+    isArrayLike = require('./isArrayLike');
+
+/**
+ * Creates an array of the own and inherited enumerable property names of `object`.
+ *
+ * **Note:** Non-object values are coerced to objects.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.0.0
+ * @category Object
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.keysIn(new Foo);
+ * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
+ */
+function keysIn(object) {
+  return isArrayLike(object) ? arrayLikeKeys(object, true) : baseKeysIn(object);
+}
+
+module.exports = keysIn;
+
+},{"./_arrayLikeKeys":"../node_modules/lodash/_arrayLikeKeys.js","./_baseKeysIn":"../node_modules/lodash/_baseKeysIn.js","./isArrayLike":"../node_modules/lodash/isArrayLike.js"}],"../node_modules/lodash/_baseAssignIn.js":[function(require,module,exports) {
+var copyObject = require('./_copyObject'),
+    keysIn = require('./keysIn');
+
+/**
+ * The base implementation of `_.assignIn` without support for multiple sources
+ * or `customizer` functions.
+ *
+ * @private
+ * @param {Object} object The destination object.
+ * @param {Object} source The source object.
+ * @returns {Object} Returns `object`.
+ */
+function baseAssignIn(object, source) {
+  return object && copyObject(source, keysIn(source), object);
+}
+
+module.exports = baseAssignIn;
+
+},{"./_copyObject":"../node_modules/lodash/_copyObject.js","./keysIn":"../node_modules/lodash/keysIn.js"}],"../node_modules/lodash/_cloneBuffer.js":[function(require,module,exports) {
+
+var root = require('./_root');
+
+/** Detect free variable `exports`. */
+var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+
+/** Detect free variable `module`. */
+var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
+
+/** Detect the popular CommonJS extension `module.exports`. */
+var moduleExports = freeModule && freeModule.exports === freeExports;
+
+/** Built-in value references. */
+var Buffer = moduleExports ? root.Buffer : undefined,
+    allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined;
+
+/**
+ * Creates a clone of  `buffer`.
+ *
+ * @private
+ * @param {Buffer} buffer The buffer to clone.
+ * @param {boolean} [isDeep] Specify a deep clone.
+ * @returns {Buffer} Returns the cloned buffer.
+ */
+function cloneBuffer(buffer, isDeep) {
+  if (isDeep) {
+    return buffer.slice();
+  }
+  var length = buffer.length,
+      result = allocUnsafe ? allocUnsafe(length) : new buffer.constructor(length);
+
+  buffer.copy(result);
+  return result;
+}
+
+module.exports = cloneBuffer;
+
+},{"./_root":"../node_modules/lodash/_root.js"}],"../node_modules/lodash/_copyArray.js":[function(require,module,exports) {
+/**
+ * Copies the values of `source` to `array`.
+ *
+ * @private
+ * @param {Array} source The array to copy values from.
+ * @param {Array} [array=[]] The array to copy values to.
+ * @returns {Array} Returns `array`.
+ */
+function copyArray(source, array) {
+  var index = -1,
+      length = source.length;
+
+  array || (array = Array(length));
+  while (++index < length) {
+    array[index] = source[index];
+  }
+  return array;
+}
+
+module.exports = copyArray;
+
+},{}],"../node_modules/lodash/_arrayFilter.js":[function(require,module,exports) {
+/**
+ * A specialized version of `_.filter` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {Array} Returns the new filtered array.
+ */
+function arrayFilter(array, predicate) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      resIndex = 0,
+      result = [];
+
+  while (++index < length) {
+    var value = array[index];
+    if (predicate(value, index, array)) {
+      result[resIndex++] = value;
+    }
+  }
+  return result;
+}
+
+module.exports = arrayFilter;
+
+},{}],"../node_modules/lodash/stubArray.js":[function(require,module,exports) {
+/**
+ * This method returns a new empty array.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.13.0
+ * @category Util
+ * @returns {Array} Returns the new empty array.
+ * @example
+ *
+ * var arrays = _.times(2, _.stubArray);
+ *
+ * console.log(arrays);
+ * // => [[], []]
+ *
+ * console.log(arrays[0] === arrays[1]);
+ * // => false
+ */
+function stubArray() {
+  return [];
+}
+
+module.exports = stubArray;
+
+},{}],"../node_modules/lodash/_getSymbols.js":[function(require,module,exports) {
+var arrayFilter = require('./_arrayFilter'),
+    stubArray = require('./stubArray');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Built-in value references. */
+var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeGetSymbols = Object.getOwnPropertySymbols;
+
+/**
+ * Creates an array of the own enumerable symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of symbols.
+ */
+var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
+  if (object == null) {
+    return [];
+  }
+  object = Object(object);
+  return arrayFilter(nativeGetSymbols(object), function(symbol) {
+    return propertyIsEnumerable.call(object, symbol);
+  });
+};
+
+module.exports = getSymbols;
+
+},{"./_arrayFilter":"../node_modules/lodash/_arrayFilter.js","./stubArray":"../node_modules/lodash/stubArray.js"}],"../node_modules/lodash/_copySymbols.js":[function(require,module,exports) {
+var copyObject = require('./_copyObject'),
+    getSymbols = require('./_getSymbols');
+
+/**
+ * Copies own symbols of `source` to `object`.
+ *
+ * @private
+ * @param {Object} source The object to copy symbols from.
+ * @param {Object} [object={}] The object to copy symbols to.
+ * @returns {Object} Returns `object`.
+ */
+function copySymbols(source, object) {
+  return copyObject(source, getSymbols(source), object);
+}
+
+module.exports = copySymbols;
+
+},{"./_copyObject":"../node_modules/lodash/_copyObject.js","./_getSymbols":"../node_modules/lodash/_getSymbols.js"}],"../node_modules/lodash/_getPrototype.js":[function(require,module,exports) {
+var overArg = require('./_overArg');
+
+/** Built-in value references. */
+var getPrototype = overArg(Object.getPrototypeOf, Object);
+
+module.exports = getPrototype;
+
+},{"./_overArg":"../node_modules/lodash/_overArg.js"}],"../node_modules/lodash/_getSymbolsIn.js":[function(require,module,exports) {
+var arrayPush = require('./_arrayPush'),
+    getPrototype = require('./_getPrototype'),
+    getSymbols = require('./_getSymbols'),
+    stubArray = require('./stubArray');
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeGetSymbols = Object.getOwnPropertySymbols;
+
+/**
+ * Creates an array of the own and inherited enumerable symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of symbols.
+ */
+var getSymbolsIn = !nativeGetSymbols ? stubArray : function(object) {
+  var result = [];
+  while (object) {
+    arrayPush(result, getSymbols(object));
+    object = getPrototype(object);
+  }
+  return result;
+};
+
+module.exports = getSymbolsIn;
+
+},{"./_arrayPush":"../node_modules/lodash/_arrayPush.js","./_getPrototype":"../node_modules/lodash/_getPrototype.js","./_getSymbols":"../node_modules/lodash/_getSymbols.js","./stubArray":"../node_modules/lodash/stubArray.js"}],"../node_modules/lodash/_copySymbolsIn.js":[function(require,module,exports) {
+var copyObject = require('./_copyObject'),
+    getSymbolsIn = require('./_getSymbolsIn');
+
+/**
+ * Copies own and inherited symbols of `source` to `object`.
+ *
+ * @private
+ * @param {Object} source The object to copy symbols from.
+ * @param {Object} [object={}] The object to copy symbols to.
+ * @returns {Object} Returns `object`.
+ */
+function copySymbolsIn(source, object) {
+  return copyObject(source, getSymbolsIn(source), object);
+}
+
+module.exports = copySymbolsIn;
+
+},{"./_copyObject":"../node_modules/lodash/_copyObject.js","./_getSymbolsIn":"../node_modules/lodash/_getSymbolsIn.js"}],"../node_modules/lodash/_baseGetAllKeys.js":[function(require,module,exports) {
+var arrayPush = require('./_arrayPush'),
+    isArray = require('./isArray');
+
+/**
+ * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
+ * `keysFunc` and `symbolsFunc` to get the enumerable property names and
+ * symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Function} keysFunc The function to get the keys of `object`.
+ * @param {Function} symbolsFunc The function to get the symbols of `object`.
+ * @returns {Array} Returns the array of property names and symbols.
+ */
+function baseGetAllKeys(object, keysFunc, symbolsFunc) {
+  var result = keysFunc(object);
+  return isArray(object) ? result : arrayPush(result, symbolsFunc(object));
+}
+
+module.exports = baseGetAllKeys;
+
+},{"./_arrayPush":"../node_modules/lodash/_arrayPush.js","./isArray":"../node_modules/lodash/isArray.js"}],"../node_modules/lodash/_getAllKeys.js":[function(require,module,exports) {
+var baseGetAllKeys = require('./_baseGetAllKeys'),
+    getSymbols = require('./_getSymbols'),
+    keys = require('./keys');
+
+/**
+ * Creates an array of own enumerable property names and symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names and symbols.
+ */
+function getAllKeys(object) {
+  return baseGetAllKeys(object, keys, getSymbols);
+}
+
+module.exports = getAllKeys;
+
+},{"./_baseGetAllKeys":"../node_modules/lodash/_baseGetAllKeys.js","./_getSymbols":"../node_modules/lodash/_getSymbols.js","./keys":"../node_modules/lodash/keys.js"}],"../node_modules/lodash/_getAllKeysIn.js":[function(require,module,exports) {
+var baseGetAllKeys = require('./_baseGetAllKeys'),
+    getSymbolsIn = require('./_getSymbolsIn'),
+    keysIn = require('./keysIn');
+
+/**
+ * Creates an array of own and inherited enumerable property names and
+ * symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names and symbols.
+ */
+function getAllKeysIn(object) {
+  return baseGetAllKeys(object, keysIn, getSymbolsIn);
+}
+
+module.exports = getAllKeysIn;
+
+},{"./_baseGetAllKeys":"../node_modules/lodash/_baseGetAllKeys.js","./_getSymbolsIn":"../node_modules/lodash/_getSymbolsIn.js","./keysIn":"../node_modules/lodash/keysIn.js"}],"../node_modules/lodash/_initCloneArray.js":[function(require,module,exports) {
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Initializes an array clone.
+ *
+ * @private
+ * @param {Array} array The array to clone.
+ * @returns {Array} Returns the initialized clone.
+ */
+function initCloneArray(array) {
+  var length = array.length,
+      result = new array.constructor(length);
+
+  // Add properties assigned by `RegExp#exec`.
+  if (length && typeof array[0] == 'string' && hasOwnProperty.call(array, 'index')) {
+    result.index = array.index;
+    result.input = array.input;
+  }
+  return result;
+}
+
+module.exports = initCloneArray;
+
+},{}],"../node_modules/lodash/_Uint8Array.js":[function(require,module,exports) {
+var root = require('./_root');
+
+/** Built-in value references. */
+var Uint8Array = root.Uint8Array;
+
+module.exports = Uint8Array;
+
+},{"./_root":"../node_modules/lodash/_root.js"}],"../node_modules/lodash/_cloneArrayBuffer.js":[function(require,module,exports) {
+var Uint8Array = require('./_Uint8Array');
+
+/**
+ * Creates a clone of `arrayBuffer`.
+ *
+ * @private
+ * @param {ArrayBuffer} arrayBuffer The array buffer to clone.
+ * @returns {ArrayBuffer} Returns the cloned array buffer.
+ */
+function cloneArrayBuffer(arrayBuffer) {
+  var result = new arrayBuffer.constructor(arrayBuffer.byteLength);
+  new Uint8Array(result).set(new Uint8Array(arrayBuffer));
+  return result;
+}
+
+module.exports = cloneArrayBuffer;
+
+},{"./_Uint8Array":"../node_modules/lodash/_Uint8Array.js"}],"../node_modules/lodash/_cloneDataView.js":[function(require,module,exports) {
+var cloneArrayBuffer = require('./_cloneArrayBuffer');
+
+/**
+ * Creates a clone of `dataView`.
+ *
+ * @private
+ * @param {Object} dataView The data view to clone.
+ * @param {boolean} [isDeep] Specify a deep clone.
+ * @returns {Object} Returns the cloned data view.
+ */
+function cloneDataView(dataView, isDeep) {
+  var buffer = isDeep ? cloneArrayBuffer(dataView.buffer) : dataView.buffer;
+  return new dataView.constructor(buffer, dataView.byteOffset, dataView.byteLength);
+}
+
+module.exports = cloneDataView;
+
+},{"./_cloneArrayBuffer":"../node_modules/lodash/_cloneArrayBuffer.js"}],"../node_modules/lodash/_cloneRegExp.js":[function(require,module,exports) {
+/** Used to match `RegExp` flags from their coerced string values. */
+var reFlags = /\w*$/;
+
+/**
+ * Creates a clone of `regexp`.
+ *
+ * @private
+ * @param {Object} regexp The regexp to clone.
+ * @returns {Object} Returns the cloned regexp.
+ */
+function cloneRegExp(regexp) {
+  var result = new regexp.constructor(regexp.source, reFlags.exec(regexp));
+  result.lastIndex = regexp.lastIndex;
+  return result;
+}
+
+module.exports = cloneRegExp;
+
+},{}],"../node_modules/lodash/_cloneSymbol.js":[function(require,module,exports) {
+var Symbol = require('./_Symbol');
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
+
+/**
+ * Creates a clone of the `symbol` object.
+ *
+ * @private
+ * @param {Object} symbol The symbol object to clone.
+ * @returns {Object} Returns the cloned symbol object.
+ */
+function cloneSymbol(symbol) {
+  return symbolValueOf ? Object(symbolValueOf.call(symbol)) : {};
+}
+
+module.exports = cloneSymbol;
+
+},{"./_Symbol":"../node_modules/lodash/_Symbol.js"}],"../node_modules/lodash/_cloneTypedArray.js":[function(require,module,exports) {
+var cloneArrayBuffer = require('./_cloneArrayBuffer');
+
+/**
+ * Creates a clone of `typedArray`.
+ *
+ * @private
+ * @param {Object} typedArray The typed array to clone.
+ * @param {boolean} [isDeep] Specify a deep clone.
+ * @returns {Object} Returns the cloned typed array.
+ */
+function cloneTypedArray(typedArray, isDeep) {
+  var buffer = isDeep ? cloneArrayBuffer(typedArray.buffer) : typedArray.buffer;
+  return new typedArray.constructor(buffer, typedArray.byteOffset, typedArray.length);
+}
+
+module.exports = cloneTypedArray;
+
+},{"./_cloneArrayBuffer":"../node_modules/lodash/_cloneArrayBuffer.js"}],"../node_modules/lodash/_initCloneByTag.js":[function(require,module,exports) {
+var cloneArrayBuffer = require('./_cloneArrayBuffer'),
+    cloneDataView = require('./_cloneDataView'),
+    cloneRegExp = require('./_cloneRegExp'),
+    cloneSymbol = require('./_cloneSymbol'),
+    cloneTypedArray = require('./_cloneTypedArray');
+
+/** `Object#toString` result references. */
+var boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    mapTag = '[object Map]',
+    numberTag = '[object Number]',
+    regexpTag = '[object RegExp]',
+    setTag = '[object Set]',
+    stringTag = '[object String]',
+    symbolTag = '[object Symbol]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    dataViewTag = '[object DataView]',
+    float32Tag = '[object Float32Array]',
+    float64Tag = '[object Float64Array]',
+    int8Tag = '[object Int8Array]',
+    int16Tag = '[object Int16Array]',
+    int32Tag = '[object Int32Array]',
+    uint8Tag = '[object Uint8Array]',
+    uint8ClampedTag = '[object Uint8ClampedArray]',
+    uint16Tag = '[object Uint16Array]',
+    uint32Tag = '[object Uint32Array]';
+
+/**
+ * Initializes an object clone based on its `toStringTag`.
+ *
+ * **Note:** This function only supports cloning values with tags of
+ * `Boolean`, `Date`, `Error`, `Map`, `Number`, `RegExp`, `Set`, or `String`.
+ *
+ * @private
+ * @param {Object} object The object to clone.
+ * @param {string} tag The `toStringTag` of the object to clone.
+ * @param {boolean} [isDeep] Specify a deep clone.
+ * @returns {Object} Returns the initialized clone.
+ */
+function initCloneByTag(object, tag, isDeep) {
+  var Ctor = object.constructor;
+  switch (tag) {
+    case arrayBufferTag:
+      return cloneArrayBuffer(object);
+
+    case boolTag:
+    case dateTag:
+      return new Ctor(+object);
+
+    case dataViewTag:
+      return cloneDataView(object, isDeep);
+
+    case float32Tag: case float64Tag:
+    case int8Tag: case int16Tag: case int32Tag:
+    case uint8Tag: case uint8ClampedTag: case uint16Tag: case uint32Tag:
+      return cloneTypedArray(object, isDeep);
+
+    case mapTag:
+      return new Ctor;
+
+    case numberTag:
+    case stringTag:
+      return new Ctor(object);
+
+    case regexpTag:
+      return cloneRegExp(object);
+
+    case setTag:
+      return new Ctor;
+
+    case symbolTag:
+      return cloneSymbol(object);
+  }
+}
+
+module.exports = initCloneByTag;
+
+},{"./_cloneArrayBuffer":"../node_modules/lodash/_cloneArrayBuffer.js","./_cloneDataView":"../node_modules/lodash/_cloneDataView.js","./_cloneRegExp":"../node_modules/lodash/_cloneRegExp.js","./_cloneSymbol":"../node_modules/lodash/_cloneSymbol.js","./_cloneTypedArray":"../node_modules/lodash/_cloneTypedArray.js"}],"../node_modules/lodash/_baseCreate.js":[function(require,module,exports) {
+var isObject = require('./isObject');
+
+/** Built-in value references. */
+var objectCreate = Object.create;
+
+/**
+ * The base implementation of `_.create` without support for assigning
+ * properties to the created object.
+ *
+ * @private
+ * @param {Object} proto The object to inherit from.
+ * @returns {Object} Returns the new object.
+ */
+var baseCreate = (function() {
+  function object() {}
+  return function(proto) {
+    if (!isObject(proto)) {
+      return {};
+    }
+    if (objectCreate) {
+      return objectCreate(proto);
+    }
+    object.prototype = proto;
+    var result = new object;
+    object.prototype = undefined;
+    return result;
+  };
+}());
+
+module.exports = baseCreate;
+
+},{"./isObject":"../node_modules/lodash/isObject.js"}],"../node_modules/lodash/_initCloneObject.js":[function(require,module,exports) {
+var baseCreate = require('./_baseCreate'),
+    getPrototype = require('./_getPrototype'),
+    isPrototype = require('./_isPrototype');
+
+/**
+ * Initializes an object clone.
+ *
+ * @private
+ * @param {Object} object The object to clone.
+ * @returns {Object} Returns the initialized clone.
+ */
+function initCloneObject(object) {
+  return (typeof object.constructor == 'function' && !isPrototype(object))
+    ? baseCreate(getPrototype(object))
+    : {};
+}
+
+module.exports = initCloneObject;
+
+},{"./_baseCreate":"../node_modules/lodash/_baseCreate.js","./_getPrototype":"../node_modules/lodash/_getPrototype.js","./_isPrototype":"../node_modules/lodash/_isPrototype.js"}],"../node_modules/lodash/_baseIsMap.js":[function(require,module,exports) {
+var getTag = require('./_getTag'),
+    isObjectLike = require('./isObjectLike');
+
+/** `Object#toString` result references. */
+var mapTag = '[object Map]';
+
+/**
+ * The base implementation of `_.isMap` without Node.js optimizations.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a map, else `false`.
+ */
+function baseIsMap(value) {
+  return isObjectLike(value) && getTag(value) == mapTag;
+}
+
+module.exports = baseIsMap;
+
+},{"./_getTag":"../node_modules/lodash/_getTag.js","./isObjectLike":"../node_modules/lodash/isObjectLike.js"}],"../node_modules/lodash/isMap.js":[function(require,module,exports) {
+var baseIsMap = require('./_baseIsMap'),
+    baseUnary = require('./_baseUnary'),
+    nodeUtil = require('./_nodeUtil');
+
+/* Node.js helper references. */
+var nodeIsMap = nodeUtil && nodeUtil.isMap;
+
+/**
+ * Checks if `value` is classified as a `Map` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.3.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a map, else `false`.
+ * @example
+ *
+ * _.isMap(new Map);
+ * // => true
+ *
+ * _.isMap(new WeakMap);
+ * // => false
+ */
+var isMap = nodeIsMap ? baseUnary(nodeIsMap) : baseIsMap;
+
+module.exports = isMap;
+
+},{"./_baseIsMap":"../node_modules/lodash/_baseIsMap.js","./_baseUnary":"../node_modules/lodash/_baseUnary.js","./_nodeUtil":"../node_modules/lodash/_nodeUtil.js"}],"../node_modules/lodash/_baseIsSet.js":[function(require,module,exports) {
+var getTag = require('./_getTag'),
+    isObjectLike = require('./isObjectLike');
+
+/** `Object#toString` result references. */
+var setTag = '[object Set]';
+
+/**
+ * The base implementation of `_.isSet` without Node.js optimizations.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a set, else `false`.
+ */
+function baseIsSet(value) {
+  return isObjectLike(value) && getTag(value) == setTag;
+}
+
+module.exports = baseIsSet;
+
+},{"./_getTag":"../node_modules/lodash/_getTag.js","./isObjectLike":"../node_modules/lodash/isObjectLike.js"}],"../node_modules/lodash/isSet.js":[function(require,module,exports) {
+var baseIsSet = require('./_baseIsSet'),
+    baseUnary = require('./_baseUnary'),
+    nodeUtil = require('./_nodeUtil');
+
+/* Node.js helper references. */
+var nodeIsSet = nodeUtil && nodeUtil.isSet;
+
+/**
+ * Checks if `value` is classified as a `Set` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.3.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a set, else `false`.
+ * @example
+ *
+ * _.isSet(new Set);
+ * // => true
+ *
+ * _.isSet(new WeakSet);
+ * // => false
+ */
+var isSet = nodeIsSet ? baseUnary(nodeIsSet) : baseIsSet;
+
+module.exports = isSet;
+
+},{"./_baseIsSet":"../node_modules/lodash/_baseIsSet.js","./_baseUnary":"../node_modules/lodash/_baseUnary.js","./_nodeUtil":"../node_modules/lodash/_nodeUtil.js"}],"../node_modules/lodash/_baseClone.js":[function(require,module,exports) {
+var Stack = require('./_Stack'),
+    arrayEach = require('./_arrayEach'),
+    assignValue = require('./_assignValue'),
+    baseAssign = require('./_baseAssign'),
+    baseAssignIn = require('./_baseAssignIn'),
+    cloneBuffer = require('./_cloneBuffer'),
+    copyArray = require('./_copyArray'),
+    copySymbols = require('./_copySymbols'),
+    copySymbolsIn = require('./_copySymbolsIn'),
+    getAllKeys = require('./_getAllKeys'),
+    getAllKeysIn = require('./_getAllKeysIn'),
+    getTag = require('./_getTag'),
+    initCloneArray = require('./_initCloneArray'),
+    initCloneByTag = require('./_initCloneByTag'),
+    initCloneObject = require('./_initCloneObject'),
+    isArray = require('./isArray'),
+    isBuffer = require('./isBuffer'),
+    isMap = require('./isMap'),
+    isObject = require('./isObject'),
+    isSet = require('./isSet'),
+    keys = require('./keys'),
+    keysIn = require('./keysIn');
+
+/** Used to compose bitmasks for cloning. */
+var CLONE_DEEP_FLAG = 1,
+    CLONE_FLAT_FLAG = 2,
+    CLONE_SYMBOLS_FLAG = 4;
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]',
+    arrayTag = '[object Array]',
+    boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    errorTag = '[object Error]',
+    funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    mapTag = '[object Map]',
+    numberTag = '[object Number]',
+    objectTag = '[object Object]',
+    regexpTag = '[object RegExp]',
+    setTag = '[object Set]',
+    stringTag = '[object String]',
+    symbolTag = '[object Symbol]',
+    weakMapTag = '[object WeakMap]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    dataViewTag = '[object DataView]',
+    float32Tag = '[object Float32Array]',
+    float64Tag = '[object Float64Array]',
+    int8Tag = '[object Int8Array]',
+    int16Tag = '[object Int16Array]',
+    int32Tag = '[object Int32Array]',
+    uint8Tag = '[object Uint8Array]',
+    uint8ClampedTag = '[object Uint8ClampedArray]',
+    uint16Tag = '[object Uint16Array]',
+    uint32Tag = '[object Uint32Array]';
+
+/** Used to identify `toStringTag` values supported by `_.clone`. */
+var cloneableTags = {};
+cloneableTags[argsTag] = cloneableTags[arrayTag] =
+cloneableTags[arrayBufferTag] = cloneableTags[dataViewTag] =
+cloneableTags[boolTag] = cloneableTags[dateTag] =
+cloneableTags[float32Tag] = cloneableTags[float64Tag] =
+cloneableTags[int8Tag] = cloneableTags[int16Tag] =
+cloneableTags[int32Tag] = cloneableTags[mapTag] =
+cloneableTags[numberTag] = cloneableTags[objectTag] =
+cloneableTags[regexpTag] = cloneableTags[setTag] =
+cloneableTags[stringTag] = cloneableTags[symbolTag] =
+cloneableTags[uint8Tag] = cloneableTags[uint8ClampedTag] =
+cloneableTags[uint16Tag] = cloneableTags[uint32Tag] = true;
+cloneableTags[errorTag] = cloneableTags[funcTag] =
+cloneableTags[weakMapTag] = false;
+
+/**
+ * The base implementation of `_.clone` and `_.cloneDeep` which tracks
+ * traversed objects.
+ *
+ * @private
+ * @param {*} value The value to clone.
+ * @param {boolean} bitmask The bitmask flags.
+ *  1 - Deep clone
+ *  2 - Flatten inherited properties
+ *  4 - Clone symbols
+ * @param {Function} [customizer] The function to customize cloning.
+ * @param {string} [key] The key of `value`.
+ * @param {Object} [object] The parent object of `value`.
+ * @param {Object} [stack] Tracks traversed objects and their clone counterparts.
+ * @returns {*} Returns the cloned value.
+ */
+function baseClone(value, bitmask, customizer, key, object, stack) {
+  var result,
+      isDeep = bitmask & CLONE_DEEP_FLAG,
+      isFlat = bitmask & CLONE_FLAT_FLAG,
+      isFull = bitmask & CLONE_SYMBOLS_FLAG;
+
+  if (customizer) {
+    result = object ? customizer(value, key, object, stack) : customizer(value);
+  }
+  if (result !== undefined) {
+    return result;
+  }
+  if (!isObject(value)) {
+    return value;
+  }
+  var isArr = isArray(value);
+  if (isArr) {
+    result = initCloneArray(value);
+    if (!isDeep) {
+      return copyArray(value, result);
+    }
+  } else {
+    var tag = getTag(value),
+        isFunc = tag == funcTag || tag == genTag;
+
+    if (isBuffer(value)) {
+      return cloneBuffer(value, isDeep);
+    }
+    if (tag == objectTag || tag == argsTag || (isFunc && !object)) {
+      result = (isFlat || isFunc) ? {} : initCloneObject(value);
+      if (!isDeep) {
+        return isFlat
+          ? copySymbolsIn(value, baseAssignIn(result, value))
+          : copySymbols(value, baseAssign(result, value));
+      }
+    } else {
+      if (!cloneableTags[tag]) {
+        return object ? value : {};
+      }
+      result = initCloneByTag(value, tag, isDeep);
+    }
+  }
+  // Check for circular references and return its corresponding clone.
+  stack || (stack = new Stack);
+  var stacked = stack.get(value);
+  if (stacked) {
+    return stacked;
+  }
+  stack.set(value, result);
+
+  if (isSet(value)) {
+    value.forEach(function(subValue) {
+      result.add(baseClone(subValue, bitmask, customizer, subValue, value, stack));
+    });
+  } else if (isMap(value)) {
+    value.forEach(function(subValue, key) {
+      result.set(key, baseClone(subValue, bitmask, customizer, key, value, stack));
+    });
+  }
+
+  var keysFunc = isFull
+    ? (isFlat ? getAllKeysIn : getAllKeys)
+    : (isFlat ? keysIn : keys);
+
+  var props = isArr ? undefined : keysFunc(value);
+  arrayEach(props || value, function(subValue, key) {
+    if (props) {
+      key = subValue;
+      subValue = value[key];
+    }
+    // Recursively populate clone (susceptible to call stack limits).
+    assignValue(result, key, baseClone(subValue, bitmask, customizer, key, value, stack));
+  });
+  return result;
+}
+
+module.exports = baseClone;
+
+},{"./_Stack":"../node_modules/lodash/_Stack.js","./_arrayEach":"../node_modules/lodash/_arrayEach.js","./_assignValue":"../node_modules/lodash/_assignValue.js","./_baseAssign":"../node_modules/lodash/_baseAssign.js","./_baseAssignIn":"../node_modules/lodash/_baseAssignIn.js","./_cloneBuffer":"../node_modules/lodash/_cloneBuffer.js","./_copyArray":"../node_modules/lodash/_copyArray.js","./_copySymbols":"../node_modules/lodash/_copySymbols.js","./_copySymbolsIn":"../node_modules/lodash/_copySymbolsIn.js","./_getAllKeys":"../node_modules/lodash/_getAllKeys.js","./_getAllKeysIn":"../node_modules/lodash/_getAllKeysIn.js","./_getTag":"../node_modules/lodash/_getTag.js","./_initCloneArray":"../node_modules/lodash/_initCloneArray.js","./_initCloneByTag":"../node_modules/lodash/_initCloneByTag.js","./_initCloneObject":"../node_modules/lodash/_initCloneObject.js","./isArray":"../node_modules/lodash/isArray.js","./isBuffer":"../node_modules/lodash/isBuffer.js","./isMap":"../node_modules/lodash/isMap.js","./isObject":"../node_modules/lodash/isObject.js","./isSet":"../node_modules/lodash/isSet.js","./keys":"../node_modules/lodash/keys.js","./keysIn":"../node_modules/lodash/keysIn.js"}],"../node_modules/lodash/cloneDeep.js":[function(require,module,exports) {
+var baseClone = require('./_baseClone');
+
+/** Used to compose bitmasks for cloning. */
+var CLONE_DEEP_FLAG = 1,
+    CLONE_SYMBOLS_FLAG = 4;
+
+/**
+ * This method is like `_.clone` except that it recursively clones `value`.
+ *
+ * @static
+ * @memberOf _
+ * @since 1.0.0
+ * @category Lang
+ * @param {*} value The value to recursively clone.
+ * @returns {*} Returns the deep cloned value.
+ * @see _.clone
+ * @example
+ *
+ * var objects = [{ 'a': 1 }, { 'b': 2 }];
+ *
+ * var deep = _.cloneDeep(objects);
+ * console.log(deep[0] === objects[0]);
+ * // => false
+ */
+function cloneDeep(value) {
+  return baseClone(value, CLONE_DEEP_FLAG | CLONE_SYMBOLS_FLAG);
+}
+
+module.exports = cloneDeep;
+
+},{"./_baseClone":"../node_modules/lodash/_baseClone.js"}],"../node_modules/lodash/_setCacheAdd.js":[function(require,module,exports) {
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/**
+ * Adds `value` to the array cache.
+ *
+ * @private
+ * @name add
+ * @memberOf SetCache
+ * @alias push
+ * @param {*} value The value to cache.
+ * @returns {Object} Returns the cache instance.
+ */
+function setCacheAdd(value) {
+  this.__data__.set(value, HASH_UNDEFINED);
+  return this;
+}
+
+module.exports = setCacheAdd;
+
+},{}],"../node_modules/lodash/_setCacheHas.js":[function(require,module,exports) {
+/**
+ * Checks if `value` is in the array cache.
+ *
+ * @private
+ * @name has
+ * @memberOf SetCache
+ * @param {*} value The value to search for.
+ * @returns {number} Returns `true` if `value` is found, else `false`.
+ */
+function setCacheHas(value) {
+  return this.__data__.has(value);
+}
+
+module.exports = setCacheHas;
+
+},{}],"../node_modules/lodash/_SetCache.js":[function(require,module,exports) {
+var MapCache = require('./_MapCache'),
+    setCacheAdd = require('./_setCacheAdd'),
+    setCacheHas = require('./_setCacheHas');
+
+/**
+ *
+ * Creates an array cache object to store unique values.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [values] The values to cache.
+ */
+function SetCache(values) {
+  var index = -1,
+      length = values == null ? 0 : values.length;
+
+  this.__data__ = new MapCache;
+  while (++index < length) {
+    this.add(values[index]);
+  }
+}
+
+// Add methods to `SetCache`.
+SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
+SetCache.prototype.has = setCacheHas;
+
+module.exports = SetCache;
+
+},{"./_MapCache":"../node_modules/lodash/_MapCache.js","./_setCacheAdd":"../node_modules/lodash/_setCacheAdd.js","./_setCacheHas":"../node_modules/lodash/_setCacheHas.js"}],"../node_modules/lodash/_arraySome.js":[function(require,module,exports) {
+/**
+ * A specialized version of `_.some` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {boolean} Returns `true` if any element passes the predicate check,
+ *  else `false`.
+ */
+function arraySome(array, predicate) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+
+  while (++index < length) {
+    if (predicate(array[index], index, array)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+module.exports = arraySome;
+
+},{}],"../node_modules/lodash/_cacheHas.js":[function(require,module,exports) {
+/**
+ * Checks if a `cache` value for `key` exists.
+ *
+ * @private
+ * @param {Object} cache The cache to query.
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function cacheHas(cache, key) {
+  return cache.has(key);
+}
+
+module.exports = cacheHas;
+
+},{}],"../node_modules/lodash/_equalArrays.js":[function(require,module,exports) {
+var SetCache = require('./_SetCache'),
+    arraySome = require('./_arraySome'),
+    cacheHas = require('./_cacheHas');
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1,
+    COMPARE_UNORDERED_FLAG = 2;
+
+/**
+ * A specialized version of `baseIsEqualDeep` for arrays with support for
+ * partial deep comparisons.
+ *
+ * @private
+ * @param {Array} array The array to compare.
+ * @param {Array} other The other array to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `array` and `other` objects.
+ * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
+ */
+function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
+  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
+      arrLength = array.length,
+      othLength = other.length;
+
+  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
+    return false;
+  }
+  // Check that cyclic values are equal.
+  var arrStacked = stack.get(array);
+  var othStacked = stack.get(other);
+  if (arrStacked && othStacked) {
+    return arrStacked == other && othStacked == array;
+  }
+  var index = -1,
+      result = true,
+      seen = (bitmask & COMPARE_UNORDERED_FLAG) ? new SetCache : undefined;
+
+  stack.set(array, other);
+  stack.set(other, array);
+
+  // Ignore non-index properties.
+  while (++index < arrLength) {
+    var arrValue = array[index],
+        othValue = other[index];
+
+    if (customizer) {
+      var compared = isPartial
+        ? customizer(othValue, arrValue, index, other, array, stack)
+        : customizer(arrValue, othValue, index, array, other, stack);
+    }
+    if (compared !== undefined) {
+      if (compared) {
+        continue;
+      }
+      result = false;
+      break;
+    }
+    // Recursively compare arrays (susceptible to call stack limits).
+    if (seen) {
+      if (!arraySome(other, function(othValue, othIndex) {
+            if (!cacheHas(seen, othIndex) &&
+                (arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
+              return seen.push(othIndex);
+            }
+          })) {
+        result = false;
+        break;
+      }
+    } else if (!(
+          arrValue === othValue ||
+            equalFunc(arrValue, othValue, bitmask, customizer, stack)
+        )) {
+      result = false;
+      break;
+    }
+  }
+  stack['delete'](array);
+  stack['delete'](other);
+  return result;
+}
+
+module.exports = equalArrays;
+
+},{"./_SetCache":"../node_modules/lodash/_SetCache.js","./_arraySome":"../node_modules/lodash/_arraySome.js","./_cacheHas":"../node_modules/lodash/_cacheHas.js"}],"../node_modules/lodash/_mapToArray.js":[function(require,module,exports) {
+/**
+ * Converts `map` to its key-value pairs.
+ *
+ * @private
+ * @param {Object} map The map to convert.
+ * @returns {Array} Returns the key-value pairs.
+ */
+function mapToArray(map) {
+  var index = -1,
+      result = Array(map.size);
+
+  map.forEach(function(value, key) {
+    result[++index] = [key, value];
+  });
+  return result;
+}
+
+module.exports = mapToArray;
+
+},{}],"../node_modules/lodash/_setToArray.js":[function(require,module,exports) {
+/**
+ * Converts `set` to an array of its values.
+ *
+ * @private
+ * @param {Object} set The set to convert.
+ * @returns {Array} Returns the values.
+ */
+function setToArray(set) {
+  var index = -1,
+      result = Array(set.size);
+
+  set.forEach(function(value) {
+    result[++index] = value;
+  });
+  return result;
+}
+
+module.exports = setToArray;
+
+},{}],"../node_modules/lodash/_equalByTag.js":[function(require,module,exports) {
+var Symbol = require('./_Symbol'),
+    Uint8Array = require('./_Uint8Array'),
+    eq = require('./eq'),
+    equalArrays = require('./_equalArrays'),
+    mapToArray = require('./_mapToArray'),
+    setToArray = require('./_setToArray');
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1,
+    COMPARE_UNORDERED_FLAG = 2;
+
+/** `Object#toString` result references. */
+var boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    errorTag = '[object Error]',
+    mapTag = '[object Map]',
+    numberTag = '[object Number]',
+    regexpTag = '[object RegExp]',
+    setTag = '[object Set]',
+    stringTag = '[object String]',
+    symbolTag = '[object Symbol]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    dataViewTag = '[object DataView]';
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
+
+/**
+ * A specialized version of `baseIsEqualDeep` for comparing objects of
+ * the same `toStringTag`.
+ *
+ * **Note:** This function only supports comparing values with tags of
+ * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {string} tag The `toStringTag` of the objects to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
+  switch (tag) {
+    case dataViewTag:
+      if ((object.byteLength != other.byteLength) ||
+          (object.byteOffset != other.byteOffset)) {
+        return false;
+      }
+      object = object.buffer;
+      other = other.buffer;
+
+    case arrayBufferTag:
+      if ((object.byteLength != other.byteLength) ||
+          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
+        return false;
+      }
+      return true;
+
+    case boolTag:
+    case dateTag:
+    case numberTag:
+      // Coerce booleans to `1` or `0` and dates to milliseconds.
+      // Invalid dates are coerced to `NaN`.
+      return eq(+object, +other);
+
+    case errorTag:
+      return object.name == other.name && object.message == other.message;
+
+    case regexpTag:
+    case stringTag:
+      // Coerce regexes to strings and treat strings, primitives and objects,
+      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
+      // for more details.
+      return object == (other + '');
+
+    case mapTag:
+      var convert = mapToArray;
+
+    case setTag:
+      var isPartial = bitmask & COMPARE_PARTIAL_FLAG;
+      convert || (convert = setToArray);
+
+      if (object.size != other.size && !isPartial) {
+        return false;
+      }
+      // Assume cyclic values are equal.
+      var stacked = stack.get(object);
+      if (stacked) {
+        return stacked == other;
+      }
+      bitmask |= COMPARE_UNORDERED_FLAG;
+
+      // Recursively compare objects (susceptible to call stack limits).
+      stack.set(object, other);
+      var result = equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
+      stack['delete'](object);
+      return result;
+
+    case symbolTag:
+      if (symbolValueOf) {
+        return symbolValueOf.call(object) == symbolValueOf.call(other);
+      }
+  }
+  return false;
+}
+
+module.exports = equalByTag;
+
+},{"./_Symbol":"../node_modules/lodash/_Symbol.js","./_Uint8Array":"../node_modules/lodash/_Uint8Array.js","./eq":"../node_modules/lodash/eq.js","./_equalArrays":"../node_modules/lodash/_equalArrays.js","./_mapToArray":"../node_modules/lodash/_mapToArray.js","./_setToArray":"../node_modules/lodash/_setToArray.js"}],"../node_modules/lodash/_equalObjects.js":[function(require,module,exports) {
+var getAllKeys = require('./_getAllKeys');
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1;
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * A specialized version of `baseIsEqualDeep` for objects with support for
+ * partial deep comparisons.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
+  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
+      objProps = getAllKeys(object),
+      objLength = objProps.length,
+      othProps = getAllKeys(other),
+      othLength = othProps.length;
+
+  if (objLength != othLength && !isPartial) {
+    return false;
+  }
+  var index = objLength;
+  while (index--) {
+    var key = objProps[index];
+    if (!(isPartial ? key in other : hasOwnProperty.call(other, key))) {
+      return false;
+    }
+  }
+  // Check that cyclic values are equal.
+  var objStacked = stack.get(object);
+  var othStacked = stack.get(other);
+  if (objStacked && othStacked) {
+    return objStacked == other && othStacked == object;
+  }
+  var result = true;
+  stack.set(object, other);
+  stack.set(other, object);
+
+  var skipCtor = isPartial;
+  while (++index < objLength) {
+    key = objProps[index];
+    var objValue = object[key],
+        othValue = other[key];
+
+    if (customizer) {
+      var compared = isPartial
+        ? customizer(othValue, objValue, key, other, object, stack)
+        : customizer(objValue, othValue, key, object, other, stack);
+    }
+    // Recursively compare objects (susceptible to call stack limits).
+    if (!(compared === undefined
+          ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
+          : compared
+        )) {
+      result = false;
+      break;
+    }
+    skipCtor || (skipCtor = key == 'constructor');
+  }
+  if (result && !skipCtor) {
+    var objCtor = object.constructor,
+        othCtor = other.constructor;
+
+    // Non `Object` object instances with different constructors are not equal.
+    if (objCtor != othCtor &&
+        ('constructor' in object && 'constructor' in other) &&
+        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
+          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
+      result = false;
+    }
+  }
+  stack['delete'](object);
+  stack['delete'](other);
+  return result;
+}
+
+module.exports = equalObjects;
+
+},{"./_getAllKeys":"../node_modules/lodash/_getAllKeys.js"}],"../node_modules/lodash/_baseIsEqualDeep.js":[function(require,module,exports) {
+var Stack = require('./_Stack'),
+    equalArrays = require('./_equalArrays'),
+    equalByTag = require('./_equalByTag'),
+    equalObjects = require('./_equalObjects'),
+    getTag = require('./_getTag'),
+    isArray = require('./isArray'),
+    isBuffer = require('./isBuffer'),
+    isTypedArray = require('./isTypedArray');
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1;
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]',
+    arrayTag = '[object Array]',
+    objectTag = '[object Object]';
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * A specialized version of `baseIsEqual` for arrays and objects which performs
+ * deep comparisons and tracks traversed objects enabling objects with circular
+ * references to be compared.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
+  var objIsArr = isArray(object),
+      othIsArr = isArray(other),
+      objTag = objIsArr ? arrayTag : getTag(object),
+      othTag = othIsArr ? arrayTag : getTag(other);
+
+  objTag = objTag == argsTag ? objectTag : objTag;
+  othTag = othTag == argsTag ? objectTag : othTag;
+
+  var objIsObj = objTag == objectTag,
+      othIsObj = othTag == objectTag,
+      isSameTag = objTag == othTag;
+
+  if (isSameTag && isBuffer(object)) {
+    if (!isBuffer(other)) {
+      return false;
+    }
+    objIsArr = true;
+    objIsObj = false;
+  }
+  if (isSameTag && !objIsObj) {
+    stack || (stack = new Stack);
+    return (objIsArr || isTypedArray(object))
+      ? equalArrays(object, other, bitmask, customizer, equalFunc, stack)
+      : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
+  }
+  if (!(bitmask & COMPARE_PARTIAL_FLAG)) {
+    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
+        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
+
+    if (objIsWrapped || othIsWrapped) {
+      var objUnwrapped = objIsWrapped ? object.value() : object,
+          othUnwrapped = othIsWrapped ? other.value() : other;
+
+      stack || (stack = new Stack);
+      return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
+    }
+  }
+  if (!isSameTag) {
+    return false;
+  }
+  stack || (stack = new Stack);
+  return equalObjects(object, other, bitmask, customizer, equalFunc, stack);
+}
+
+module.exports = baseIsEqualDeep;
+
+},{"./_Stack":"../node_modules/lodash/_Stack.js","./_equalArrays":"../node_modules/lodash/_equalArrays.js","./_equalByTag":"../node_modules/lodash/_equalByTag.js","./_equalObjects":"../node_modules/lodash/_equalObjects.js","./_getTag":"../node_modules/lodash/_getTag.js","./isArray":"../node_modules/lodash/isArray.js","./isBuffer":"../node_modules/lodash/isBuffer.js","./isTypedArray":"../node_modules/lodash/isTypedArray.js"}],"../node_modules/lodash/_baseIsEqual.js":[function(require,module,exports) {
+var baseIsEqualDeep = require('./_baseIsEqualDeep'),
+    isObjectLike = require('./isObjectLike');
+
+/**
+ * The base implementation of `_.isEqual` which supports partial comparisons
+ * and tracks traversed objects.
+ *
+ * @private
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @param {boolean} bitmask The bitmask flags.
+ *  1 - Unordered comparison
+ *  2 - Partial comparison
+ * @param {Function} [customizer] The function to customize comparisons.
+ * @param {Object} [stack] Tracks traversed `value` and `other` objects.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ */
+function baseIsEqual(value, other, bitmask, customizer, stack) {
+  if (value === other) {
+    return true;
+  }
+  if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
+    return value !== value && other !== other;
+  }
+  return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
+}
+
+module.exports = baseIsEqual;
+
+},{"./_baseIsEqualDeep":"../node_modules/lodash/_baseIsEqualDeep.js","./isObjectLike":"../node_modules/lodash/isObjectLike.js"}],"../node_modules/lodash/isEqual.js":[function(require,module,exports) {
+var baseIsEqual = require('./_baseIsEqual');
+
+/**
+ * Performs a deep comparison between two values to determine if they are
+ * equivalent.
+ *
+ * **Note:** This method supports comparing arrays, array buffers, booleans,
+ * date objects, error objects, maps, numbers, `Object` objects, regexes,
+ * sets, strings, symbols, and typed arrays. `Object` objects are compared
+ * by their own, not inherited, enumerable properties. Functions and DOM
+ * nodes are compared by strict equality, i.e. `===`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ * var other = { 'a': 1 };
+ *
+ * _.isEqual(object, other);
+ * // => true
+ *
+ * object === other;
+ * // => false
+ */
+function isEqual(value, other) {
+  return baseIsEqual(value, other);
+}
+
+module.exports = isEqual;
+
+},{"./_baseIsEqual":"../node_modules/lodash/_baseIsEqual.js"}],"../node_modules/lodash/_baseIsMatch.js":[function(require,module,exports) {
+var Stack = require('./_Stack'),
+    baseIsEqual = require('./_baseIsEqual');
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1,
+    COMPARE_UNORDERED_FLAG = 2;
+
+/**
+ * The base implementation of `_.isMatch` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Object} object The object to inspect.
+ * @param {Object} source The object of property values to match.
+ * @param {Array} matchData The property names, values, and compare flags to match.
+ * @param {Function} [customizer] The function to customize comparisons.
+ * @returns {boolean} Returns `true` if `object` is a match, else `false`.
+ */
+function baseIsMatch(object, source, matchData, customizer) {
+  var index = matchData.length,
+      length = index,
+      noCustomizer = !customizer;
+
+  if (object == null) {
+    return !length;
+  }
+  object = Object(object);
+  while (index--) {
+    var data = matchData[index];
+    if ((noCustomizer && data[2])
+          ? data[1] !== object[data[0]]
+          : !(data[0] in object)
+        ) {
+      return false;
+    }
+  }
+  while (++index < length) {
+    data = matchData[index];
+    var key = data[0],
+        objValue = object[key],
+        srcValue = data[1];
+
+    if (noCustomizer && data[2]) {
+      if (objValue === undefined && !(key in object)) {
+        return false;
+      }
+    } else {
+      var stack = new Stack;
+      if (customizer) {
+        var result = customizer(objValue, srcValue, key, object, source, stack);
+      }
+      if (!(result === undefined
+            ? baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG, customizer, stack)
+            : result
+          )) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+module.exports = baseIsMatch;
+
+},{"./_Stack":"../node_modules/lodash/_Stack.js","./_baseIsEqual":"../node_modules/lodash/_baseIsEqual.js"}],"../node_modules/lodash/_isStrictComparable.js":[function(require,module,exports) {
+var isObject = require('./isObject');
+
+/**
+ * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` if suitable for strict
+ *  equality comparisons, else `false`.
+ */
+function isStrictComparable(value) {
+  return value === value && !isObject(value);
+}
+
+module.exports = isStrictComparable;
+
+},{"./isObject":"../node_modules/lodash/isObject.js"}],"../node_modules/lodash/_getMatchData.js":[function(require,module,exports) {
+var isStrictComparable = require('./_isStrictComparable'),
+    keys = require('./keys');
+
+/**
+ * Gets the property names, values, and compare flags of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the match data of `object`.
+ */
+function getMatchData(object) {
+  var result = keys(object),
+      length = result.length;
+
+  while (length--) {
+    var key = result[length],
+        value = object[key];
+
+    result[length] = [key, value, isStrictComparable(value)];
+  }
+  return result;
+}
+
+module.exports = getMatchData;
+
+},{"./_isStrictComparable":"../node_modules/lodash/_isStrictComparable.js","./keys":"../node_modules/lodash/keys.js"}],"../node_modules/lodash/_matchesStrictComparable.js":[function(require,module,exports) {
+/**
+ * A specialized version of `matchesProperty` for source values suitable
+ * for strict equality comparisons, i.e. `===`.
+ *
+ * @private
+ * @param {string} key The key of the property to get.
+ * @param {*} srcValue The value to match.
+ * @returns {Function} Returns the new spec function.
+ */
+function matchesStrictComparable(key, srcValue) {
+  return function(object) {
+    if (object == null) {
+      return false;
+    }
+    return object[key] === srcValue &&
+      (srcValue !== undefined || (key in Object(object)));
+  };
+}
+
+module.exports = matchesStrictComparable;
+
+},{}],"../node_modules/lodash/_baseMatches.js":[function(require,module,exports) {
+var baseIsMatch = require('./_baseIsMatch'),
+    getMatchData = require('./_getMatchData'),
+    matchesStrictComparable = require('./_matchesStrictComparable');
+
+/**
+ * The base implementation of `_.matches` which doesn't clone `source`.
+ *
+ * @private
+ * @param {Object} source The object of property values to match.
+ * @returns {Function} Returns the new spec function.
+ */
+function baseMatches(source) {
+  var matchData = getMatchData(source);
+  if (matchData.length == 1 && matchData[0][2]) {
+    return matchesStrictComparable(matchData[0][0], matchData[0][1]);
+  }
+  return function(object) {
+    return object === source || baseIsMatch(object, source, matchData);
+  };
+}
+
+module.exports = baseMatches;
+
+},{"./_baseIsMatch":"../node_modules/lodash/_baseIsMatch.js","./_getMatchData":"../node_modules/lodash/_getMatchData.js","./_matchesStrictComparable":"../node_modules/lodash/_matchesStrictComparable.js"}],"../node_modules/lodash/_baseMatchesProperty.js":[function(require,module,exports) {
+var baseIsEqual = require('./_baseIsEqual'),
+    get = require('./get'),
+    hasIn = require('./hasIn'),
+    isKey = require('./_isKey'),
+    isStrictComparable = require('./_isStrictComparable'),
+    matchesStrictComparable = require('./_matchesStrictComparable'),
+    toKey = require('./_toKey');
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1,
+    COMPARE_UNORDERED_FLAG = 2;
+
+/**
+ * The base implementation of `_.matchesProperty` which doesn't clone `srcValue`.
+ *
+ * @private
+ * @param {string} path The path of the property to get.
+ * @param {*} srcValue The value to match.
+ * @returns {Function} Returns the new spec function.
+ */
+function baseMatchesProperty(path, srcValue) {
+  if (isKey(path) && isStrictComparable(srcValue)) {
+    return matchesStrictComparable(toKey(path), srcValue);
+  }
+  return function(object) {
+    var objValue = get(object, path);
+    return (objValue === undefined && objValue === srcValue)
+      ? hasIn(object, path)
+      : baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG);
+  };
+}
+
+module.exports = baseMatchesProperty;
+
+},{"./_baseIsEqual":"../node_modules/lodash/_baseIsEqual.js","./get":"../node_modules/lodash/get.js","./hasIn":"../node_modules/lodash/hasIn.js","./_isKey":"../node_modules/lodash/_isKey.js","./_isStrictComparable":"../node_modules/lodash/_isStrictComparable.js","./_matchesStrictComparable":"../node_modules/lodash/_matchesStrictComparable.js","./_toKey":"../node_modules/lodash/_toKey.js"}],"../node_modules/lodash/_baseProperty.js":[function(require,module,exports) {
+/**
+ * The base implementation of `_.property` without support for deep paths.
+ *
+ * @private
+ * @param {string} key The key of the property to get.
+ * @returns {Function} Returns the new accessor function.
+ */
+function baseProperty(key) {
+  return function(object) {
+    return object == null ? undefined : object[key];
+  };
+}
+
+module.exports = baseProperty;
+
+},{}],"../node_modules/lodash/_basePropertyDeep.js":[function(require,module,exports) {
+var baseGet = require('./_baseGet');
+
+/**
+ * A specialized version of `baseProperty` which supports deep paths.
+ *
+ * @private
+ * @param {Array|string} path The path of the property to get.
+ * @returns {Function} Returns the new accessor function.
+ */
+function basePropertyDeep(path) {
+  return function(object) {
+    return baseGet(object, path);
+  };
+}
+
+module.exports = basePropertyDeep;
+
+},{"./_baseGet":"../node_modules/lodash/_baseGet.js"}],"../node_modules/lodash/property.js":[function(require,module,exports) {
+var baseProperty = require('./_baseProperty'),
+    basePropertyDeep = require('./_basePropertyDeep'),
+    isKey = require('./_isKey'),
+    toKey = require('./_toKey');
+
+/**
+ * Creates a function that returns the value at `path` of a given object.
+ *
+ * @static
+ * @memberOf _
+ * @since 2.4.0
+ * @category Util
+ * @param {Array|string} path The path of the property to get.
+ * @returns {Function} Returns the new accessor function.
+ * @example
+ *
+ * var objects = [
+ *   { 'a': { 'b': 2 } },
+ *   { 'a': { 'b': 1 } }
+ * ];
+ *
+ * _.map(objects, _.property('a.b'));
+ * // => [2, 1]
+ *
+ * _.map(_.sortBy(objects, _.property(['a', 'b'])), 'a.b');
+ * // => [1, 2]
+ */
+function property(path) {
+  return isKey(path) ? baseProperty(toKey(path)) : basePropertyDeep(path);
+}
+
+module.exports = property;
+
+},{"./_baseProperty":"../node_modules/lodash/_baseProperty.js","./_basePropertyDeep":"../node_modules/lodash/_basePropertyDeep.js","./_isKey":"../node_modules/lodash/_isKey.js","./_toKey":"../node_modules/lodash/_toKey.js"}],"../node_modules/lodash/_baseIteratee.js":[function(require,module,exports) {
+var baseMatches = require('./_baseMatches'),
+    baseMatchesProperty = require('./_baseMatchesProperty'),
+    identity = require('./identity'),
+    isArray = require('./isArray'),
+    property = require('./property');
+
+/**
+ * The base implementation of `_.iteratee`.
+ *
+ * @private
+ * @param {*} [value=_.identity] The value to convert to an iteratee.
+ * @returns {Function} Returns the iteratee.
+ */
+function baseIteratee(value) {
+  // Don't store the `typeof` result in a variable to avoid a JIT bug in Safari 9.
+  // See https://bugs.webkit.org/show_bug.cgi?id=156034 for more details.
+  if (typeof value == 'function') {
+    return value;
+  }
+  if (value == null) {
+    return identity;
+  }
+  if (typeof value == 'object') {
+    return isArray(value)
+      ? baseMatchesProperty(value[0], value[1])
+      : baseMatches(value);
+  }
+  return property(value);
+}
+
+module.exports = baseIteratee;
+
+},{"./_baseMatches":"../node_modules/lodash/_baseMatches.js","./_baseMatchesProperty":"../node_modules/lodash/_baseMatchesProperty.js","./identity":"../node_modules/lodash/identity.js","./isArray":"../node_modules/lodash/isArray.js","./property":"../node_modules/lodash/property.js"}],"../node_modules/lodash/_createBaseFor.js":[function(require,module,exports) {
+/**
+ * Creates a base function for methods like `_.forIn` and `_.forOwn`.
+ *
+ * @private
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {Function} Returns the new base function.
+ */
+function createBaseFor(fromRight) {
+  return function(object, iteratee, keysFunc) {
+    var index = -1,
+        iterable = Object(object),
+        props = keysFunc(object),
+        length = props.length;
+
+    while (length--) {
+      var key = props[fromRight ? length : ++index];
+      if (iteratee(iterable[key], key, iterable) === false) {
+        break;
+      }
+    }
+    return object;
+  };
+}
+
+module.exports = createBaseFor;
+
+},{}],"../node_modules/lodash/_baseFor.js":[function(require,module,exports) {
+var createBaseFor = require('./_createBaseFor');
+
+/**
+ * The base implementation of `baseForOwn` which iterates over `object`
+ * properties returned by `keysFunc` and invokes `iteratee` for each property.
+ * Iteratee functions may exit iteration early by explicitly returning `false`.
+ *
+ * @private
+ * @param {Object} object The object to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @param {Function} keysFunc The function to get the keys of `object`.
+ * @returns {Object} Returns `object`.
+ */
+var baseFor = createBaseFor();
+
+module.exports = baseFor;
+
+},{"./_createBaseFor":"../node_modules/lodash/_createBaseFor.js"}],"../node_modules/lodash/_baseForOwn.js":[function(require,module,exports) {
+var baseFor = require('./_baseFor'),
+    keys = require('./keys');
+
+/**
+ * The base implementation of `_.forOwn` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Object} object The object to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Object} Returns `object`.
+ */
+function baseForOwn(object, iteratee) {
+  return object && baseFor(object, iteratee, keys);
+}
+
+module.exports = baseForOwn;
+
+},{"./_baseFor":"../node_modules/lodash/_baseFor.js","./keys":"../node_modules/lodash/keys.js"}],"../node_modules/lodash/_createBaseEach.js":[function(require,module,exports) {
+var isArrayLike = require('./isArrayLike');
+
+/**
+ * Creates a `baseEach` or `baseEachRight` function.
+ *
+ * @private
+ * @param {Function} eachFunc The function to iterate over a collection.
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {Function} Returns the new base function.
+ */
+function createBaseEach(eachFunc, fromRight) {
+  return function(collection, iteratee) {
+    if (collection == null) {
+      return collection;
+    }
+    if (!isArrayLike(collection)) {
+      return eachFunc(collection, iteratee);
+    }
+    var length = collection.length,
+        index = fromRight ? length : -1,
+        iterable = Object(collection);
+
+    while ((fromRight ? index-- : ++index < length)) {
+      if (iteratee(iterable[index], index, iterable) === false) {
+        break;
+      }
+    }
+    return collection;
+  };
+}
+
+module.exports = createBaseEach;
+
+},{"./isArrayLike":"../node_modules/lodash/isArrayLike.js"}],"../node_modules/lodash/_baseEach.js":[function(require,module,exports) {
+var baseForOwn = require('./_baseForOwn'),
+    createBaseEach = require('./_createBaseEach');
+
+/**
+ * The base implementation of `_.forEach` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array|Object} Returns `collection`.
+ */
+var baseEach = createBaseEach(baseForOwn);
+
+module.exports = baseEach;
+
+},{"./_baseForOwn":"../node_modules/lodash/_baseForOwn.js","./_createBaseEach":"../node_modules/lodash/_createBaseEach.js"}],"../node_modules/lodash/_baseMap.js":[function(require,module,exports) {
+var baseEach = require('./_baseEach'),
+    isArrayLike = require('./isArrayLike');
+
+/**
+ * The base implementation of `_.map` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the new mapped array.
+ */
+function baseMap(collection, iteratee) {
+  var index = -1,
+      result = isArrayLike(collection) ? Array(collection.length) : [];
+
+  baseEach(collection, function(value, key, collection) {
+    result[++index] = iteratee(value, key, collection);
+  });
+  return result;
+}
+
+module.exports = baseMap;
+
+},{"./_baseEach":"../node_modules/lodash/_baseEach.js","./isArrayLike":"../node_modules/lodash/isArrayLike.js"}],"../node_modules/lodash/_baseSortBy.js":[function(require,module,exports) {
+/**
+ * The base implementation of `_.sortBy` which uses `comparer` to define the
+ * sort order of `array` and replaces criteria objects with their corresponding
+ * values.
+ *
+ * @private
+ * @param {Array} array The array to sort.
+ * @param {Function} comparer The function to define sort order.
+ * @returns {Array} Returns `array`.
+ */
+function baseSortBy(array, comparer) {
+  var length = array.length;
+
+  array.sort(comparer);
+  while (length--) {
+    array[length] = array[length].value;
+  }
+  return array;
+}
+
+module.exports = baseSortBy;
+
+},{}],"../node_modules/lodash/_compareAscending.js":[function(require,module,exports) {
+var isSymbol = require('./isSymbol');
+
+/**
+ * Compares values to sort them in ascending order.
+ *
+ * @private
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {number} Returns the sort order indicator for `value`.
+ */
+function compareAscending(value, other) {
+  if (value !== other) {
+    var valIsDefined = value !== undefined,
+        valIsNull = value === null,
+        valIsReflexive = value === value,
+        valIsSymbol = isSymbol(value);
+
+    var othIsDefined = other !== undefined,
+        othIsNull = other === null,
+        othIsReflexive = other === other,
+        othIsSymbol = isSymbol(other);
+
+    if ((!othIsNull && !othIsSymbol && !valIsSymbol && value > other) ||
+        (valIsSymbol && othIsDefined && othIsReflexive && !othIsNull && !othIsSymbol) ||
+        (valIsNull && othIsDefined && othIsReflexive) ||
+        (!valIsDefined && othIsReflexive) ||
+        !valIsReflexive) {
+      return 1;
+    }
+    if ((!valIsNull && !valIsSymbol && !othIsSymbol && value < other) ||
+        (othIsSymbol && valIsDefined && valIsReflexive && !valIsNull && !valIsSymbol) ||
+        (othIsNull && valIsDefined && valIsReflexive) ||
+        (!othIsDefined && valIsReflexive) ||
+        !othIsReflexive) {
+      return -1;
+    }
+  }
+  return 0;
+}
+
+module.exports = compareAscending;
+
+},{"./isSymbol":"../node_modules/lodash/isSymbol.js"}],"../node_modules/lodash/_compareMultiple.js":[function(require,module,exports) {
+var compareAscending = require('./_compareAscending');
+
+/**
+ * Used by `_.orderBy` to compare multiple properties of a value to another
+ * and stable sort them.
+ *
+ * If `orders` is unspecified, all values are sorted in ascending order. Otherwise,
+ * specify an order of "desc" for descending or "asc" for ascending sort order
+ * of corresponding values.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {boolean[]|string[]} orders The order to sort by for each property.
+ * @returns {number} Returns the sort order indicator for `object`.
+ */
+function compareMultiple(object, other, orders) {
+  var index = -1,
+      objCriteria = object.criteria,
+      othCriteria = other.criteria,
+      length = objCriteria.length,
+      ordersLength = orders.length;
+
+  while (++index < length) {
+    var result = compareAscending(objCriteria[index], othCriteria[index]);
+    if (result) {
+      if (index >= ordersLength) {
+        return result;
+      }
+      var order = orders[index];
+      return result * (order == 'desc' ? -1 : 1);
+    }
+  }
+  // Fixes an `Array#sort` bug in the JS engine embedded in Adobe applications
+  // that causes it, under certain circumstances, to provide the same value for
+  // `object` and `other`. See https://github.com/jashkenas/underscore/pull/1247
+  // for more details.
+  //
+  // This also ensures a stable sort in V8 and other engines.
+  // See https://bugs.chromium.org/p/v8/issues/detail?id=90 for more details.
+  return object.index - other.index;
+}
+
+module.exports = compareMultiple;
+
+},{"./_compareAscending":"../node_modules/lodash/_compareAscending.js"}],"../node_modules/lodash/_baseOrderBy.js":[function(require,module,exports) {
+var arrayMap = require('./_arrayMap'),
+    baseGet = require('./_baseGet'),
+    baseIteratee = require('./_baseIteratee'),
+    baseMap = require('./_baseMap'),
+    baseSortBy = require('./_baseSortBy'),
+    baseUnary = require('./_baseUnary'),
+    compareMultiple = require('./_compareMultiple'),
+    identity = require('./identity'),
+    isArray = require('./isArray');
+
+/**
+ * The base implementation of `_.orderBy` without param guards.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function[]|Object[]|string[]} iteratees The iteratees to sort by.
+ * @param {string[]} orders The sort orders of `iteratees`.
+ * @returns {Array} Returns the new sorted array.
+ */
+function baseOrderBy(collection, iteratees, orders) {
+  if (iteratees.length) {
+    iteratees = arrayMap(iteratees, function(iteratee) {
+      if (isArray(iteratee)) {
+        return function(value) {
+          return baseGet(value, iteratee.length === 1 ? iteratee[0] : iteratee);
+        }
+      }
+      return iteratee;
+    });
+  } else {
+    iteratees = [identity];
+  }
+
+  var index = -1;
+  iteratees = arrayMap(iteratees, baseUnary(baseIteratee));
+
+  var result = baseMap(collection, function(value, key, collection) {
+    var criteria = arrayMap(iteratees, function(iteratee) {
+      return iteratee(value);
+    });
+    return { 'criteria': criteria, 'index': ++index, 'value': value };
+  });
+
+  return baseSortBy(result, function(object, other) {
+    return compareMultiple(object, other, orders);
+  });
+}
+
+module.exports = baseOrderBy;
+
+},{"./_arrayMap":"../node_modules/lodash/_arrayMap.js","./_baseGet":"../node_modules/lodash/_baseGet.js","./_baseIteratee":"../node_modules/lodash/_baseIteratee.js","./_baseMap":"../node_modules/lodash/_baseMap.js","./_baseSortBy":"../node_modules/lodash/_baseSortBy.js","./_baseUnary":"../node_modules/lodash/_baseUnary.js","./_compareMultiple":"../node_modules/lodash/_compareMultiple.js","./identity":"../node_modules/lodash/identity.js","./isArray":"../node_modules/lodash/isArray.js"}],"../node_modules/lodash/_baseRest.js":[function(require,module,exports) {
+var identity = require('./identity'),
+    overRest = require('./_overRest'),
+    setToString = require('./_setToString');
+
+/**
+ * The base implementation of `_.rest` which doesn't validate or coerce arguments.
+ *
+ * @private
+ * @param {Function} func The function to apply a rest parameter to.
+ * @param {number} [start=func.length-1] The start position of the rest parameter.
+ * @returns {Function} Returns the new function.
+ */
+function baseRest(func, start) {
+  return setToString(overRest(func, start, identity), func + '');
+}
+
+module.exports = baseRest;
+
+},{"./identity":"../node_modules/lodash/identity.js","./_overRest":"../node_modules/lodash/_overRest.js","./_setToString":"../node_modules/lodash/_setToString.js"}],"../node_modules/lodash/_isIterateeCall.js":[function(require,module,exports) {
+var eq = require('./eq'),
+    isArrayLike = require('./isArrayLike'),
+    isIndex = require('./_isIndex'),
+    isObject = require('./isObject');
+
+/**
+ * Checks if the given arguments are from an iteratee call.
+ *
+ * @private
+ * @param {*} value The potential iteratee value argument.
+ * @param {*} index The potential iteratee index or key argument.
+ * @param {*} object The potential iteratee object argument.
+ * @returns {boolean} Returns `true` if the arguments are from an iteratee call,
+ *  else `false`.
+ */
+function isIterateeCall(value, index, object) {
+  if (!isObject(object)) {
+    return false;
+  }
+  var type = typeof index;
+  if (type == 'number'
+        ? (isArrayLike(object) && isIndex(index, object.length))
+        : (type == 'string' && index in object)
+      ) {
+    return eq(object[index], value);
+  }
+  return false;
+}
+
+module.exports = isIterateeCall;
+
+},{"./eq":"../node_modules/lodash/eq.js","./isArrayLike":"../node_modules/lodash/isArrayLike.js","./_isIndex":"../node_modules/lodash/_isIndex.js","./isObject":"../node_modules/lodash/isObject.js"}],"../node_modules/lodash/sortBy.js":[function(require,module,exports) {
+var baseFlatten = require('./_baseFlatten'),
+    baseOrderBy = require('./_baseOrderBy'),
+    baseRest = require('./_baseRest'),
+    isIterateeCall = require('./_isIterateeCall');
+
+/**
+ * Creates an array of elements, sorted in ascending order by the results of
+ * running each element in a collection thru each iteratee. This method
+ * performs a stable sort, that is, it preserves the original sort order of
+ * equal elements. The iteratees are invoked with one argument: (value).
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Collection
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {...(Function|Function[])} [iteratees=[_.identity]]
+ *  The iteratees to sort by.
+ * @returns {Array} Returns the new sorted array.
+ * @example
+ *
+ * var users = [
+ *   { 'user': 'fred',   'age': 48 },
+ *   { 'user': 'barney', 'age': 36 },
+ *   { 'user': 'fred',   'age': 30 },
+ *   { 'user': 'barney', 'age': 34 }
+ * ];
+ *
+ * _.sortBy(users, [function(o) { return o.user; }]);
+ * // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 30]]
+ *
+ * _.sortBy(users, ['user', 'age']);
+ * // => objects for [['barney', 34], ['barney', 36], ['fred', 30], ['fred', 48]]
+ */
+var sortBy = baseRest(function(collection, iteratees) {
+  if (collection == null) {
+    return [];
+  }
+  var length = iteratees.length;
+  if (length > 1 && isIterateeCall(collection, iteratees[0], iteratees[1])) {
+    iteratees = [];
+  } else if (length > 2 && isIterateeCall(iteratees[0], iteratees[1], iteratees[2])) {
+    iteratees = [iteratees[0]];
+  }
+  return baseOrderBy(collection, baseFlatten(iteratees, 1), []);
+});
+
+module.exports = sortBy;
+
+},{"./_baseFlatten":"../node_modules/lodash/_baseFlatten.js","./_baseOrderBy":"../node_modules/lodash/_baseOrderBy.js","./_baseRest":"../node_modules/lodash/_baseRest.js","./_isIterateeCall":"../node_modules/lodash/_isIterateeCall.js"}],"../node_modules/lodash/_baseFindIndex.js":[function(require,module,exports) {
+/**
+ * The base implementation of `_.findIndex` and `_.findLastIndex` without
+ * support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {Function} predicate The function invoked per iteration.
+ * @param {number} fromIndex The index to search from.
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function baseFindIndex(array, predicate, fromIndex, fromRight) {
+  var length = array.length,
+      index = fromIndex + (fromRight ? 1 : -1);
+
+  while ((fromRight ? index-- : ++index < length)) {
+    if (predicate(array[index], index, array)) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+module.exports = baseFindIndex;
+
+},{}],"../node_modules/lodash/_baseIsNaN.js":[function(require,module,exports) {
+/**
+ * The base implementation of `_.isNaN` without support for number objects.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is `NaN`, else `false`.
+ */
+function baseIsNaN(value) {
+  return value !== value;
+}
+
+module.exports = baseIsNaN;
+
+},{}],"../node_modules/lodash/_strictIndexOf.js":[function(require,module,exports) {
+/**
+ * A specialized version of `_.indexOf` which performs strict equality
+ * comparisons of values, i.e. `===`.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} value The value to search for.
+ * @param {number} fromIndex The index to search from.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function strictIndexOf(array, value, fromIndex) {
+  var index = fromIndex - 1,
+      length = array.length;
+
+  while (++index < length) {
+    if (array[index] === value) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+module.exports = strictIndexOf;
+
+},{}],"../node_modules/lodash/_baseIndexOf.js":[function(require,module,exports) {
+var baseFindIndex = require('./_baseFindIndex'),
+    baseIsNaN = require('./_baseIsNaN'),
+    strictIndexOf = require('./_strictIndexOf');
+
+/**
+ * The base implementation of `_.indexOf` without `fromIndex` bounds checks.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} value The value to search for.
+ * @param {number} fromIndex The index to search from.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function baseIndexOf(array, value, fromIndex) {
+  return value === value
+    ? strictIndexOf(array, value, fromIndex)
+    : baseFindIndex(array, baseIsNaN, fromIndex);
+}
+
+module.exports = baseIndexOf;
+
+},{"./_baseFindIndex":"../node_modules/lodash/_baseFindIndex.js","./_baseIsNaN":"../node_modules/lodash/_baseIsNaN.js","./_strictIndexOf":"../node_modules/lodash/_strictIndexOf.js"}],"../node_modules/lodash/_arrayIncludes.js":[function(require,module,exports) {
+var baseIndexOf = require('./_baseIndexOf');
+
+/**
+ * A specialized version of `_.includes` for arrays without support for
+ * specifying an index to search from.
+ *
+ * @private
+ * @param {Array} [array] The array to inspect.
+ * @param {*} target The value to search for.
+ * @returns {boolean} Returns `true` if `target` is found, else `false`.
+ */
+function arrayIncludes(array, value) {
+  var length = array == null ? 0 : array.length;
+  return !!length && baseIndexOf(array, value, 0) > -1;
+}
+
+module.exports = arrayIncludes;
+
+},{"./_baseIndexOf":"../node_modules/lodash/_baseIndexOf.js"}],"../node_modules/lodash/_arrayIncludesWith.js":[function(require,module,exports) {
+/**
+ * This function is like `arrayIncludes` except that it accepts a comparator.
+ *
+ * @private
+ * @param {Array} [array] The array to inspect.
+ * @param {*} target The value to search for.
+ * @param {Function} comparator The comparator invoked per element.
+ * @returns {boolean} Returns `true` if `target` is found, else `false`.
+ */
+function arrayIncludesWith(array, value, comparator) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+
+  while (++index < length) {
+    if (comparator(value, array[index])) {
+      return true;
+    }
+  }
+  return false;
+}
+
+module.exports = arrayIncludesWith;
+
+},{}],"../node_modules/lodash/noop.js":[function(require,module,exports) {
+/**
+ * This method returns `undefined`.
+ *
+ * @static
+ * @memberOf _
+ * @since 2.3.0
+ * @category Util
+ * @example
+ *
+ * _.times(2, _.noop);
+ * // => [undefined, undefined]
+ */
+function noop() {
+  // No operation performed.
+}
+
+module.exports = noop;
+
+},{}],"../node_modules/lodash/_createSet.js":[function(require,module,exports) {
+var Set = require('./_Set'),
+    noop = require('./noop'),
+    setToArray = require('./_setToArray');
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/**
+ * Creates a set object of `values`.
+ *
+ * @private
+ * @param {Array} values The values to add to the set.
+ * @returns {Object} Returns the new set.
+ */
+var createSet = !(Set && (1 / setToArray(new Set([,-0]))[1]) == INFINITY) ? noop : function(values) {
+  return new Set(values);
+};
+
+module.exports = createSet;
+
+},{"./_Set":"../node_modules/lodash/_Set.js","./noop":"../node_modules/lodash/noop.js","./_setToArray":"../node_modules/lodash/_setToArray.js"}],"../node_modules/lodash/_baseUniq.js":[function(require,module,exports) {
+var SetCache = require('./_SetCache'),
+    arrayIncludes = require('./_arrayIncludes'),
+    arrayIncludesWith = require('./_arrayIncludesWith'),
+    cacheHas = require('./_cacheHas'),
+    createSet = require('./_createSet'),
+    setToArray = require('./_setToArray');
+
+/** Used as the size to enable large array optimizations. */
+var LARGE_ARRAY_SIZE = 200;
+
+/**
+ * The base implementation of `_.uniqBy` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {Function} [iteratee] The iteratee invoked per element.
+ * @param {Function} [comparator] The comparator invoked per element.
+ * @returns {Array} Returns the new duplicate free array.
+ */
+function baseUniq(array, iteratee, comparator) {
+  var index = -1,
+      includes = arrayIncludes,
+      length = array.length,
+      isCommon = true,
+      result = [],
+      seen = result;
+
+  if (comparator) {
+    isCommon = false;
+    includes = arrayIncludesWith;
+  }
+  else if (length >= LARGE_ARRAY_SIZE) {
+    var set = iteratee ? null : createSet(array);
+    if (set) {
+      return setToArray(set);
+    }
+    isCommon = false;
+    includes = cacheHas;
+    seen = new SetCache;
+  }
+  else {
+    seen = iteratee ? [] : result;
+  }
+  outer:
+  while (++index < length) {
+    var value = array[index],
+        computed = iteratee ? iteratee(value) : value;
+
+    value = (comparator || value !== 0) ? value : 0;
+    if (isCommon && computed === computed) {
+      var seenIndex = seen.length;
+      while (seenIndex--) {
+        if (seen[seenIndex] === computed) {
+          continue outer;
+        }
+      }
+      if (iteratee) {
+        seen.push(computed);
+      }
+      result.push(value);
+    }
+    else if (!includes(seen, computed, comparator)) {
+      if (seen !== result) {
+        seen.push(computed);
+      }
+      result.push(value);
+    }
+  }
+  return result;
+}
+
+module.exports = baseUniq;
+
+},{"./_SetCache":"../node_modules/lodash/_SetCache.js","./_arrayIncludes":"../node_modules/lodash/_arrayIncludes.js","./_arrayIncludesWith":"../node_modules/lodash/_arrayIncludesWith.js","./_cacheHas":"../node_modules/lodash/_cacheHas.js","./_createSet":"../node_modules/lodash/_createSet.js","./_setToArray":"../node_modules/lodash/_setToArray.js"}],"../node_modules/lodash/uniq.js":[function(require,module,exports) {
+var baseUniq = require('./_baseUniq');
+
+/**
+ * Creates a duplicate-free version of an array, using
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * for equality comparisons, in which only the first occurrence of each element
+ * is kept. The order of result values is determined by the order they occur
+ * in the array.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Array
+ * @param {Array} array The array to inspect.
+ * @returns {Array} Returns the new duplicate free array.
+ * @example
+ *
+ * _.uniq([2, 1, 2]);
+ * // => [2, 1]
+ */
+function uniq(array) {
+  return (array && array.length) ? baseUniq(array) : [];
+}
+
+module.exports = uniq;
+
+},{"./_baseUniq":"../node_modules/lodash/_baseUniq.js"}],"../node_modules/lodash/uniqWith.js":[function(require,module,exports) {
+var baseUniq = require('./_baseUniq');
+
+/**
+ * This method is like `_.uniq` except that it accepts `comparator` which
+ * is invoked to compare elements of `array`. The order of result values is
+ * determined by the order they occur in the array.The comparator is invoked
+ * with two arguments: (arrVal, othVal).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Array
+ * @param {Array} array The array to inspect.
+ * @param {Function} [comparator] The comparator invoked per element.
+ * @returns {Array} Returns the new duplicate free array.
+ * @example
+ *
+ * var objects = [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }, { 'x': 1, 'y': 2 }];
+ *
+ * _.uniqWith(objects, _.isEqual);
+ * // => [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }]
+ */
+function uniqWith(array, comparator) {
+  comparator = typeof comparator == 'function' ? comparator : undefined;
+  return (array && array.length) ? baseUniq(array, undefined, comparator) : [];
+}
+
+module.exports = uniqWith;
+
+},{"./_baseUniq":"../node_modules/lodash/_baseUniq.js"}],"../node_modules/lodash/defaults.js":[function(require,module,exports) {
+var baseRest = require('./_baseRest'),
+    eq = require('./eq'),
+    isIterateeCall = require('./_isIterateeCall'),
+    keysIn = require('./keysIn');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Assigns own and inherited enumerable string keyed properties of source
+ * objects to the destination object for all destination properties that
+ * resolve to `undefined`. Source objects are applied from left to right.
+ * Once a property is set, additional values of the same property are ignored.
+ *
+ * **Note:** This method mutates `object`.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The destination object.
+ * @param {...Object} [sources] The source objects.
+ * @returns {Object} Returns `object`.
+ * @see _.defaultsDeep
+ * @example
+ *
+ * _.defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 });
+ * // => { 'a': 1, 'b': 2 }
+ */
+var defaults = baseRest(function(object, sources) {
+  object = Object(object);
+
+  var index = -1;
+  var length = sources.length;
+  var guard = length > 2 ? sources[2] : undefined;
+
+  if (guard && isIterateeCall(sources[0], sources[1], guard)) {
+    length = 1;
+  }
+
+  while (++index < length) {
+    var source = sources[index];
+    var props = keysIn(source);
+    var propsIndex = -1;
+    var propsLength = props.length;
+
+    while (++propsIndex < propsLength) {
+      var key = props[propsIndex];
+      var value = object[key];
+
+      if (value === undefined ||
+          (eq(value, objectProto[key]) && !hasOwnProperty.call(object, key))) {
+        object[key] = source[key];
+      }
+    }
+  }
+
+  return object;
+});
+
+module.exports = defaults;
+
+},{"./_baseRest":"../node_modules/lodash/_baseRest.js","./eq":"../node_modules/lodash/eq.js","./_isIterateeCall":"../node_modules/lodash/_isIterateeCall.js","./keysIn":"../node_modules/lodash/keysIn.js"}],"../node_modules/lodash/_baseIntersection.js":[function(require,module,exports) {
+var SetCache = require('./_SetCache'),
+    arrayIncludes = require('./_arrayIncludes'),
+    arrayIncludesWith = require('./_arrayIncludesWith'),
+    arrayMap = require('./_arrayMap'),
+    baseUnary = require('./_baseUnary'),
+    cacheHas = require('./_cacheHas');
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeMin = Math.min;
+
+/**
+ * The base implementation of methods like `_.intersection`, without support
+ * for iteratee shorthands, that accepts an array of arrays to inspect.
+ *
+ * @private
+ * @param {Array} arrays The arrays to inspect.
+ * @param {Function} [iteratee] The iteratee invoked per element.
+ * @param {Function} [comparator] The comparator invoked per element.
+ * @returns {Array} Returns the new array of shared values.
+ */
+function baseIntersection(arrays, iteratee, comparator) {
+  var includes = comparator ? arrayIncludesWith : arrayIncludes,
+      length = arrays[0].length,
+      othLength = arrays.length,
+      othIndex = othLength,
+      caches = Array(othLength),
+      maxLength = Infinity,
+      result = [];
+
+  while (othIndex--) {
+    var array = arrays[othIndex];
+    if (othIndex && iteratee) {
+      array = arrayMap(array, baseUnary(iteratee));
+    }
+    maxLength = nativeMin(array.length, maxLength);
+    caches[othIndex] = !comparator && (iteratee || (length >= 120 && array.length >= 120))
+      ? new SetCache(othIndex && array)
+      : undefined;
+  }
+  array = arrays[0];
+
+  var index = -1,
+      seen = caches[0];
+
+  outer:
+  while (++index < length && result.length < maxLength) {
+    var value = array[index],
+        computed = iteratee ? iteratee(value) : value;
+
+    value = (comparator || value !== 0) ? value : 0;
+    if (!(seen
+          ? cacheHas(seen, computed)
+          : includes(result, computed, comparator)
+        )) {
+      othIndex = othLength;
+      while (--othIndex) {
+        var cache = caches[othIndex];
+        if (!(cache
+              ? cacheHas(cache, computed)
+              : includes(arrays[othIndex], computed, comparator))
+            ) {
+          continue outer;
+        }
+      }
+      if (seen) {
+        seen.push(computed);
+      }
+      result.push(value);
+    }
+  }
+  return result;
+}
+
+module.exports = baseIntersection;
+
+},{"./_SetCache":"../node_modules/lodash/_SetCache.js","./_arrayIncludes":"../node_modules/lodash/_arrayIncludes.js","./_arrayIncludesWith":"../node_modules/lodash/_arrayIncludesWith.js","./_arrayMap":"../node_modules/lodash/_arrayMap.js","./_baseUnary":"../node_modules/lodash/_baseUnary.js","./_cacheHas":"../node_modules/lodash/_cacheHas.js"}],"../node_modules/lodash/isArrayLikeObject.js":[function(require,module,exports) {
+var isArrayLike = require('./isArrayLike'),
+    isObjectLike = require('./isObjectLike');
+
+/**
+ * This method is like `_.isArrayLike` except that it also checks if `value`
+ * is an object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array-like object,
+ *  else `false`.
+ * @example
+ *
+ * _.isArrayLikeObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isArrayLikeObject(document.body.children);
+ * // => true
+ *
+ * _.isArrayLikeObject('abc');
+ * // => false
+ *
+ * _.isArrayLikeObject(_.noop);
+ * // => false
+ */
+function isArrayLikeObject(value) {
+  return isObjectLike(value) && isArrayLike(value);
+}
+
+module.exports = isArrayLikeObject;
+
+},{"./isArrayLike":"../node_modules/lodash/isArrayLike.js","./isObjectLike":"../node_modules/lodash/isObjectLike.js"}],"../node_modules/lodash/_castArrayLikeObject.js":[function(require,module,exports) {
+var isArrayLikeObject = require('./isArrayLikeObject');
+
+/**
+ * Casts `value` to an empty array if it's not an array like object.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {Array|Object} Returns the cast array-like object.
+ */
+function castArrayLikeObject(value) {
+  return isArrayLikeObject(value) ? value : [];
+}
+
+module.exports = castArrayLikeObject;
+
+},{"./isArrayLikeObject":"../node_modules/lodash/isArrayLikeObject.js"}],"../node_modules/lodash/last.js":[function(require,module,exports) {
+/**
+ * Gets the last element of `array`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Array
+ * @param {Array} array The array to query.
+ * @returns {*} Returns the last element of `array`.
+ * @example
+ *
+ * _.last([1, 2, 3]);
+ * // => 3
+ */
+function last(array) {
+  var length = array == null ? 0 : array.length;
+  return length ? array[length - 1] : undefined;
+}
+
+module.exports = last;
+
+},{}],"../node_modules/lodash/intersectionWith.js":[function(require,module,exports) {
+var arrayMap = require('./_arrayMap'),
+    baseIntersection = require('./_baseIntersection'),
+    baseRest = require('./_baseRest'),
+    castArrayLikeObject = require('./_castArrayLikeObject'),
+    last = require('./last');
+
+/**
+ * This method is like `_.intersection` except that it accepts `comparator`
+ * which is invoked to compare elements of `arrays`. The order and references
+ * of result values are determined by the first array. The comparator is
+ * invoked with two arguments: (arrVal, othVal).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Array
+ * @param {...Array} [arrays] The arrays to inspect.
+ * @param {Function} [comparator] The comparator invoked per element.
+ * @returns {Array} Returns the new array of intersecting values.
+ * @example
+ *
+ * var objects = [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }];
+ * var others = [{ 'x': 1, 'y': 1 }, { 'x': 1, 'y': 2 }];
+ *
+ * _.intersectionWith(objects, others, _.isEqual);
+ * // => [{ 'x': 1, 'y': 2 }]
+ */
+var intersectionWith = baseRest(function(arrays) {
+  var comparator = last(arrays),
+      mapped = arrayMap(arrays, castArrayLikeObject);
+
+  comparator = typeof comparator == 'function' ? comparator : undefined;
+  if (comparator) {
+    mapped.pop();
+  }
+  return (mapped.length && mapped[0] === arrays[0])
+    ? baseIntersection(mapped, undefined, comparator)
+    : [];
+});
+
+module.exports = intersectionWith;
+
+},{"./_arrayMap":"../node_modules/lodash/_arrayMap.js","./_baseIntersection":"../node_modules/lodash/_baseIntersection.js","./_baseRest":"../node_modules/lodash/_baseRest.js","./_castArrayLikeObject":"../node_modules/lodash/_castArrayLikeObject.js","./last":"../node_modules/lodash/last.js"}],"../node_modules/lodash/isPlainObject.js":[function(require,module,exports) {
+var baseGetTag = require('./_baseGetTag'),
+    getPrototype = require('./_getPrototype'),
+    isObjectLike = require('./isObjectLike');
+
+/** `Object#toString` result references. */
+var objectTag = '[object Object]';
+
+/** Used for built-in method references. */
+var funcProto = Function.prototype,
+    objectProto = Object.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/** Used to infer the `Object` constructor. */
+var objectCtorString = funcToString.call(Object);
+
+/**
+ * Checks if `value` is a plain object, that is, an object created by the
+ * `Object` constructor or one with a `[[Prototype]]` of `null`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.8.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ * }
+ *
+ * _.isPlainObject(new Foo);
+ * // => false
+ *
+ * _.isPlainObject([1, 2, 3]);
+ * // => false
+ *
+ * _.isPlainObject({ 'x': 0, 'y': 0 });
+ * // => true
+ *
+ * _.isPlainObject(Object.create(null));
+ * // => true
+ */
+function isPlainObject(value) {
+  if (!isObjectLike(value) || baseGetTag(value) != objectTag) {
+    return false;
+  }
+  var proto = getPrototype(value);
+  if (proto === null) {
+    return true;
+  }
+  var Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
+  return typeof Ctor == 'function' && Ctor instanceof Ctor &&
+    funcToString.call(Ctor) == objectCtorString;
+}
+
+module.exports = isPlainObject;
+
+},{"./_baseGetTag":"../node_modules/lodash/_baseGetTag.js","./_getPrototype":"../node_modules/lodash/_getPrototype.js","./isObjectLike":"../node_modules/lodash/isObjectLike.js"}],"../node_modules/lodash/isBoolean.js":[function(require,module,exports) {
+var baseGetTag = require('./_baseGetTag'),
+    isObjectLike = require('./isObjectLike');
+
+/** `Object#toString` result references. */
+var boolTag = '[object Boolean]';
+
+/**
+ * Checks if `value` is classified as a boolean primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a boolean, else `false`.
+ * @example
+ *
+ * _.isBoolean(false);
+ * // => true
+ *
+ * _.isBoolean(null);
+ * // => false
+ */
+function isBoolean(value) {
+  return value === true || value === false ||
+    (isObjectLike(value) && baseGetTag(value) == boolTag);
+}
+
+module.exports = isBoolean;
+
+},{"./_baseGetTag":"../node_modules/lodash/_baseGetTag.js","./isObjectLike":"../node_modules/lodash/isObjectLike.js"}],"../node_modules/json-schema-compare/src/index.js":[function(require,module,exports) {
+var isEqual = require('lodash/isEqual')
+var sortBy = require('lodash/sortBy')
+var uniq = require('lodash/uniq')
+var uniqWith = require('lodash/uniqWith')
+var defaults = require('lodash/defaults')
+var intersectionWith = require('lodash/intersectionWith')
+var isPlainObject = require('lodash/isPlainObject')
+var isBoolean = require('lodash/isBoolean')
+
+var normalizeArray = val => Array.isArray(val)
+  ? val : [val]
+var undef = val => val === undefined
+var keys = obj => isPlainObject(obj) || Array.isArray(obj) ? Object.keys(obj) : []
+var has = (obj, key) => obj.hasOwnProperty(key)
+var stringArray = arr => sortBy(uniq(arr))
+var undefEmpty = val => undef(val) || (Array.isArray(val) && val.length === 0)
+var keyValEqual = (a, b, key, compare) => b && has(b, key) && a && has(a, key) && compare(a[key], b[key])
+var undefAndZero = (a, b) => (undef(a) && b === 0) || (undef(b) && a === 0) || isEqual(a, b)
+var falseUndefined = (a, b) => (undef(a) && b === false) || (undef(b) && a === false) || isEqual(a, b)
+var emptySchema = schema => undef(schema) || isEqual(schema, {}) || schema === true
+var emptyObjUndef = schema => undef(schema) || isEqual(schema, {})
+var isSchema = val => undef(val) || isPlainObject(val) || val === true || val === false
+
+function undefArrayEqual(a, b) {
+  if (undefEmpty(a) && undefEmpty(b)) {
+    return true
+  } else {
+    return isEqual(stringArray(a), stringArray(b))
+  }
+}
+
+function unsortedNormalizedArray(a, b) {
+  a = normalizeArray(a)
+  b = normalizeArray(b)
+  return isEqual(stringArray(a), stringArray(b))
+}
+
+function schemaGroup(a, b, key, compare) {
+  var allProps = uniq(keys(a).concat(keys(b)))
+  if (emptyObjUndef(a) && emptyObjUndef(b)) {
+    return true
+  } else if (emptyObjUndef(a) && keys(b).length) {
+    return false
+  } else if (emptyObjUndef(b) && keys(a).length) {
+    return false
+  }
+
+  return allProps.every(function(key) {
+    var aVal = a[key]
+    var bVal = b[key]
+    if (Array.isArray(aVal) && Array.isArray(bVal)) {
+      return isEqual(stringArray(a), stringArray(b))
+    } else if (Array.isArray(aVal) && !Array.isArray(bVal)) {
+      return false
+    } else if (Array.isArray(bVal) && !Array.isArray(aVal)) {
+      return false
+    }
+    return keyValEqual(a, b, key, compare)
+  })
+}
+
+function items(a, b, key, compare) {
+  if (isPlainObject(a) && isPlainObject(b)) {
+    return compare(a, b)
+  } else if (Array.isArray(a) && Array.isArray(b)) {
+    return schemaGroup(a, b, key, compare)
+  } else {
+    return isEqual(a, b)
+  }
+}
+
+function unsortedArray(a, b, key, compare) {
+  var uniqueA = uniqWith(a, compare)
+  var uniqueB = uniqWith(b, compare)
+  var inter = intersectionWith(uniqueA, uniqueB, compare)
+  return inter.length === Math.max(uniqueA.length, uniqueB.length)
+}
+
+var comparers = {
+  title: isEqual,
+  uniqueItems: falseUndefined,
+  minLength: undefAndZero,
+  minItems: undefAndZero,
+  minProperties: undefAndZero,
+  required: undefArrayEqual,
+  enum: undefArrayEqual,
+  type: unsortedNormalizedArray,
+  items: items,
+  anyOf: unsortedArray,
+  allOf: unsortedArray,
+  oneOf: unsortedArray,
+  properties: schemaGroup,
+  patternProperties: schemaGroup,
+  dependencies: schemaGroup
+}
+
+var acceptsUndefined = [
+  'properties',
+  'patternProperties',
+  'dependencies',
+  'uniqueItems',
+  'minLength',
+  'minItems',
+  'minProperties',
+  'required'
+]
+
+var schemaProps = ['additionalProperties', 'additionalItems', 'contains', 'propertyNames', 'not']
+
+function compare(a, b, options) {
+  options = defaults(options, {
+    ignore: []
+  })
+
+  if (emptySchema(a) && emptySchema(b)) {
+    return true
+  }
+
+  if (!isSchema(a) || !isSchema(b)) {
+    throw new Error('Either of the values are not a JSON schema.')
+  }
+  if (a === b) {
+    return true
+  }
+
+  if (isBoolean(a) && isBoolean(b)) {
+    return a === b
+  }
+
+  if ((a === undefined && b === false) || (b === undefined && a === false)) {
+    return false
+  }
+
+  if ((undef(a) && !undef(b)) || (!undef(a) && undef(b))) {
+    return false
+  }
+
+  var allKeys = uniq(Object.keys(a).concat(Object.keys(b)))
+
+  if (options.ignore.length) {
+    allKeys = allKeys.filter(k => options.ignore.indexOf(k) === -1)
+  }
+
+  if (!allKeys.length) {
+    return true
+  }
+
+  function innerCompare(a, b) {
+    return compare(a, b, options)
+  }
+
+  return allKeys.every(function(key) {
+    var aValue = a[key]
+    var bValue = b[key]
+
+    if (schemaProps.indexOf(key) !== -1) {
+      return compare(aValue, bValue, options)
+    }
+
+    var comparer = comparers[key]
+    if (!comparer) {
+      comparer = isEqual
+    }
+
+    // do simple lodash check first
+    if (isEqual(aValue, bValue)) {
+      return true
+    }
+
+    if (acceptsUndefined.indexOf(key) === -1) {
+      if ((!has(a, key) && has(b, key)) || (has(a, key) && !has(b, key))) {
+        return aValue === bValue
+      }
+    }
+
+    var result = comparer(aValue, bValue, key, innerCompare)
+    if (!isBoolean(result)) {
+      throw new Error('Comparer must return true or false')
+    }
+    return result
+  })
+}
+
+module.exports = compare
+
+},{"lodash/isEqual":"../node_modules/lodash/isEqual.js","lodash/sortBy":"../node_modules/lodash/sortBy.js","lodash/uniq":"../node_modules/lodash/uniq.js","lodash/uniqWith":"../node_modules/lodash/uniqWith.js","lodash/defaults":"../node_modules/lodash/defaults.js","lodash/intersectionWith":"../node_modules/lodash/intersectionWith.js","lodash/isPlainObject":"../node_modules/lodash/isPlainObject.js","lodash/isBoolean":"../node_modules/lodash/isBoolean.js"}],"../node_modules/validate.io-array/lib/index.js":[function(require,module,exports) {
+'use strict';
+
+/**
+* FUNCTION: isArray( value )
+*	Validates if a value is an array.
+*
+* @param {*} value - value to be validated
+* @returns {Boolean} boolean indicating whether value is an array
+*/
+function isArray( value ) {
+	return Object.prototype.toString.call( value ) === '[object Array]';
+} // end FUNCTION isArray()
+
+// EXPORTS //
+
+module.exports = Array.isArray || isArray;
+
+},{}],"../node_modules/validate.io-number/lib/index.js":[function(require,module,exports) {
+/**
+*
+*	VALIDATE: number
+*
+*
+*	DESCRIPTION:
+*		- Validates if a value is a number.
+*
+*
+*	NOTES:
+*		[1]
+*
+*
+*	TODO:
+*		[1]
+*
+*
+*	LICENSE:
+*		MIT
+*
+*	Copyright (c) 2014. Athan Reines.
+*
+*
+*	AUTHOR:
+*		Athan Reines. kgryte@gmail.com. 2014.
+*
+*/
+
+'use strict';
+
+/**
+* FUNCTION: isNumber( value )
+*	Validates if a value is a number.
+*
+* @param {*} value - value to be validated
+* @returns {Boolean} boolean indicating whether value is a number
+*/
+function isNumber( value ) {
+	return ( typeof value === 'number' || Object.prototype.toString.call( value ) === '[object Number]' ) && value.valueOf() === value.valueOf();
+} // end FUNCTION isNumber()
+
+
+// EXPORTS //
+
+module.exports = isNumber;
+
+},{}],"../node_modules/validate.io-integer/lib/index.js":[function(require,module,exports) {
+/**
+*
+*	VALIDATE: integer
+*
+*
+*	DESCRIPTION:
+*		- Validates if a value is an integer.
+*
+*
+*	NOTES:
+*		[1]
+*
+*
+*	TODO:
+*		[1]
+*
+*
+*	LICENSE:
+*		MIT
+*
+*	Copyright (c) 2014. Athan Reines.
+*
+*
+*	AUTHOR:
+*		Athan Reines. kgryte@gmail.com. 2014.
+*
+*/
+
+'use strict';
+
+// MODULES //
+
+var isNumber = require( 'validate.io-number' );
+
+
+// ISINTEGER //
+
+/**
+* FUNCTION: isInteger( value )
+*	Validates if a value is an integer.
+*
+* @param {Number} value - value to be validated
+* @returns {Boolean} boolean indicating whether value is an integer
+*/
+function isInteger( value ) {
+	return isNumber( value ) && value%1 === 0;
+} // end FUNCTION isInteger()
+
+
+// EXPORTS //
+
+module.exports = isInteger;
+
+},{"validate.io-number":"../node_modules/validate.io-number/lib/index.js"}],"../node_modules/validate.io-integer-array/lib/index.js":[function(require,module,exports) {
+/**
+*
+*	VALIDATE: integer-array
+*
+*
+*	DESCRIPTION:
+*		- Validates if a value is an integer array.
+*
+*
+*	NOTES:
+*		[1]
+*
+*
+*	TODO:
+*		[1]
+*
+*
+*	LICENSE:
+*		MIT
+*
+*	Copyright (c) 2015. Athan Reines.
+*
+*
+*	AUTHOR:
+*		Athan Reines. kgryte@gmail.com. 2015.
+*
+*/
+
+'use strict';
+
+// MODULES //
+
+var isArray = require( 'validate.io-array' ),
+	isInteger = require( 'validate.io-integer' );
+
+
+// IS INTEGER ARRAY //
+
+/**
+* FUNCTION: isIntegerArray( value )
+*	Validates if a value is an integer array.
+*
+* @param {*} value - value to be validated
+* @returns {Boolean} boolean indicating if a value is an integer array
+*/
+function isIntegerArray( value ) {
+	var len;
+	if ( !isArray( value ) ) {
+		return false;
+	}
+	len = value.length;
+	if ( !len ) {
+		return false;
+	}
+	for ( var i = 0; i < len; i++ ) {
+		if ( !isInteger( value[i] ) ) {
+			return false;
+		}
+	}
+	return true;
+} // end FUNCTION isIntegerArray()
+
+
+// EXPORTS //
+
+module.exports = isIntegerArray;
+
+},{"validate.io-array":"../node_modules/validate.io-array/lib/index.js","validate.io-integer":"../node_modules/validate.io-integer/lib/index.js"}],"../node_modules/validate.io-function/lib/index.js":[function(require,module,exports) {
+/**
+*
+*	VALIDATE: function
+*
+*
+*	DESCRIPTION:
+*		- Validates if a value is a function.
+*
+*
+*	NOTES:
+*		[1]
+*
+*
+*	TODO:
+*		[1]
+*
+*
+*	LICENSE:
+*		MIT
+*
+*	Copyright (c) 2014. Athan Reines.
+*
+*
+*	AUTHOR:
+*		Athan Reines. kgryte@gmail.com. 2014.
+*
+*/
+
+'use strict';
+
+/**
+* FUNCTION: isFunction( value )
+*	Validates if a value is a function.
+*
+* @param {*} value - value to be validated
+* @returns {Boolean} boolean indicating whether value is a function
+*/
+function isFunction( value ) {
+	return ( typeof value === 'function' );
+} // end FUNCTION isFunction()
+
+
+// EXPORTS //
+
+module.exports = isFunction;
+
+},{}],"../node_modules/compute-gcd/lib/index.js":[function(require,module,exports) {
+'use strict';
+
+// MODULES //
+
+var isArray = require( 'validate.io-array' ),
+	isIntegerArray = require( 'validate.io-integer-array' ),
+	isFunction = require( 'validate.io-function' );
+
+
+// VARIABLES //
+
+var MAXINT = Math.pow( 2, 31 ) - 1;
+
+
+// FUNCTIONS //
+
+/**
+* FUNCTION: gcd( a, b )
+*	Computes the greatest common divisor of two integers `a` and `b`, using the binary GCD algorithm.
+*
+* @param {Number} a - integer
+* @param {Number} b - integer
+* @returns {Number} greatest common divisor
+*/
+function gcd( a, b ) {
+	var k = 1,
+		t;
+	// Simple cases:
+	if ( a === 0 ) {
+		return b;
+	}
+	if ( b === 0 ) {
+		return a;
+	}
+	// Reduce `a` and/or `b` to odd numbers and keep track of the greatest power of 2 dividing both `a` and `b`...
+	while ( a%2 === 0 && b%2 === 0 ) {
+		a = a / 2; // right shift
+		b = b / 2; // right shift
+		k = k * 2; // left shift
+	}
+	// Reduce `a` to an odd number...
+	while ( a%2 === 0 ) {
+		a = a / 2; // right shift
+	}
+	// Henceforth, `a` is always odd...
+	while ( b ) {
+		// Remove all factors of 2 in `b`, as they are not common...
+		while ( b%2 === 0 ) {
+			b = b / 2; // right shift
+		}
+		// `a` and `b` are both odd. Swap values such that `b` is the larger of the two values, and then set `b` to the difference (which is even)...
+		if ( a > b ) {
+			t = b;
+			b = a;
+			a = t;
+		}
+		b = b - a; // b=0 iff b=a
+	}
+	// Restore common factors of 2...
+	return k * a;
+} // end FUNCTION gcd()
+
+/**
+* FUNCTION: bitwise( a, b )
+*	Computes the greatest common divisor of two integers `a` and `b`, using the binary GCD algorithm and bitwise operations.
+*
+* @param {Number} a - safe integer
+* @param {Number} b - safe integer
+* @returns {Number} greatest common divisor
+*/
+function bitwise( a, b ) {
+	var k = 0,
+		t;
+	// Simple cases:
+	if ( a === 0 ) {
+		return b;
+	}
+	if ( b === 0 ) {
+		return a;
+	}
+	// Reduce `a` and/or `b` to odd numbers and keep track of the greatest power of 2 dividing both `a` and `b`...
+	while ( (a & 1) === 0 && (b & 1) === 0 ) {
+		a >>>= 1; // right shift
+		b >>>= 1; // right shift
+		k++;
+	}
+	// Reduce `a` to an odd number...
+	while ( (a & 1) === 0 ) {
+		a >>>= 1; // right shift
+	}
+	// Henceforth, `a` is always odd...
+	while ( b ) {
+		// Remove all factors of 2 in `b`, as they are not common...
+		while ( (b & 1) === 0 ) {
+			b >>>= 1; // right shift
+		}
+		// `a` and `b` are both odd. Swap values such that `b` is the larger of the two values, and then set `b` to the difference (which is even)...
+		if ( a > b ) {
+			t = b;
+			b = a;
+			a = t;
+		}
+		b = b - a; // b=0 iff b=a
+	}
+	// Restore common factors of 2...
+	return a << k;
+} // end FUNCTION bitwise()
+
+
+// GREATEST COMMON DIVISOR //
+
+/**
+* FUNCTION: compute( arr[, clbk] )
+*	Computes the greatest common divisor.
+*
+* @param {Number[]|Number} arr - input array of integers
+* @param {Function|Number} [clbk] - accessor function for accessing array values
+* @returns {Number|Null} greatest common divisor or null
+*/
+function compute() {
+	var nargs = arguments.length,
+		args,
+		clbk,
+		arr,
+		len,
+		a, b,
+		i;
+
+	// Copy the input arguments to an array...
+	args = new Array( nargs );
+	for ( i = 0; i < nargs; i++ ) {
+		args[ i ] = arguments[ i ];
+	}
+	// Have we been provided with integer arguments?
+	if ( isIntegerArray( args ) ) {
+		if ( nargs === 2 ) {
+			a = args[ 0 ];
+			b = args[ 1 ];
+			if ( a < 0 ) {
+				a = -a;
+			}
+			if ( b < 0 ) {
+				b = -b;
+			}
+			if ( a <= MAXINT && b <= MAXINT ) {
+				return bitwise( a, b );
+			} else {
+				return gcd( a, b );
+			}
+		}
+		arr = args;
+	}
+	// If not integers, ensure the first argument is an array...
+	else if ( !isArray( args[ 0 ] ) ) {
+		throw new TypeError( 'gcd()::invalid input argument. Must provide an array of integers. Value: `' + args[ 0 ] + '`.' );
+	}
+	// Have we been provided with more than one argument? If so, ensure that the accessor argument is a function...
+	else if ( nargs > 1 ) {
+		arr = args[ 0 ];
+		clbk = args[ 1 ];
+		if ( !isFunction( clbk ) ) {
+			throw new TypeError( 'gcd()::invalid input argument. Accessor must be a function. Value: `' + clbk + '`.' );
+		}
+	}
+	// We have been provided an array...
+	else {
+		arr = args[ 0 ];
+	}
+	len = arr.length;
+
+	// Check if a sufficient number of values have been provided...
+	if ( len < 2 ) {
+		return null;
+	}
+	// If an accessor is provided, extract the array values...
+	if ( clbk ) {
+		a = new Array( len );
+		for ( i = 0; i < len; i++ ) {
+			a[ i ] = clbk( arr[ i ], i );
+		}
+		arr = a;
+	}
+	// Given an input array, ensure all array values are integers...
+	if ( nargs < 3 ) {
+		if ( !isIntegerArray( arr ) ) {
+			throw new TypeError( 'gcd()::invalid input argument. Accessed array values must be integers. Value: `' + arr + '`.' );
+		}
+	}
+	// Convert any negative integers to positive integers...
+	for ( i = 0; i < len; i++ ) {
+		a = arr[ i ];
+		if ( a < 0 ) {
+			arr[ i ] = -a;
+		}
+	}
+	// Exploit the fact that the gcd is an associative function...
+	a = arr[ 0 ];
+	for ( i = 1; i < len; i++ ) {
+		b = arr[ i ];
+		if ( b <= MAXINT && a <= MAXINT ) {
+			a = bitwise( a, b );
+		} else {
+			a = gcd( a, b );
+		}
+	}
+	return a;
+} // end FUNCTION compute()
+
+
+// EXPORTS //
+
+module.exports = compute;
+
+},{"validate.io-array":"../node_modules/validate.io-array/lib/index.js","validate.io-integer-array":"../node_modules/validate.io-integer-array/lib/index.js","validate.io-function":"../node_modules/validate.io-function/lib/index.js"}],"../node_modules/compute-lcm/lib/index.js":[function(require,module,exports) {
+'use strict';
+
+// MODULES //
+
+var gcd = require( 'compute-gcd' ),
+	isArray = require( 'validate.io-array' ),
+	isIntegerArray = require( 'validate.io-integer-array' ),
+	isFunction = require( 'validate.io-function' );
+
+
+// LEAST COMMON MULTIPLE //
+
+/**
+* FUNCTION: lcm( arr[, clbk] )
+*	Computes the least common multiple (lcm).
+*
+* @param {Number[]|Number} arr - input array of integers
+* @param {Function|Number} [accessor] - accessor function for accessing array values
+* @returns {Number|Null} least common multiple or null
+*/
+function lcm() {
+	var nargs = arguments.length,
+		args,
+		clbk,
+		arr,
+		len,
+		a, b,
+		i;
+
+	// Copy the input arguments to an array...
+	args = new Array( nargs );
+	for ( i = 0; i < nargs; i++ ) {
+		args[ i ] = arguments[ i ];
+	}
+	// Have we been provided with integer arguments?
+	if ( isIntegerArray( args ) ) {
+		if ( nargs === 2 ) {
+			a = args[ 0 ];
+			b = args[ 1 ];
+			if ( a < 0 ) {
+				a = -a;
+			}
+			if ( b < 0 ) {
+				b = -b;
+			}
+			if ( a === 0 || b === 0 ) {
+				return 0;
+			}
+			return ( a/gcd(a,b) ) * b;
+		}
+		arr = args;
+	}
+	// If not integers, ensure that the first argument is an array...
+	else if ( !isArray( args[ 0 ] ) ) {
+		throw new TypeError( 'lcm()::invalid input argument. Must provide an array of integers. Value: `' + args[ 0 ] + '`.' );
+	}
+	// Have we been provided with more than one argument? If so, ensure that the accessor argument is a function...
+	else if ( nargs > 1 ) {
+		arr = args[ 0 ];
+		clbk = args[ 1 ];
+		if ( !isFunction( clbk ) ) {
+			throw new TypeError( 'lcm()::invalid input argument. Accessor must be a function. Value: `' + clbk + '`.' );
+		}
+	}
+	// We have been provided an array...
+	else {
+		arr = args[ 0 ];
+	}
+	len = arr.length;
+
+	// Check if a sufficient number of values have been provided...
+	if ( len < 2 ) {
+		return null;
+	}
+	// If an accessor is provided, extract the array values...
+	if ( clbk ) {
+		a = new Array( len );
+		for ( i = 0; i < len; i++ ) {
+			a[ i ] = clbk( arr[ i ], i );
+		}
+		arr = a;
+	}
+	// Given an input array, ensure all array values are integers...
+	if ( nargs < 3 ) {
+		if ( !isIntegerArray( arr ) ) {
+			throw new TypeError( 'lcm()::invalid input argument. Accessed array values must be integers. Value: `' + arr + '`.' );
+		}
+	}
+	// Convert any negative integers to positive integers...
+	for ( i = 0; i < len; i++ ) {
+		a = arr[ i ];
+		if ( a < 0 ) {
+			arr[ i ] = -a;
+		}
+	}
+	// Exploit the fact that the lcm is an associative function...
+	a = arr[ 0 ];
+	for ( i = 1; i < len; i++ ) {
+		b = arr[ i ];
+		if ( a === 0 || b === 0 ) {
+			return 0;
+		}
+		a = ( a/gcd(a,b) ) * b;
+	}
+	return a;
+} // end FUNCTION lcm()
+
+
+// EXPORTS //
+
+module.exports = lcm;
+
+},{"compute-gcd":"../node_modules/compute-gcd/lib/index.js","validate.io-array":"../node_modules/validate.io-array/lib/index.js","validate.io-integer-array":"../node_modules/validate.io-integer-array/lib/index.js","validate.io-function":"../node_modules/validate.io-function/lib/index.js"}],"../node_modules/lodash/_assignMergeValue.js":[function(require,module,exports) {
+var baseAssignValue = require('./_baseAssignValue'),
+    eq = require('./eq');
+
+/**
+ * This function is like `assignValue` except that it doesn't assign
+ * `undefined` values.
+ *
+ * @private
+ * @param {Object} object The object to modify.
+ * @param {string} key The key of the property to assign.
+ * @param {*} value The value to assign.
+ */
+function assignMergeValue(object, key, value) {
+  if ((value !== undefined && !eq(object[key], value)) ||
+      (value === undefined && !(key in object))) {
+    baseAssignValue(object, key, value);
+  }
+}
+
+module.exports = assignMergeValue;
+
+},{"./_baseAssignValue":"../node_modules/lodash/_baseAssignValue.js","./eq":"../node_modules/lodash/eq.js"}],"../node_modules/lodash/_safeGet.js":[function(require,module,exports) {
+/**
+ * Gets the value at `key`, unless `key` is "__proto__" or "constructor".
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the property to get.
+ * @returns {*} Returns the property value.
+ */
+function safeGet(object, key) {
+  if (key === 'constructor' && typeof object[key] === 'function') {
+    return;
+  }
+
+  if (key == '__proto__') {
+    return;
+  }
+
+  return object[key];
+}
+
+module.exports = safeGet;
+
+},{}],"../node_modules/lodash/toPlainObject.js":[function(require,module,exports) {
+var copyObject = require('./_copyObject'),
+    keysIn = require('./keysIn');
+
+/**
+ * Converts `value` to a plain object flattening inherited enumerable string
+ * keyed properties of `value` to own properties of the plain object.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.0.0
+ * @category Lang
+ * @param {*} value The value to convert.
+ * @returns {Object} Returns the converted plain object.
+ * @example
+ *
+ * function Foo() {
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.assign({ 'a': 1 }, new Foo);
+ * // => { 'a': 1, 'b': 2 }
+ *
+ * _.assign({ 'a': 1 }, _.toPlainObject(new Foo));
+ * // => { 'a': 1, 'b': 2, 'c': 3 }
+ */
+function toPlainObject(value) {
+  return copyObject(value, keysIn(value));
+}
+
+module.exports = toPlainObject;
+
+},{"./_copyObject":"../node_modules/lodash/_copyObject.js","./keysIn":"../node_modules/lodash/keysIn.js"}],"../node_modules/lodash/_baseMergeDeep.js":[function(require,module,exports) {
+var assignMergeValue = require('./_assignMergeValue'),
+    cloneBuffer = require('./_cloneBuffer'),
+    cloneTypedArray = require('./_cloneTypedArray'),
+    copyArray = require('./_copyArray'),
+    initCloneObject = require('./_initCloneObject'),
+    isArguments = require('./isArguments'),
+    isArray = require('./isArray'),
+    isArrayLikeObject = require('./isArrayLikeObject'),
+    isBuffer = require('./isBuffer'),
+    isFunction = require('./isFunction'),
+    isObject = require('./isObject'),
+    isPlainObject = require('./isPlainObject'),
+    isTypedArray = require('./isTypedArray'),
+    safeGet = require('./_safeGet'),
+    toPlainObject = require('./toPlainObject');
+
+/**
+ * A specialized version of `baseMerge` for arrays and objects which performs
+ * deep merges and tracks traversed objects enabling objects with circular
+ * references to be merged.
+ *
+ * @private
+ * @param {Object} object The destination object.
+ * @param {Object} source The source object.
+ * @param {string} key The key of the value to merge.
+ * @param {number} srcIndex The index of `source`.
+ * @param {Function} mergeFunc The function to merge values.
+ * @param {Function} [customizer] The function to customize assigned values.
+ * @param {Object} [stack] Tracks traversed source values and their merged
+ *  counterparts.
+ */
+function baseMergeDeep(object, source, key, srcIndex, mergeFunc, customizer, stack) {
+  var objValue = safeGet(object, key),
+      srcValue = safeGet(source, key),
+      stacked = stack.get(srcValue);
+
+  if (stacked) {
+    assignMergeValue(object, key, stacked);
+    return;
+  }
+  var newValue = customizer
+    ? customizer(objValue, srcValue, (key + ''), object, source, stack)
+    : undefined;
+
+  var isCommon = newValue === undefined;
+
+  if (isCommon) {
+    var isArr = isArray(srcValue),
+        isBuff = !isArr && isBuffer(srcValue),
+        isTyped = !isArr && !isBuff && isTypedArray(srcValue);
+
+    newValue = srcValue;
+    if (isArr || isBuff || isTyped) {
+      if (isArray(objValue)) {
+        newValue = objValue;
+      }
+      else if (isArrayLikeObject(objValue)) {
+        newValue = copyArray(objValue);
+      }
+      else if (isBuff) {
+        isCommon = false;
+        newValue = cloneBuffer(srcValue, true);
+      }
+      else if (isTyped) {
+        isCommon = false;
+        newValue = cloneTypedArray(srcValue, true);
+      }
+      else {
+        newValue = [];
+      }
+    }
+    else if (isPlainObject(srcValue) || isArguments(srcValue)) {
+      newValue = objValue;
+      if (isArguments(objValue)) {
+        newValue = toPlainObject(objValue);
+      }
+      else if (!isObject(objValue) || isFunction(objValue)) {
+        newValue = initCloneObject(srcValue);
+      }
+    }
+    else {
+      isCommon = false;
+    }
+  }
+  if (isCommon) {
+    // Recursively merge objects and arrays (susceptible to call stack limits).
+    stack.set(srcValue, newValue);
+    mergeFunc(newValue, srcValue, srcIndex, customizer, stack);
+    stack['delete'](srcValue);
+  }
+  assignMergeValue(object, key, newValue);
+}
+
+module.exports = baseMergeDeep;
+
+},{"./_assignMergeValue":"../node_modules/lodash/_assignMergeValue.js","./_cloneBuffer":"../node_modules/lodash/_cloneBuffer.js","./_cloneTypedArray":"../node_modules/lodash/_cloneTypedArray.js","./_copyArray":"../node_modules/lodash/_copyArray.js","./_initCloneObject":"../node_modules/lodash/_initCloneObject.js","./isArguments":"../node_modules/lodash/isArguments.js","./isArray":"../node_modules/lodash/isArray.js","./isArrayLikeObject":"../node_modules/lodash/isArrayLikeObject.js","./isBuffer":"../node_modules/lodash/isBuffer.js","./isFunction":"../node_modules/lodash/isFunction.js","./isObject":"../node_modules/lodash/isObject.js","./isPlainObject":"../node_modules/lodash/isPlainObject.js","./isTypedArray":"../node_modules/lodash/isTypedArray.js","./_safeGet":"../node_modules/lodash/_safeGet.js","./toPlainObject":"../node_modules/lodash/toPlainObject.js"}],"../node_modules/lodash/_baseMerge.js":[function(require,module,exports) {
+var Stack = require('./_Stack'),
+    assignMergeValue = require('./_assignMergeValue'),
+    baseFor = require('./_baseFor'),
+    baseMergeDeep = require('./_baseMergeDeep'),
+    isObject = require('./isObject'),
+    keysIn = require('./keysIn'),
+    safeGet = require('./_safeGet');
+
+/**
+ * The base implementation of `_.merge` without support for multiple sources.
+ *
+ * @private
+ * @param {Object} object The destination object.
+ * @param {Object} source The source object.
+ * @param {number} srcIndex The index of `source`.
+ * @param {Function} [customizer] The function to customize merged values.
+ * @param {Object} [stack] Tracks traversed source values and their merged
+ *  counterparts.
+ */
+function baseMerge(object, source, srcIndex, customizer, stack) {
+  if (object === source) {
+    return;
+  }
+  baseFor(source, function(srcValue, key) {
+    stack || (stack = new Stack);
+    if (isObject(srcValue)) {
+      baseMergeDeep(object, source, key, srcIndex, baseMerge, customizer, stack);
+    }
+    else {
+      var newValue = customizer
+        ? customizer(safeGet(object, key), srcValue, (key + ''), object, source, stack)
+        : undefined;
+
+      if (newValue === undefined) {
+        newValue = srcValue;
+      }
+      assignMergeValue(object, key, newValue);
+    }
+  }, keysIn);
+}
+
+module.exports = baseMerge;
+
+},{"./_Stack":"../node_modules/lodash/_Stack.js","./_assignMergeValue":"../node_modules/lodash/_assignMergeValue.js","./_baseFor":"../node_modules/lodash/_baseFor.js","./_baseMergeDeep":"../node_modules/lodash/_baseMergeDeep.js","./isObject":"../node_modules/lodash/isObject.js","./keysIn":"../node_modules/lodash/keysIn.js","./_safeGet":"../node_modules/lodash/_safeGet.js"}],"../node_modules/lodash/_customDefaultsMerge.js":[function(require,module,exports) {
+var baseMerge = require('./_baseMerge'),
+    isObject = require('./isObject');
+
+/**
+ * Used by `_.defaultsDeep` to customize its `_.merge` use to merge source
+ * objects into destination objects that are passed thru.
+ *
+ * @private
+ * @param {*} objValue The destination value.
+ * @param {*} srcValue The source value.
+ * @param {string} key The key of the property to merge.
+ * @param {Object} object The parent object of `objValue`.
+ * @param {Object} source The parent object of `srcValue`.
+ * @param {Object} [stack] Tracks traversed source values and their merged
+ *  counterparts.
+ * @returns {*} Returns the value to assign.
+ */
+function customDefaultsMerge(objValue, srcValue, key, object, source, stack) {
+  if (isObject(objValue) && isObject(srcValue)) {
+    // Recursively merge objects and arrays (susceptible to call stack limits).
+    stack.set(srcValue, objValue);
+    baseMerge(objValue, srcValue, undefined, customDefaultsMerge, stack);
+    stack['delete'](srcValue);
+  }
+  return objValue;
+}
+
+module.exports = customDefaultsMerge;
+
+},{"./_baseMerge":"../node_modules/lodash/_baseMerge.js","./isObject":"../node_modules/lodash/isObject.js"}],"../node_modules/lodash/_createAssigner.js":[function(require,module,exports) {
+var baseRest = require('./_baseRest'),
+    isIterateeCall = require('./_isIterateeCall');
+
+/**
+ * Creates a function like `_.assign`.
+ *
+ * @private
+ * @param {Function} assigner The function to assign values.
+ * @returns {Function} Returns the new assigner function.
+ */
+function createAssigner(assigner) {
+  return baseRest(function(object, sources) {
+    var index = -1,
+        length = sources.length,
+        customizer = length > 1 ? sources[length - 1] : undefined,
+        guard = length > 2 ? sources[2] : undefined;
+
+    customizer = (assigner.length > 3 && typeof customizer == 'function')
+      ? (length--, customizer)
+      : undefined;
+
+    if (guard && isIterateeCall(sources[0], sources[1], guard)) {
+      customizer = length < 3 ? undefined : customizer;
+      length = 1;
+    }
+    object = Object(object);
+    while (++index < length) {
+      var source = sources[index];
+      if (source) {
+        assigner(object, source, index, customizer);
+      }
+    }
+    return object;
+  });
+}
+
+module.exports = createAssigner;
+
+},{"./_baseRest":"../node_modules/lodash/_baseRest.js","./_isIterateeCall":"../node_modules/lodash/_isIterateeCall.js"}],"../node_modules/lodash/mergeWith.js":[function(require,module,exports) {
+var baseMerge = require('./_baseMerge'),
+    createAssigner = require('./_createAssigner');
+
+/**
+ * This method is like `_.merge` except that it accepts `customizer` which
+ * is invoked to produce the merged values of the destination and source
+ * properties. If `customizer` returns `undefined`, merging is handled by the
+ * method instead. The `customizer` is invoked with six arguments:
+ * (objValue, srcValue, key, object, source, stack).
+ *
+ * **Note:** This method mutates `object`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Object
+ * @param {Object} object The destination object.
+ * @param {...Object} sources The source objects.
+ * @param {Function} customizer The function to customize assigned values.
+ * @returns {Object} Returns `object`.
+ * @example
+ *
+ * function customizer(objValue, srcValue) {
+ *   if (_.isArray(objValue)) {
+ *     return objValue.concat(srcValue);
+ *   }
+ * }
+ *
+ * var object = { 'a': [1], 'b': [2] };
+ * var other = { 'a': [3], 'b': [4] };
+ *
+ * _.mergeWith(object, other, customizer);
+ * // => { 'a': [1, 3], 'b': [2, 4] }
+ */
+var mergeWith = createAssigner(function(object, source, srcIndex, customizer) {
+  baseMerge(object, source, srcIndex, customizer);
+});
+
+module.exports = mergeWith;
+
+},{"./_baseMerge":"../node_modules/lodash/_baseMerge.js","./_createAssigner":"../node_modules/lodash/_createAssigner.js"}],"../node_modules/lodash/defaultsDeep.js":[function(require,module,exports) {
+var apply = require('./_apply'),
+    baseRest = require('./_baseRest'),
+    customDefaultsMerge = require('./_customDefaultsMerge'),
+    mergeWith = require('./mergeWith');
+
+/**
+ * This method is like `_.defaults` except that it recursively assigns
+ * default properties.
+ *
+ * **Note:** This method mutates `object`.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.10.0
+ * @category Object
+ * @param {Object} object The destination object.
+ * @param {...Object} [sources] The source objects.
+ * @returns {Object} Returns `object`.
+ * @see _.defaults
+ * @example
+ *
+ * _.defaultsDeep({ 'a': { 'b': 2 } }, { 'a': { 'b': 1, 'c': 3 } });
+ * // => { 'a': { 'b': 2, 'c': 3 } }
+ */
+var defaultsDeep = baseRest(function(args) {
+  args.push(undefined, customDefaultsMerge);
+  return apply(mergeWith, undefined, args);
+});
+
+module.exports = defaultsDeep;
+
+},{"./_apply":"../node_modules/lodash/_apply.js","./_baseRest":"../node_modules/lodash/_baseRest.js","./_customDefaultsMerge":"../node_modules/lodash/_customDefaultsMerge.js","./mergeWith":"../node_modules/lodash/mergeWith.js"}],"../node_modules/lodash/flattenDeep.js":[function(require,module,exports) {
+var baseFlatten = require('./_baseFlatten');
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/**
+ * Recursively flattens `array`.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.0.0
+ * @category Array
+ * @param {Array} array The array to flatten.
+ * @returns {Array} Returns the new flattened array.
+ * @example
+ *
+ * _.flattenDeep([1, [2, [3, [4]], 5]]);
+ * // => [1, 2, 3, 4, 5]
+ */
+function flattenDeep(array) {
+  var length = array == null ? 0 : array.length;
+  return length ? baseFlatten(array, INFINITY) : [];
+}
+
+module.exports = flattenDeep;
+
+},{"./_baseFlatten":"../node_modules/lodash/_baseFlatten.js"}],"../node_modules/lodash/intersection.js":[function(require,module,exports) {
+var arrayMap = require('./_arrayMap'),
+    baseIntersection = require('./_baseIntersection'),
+    baseRest = require('./_baseRest'),
+    castArrayLikeObject = require('./_castArrayLikeObject');
+
+/**
+ * Creates an array of unique values that are included in all given arrays
+ * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * for equality comparisons. The order and references of result values are
+ * determined by the first array.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Array
+ * @param {...Array} [arrays] The arrays to inspect.
+ * @returns {Array} Returns the new array of intersecting values.
+ * @example
+ *
+ * _.intersection([2, 1], [2, 3]);
+ * // => [2]
+ */
+var intersection = baseRest(function(arrays) {
+  var mapped = arrayMap(arrays, castArrayLikeObject);
+  return (mapped.length && mapped[0] === arrays[0])
+    ? baseIntersection(mapped)
+    : [];
+});
+
+module.exports = intersection;
+
+},{"./_arrayMap":"../node_modules/lodash/_arrayMap.js","./_baseIntersection":"../node_modules/lodash/_baseIntersection.js","./_baseRest":"../node_modules/lodash/_baseRest.js","./_castArrayLikeObject":"../node_modules/lodash/_castArrayLikeObject.js"}],"../node_modules/lodash/_baseIndexOfWith.js":[function(require,module,exports) {
+/**
+ * This function is like `baseIndexOf` except that it accepts a comparator.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} value The value to search for.
+ * @param {number} fromIndex The index to search from.
+ * @param {Function} comparator The comparator invoked per element.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function baseIndexOfWith(array, value, fromIndex, comparator) {
+  var index = fromIndex - 1,
+      length = array.length;
+
+  while (++index < length) {
+    if (comparator(array[index], value)) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+module.exports = baseIndexOfWith;
+
+},{}],"../node_modules/lodash/_basePullAll.js":[function(require,module,exports) {
+var arrayMap = require('./_arrayMap'),
+    baseIndexOf = require('./_baseIndexOf'),
+    baseIndexOfWith = require('./_baseIndexOfWith'),
+    baseUnary = require('./_baseUnary'),
+    copyArray = require('./_copyArray');
+
+/** Used for built-in method references. */
+var arrayProto = Array.prototype;
+
+/** Built-in value references. */
+var splice = arrayProto.splice;
+
+/**
+ * The base implementation of `_.pullAllBy` without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} array The array to modify.
+ * @param {Array} values The values to remove.
+ * @param {Function} [iteratee] The iteratee invoked per element.
+ * @param {Function} [comparator] The comparator invoked per element.
+ * @returns {Array} Returns `array`.
+ */
+function basePullAll(array, values, iteratee, comparator) {
+  var indexOf = comparator ? baseIndexOfWith : baseIndexOf,
+      index = -1,
+      length = values.length,
+      seen = array;
+
+  if (array === values) {
+    values = copyArray(values);
+  }
+  if (iteratee) {
+    seen = arrayMap(array, baseUnary(iteratee));
+  }
+  while (++index < length) {
+    var fromIndex = 0,
+        value = values[index],
+        computed = iteratee ? iteratee(value) : value;
+
+    while ((fromIndex = indexOf(seen, computed, fromIndex, comparator)) > -1) {
+      if (seen !== array) {
+        splice.call(seen, fromIndex, 1);
+      }
+      splice.call(array, fromIndex, 1);
+    }
+  }
+  return array;
+}
+
+module.exports = basePullAll;
+
+},{"./_arrayMap":"../node_modules/lodash/_arrayMap.js","./_baseIndexOf":"../node_modules/lodash/_baseIndexOf.js","./_baseIndexOfWith":"../node_modules/lodash/_baseIndexOfWith.js","./_baseUnary":"../node_modules/lodash/_baseUnary.js","./_copyArray":"../node_modules/lodash/_copyArray.js"}],"../node_modules/lodash/pullAll.js":[function(require,module,exports) {
+var basePullAll = require('./_basePullAll');
+
+/**
+ * This method is like `_.pull` except that it accepts an array of values to remove.
+ *
+ * **Note:** Unlike `_.difference`, this method mutates `array`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Array
+ * @param {Array} array The array to modify.
+ * @param {Array} values The values to remove.
+ * @returns {Array} Returns `array`.
+ * @example
+ *
+ * var array = ['a', 'b', 'c', 'a', 'b', 'c'];
+ *
+ * _.pullAll(array, ['a', 'c']);
+ * console.log(array);
+ * // => ['b', 'b']
+ */
+function pullAll(array, values) {
+  return (array && array.length && values && values.length)
+    ? basePullAll(array, values)
+    : array;
+}
+
+module.exports = pullAll;
+
+},{"./_basePullAll":"../node_modules/lodash/_basePullAll.js"}],"../node_modules/lodash/_castFunction.js":[function(require,module,exports) {
+var identity = require('./identity');
+
+/**
+ * Casts `value` to `identity` if it's not a function.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {Function} Returns cast function.
+ */
+function castFunction(value) {
+  return typeof value == 'function' ? value : identity;
+}
+
+module.exports = castFunction;
+
+},{"./identity":"../node_modules/lodash/identity.js"}],"../node_modules/lodash/forEach.js":[function(require,module,exports) {
+var arrayEach = require('./_arrayEach'),
+    baseEach = require('./_baseEach'),
+    castFunction = require('./_castFunction'),
+    isArray = require('./isArray');
+
+/**
+ * Iterates over elements of `collection` and invokes `iteratee` for each element.
+ * The iteratee is invoked with three arguments: (value, index|key, collection).
+ * Iteratee functions may exit iteration early by explicitly returning `false`.
+ *
+ * **Note:** As with other "Collections" methods, objects with a "length"
+ * property are iterated like arrays. To avoid this behavior use `_.forIn`
+ * or `_.forOwn` for object iteration.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @alias each
+ * @category Collection
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} [iteratee=_.identity] The function invoked per iteration.
+ * @returns {Array|Object} Returns `collection`.
+ * @see _.forEachRight
+ * @example
+ *
+ * _.forEach([1, 2], function(value) {
+ *   console.log(value);
+ * });
+ * // => Logs `1` then `2`.
+ *
+ * _.forEach({ 'a': 1, 'b': 2 }, function(value, key) {
+ *   console.log(key);
+ * });
+ * // => Logs 'a' then 'b' (iteration order is not guaranteed).
+ */
+function forEach(collection, iteratee) {
+  var func = isArray(collection) ? arrayEach : baseEach;
+  return func(collection, castFunction(iteratee));
+}
+
+module.exports = forEach;
+
+},{"./_arrayEach":"../node_modules/lodash/_arrayEach.js","./_baseEach":"../node_modules/lodash/_baseEach.js","./_castFunction":"../node_modules/lodash/_castFunction.js","./isArray":"../node_modules/lodash/isArray.js"}],"../node_modules/lodash/_baseDifference.js":[function(require,module,exports) {
+var SetCache = require('./_SetCache'),
+    arrayIncludes = require('./_arrayIncludes'),
+    arrayIncludesWith = require('./_arrayIncludesWith'),
+    arrayMap = require('./_arrayMap'),
+    baseUnary = require('./_baseUnary'),
+    cacheHas = require('./_cacheHas');
+
+/** Used as the size to enable large array optimizations. */
+var LARGE_ARRAY_SIZE = 200;
+
+/**
+ * The base implementation of methods like `_.difference` without support
+ * for excluding multiple arrays or iteratee shorthands.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {Array} values The values to exclude.
+ * @param {Function} [iteratee] The iteratee invoked per element.
+ * @param {Function} [comparator] The comparator invoked per element.
+ * @returns {Array} Returns the new array of filtered values.
+ */
+function baseDifference(array, values, iteratee, comparator) {
+  var index = -1,
+      includes = arrayIncludes,
+      isCommon = true,
+      length = array.length,
+      result = [],
+      valuesLength = values.length;
+
+  if (!length) {
+    return result;
+  }
+  if (iteratee) {
+    values = arrayMap(values, baseUnary(iteratee));
+  }
+  if (comparator) {
+    includes = arrayIncludesWith;
+    isCommon = false;
+  }
+  else if (values.length >= LARGE_ARRAY_SIZE) {
+    includes = cacheHas;
+    isCommon = false;
+    values = new SetCache(values);
+  }
+  outer:
+  while (++index < length) {
+    var value = array[index],
+        computed = iteratee == null ? value : iteratee(value);
+
+    value = (comparator || value !== 0) ? value : 0;
+    if (isCommon && computed === computed) {
+      var valuesIndex = valuesLength;
+      while (valuesIndex--) {
+        if (values[valuesIndex] === computed) {
+          continue outer;
+        }
+      }
+      result.push(value);
+    }
+    else if (!includes(values, computed, comparator)) {
+      result.push(value);
+    }
+  }
+  return result;
+}
+
+module.exports = baseDifference;
+
+},{"./_SetCache":"../node_modules/lodash/_SetCache.js","./_arrayIncludes":"../node_modules/lodash/_arrayIncludes.js","./_arrayIncludesWith":"../node_modules/lodash/_arrayIncludesWith.js","./_arrayMap":"../node_modules/lodash/_arrayMap.js","./_baseUnary":"../node_modules/lodash/_baseUnary.js","./_cacheHas":"../node_modules/lodash/_cacheHas.js"}],"../node_modules/lodash/without.js":[function(require,module,exports) {
+var baseDifference = require('./_baseDifference'),
+    baseRest = require('./_baseRest'),
+    isArrayLikeObject = require('./isArrayLikeObject');
+
+/**
+ * Creates an array excluding all given values using
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * for equality comparisons.
+ *
+ * **Note:** Unlike `_.pull`, this method returns a new array.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Array
+ * @param {Array} array The array to inspect.
+ * @param {...*} [values] The values to exclude.
+ * @returns {Array} Returns the new array of filtered values.
+ * @see _.difference, _.xor
+ * @example
+ *
+ * _.without([2, 1, 2, 3], 1, 2);
+ * // => [3]
+ */
+var without = baseRest(function(array, values) {
+  return isArrayLikeObject(array)
+    ? baseDifference(array, values)
+    : [];
+});
+
+module.exports = without;
+
+},{"./_baseDifference":"../node_modules/lodash/_baseDifference.js","./_baseRest":"../node_modules/lodash/_baseRest.js","./isArrayLikeObject":"../node_modules/lodash/isArrayLikeObject.js"}],"../node_modules/json-schema-merge-allof/src/index.js":[function(require,module,exports) {
+var cloneDeep = require('lodash/cloneDeep')
+var compare = require('json-schema-compare')
+var computeLcm = require('compute-lcm')
+var defaultsDeep = require('lodash/defaultsDeep')
+var flatten = require('lodash/flatten')
+var flattenDeep = require('lodash/flattenDeep')
+var intersection = require('lodash/intersection')
+var intersectionWith = require('lodash/intersectionWith')
+var isEqual = require('lodash/isEqual')
+var isPlainObject = require('lodash/isPlainObject')
+var pullAll = require('lodash/pullAll')
+var sortBy = require('lodash/sortBy')
+var forEach = require('lodash/forEach')
+var uniq = require('lodash/uniq')
+var uniqWith = require('lodash/uniqWith')
+var without = require('lodash/without')
+
+var withoutArr = (arr, ...rest) => without.apply(null, [arr].concat(flatten(rest)))
+var isPropertyRelated = (key) => contains(propertyRelated, key)
+var isItemsRelated = (key) => contains(itemsRelated, key)
+var contains = (arr, val) => arr.indexOf(val) !== -1
+var isEmptySchema = (obj) => (!keys(obj).length) && obj !== false && obj !== true
+var isSchema = (val) => isPlainObject(val) || val === true || val === false
+var isFalse = (val) => val === false
+var isTrue = (val) => val === true
+var schemaResolver = (compacted, key, mergeSchemas) => mergeSchemas(compacted)
+var stringArray = (values) => sortBy(uniq(flattenDeep(values)))
+var notUndefined = (val) => val !== undefined
+var allUniqueKeys = (arr) => uniq(flattenDeep(arr.map(keys)))
+
+// resolvers
+var first = compacted => compacted[0]
+var required = compacted => stringArray(compacted)
+var maximumValue = compacted => Math.max.apply(Math, compacted)
+var minimumValue = compacted => Math.min.apply(Math, compacted)
+var uniqueItems = compacted => compacted.some(isTrue)
+var examples = compacted => uniqWith(flatten(compacted), isEqual)
+
+function compareProp(key) {
+  return function(a, b) {
+    return compare({
+      [key]: a
+    }, {[key]: b})
+  }
+}
+
+function getAllOf(schema) {
+  if (Array.isArray(schema.allOf)) {
+    var allOf = schema.allOf
+    delete schema.allOf
+    return [schema].concat(allOf.map(function(allSchema) {
+      return getAllOf(allSchema)
+    }))
+  } else {
+    return [schema]
+  }
+}
+
+function getValues(schemas, key) {
+  return schemas.map(function(schema) {
+    return schema && schema[key]
+  })
+}
+
+function getItemSchemas(subSchemas, key) {
+  return subSchemas.map(function(sub) {
+    if (!sub) {
+      return
+    }
+
+    if (Array.isArray(sub.items)) {
+      var schemaAtPos = sub.items[key]
+      if (isSchema(schemaAtPos)) {
+        return schemaAtPos
+      } else if (sub.hasOwnProperty('additionalItems')) {
+        return sub.additionalItems
+      }
+    } else {
+      return sub.items
+    }
+  })
+}
+
+function tryMergeSchemaGroups(schemaGroups, mergeSchemas) {
+  return schemaGroups.map(function(schemas, index) {
+    try {
+      return mergeSchemas(schemas, index)
+    } catch (e) {
+      return undefined
+    }
+  }).filter(notUndefined)
+}
+
+function getAdditionalSchemas(subSchemas) {
+  return subSchemas.map(function(sub) {
+    if (!sub) {
+      return
+    }
+    if (Array.isArray(sub.items)) {
+      return sub.additionalItems
+    }
+    return sub.items
+  })
+}
+
+function keys(obj) {
+  if (isPlainObject(obj) || Array.isArray(obj)) {
+    return Object.keys(obj)
+  } else {
+    return []
+  }
+}
+
+function getAnyOfCombinations(arrOfArrays, combinations) {
+  combinations = combinations || []
+  if (!arrOfArrays.length) {
+    return combinations
+  }
+
+  var values = arrOfArrays.slice(0).shift()
+  var rest = arrOfArrays.slice(1)
+  if (combinations.length) {
+    return getAnyOfCombinations(rest, flatten(combinations.map(combination => values.map(item => ([item].concat(combination))))))
+  }
+  return getAnyOfCombinations(rest, values.map(item => (item)))
+}
+
+function mergeWithArray(base, newItems) {
+  if (Array.isArray(base)) {
+    base.splice.apply(base, [0, 0].concat(newItems))
+    return base
+  } else {
+    return newItems
+  }
+}
+
+function throwIncompatible(values, paths) {
+  var asJSON
+  try {
+    asJSON = values.map(function(val) {
+      return JSON.stringify(val, null, 2)
+    }).join('\n')
+  } catch (variable) {
+    asJSON = values.join(', ')
+  }
+  throw new Error('Could not resolve values for path:"' + paths.join('.') + '". They are probably incompatible. Values: \n' + asJSON)
+}
+
+function cleanupReturnValue(returnObject) {
+  // cleanup empty
+  for (var prop in returnObject) {
+    if (returnObject.hasOwnProperty(prop) && isEmptySchema(returnObject[prop])) {
+      delete returnObject[prop]
+    }
+  }
+  return returnObject
+}
+
+function createRequiredSubMerger(mergeSchemas, key, parents) {
+  return function(schemas, subKey) {
+    if (subKey === undefined) {
+      throw new Error('You need to call merger with a key for the property name or index if array.')
+    }
+    subKey = String(subKey)
+    return mergeSchemas(schemas, null, parents.concat(key, subKey))
+  }
+}
+
+function callGroupResolver(keys, resolverName, schemas, mergeSchemas, options, parents) {
+  if (keys.length) {
+    var resolver = options.resolvers[resolverName]
+    if (!resolver) {
+      throw new Error('No resolver found for ' + resolverName)
+    }
+
+    var compacted = uniqWith(schemas.map(function(schema) {
+      return keys.reduce(function(all, key) {
+        if (schema[key] !== undefined) {
+          all[key] = schema[key]
+        }
+        return all
+      }, {})
+    }).filter(notUndefined), compare)
+
+    var related = resolverName === 'properties'
+      ? propertyRelated
+      : itemsRelated
+
+    var mergers = related.reduce(function(all, key) {
+      if (contains(schemaGroupProps, key)) {
+        all[key] = createRequiredSubMerger(mergeSchemas, key, parents)
+      } else {
+        all[key] = function(schemas) {
+          return mergeSchemas(schemas, null, parents.concat(key))
+        }
+      }
+      return all
+    }, {})
+
+    if (resolverName === 'items') {
+      mergers.itemsArray = createRequiredSubMerger(mergeSchemas, 'items', parents)
+      mergers.items = function(schemas) {
+        return mergeSchemas(schemas, null, parents.concat('items'))
+      }
+    }
+
+    var result = resolver(compacted, parents.concat(resolverName), mergers, options)
+
+    if (!isPlainObject(result)) {
+      throwIncompatible(compacted, parents.concat(resolverName))
+    }
+
+    return cleanupReturnValue(result)
+  }
+}
+
+// Provide source when array
+function mergeSchemaGroup(group, mergeSchemas, source) {
+  var allKeys = allUniqueKeys(source || group)
+  var extractor = source
+    ? getItemSchemas
+    : getValues
+  return allKeys.reduce(function(all, key) {
+    var schemas = extractor(group, key)
+    var compacted = uniqWith(schemas.filter(notUndefined), compare)
+    all[key] = mergeSchemas(compacted, key)
+    return all
+  }, source
+    ? []
+    : {})
+}
+
+function removeFalseSchemas(target) {
+  forEach(target, function(schema, prop) {
+    if (schema === false) {
+      delete target[prop]
+    }
+  })
+}
+
+function removeFalseSchemasFromArray(target) {
+  forEach(target, function(schema, index) {
+    if (schema === false) {
+      target.splice(index, 1)
+    }
+  })
+}
+
+function createRequiredMetaArray(arr) {
+  return {required: arr}
+}
+
+var propertyRelated = ['properties', 'patternProperties', 'additionalProperties']
+var itemsRelated = ['items', 'additionalItems']
+var schemaGroupProps = ['properties', 'patternProperties', 'definitions', 'dependencies']
+var schemaArrays = ['anyOf', 'oneOf']
+var schemaProps = [
+  'additionalProperties',
+  'additionalItems',
+  'contains',
+  'propertyNames',
+  'not',
+  'items'
+]
+
+var defaultResolvers = {
+  type(compacted) {
+    if (compacted.some(Array.isArray)) {
+      var normalized = compacted.map(function(val) {
+        return Array.isArray(val)
+          ? val
+          : [val]
+      })
+      var common = intersection.apply(null, normalized)
+
+      if (common.length === 1) {
+        return common[0]
+      } else if (common.length > 1) {
+        return uniq(common)
+      }
+    }
+  },
+  properties(values, key, mergers, options) {
+    // first get rid of all non permitted properties
+    if (!options.ignoreAdditionalProperties) {
+      values.forEach(function(subSchema) {
+        var otherSubSchemas = values.filter(s => s !== subSchema)
+        var ownKeys = keys(subSchema.properties)
+        var ownPatternKeys = keys(subSchema.patternProperties)
+        var ownPatterns = ownPatternKeys.map(k => new RegExp(k))
+        otherSubSchemas.forEach(function(other) {
+          var allOtherKeys = keys(other.properties)
+          var keysMatchingPattern = allOtherKeys.filter(k => ownPatterns.some(pk => pk.test(k)))
+          var additionalKeys = withoutArr(allOtherKeys, ownKeys, keysMatchingPattern)
+          additionalKeys.forEach(function(key) {
+            other.properties[key] = mergers.properties([
+              other.properties[key], subSchema.additionalProperties
+            ], key)
+          })
+        })
+      })
+
+      // remove disallowed patternProperties
+      values.forEach(function(subSchema) {
+        var otherSubSchemas = values.filter(s => s !== subSchema)
+        var ownPatternKeys = keys(subSchema.patternProperties)
+        if (subSchema.additionalProperties === false) {
+          otherSubSchemas.forEach(function(other) {
+            var allOtherPatterns = keys(other.patternProperties)
+            var additionalPatternKeys = withoutArr(allOtherPatterns, ownPatternKeys)
+            additionalPatternKeys.forEach(key => delete other.patternProperties[key])
+          })
+        }
+      })
+    }
+
+    var returnObject = {
+      additionalProperties: mergers.additionalProperties(values.map(s => s.additionalProperties)),
+      patternProperties: mergeSchemaGroup(values.map(s => s.patternProperties), mergers.patternProperties),
+      properties: mergeSchemaGroup(values.map(s => s.properties), mergers.properties)
+    }
+
+    if (returnObject.additionalProperties === false) {
+      removeFalseSchemas(returnObject.properties)
+    }
+
+    return returnObject
+  },
+  dependencies(compacted, paths, mergeSchemas) {
+    var allChildren = allUniqueKeys(compacted)
+
+    return allChildren.reduce(function(all, childKey) {
+      var childSchemas = getValues(compacted, childKey)
+      var innerCompacted = uniqWith(childSchemas.filter(notUndefined), isEqual)
+
+      // to support dependencies
+      var innerArrays = innerCompacted.filter(Array.isArray)
+
+      if (innerArrays.length) {
+        if (innerArrays.length === innerCompacted.length) {
+          all[childKey] = stringArray(innerCompacted)
+        } else {
+          var innerSchemas = innerCompacted.filter(isSchema)
+          var arrayMetaScheams = innerArrays.map(createRequiredMetaArray)
+          all[childKey] = mergeSchemas(innerSchemas.concat(arrayMetaScheams), childKey)
+        }
+        return all
+      }
+
+      innerCompacted = uniqWith(innerCompacted, compare)
+
+      all[childKey] = mergeSchemas(innerCompacted, childKey)
+      return all
+    }, {})
+  },
+  items(values, paths, mergers) {
+    var items = values.map(s => s.items)
+    var itemsCompacted = items.filter(notUndefined)
+    var returnObject = {}
+
+    if (itemsCompacted.every(isSchema)) {
+      returnObject.items = mergers.items(items)
+    } else {
+      returnObject.items = mergeSchemaGroup(values, mergers.itemsArray, items)
+    }
+
+    var schemasAtLastPos
+    if (itemsCompacted.every(Array.isArray)) {
+      schemasAtLastPos = values.map(s => s.additionalItems)
+    } else if (itemsCompacted.some(Array.isArray)) {
+      schemasAtLastPos = getAdditionalSchemas(values)
+    }
+
+    if (schemasAtLastPos) {
+      returnObject.additionalItems = mergers.additionalItems(schemasAtLastPos)
+    }
+
+    if (returnObject.additionalItems === false && Array.isArray(returnObject.items)) {
+      removeFalseSchemasFromArray(returnObject.items)
+    }
+
+    return returnObject
+  },
+  oneOf(compacted, paths, mergeSchemas) {
+    var combinations = getAnyOfCombinations(cloneDeep(compacted))
+    var result = tryMergeSchemaGroups(combinations, mergeSchemas)
+    var unique = uniqWith(result, compare)
+
+    if (unique.length) {
+      return unique
+    }
+  },
+  not(compacted) {
+    return {anyOf: compacted}
+  },
+  pattern(compacted, paths, mergeSchemas, options, reportUnresolved) {
+    var key = paths.pop()
+    reportUnresolved(compacted.map(function(regexp) {
+      return {[key]: regexp}
+    }))
+  },
+  multipleOf(compacted) {
+    var integers = compacted.slice(0)
+    var factor = 1
+    while (integers.some(n => !Number.isInteger(n))) {
+      integers = integers.map(n => n * 10)
+      factor = factor * 10
+    }
+    return computeLcm(integers) / factor
+  },
+  enum(compacted) {
+    var enums = intersectionWith.apply(null, compacted.concat(isEqual))
+    if (enums.length) {
+      return sortBy(enums)
+    }
+  }
+}
+
+defaultResolvers.$id = first
+defaultResolvers.$ref = first
+defaultResolvers.$schema = first
+defaultResolvers.additionalItems = schemaResolver
+defaultResolvers.additionalProperties = schemaResolver
+defaultResolvers.anyOf = defaultResolvers.oneOf
+defaultResolvers.contains = schemaResolver
+defaultResolvers.default = first
+defaultResolvers.definitions = defaultResolvers.dependencies
+defaultResolvers.description = first
+defaultResolvers.examples = examples
+defaultResolvers.exclusiveMaximum = minimumValue
+defaultResolvers.exclusiveMinimum = maximumValue
+defaultResolvers.maximum = minimumValue
+defaultResolvers.maxItems = minimumValue
+defaultResolvers.maxLength = minimumValue
+defaultResolvers.maxProperties = minimumValue
+defaultResolvers.minimum = maximumValue
+defaultResolvers.minItems = maximumValue
+defaultResolvers.minLength = maximumValue
+defaultResolvers.minProperties = maximumValue
+defaultResolvers.propertyNames = schemaResolver
+defaultResolvers.required = required
+defaultResolvers.title = first
+defaultResolvers.uniqueItems = uniqueItems
+
+function merger(rootSchema, options, totalSchemas) {
+  totalSchemas = totalSchemas || []
+  options = defaultsDeep(options, {
+    ignoreAdditionalProperties: false,
+    resolvers: defaultResolvers
+  })
+
+  function mergeSchemas(schemas, base, parents) {
+    schemas = cloneDeep(schemas.filter(notUndefined))
+    parents = parents || []
+    var merged = isPlainObject(base)
+      ? base
+      : {}
+
+    // return undefined, an empty schema
+    if (!schemas.length) {
+      return
+    }
+
+    if (schemas.some(isFalse)) {
+      return false
+    }
+
+    if (schemas.every(isTrue)) {
+      return true
+    }
+
+    // there are no false and we don't need the true ones as they accept everything
+    schemas = schemas.filter(isPlainObject)
+
+    var allKeys = allUniqueKeys(schemas)
+
+    if (contains(allKeys, 'allOf')) {
+      return merger({
+        allOf: schemas
+      }, options, totalSchemas)
+    }
+
+    var propertyKeys = allKeys.filter(isPropertyRelated)
+    pullAll(allKeys, propertyKeys)
+
+    var itemKeys = allKeys.filter(isItemsRelated)
+    pullAll(allKeys, itemKeys)
+
+    allKeys.forEach(function(key) {
+      var values = getValues(schemas, key)
+      var compacted = uniqWith(values.filter(notUndefined), compareProp(key))
+
+      // arrayprops like anyOf and oneOf must be merged first, as they contains schemas
+      // allOf is treated differently alltogether
+      if (compacted.length === 1 && contains(schemaArrays, key)) {
+        merged[key] = compacted[0].map(function(schema) {
+          return mergeSchemas([schema], schema)
+        })
+        // prop groups must always be resolved
+      } else if (compacted.length === 1 && !contains(schemaGroupProps, key) && !contains(schemaProps, key)) {
+        merged[key] = compacted[0]
+      } else {
+        var resolver = options.resolvers[key] || options.resolvers.defaultResolver
+
+        if (!resolver) {
+          throw new Error('No resolver found for key ' + key + '. You can provide a resolver for this keyword in the options, or provide a default resolver.')
+        }
+
+        var merger
+        // get custom merger for groups
+        if (contains(schemaGroupProps, key) || contains(schemaArrays, key)) {
+          merger = createRequiredSubMerger(mergeSchemas, key, parents)
+        } else {
+          merger = function(schemas) {
+            return mergeSchemas(schemas, null, parents.concat(key))
+          }
+        }
+
+        var calledWithArray = false
+        merged[key] = resolver(compacted, parents.concat(key), merger, options, function(unresolvedSchemas) {
+          calledWithArray = Array.isArray(unresolvedSchemas)
+          return addToAllOf(unresolvedSchemas)
+        })
+
+        if (merged[key] === undefined && !calledWithArray) {
+          throwIncompatible(compacted, parents.concat(key))
+        } else if (merged[key] === undefined) {
+          delete merged[key]
+        }
+      }
+    })
+
+    Object.assign(merged, callGroupResolver(propertyKeys, 'properties', schemas, mergeSchemas, options, parents))
+    Object.assign(merged, callGroupResolver(itemKeys, 'items', schemas, mergeSchemas, options, parents))
+
+    function addToAllOf(unresolvedSchemas) {
+      merged.allOf = mergeWithArray(merged.allOf, unresolvedSchemas)
+    }
+
+    return merged
+  }
+
+  var allSchemas = flattenDeep(getAllOf(rootSchema))
+  var merged = mergeSchemas(allSchemas, rootSchema)
+
+  return merged
+}
+
+merger.options = {
+  resolvers: defaultResolvers
+}
+
+module.exports = merger
+
+},{"lodash/cloneDeep":"../node_modules/lodash/cloneDeep.js","json-schema-compare":"../node_modules/json-schema-compare/src/index.js","compute-lcm":"../node_modules/compute-lcm/lib/index.js","lodash/defaultsDeep":"../node_modules/lodash/defaultsDeep.js","lodash/flatten":"../node_modules/lodash/flatten.js","lodash/flattenDeep":"../node_modules/lodash/flattenDeep.js","lodash/intersection":"../node_modules/lodash/intersection.js","lodash/intersectionWith":"../node_modules/lodash/intersectionWith.js","lodash/isEqual":"../node_modules/lodash/isEqual.js","lodash/isPlainObject":"../node_modules/lodash/isPlainObject.js","lodash/pullAll":"../node_modules/lodash/pullAll.js","lodash/sortBy":"../node_modules/lodash/sortBy.js","lodash/forEach":"../node_modules/lodash/forEach.js","lodash/uniq":"../node_modules/lodash/uniq.js","lodash/uniqWith":"../node_modules/lodash/uniqWith.js","lodash/without":"../node_modules/lodash/without.js"}],"../node_modules/core-js-pure/internals/global.js":[function(require,module,exports) {
+var global = arguments[3];
+var check = function (it) {
+  return it && it.Math == Math && it;
+};
+
+// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+module.exports =
+  // eslint-disable-next-line es-x/no-global-this -- safe
+  check(typeof globalThis == 'object' && globalThis) ||
+  check(typeof window == 'object' && window) ||
+  // eslint-disable-next-line no-restricted-globals -- safe
+  check(typeof self == 'object' && self) ||
+  check(typeof global == 'object' && global) ||
+  // eslint-disable-next-line no-new-func -- fallback
+  (function () { return this; })() || Function('return this')();
+
+},{}],"../node_modules/core-js-pure/internals/fails.js":[function(require,module,exports) {
+module.exports = function (exec) {
+  try {
+    return !!exec();
+  } catch (error) {
+    return true;
+  }
+};
+
+},{}],"../node_modules/core-js-pure/internals/function-bind-native.js":[function(require,module,exports) {
+var fails = require('../internals/fails');
+
+module.exports = !fails(function () {
+  // eslint-disable-next-line es-x/no-function-prototype-bind -- safe
+  var test = (function () { /* empty */ }).bind();
+  // eslint-disable-next-line no-prototype-builtins -- safe
+  return typeof test != 'function' || test.hasOwnProperty('prototype');
+});
+
+},{"../internals/fails":"../node_modules/core-js-pure/internals/fails.js"}],"../node_modules/core-js-pure/internals/function-apply.js":[function(require,module,exports) {
+var NATIVE_BIND = require('../internals/function-bind-native');
+
+var FunctionPrototype = Function.prototype;
+var apply = FunctionPrototype.apply;
+var call = FunctionPrototype.call;
+
+// eslint-disable-next-line es-x/no-reflect -- safe
+module.exports = typeof Reflect == 'object' && Reflect.apply || (NATIVE_BIND ? call.bind(apply) : function () {
+  return call.apply(apply, arguments);
+});
+
+},{"../internals/function-bind-native":"../node_modules/core-js-pure/internals/function-bind-native.js"}],"../node_modules/core-js-pure/internals/function-uncurry-this.js":[function(require,module,exports) {
+var NATIVE_BIND = require('../internals/function-bind-native');
+
+var FunctionPrototype = Function.prototype;
+var bind = FunctionPrototype.bind;
+var call = FunctionPrototype.call;
+var uncurryThis = NATIVE_BIND && bind.bind(call, call);
+
+module.exports = NATIVE_BIND ? function (fn) {
+  return fn && uncurryThis(fn);
+} : function (fn) {
+  return fn && function () {
+    return call.apply(fn, arguments);
+  };
+};
+
+},{"../internals/function-bind-native":"../node_modules/core-js-pure/internals/function-bind-native.js"}],"../node_modules/core-js-pure/internals/is-callable.js":[function(require,module,exports) {
+// `IsCallable` abstract operation
+// https://tc39.es/ecma262/#sec-iscallable
+module.exports = function (argument) {
+  return typeof argument == 'function';
+};
+
+},{}],"../node_modules/core-js-pure/internals/descriptors.js":[function(require,module,exports) {
+var fails = require('../internals/fails');
+
+// Detect IE8's incomplete defineProperty implementation
+module.exports = !fails(function () {
+  // eslint-disable-next-line es-x/no-object-defineproperty -- required for testing
+  return Object.defineProperty({}, 1, { get: function () { return 7; } })[1] != 7;
+});
+
+},{"../internals/fails":"../node_modules/core-js-pure/internals/fails.js"}],"../node_modules/core-js-pure/internals/function-call.js":[function(require,module,exports) {
+var NATIVE_BIND = require('../internals/function-bind-native');
+
+var call = Function.prototype.call;
+
+module.exports = NATIVE_BIND ? call.bind(call) : function () {
+  return call.apply(call, arguments);
+};
+
+},{"../internals/function-bind-native":"../node_modules/core-js-pure/internals/function-bind-native.js"}],"../node_modules/core-js-pure/internals/object-property-is-enumerable.js":[function(require,module,exports) {
+'use strict';
+var $propertyIsEnumerable = {}.propertyIsEnumerable;
+// eslint-disable-next-line es-x/no-object-getownpropertydescriptor -- safe
+var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+
+// Nashorn ~ JDK8 bug
+var NASHORN_BUG = getOwnPropertyDescriptor && !$propertyIsEnumerable.call({ 1: 2 }, 1);
+
+// `Object.prototype.propertyIsEnumerable` method implementation
+// https://tc39.es/ecma262/#sec-object.prototype.propertyisenumerable
+exports.f = NASHORN_BUG ? function propertyIsEnumerable(V) {
+  var descriptor = getOwnPropertyDescriptor(this, V);
+  return !!descriptor && descriptor.enumerable;
+} : $propertyIsEnumerable;
+
+},{}],"../node_modules/core-js-pure/internals/create-property-descriptor.js":[function(require,module,exports) {
+module.exports = function (bitmap, value) {
+  return {
+    enumerable: !(bitmap & 1),
+    configurable: !(bitmap & 2),
+    writable: !(bitmap & 4),
+    value: value
+  };
+};
+
+},{}],"../node_modules/core-js-pure/internals/classof-raw.js":[function(require,module,exports) {
+var uncurryThis = require('../internals/function-uncurry-this');
+
+var toString = uncurryThis({}.toString);
+var stringSlice = uncurryThis(''.slice);
+
+module.exports = function (it) {
+  return stringSlice(toString(it), 8, -1);
+};
+
+},{"../internals/function-uncurry-this":"../node_modules/core-js-pure/internals/function-uncurry-this.js"}],"../node_modules/core-js-pure/internals/indexed-object.js":[function(require,module,exports) {
+var uncurryThis = require('../internals/function-uncurry-this');
+var fails = require('../internals/fails');
+var classof = require('../internals/classof-raw');
+
+var $Object = Object;
+var split = uncurryThis(''.split);
+
+// fallback for non-array-like ES3 and non-enumerable old V8 strings
+module.exports = fails(function () {
+  // throws an error in rhino, see https://github.com/mozilla/rhino/issues/346
+  // eslint-disable-next-line no-prototype-builtins -- safe
+  return !$Object('z').propertyIsEnumerable(0);
+}) ? function (it) {
+  return classof(it) == 'String' ? split(it, '') : $Object(it);
+} : $Object;
+
+},{"../internals/function-uncurry-this":"../node_modules/core-js-pure/internals/function-uncurry-this.js","../internals/fails":"../node_modules/core-js-pure/internals/fails.js","../internals/classof-raw":"../node_modules/core-js-pure/internals/classof-raw.js"}],"../node_modules/core-js-pure/internals/require-object-coercible.js":[function(require,module,exports) {
+var $TypeError = TypeError;
+
+// `RequireObjectCoercible` abstract operation
+// https://tc39.es/ecma262/#sec-requireobjectcoercible
+module.exports = function (it) {
+  if (it == undefined) throw $TypeError("Can't call method on " + it);
+  return it;
+};
+
+},{}],"../node_modules/core-js-pure/internals/to-indexed-object.js":[function(require,module,exports) {
+// toObject with fallback for non-array-like ES3 strings
+var IndexedObject = require('../internals/indexed-object');
+var requireObjectCoercible = require('../internals/require-object-coercible');
+
+module.exports = function (it) {
+  return IndexedObject(requireObjectCoercible(it));
+};
+
+},{"../internals/indexed-object":"../node_modules/core-js-pure/internals/indexed-object.js","../internals/require-object-coercible":"../node_modules/core-js-pure/internals/require-object-coercible.js"}],"../node_modules/core-js-pure/internals/is-object.js":[function(require,module,exports) {
+var isCallable = require('../internals/is-callable');
+
+module.exports = function (it) {
+  return typeof it == 'object' ? it !== null : isCallable(it);
+};
+
+},{"../internals/is-callable":"../node_modules/core-js-pure/internals/is-callable.js"}],"../node_modules/core-js-pure/internals/path.js":[function(require,module,exports) {
+module.exports = {};
+
+},{}],"../node_modules/core-js-pure/internals/get-built-in.js":[function(require,module,exports) {
+
+var path = require('../internals/path');
+var global = require('../internals/global');
+var isCallable = require('../internals/is-callable');
+
+var aFunction = function (variable) {
+  return isCallable(variable) ? variable : undefined;
+};
+
+module.exports = function (namespace, method) {
+  return arguments.length < 2 ? aFunction(path[namespace]) || aFunction(global[namespace])
+    : path[namespace] && path[namespace][method] || global[namespace] && global[namespace][method];
+};
+
+},{"../internals/path":"../node_modules/core-js-pure/internals/path.js","../internals/global":"../node_modules/core-js-pure/internals/global.js","../internals/is-callable":"../node_modules/core-js-pure/internals/is-callable.js"}],"../node_modules/core-js-pure/internals/object-is-prototype-of.js":[function(require,module,exports) {
+var uncurryThis = require('../internals/function-uncurry-this');
+
+module.exports = uncurryThis({}.isPrototypeOf);
+
+},{"../internals/function-uncurry-this":"../node_modules/core-js-pure/internals/function-uncurry-this.js"}],"../node_modules/core-js-pure/internals/engine-user-agent.js":[function(require,module,exports) {
+var getBuiltIn = require('../internals/get-built-in');
+
+module.exports = getBuiltIn('navigator', 'userAgent') || '';
+
+},{"../internals/get-built-in":"../node_modules/core-js-pure/internals/get-built-in.js"}],"../node_modules/core-js-pure/internals/engine-v8-version.js":[function(require,module,exports) {
+
+
+var global = require('../internals/global');
+var userAgent = require('../internals/engine-user-agent');
+
+var process = global.process;
+var Deno = global.Deno;
+var versions = process && process.versions || Deno && Deno.version;
+var v8 = versions && versions.v8;
+var match, version;
+
+if (v8) {
+  match = v8.split('.');
+  // in old Chrome, versions of V8 isn't V8 = Chrome / 10
+  // but their correct versions are not interesting for us
+  version = match[0] > 0 && match[0] < 4 ? 1 : +(match[0] + match[1]);
+}
+
+// BrowserFS NodeJS `process` polyfill incorrectly set `.v8` to `0.0`
+// so check `userAgent` even if `.v8` exists, but 0
+if (!version && userAgent) {
+  match = userAgent.match(/Edge\/(\d+)/);
+  if (!match || match[1] >= 74) {
+    match = userAgent.match(/Chrome\/(\d+)/);
+    if (match) version = +match[1];
+  }
+}
+
+module.exports = version;
+
+},{"../internals/global":"../node_modules/core-js-pure/internals/global.js","../internals/engine-user-agent":"../node_modules/core-js-pure/internals/engine-user-agent.js"}],"../node_modules/core-js-pure/internals/native-symbol.js":[function(require,module,exports) {
+/* eslint-disable es-x/no-symbol -- required for testing */
+var V8_VERSION = require('../internals/engine-v8-version');
+var fails = require('../internals/fails');
+
+// eslint-disable-next-line es-x/no-object-getownpropertysymbols -- required for testing
+module.exports = !!Object.getOwnPropertySymbols && !fails(function () {
+  var symbol = Symbol();
+  // Chrome 38 Symbol has incorrect toString conversion
+  // `get-own-property-symbols` polyfill symbols converted to object are not Symbol instances
+  return !String(symbol) || !(Object(symbol) instanceof Symbol) ||
+    // Chrome 38-40 symbols are not inherited from DOM collections prototypes to instances
+    !Symbol.sham && V8_VERSION && V8_VERSION < 41;
+});
+
+},{"../internals/engine-v8-version":"../node_modules/core-js-pure/internals/engine-v8-version.js","../internals/fails":"../node_modules/core-js-pure/internals/fails.js"}],"../node_modules/core-js-pure/internals/use-symbol-as-uid.js":[function(require,module,exports) {
+/* eslint-disable es-x/no-symbol -- required for testing */
+var NATIVE_SYMBOL = require('../internals/native-symbol');
+
+module.exports = NATIVE_SYMBOL
+  && !Symbol.sham
+  && typeof Symbol.iterator == 'symbol';
+
+},{"../internals/native-symbol":"../node_modules/core-js-pure/internals/native-symbol.js"}],"../node_modules/core-js-pure/internals/is-symbol.js":[function(require,module,exports) {
+var getBuiltIn = require('../internals/get-built-in');
+var isCallable = require('../internals/is-callable');
+var isPrototypeOf = require('../internals/object-is-prototype-of');
+var USE_SYMBOL_AS_UID = require('../internals/use-symbol-as-uid');
+
+var $Object = Object;
+
+module.exports = USE_SYMBOL_AS_UID ? function (it) {
+  return typeof it == 'symbol';
+} : function (it) {
+  var $Symbol = getBuiltIn('Symbol');
+  return isCallable($Symbol) && isPrototypeOf($Symbol.prototype, $Object(it));
+};
+
+},{"../internals/get-built-in":"../node_modules/core-js-pure/internals/get-built-in.js","../internals/is-callable":"../node_modules/core-js-pure/internals/is-callable.js","../internals/object-is-prototype-of":"../node_modules/core-js-pure/internals/object-is-prototype-of.js","../internals/use-symbol-as-uid":"../node_modules/core-js-pure/internals/use-symbol-as-uid.js"}],"../node_modules/core-js-pure/internals/try-to-string.js":[function(require,module,exports) {
+var $String = String;
+
+module.exports = function (argument) {
+  try {
+    return $String(argument);
+  } catch (error) {
+    return 'Object';
+  }
+};
+
+},{}],"../node_modules/core-js-pure/internals/a-callable.js":[function(require,module,exports) {
+var isCallable = require('../internals/is-callable');
+var tryToString = require('../internals/try-to-string');
+
+var $TypeError = TypeError;
+
+// `Assert: IsCallable(argument) is true`
+module.exports = function (argument) {
+  if (isCallable(argument)) return argument;
+  throw $TypeError(tryToString(argument) + ' is not a function');
+};
+
+},{"../internals/is-callable":"../node_modules/core-js-pure/internals/is-callable.js","../internals/try-to-string":"../node_modules/core-js-pure/internals/try-to-string.js"}],"../node_modules/core-js-pure/internals/get-method.js":[function(require,module,exports) {
+var aCallable = require('../internals/a-callable');
+
+// `GetMethod` abstract operation
+// https://tc39.es/ecma262/#sec-getmethod
+module.exports = function (V, P) {
+  var func = V[P];
+  return func == null ? undefined : aCallable(func);
+};
+
+},{"../internals/a-callable":"../node_modules/core-js-pure/internals/a-callable.js"}],"../node_modules/core-js-pure/internals/ordinary-to-primitive.js":[function(require,module,exports) {
+var call = require('../internals/function-call');
+var isCallable = require('../internals/is-callable');
+var isObject = require('../internals/is-object');
+
+var $TypeError = TypeError;
+
+// `OrdinaryToPrimitive` abstract operation
+// https://tc39.es/ecma262/#sec-ordinarytoprimitive
+module.exports = function (input, pref) {
+  var fn, val;
+  if (pref === 'string' && isCallable(fn = input.toString) && !isObject(val = call(fn, input))) return val;
+  if (isCallable(fn = input.valueOf) && !isObject(val = call(fn, input))) return val;
+  if (pref !== 'string' && isCallable(fn = input.toString) && !isObject(val = call(fn, input))) return val;
+  throw $TypeError("Can't convert object to primitive value");
+};
+
+},{"../internals/function-call":"../node_modules/core-js-pure/internals/function-call.js","../internals/is-callable":"../node_modules/core-js-pure/internals/is-callable.js","../internals/is-object":"../node_modules/core-js-pure/internals/is-object.js"}],"../node_modules/core-js-pure/internals/is-pure.js":[function(require,module,exports) {
+module.exports = true;
+
+},{}],"../node_modules/core-js-pure/internals/define-global-property.js":[function(require,module,exports) {
+
+var global = require('../internals/global');
+
+// eslint-disable-next-line es-x/no-object-defineproperty -- safe
+var defineProperty = Object.defineProperty;
+
+module.exports = function (key, value) {
+  try {
+    defineProperty(global, key, { value: value, configurable: true, writable: true });
+  } catch (error) {
+    global[key] = value;
+  } return value;
+};
+
+},{"../internals/global":"../node_modules/core-js-pure/internals/global.js"}],"../node_modules/core-js-pure/internals/shared-store.js":[function(require,module,exports) {
+
+var global = require('../internals/global');
+var defineGlobalProperty = require('../internals/define-global-property');
+
+var SHARED = '__core-js_shared__';
+var store = global[SHARED] || defineGlobalProperty(SHARED, {});
+
+module.exports = store;
+
+},{"../internals/global":"../node_modules/core-js-pure/internals/global.js","../internals/define-global-property":"../node_modules/core-js-pure/internals/define-global-property.js"}],"../node_modules/core-js-pure/internals/shared.js":[function(require,module,exports) {
+var IS_PURE = require('../internals/is-pure');
+var store = require('../internals/shared-store');
+
+(module.exports = function (key, value) {
+  return store[key] || (store[key] = value !== undefined ? value : {});
+})('versions', []).push({
+  version: '3.23.3',
+  mode: IS_PURE ? 'pure' : 'global',
+  copyright: '© 2014-2022 Denis Pushkarev (zloirock.ru)',
+  license: 'https://github.com/zloirock/core-js/blob/v3.23.3/LICENSE',
+  source: 'https://github.com/zloirock/core-js'
+});
+
+},{"../internals/is-pure":"../node_modules/core-js-pure/internals/is-pure.js","../internals/shared-store":"../node_modules/core-js-pure/internals/shared-store.js"}],"../node_modules/core-js-pure/internals/to-object.js":[function(require,module,exports) {
+var requireObjectCoercible = require('../internals/require-object-coercible');
+
+var $Object = Object;
+
+// `ToObject` abstract operation
+// https://tc39.es/ecma262/#sec-toobject
+module.exports = function (argument) {
+  return $Object(requireObjectCoercible(argument));
+};
+
+},{"../internals/require-object-coercible":"../node_modules/core-js-pure/internals/require-object-coercible.js"}],"../node_modules/core-js-pure/internals/has-own-property.js":[function(require,module,exports) {
+var uncurryThis = require('../internals/function-uncurry-this');
+var toObject = require('../internals/to-object');
+
+var hasOwnProperty = uncurryThis({}.hasOwnProperty);
+
+// `HasOwnProperty` abstract operation
+// https://tc39.es/ecma262/#sec-hasownproperty
+// eslint-disable-next-line es-x/no-object-hasown -- safe
+module.exports = Object.hasOwn || function hasOwn(it, key) {
+  return hasOwnProperty(toObject(it), key);
+};
+
+},{"../internals/function-uncurry-this":"../node_modules/core-js-pure/internals/function-uncurry-this.js","../internals/to-object":"../node_modules/core-js-pure/internals/to-object.js"}],"../node_modules/core-js-pure/internals/uid.js":[function(require,module,exports) {
+var uncurryThis = require('../internals/function-uncurry-this');
+
+var id = 0;
+var postfix = Math.random();
+var toString = uncurryThis(1.0.toString);
+
+module.exports = function (key) {
+  return 'Symbol(' + (key === undefined ? '' : key) + ')_' + toString(++id + postfix, 36);
+};
+
+},{"../internals/function-uncurry-this":"../node_modules/core-js-pure/internals/function-uncurry-this.js"}],"../node_modules/core-js-pure/internals/well-known-symbol.js":[function(require,module,exports) {
+
+var global = require('../internals/global');
+var shared = require('../internals/shared');
+var hasOwn = require('../internals/has-own-property');
+var uid = require('../internals/uid');
+var NATIVE_SYMBOL = require('../internals/native-symbol');
+var USE_SYMBOL_AS_UID = require('../internals/use-symbol-as-uid');
+
+var WellKnownSymbolsStore = shared('wks');
+var Symbol = global.Symbol;
+var symbolFor = Symbol && Symbol['for'];
+var createWellKnownSymbol = USE_SYMBOL_AS_UID ? Symbol : Symbol && Symbol.withoutSetter || uid;
+
+module.exports = function (name) {
+  if (!hasOwn(WellKnownSymbolsStore, name) || !(NATIVE_SYMBOL || typeof WellKnownSymbolsStore[name] == 'string')) {
+    var description = 'Symbol.' + name;
+    if (NATIVE_SYMBOL && hasOwn(Symbol, name)) {
+      WellKnownSymbolsStore[name] = Symbol[name];
+    } else if (USE_SYMBOL_AS_UID && symbolFor) {
+      WellKnownSymbolsStore[name] = symbolFor(description);
+    } else {
+      WellKnownSymbolsStore[name] = createWellKnownSymbol(description);
+    }
+  } return WellKnownSymbolsStore[name];
+};
+
+},{"../internals/global":"../node_modules/core-js-pure/internals/global.js","../internals/shared":"../node_modules/core-js-pure/internals/shared.js","../internals/has-own-property":"../node_modules/core-js-pure/internals/has-own-property.js","../internals/uid":"../node_modules/core-js-pure/internals/uid.js","../internals/native-symbol":"../node_modules/core-js-pure/internals/native-symbol.js","../internals/use-symbol-as-uid":"../node_modules/core-js-pure/internals/use-symbol-as-uid.js"}],"../node_modules/core-js-pure/internals/to-primitive.js":[function(require,module,exports) {
+var call = require('../internals/function-call');
+var isObject = require('../internals/is-object');
+var isSymbol = require('../internals/is-symbol');
+var getMethod = require('../internals/get-method');
+var ordinaryToPrimitive = require('../internals/ordinary-to-primitive');
+var wellKnownSymbol = require('../internals/well-known-symbol');
+
+var $TypeError = TypeError;
+var TO_PRIMITIVE = wellKnownSymbol('toPrimitive');
+
+// `ToPrimitive` abstract operation
+// https://tc39.es/ecma262/#sec-toprimitive
+module.exports = function (input, pref) {
+  if (!isObject(input) || isSymbol(input)) return input;
+  var exoticToPrim = getMethod(input, TO_PRIMITIVE);
+  var result;
+  if (exoticToPrim) {
+    if (pref === undefined) pref = 'default';
+    result = call(exoticToPrim, input, pref);
+    if (!isObject(result) || isSymbol(result)) return result;
+    throw $TypeError("Can't convert object to primitive value");
+  }
+  if (pref === undefined) pref = 'number';
+  return ordinaryToPrimitive(input, pref);
+};
+
+},{"../internals/function-call":"../node_modules/core-js-pure/internals/function-call.js","../internals/is-object":"../node_modules/core-js-pure/internals/is-object.js","../internals/is-symbol":"../node_modules/core-js-pure/internals/is-symbol.js","../internals/get-method":"../node_modules/core-js-pure/internals/get-method.js","../internals/ordinary-to-primitive":"../node_modules/core-js-pure/internals/ordinary-to-primitive.js","../internals/well-known-symbol":"../node_modules/core-js-pure/internals/well-known-symbol.js"}],"../node_modules/core-js-pure/internals/to-property-key.js":[function(require,module,exports) {
+var toPrimitive = require('../internals/to-primitive');
+var isSymbol = require('../internals/is-symbol');
+
+// `ToPropertyKey` abstract operation
+// https://tc39.es/ecma262/#sec-topropertykey
+module.exports = function (argument) {
+  var key = toPrimitive(argument, 'string');
+  return isSymbol(key) ? key : key + '';
+};
+
+},{"../internals/to-primitive":"../node_modules/core-js-pure/internals/to-primitive.js","../internals/is-symbol":"../node_modules/core-js-pure/internals/is-symbol.js"}],"../node_modules/core-js-pure/internals/document-create-element.js":[function(require,module,exports) {
+
+var global = require('../internals/global');
+var isObject = require('../internals/is-object');
+
+var document = global.document;
+// typeof document.createElement is 'object' in old IE
+var EXISTS = isObject(document) && isObject(document.createElement);
+
+module.exports = function (it) {
+  return EXISTS ? document.createElement(it) : {};
+};
+
+},{"../internals/global":"../node_modules/core-js-pure/internals/global.js","../internals/is-object":"../node_modules/core-js-pure/internals/is-object.js"}],"../node_modules/core-js-pure/internals/ie8-dom-define.js":[function(require,module,exports) {
+var DESCRIPTORS = require('../internals/descriptors');
+var fails = require('../internals/fails');
+var createElement = require('../internals/document-create-element');
+
+// Thanks to IE8 for its funny defineProperty
+module.exports = !DESCRIPTORS && !fails(function () {
+  // eslint-disable-next-line es-x/no-object-defineproperty -- required for testing
+  return Object.defineProperty(createElement('div'), 'a', {
+    get: function () { return 7; }
+  }).a != 7;
+});
+
+},{"../internals/descriptors":"../node_modules/core-js-pure/internals/descriptors.js","../internals/fails":"../node_modules/core-js-pure/internals/fails.js","../internals/document-create-element":"../node_modules/core-js-pure/internals/document-create-element.js"}],"../node_modules/core-js-pure/internals/object-get-own-property-descriptor.js":[function(require,module,exports) {
+var DESCRIPTORS = require('../internals/descriptors');
+var call = require('../internals/function-call');
+var propertyIsEnumerableModule = require('../internals/object-property-is-enumerable');
+var createPropertyDescriptor = require('../internals/create-property-descriptor');
+var toIndexedObject = require('../internals/to-indexed-object');
+var toPropertyKey = require('../internals/to-property-key');
+var hasOwn = require('../internals/has-own-property');
+var IE8_DOM_DEFINE = require('../internals/ie8-dom-define');
+
+// eslint-disable-next-line es-x/no-object-getownpropertydescriptor -- safe
+var $getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+
+// `Object.getOwnPropertyDescriptor` method
+// https://tc39.es/ecma262/#sec-object.getownpropertydescriptor
+exports.f = DESCRIPTORS ? $getOwnPropertyDescriptor : function getOwnPropertyDescriptor(O, P) {
+  O = toIndexedObject(O);
+  P = toPropertyKey(P);
+  if (IE8_DOM_DEFINE) try {
+    return $getOwnPropertyDescriptor(O, P);
+  } catch (error) { /* empty */ }
+  if (hasOwn(O, P)) return createPropertyDescriptor(!call(propertyIsEnumerableModule.f, O, P), O[P]);
+};
+
+},{"../internals/descriptors":"../node_modules/core-js-pure/internals/descriptors.js","../internals/function-call":"../node_modules/core-js-pure/internals/function-call.js","../internals/object-property-is-enumerable":"../node_modules/core-js-pure/internals/object-property-is-enumerable.js","../internals/create-property-descriptor":"../node_modules/core-js-pure/internals/create-property-descriptor.js","../internals/to-indexed-object":"../node_modules/core-js-pure/internals/to-indexed-object.js","../internals/to-property-key":"../node_modules/core-js-pure/internals/to-property-key.js","../internals/has-own-property":"../node_modules/core-js-pure/internals/has-own-property.js","../internals/ie8-dom-define":"../node_modules/core-js-pure/internals/ie8-dom-define.js"}],"../node_modules/core-js-pure/internals/is-forced.js":[function(require,module,exports) {
+var fails = require('../internals/fails');
+var isCallable = require('../internals/is-callable');
+
+var replacement = /#|\.prototype\./;
+
+var isForced = function (feature, detection) {
+  var value = data[normalize(feature)];
+  return value == POLYFILL ? true
+    : value == NATIVE ? false
+    : isCallable(detection) ? fails(detection)
+    : !!detection;
+};
+
+var normalize = isForced.normalize = function (string) {
+  return String(string).replace(replacement, '.').toLowerCase();
+};
+
+var data = isForced.data = {};
+var NATIVE = isForced.NATIVE = 'N';
+var POLYFILL = isForced.POLYFILL = 'P';
+
+module.exports = isForced;
+
+},{"../internals/fails":"../node_modules/core-js-pure/internals/fails.js","../internals/is-callable":"../node_modules/core-js-pure/internals/is-callable.js"}],"../node_modules/core-js-pure/internals/function-bind-context.js":[function(require,module,exports) {
+var uncurryThis = require('../internals/function-uncurry-this');
+var aCallable = require('../internals/a-callable');
+var NATIVE_BIND = require('../internals/function-bind-native');
+
+var bind = uncurryThis(uncurryThis.bind);
+
+// optional / simple context binding
+module.exports = function (fn, that) {
+  aCallable(fn);
+  return that === undefined ? fn : NATIVE_BIND ? bind(fn, that) : function (/* ...args */) {
+    return fn.apply(that, arguments);
+  };
+};
+
+},{"../internals/function-uncurry-this":"../node_modules/core-js-pure/internals/function-uncurry-this.js","../internals/a-callable":"../node_modules/core-js-pure/internals/a-callable.js","../internals/function-bind-native":"../node_modules/core-js-pure/internals/function-bind-native.js"}],"../node_modules/core-js-pure/internals/v8-prototype-define-bug.js":[function(require,module,exports) {
+var DESCRIPTORS = require('../internals/descriptors');
+var fails = require('../internals/fails');
+
+// V8 ~ Chrome 36-
+// https://bugs.chromium.org/p/v8/issues/detail?id=3334
+module.exports = DESCRIPTORS && fails(function () {
+  // eslint-disable-next-line es-x/no-object-defineproperty -- required for testing
+  return Object.defineProperty(function () { /* empty */ }, 'prototype', {
+    value: 42,
+    writable: false
+  }).prototype != 42;
+});
+
+},{"../internals/descriptors":"../node_modules/core-js-pure/internals/descriptors.js","../internals/fails":"../node_modules/core-js-pure/internals/fails.js"}],"../node_modules/core-js-pure/internals/an-object.js":[function(require,module,exports) {
+var isObject = require('../internals/is-object');
+
+var $String = String;
+var $TypeError = TypeError;
+
+// `Assert: Type(argument) is Object`
+module.exports = function (argument) {
+  if (isObject(argument)) return argument;
+  throw $TypeError($String(argument) + ' is not an object');
+};
+
+},{"../internals/is-object":"../node_modules/core-js-pure/internals/is-object.js"}],"../node_modules/core-js-pure/internals/object-define-property.js":[function(require,module,exports) {
+var DESCRIPTORS = require('../internals/descriptors');
+var IE8_DOM_DEFINE = require('../internals/ie8-dom-define');
+var V8_PROTOTYPE_DEFINE_BUG = require('../internals/v8-prototype-define-bug');
+var anObject = require('../internals/an-object');
+var toPropertyKey = require('../internals/to-property-key');
+
+var $TypeError = TypeError;
+// eslint-disable-next-line es-x/no-object-defineproperty -- safe
+var $defineProperty = Object.defineProperty;
+// eslint-disable-next-line es-x/no-object-getownpropertydescriptor -- safe
+var $getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+var ENUMERABLE = 'enumerable';
+var CONFIGURABLE = 'configurable';
+var WRITABLE = 'writable';
+
+// `Object.defineProperty` method
+// https://tc39.es/ecma262/#sec-object.defineproperty
+exports.f = DESCRIPTORS ? V8_PROTOTYPE_DEFINE_BUG ? function defineProperty(O, P, Attributes) {
+  anObject(O);
+  P = toPropertyKey(P);
+  anObject(Attributes);
+  if (typeof O === 'function' && P === 'prototype' && 'value' in Attributes && WRITABLE in Attributes && !Attributes[WRITABLE]) {
+    var current = $getOwnPropertyDescriptor(O, P);
+    if (current && current[WRITABLE]) {
+      O[P] = Attributes.value;
+      Attributes = {
+        configurable: CONFIGURABLE in Attributes ? Attributes[CONFIGURABLE] : current[CONFIGURABLE],
+        enumerable: ENUMERABLE in Attributes ? Attributes[ENUMERABLE] : current[ENUMERABLE],
+        writable: false
+      };
+    }
+  } return $defineProperty(O, P, Attributes);
+} : $defineProperty : function defineProperty(O, P, Attributes) {
+  anObject(O);
+  P = toPropertyKey(P);
+  anObject(Attributes);
+  if (IE8_DOM_DEFINE) try {
+    return $defineProperty(O, P, Attributes);
+  } catch (error) { /* empty */ }
+  if ('get' in Attributes || 'set' in Attributes) throw $TypeError('Accessors not supported');
+  if ('value' in Attributes) O[P] = Attributes.value;
+  return O;
+};
+
+},{"../internals/descriptors":"../node_modules/core-js-pure/internals/descriptors.js","../internals/ie8-dom-define":"../node_modules/core-js-pure/internals/ie8-dom-define.js","../internals/v8-prototype-define-bug":"../node_modules/core-js-pure/internals/v8-prototype-define-bug.js","../internals/an-object":"../node_modules/core-js-pure/internals/an-object.js","../internals/to-property-key":"../node_modules/core-js-pure/internals/to-property-key.js"}],"../node_modules/core-js-pure/internals/create-non-enumerable-property.js":[function(require,module,exports) {
+var DESCRIPTORS = require('../internals/descriptors');
+var definePropertyModule = require('../internals/object-define-property');
+var createPropertyDescriptor = require('../internals/create-property-descriptor');
+
+module.exports = DESCRIPTORS ? function (object, key, value) {
+  return definePropertyModule.f(object, key, createPropertyDescriptor(1, value));
+} : function (object, key, value) {
+  object[key] = value;
+  return object;
+};
+
+},{"../internals/descriptors":"../node_modules/core-js-pure/internals/descriptors.js","../internals/object-define-property":"../node_modules/core-js-pure/internals/object-define-property.js","../internals/create-property-descriptor":"../node_modules/core-js-pure/internals/create-property-descriptor.js"}],"../node_modules/core-js-pure/internals/export.js":[function(require,module,exports) {
+
+'use strict';
+var global = require('../internals/global');
+var apply = require('../internals/function-apply');
+var uncurryThis = require('../internals/function-uncurry-this');
+var isCallable = require('../internals/is-callable');
+var getOwnPropertyDescriptor = require('../internals/object-get-own-property-descriptor').f;
+var isForced = require('../internals/is-forced');
+var path = require('../internals/path');
+var bind = require('../internals/function-bind-context');
+var createNonEnumerableProperty = require('../internals/create-non-enumerable-property');
+var hasOwn = require('../internals/has-own-property');
+
+var wrapConstructor = function (NativeConstructor) {
+  var Wrapper = function (a, b, c) {
+    if (this instanceof Wrapper) {
+      switch (arguments.length) {
+        case 0: return new NativeConstructor();
+        case 1: return new NativeConstructor(a);
+        case 2: return new NativeConstructor(a, b);
+      } return new NativeConstructor(a, b, c);
+    } return apply(NativeConstructor, this, arguments);
+  };
+  Wrapper.prototype = NativeConstructor.prototype;
+  return Wrapper;
+};
+
+/*
+  options.target         - name of the target object
+  options.global         - target is the global object
+  options.stat           - export as static methods of target
+  options.proto          - export as prototype methods of target
+  options.real           - real prototype method for the `pure` version
+  options.forced         - export even if the native feature is available
+  options.bind           - bind methods to the target, required for the `pure` version
+  options.wrap           - wrap constructors to preventing global pollution, required for the `pure` version
+  options.unsafe         - use the simple assignment of property instead of delete + defineProperty
+  options.sham           - add a flag to not completely full polyfills
+  options.enumerable     - export as enumerable property
+  options.dontCallGetSet - prevent calling a getter on target
+  options.name           - the .name of the function if it does not match the key
+*/
+module.exports = function (options, source) {
+  var TARGET = options.target;
+  var GLOBAL = options.global;
+  var STATIC = options.stat;
+  var PROTO = options.proto;
+
+  var nativeSource = GLOBAL ? global : STATIC ? global[TARGET] : (global[TARGET] || {}).prototype;
+
+  var target = GLOBAL ? path : path[TARGET] || createNonEnumerableProperty(path, TARGET, {})[TARGET];
+  var targetPrototype = target.prototype;
+
+  var FORCED, USE_NATIVE, VIRTUAL_PROTOTYPE;
+  var key, sourceProperty, targetProperty, nativeProperty, resultProperty, descriptor;
+
+  for (key in source) {
+    FORCED = isForced(GLOBAL ? key : TARGET + (STATIC ? '.' : '#') + key, options.forced);
+    // contains in native
+    USE_NATIVE = !FORCED && nativeSource && hasOwn(nativeSource, key);
+
+    targetProperty = target[key];
+
+    if (USE_NATIVE) if (options.dontCallGetSet) {
+      descriptor = getOwnPropertyDescriptor(nativeSource, key);
+      nativeProperty = descriptor && descriptor.value;
+    } else nativeProperty = nativeSource[key];
+
+    // export native or implementation
+    sourceProperty = (USE_NATIVE && nativeProperty) ? nativeProperty : source[key];
+
+    if (USE_NATIVE && typeof targetProperty == typeof sourceProperty) continue;
+
+    // bind timers to global for call from export context
+    if (options.bind && USE_NATIVE) resultProperty = bind(sourceProperty, global);
+    // wrap global constructors for prevent changs in this version
+    else if (options.wrap && USE_NATIVE) resultProperty = wrapConstructor(sourceProperty);
+    // make static versions for prototype methods
+    else if (PROTO && isCallable(sourceProperty)) resultProperty = uncurryThis(sourceProperty);
+    // default case
+    else resultProperty = sourceProperty;
+
+    // add a flag to not completely full polyfills
+    if (options.sham || (sourceProperty && sourceProperty.sham) || (targetProperty && targetProperty.sham)) {
+      createNonEnumerableProperty(resultProperty, 'sham', true);
+    }
+
+    createNonEnumerableProperty(target, key, resultProperty);
+
+    if (PROTO) {
+      VIRTUAL_PROTOTYPE = TARGET + 'Prototype';
+      if (!hasOwn(path, VIRTUAL_PROTOTYPE)) {
+        createNonEnumerableProperty(path, VIRTUAL_PROTOTYPE, {});
+      }
+      // export virtual prototype methods
+      createNonEnumerableProperty(path[VIRTUAL_PROTOTYPE], key, sourceProperty);
+      // export real prototype methods
+      if (options.real && targetPrototype && !targetPrototype[key]) {
+        createNonEnumerableProperty(targetPrototype, key, sourceProperty);
+      }
+    }
+  }
+};
+
+},{"../internals/global":"../node_modules/core-js-pure/internals/global.js","../internals/function-apply":"../node_modules/core-js-pure/internals/function-apply.js","../internals/function-uncurry-this":"../node_modules/core-js-pure/internals/function-uncurry-this.js","../internals/is-callable":"../node_modules/core-js-pure/internals/is-callable.js","../internals/object-get-own-property-descriptor":"../node_modules/core-js-pure/internals/object-get-own-property-descriptor.js","../internals/is-forced":"../node_modules/core-js-pure/internals/is-forced.js","../internals/path":"../node_modules/core-js-pure/internals/path.js","../internals/function-bind-context":"../node_modules/core-js-pure/internals/function-bind-context.js","../internals/create-non-enumerable-property":"../node_modules/core-js-pure/internals/create-non-enumerable-property.js","../internals/has-own-property":"../node_modules/core-js-pure/internals/has-own-property.js"}],"../node_modules/core-js-pure/internals/math-trunc.js":[function(require,module,exports) {
+var ceil = Math.ceil;
+var floor = Math.floor;
+
+// `Math.trunc` method
+// https://tc39.es/ecma262/#sec-math.trunc
+// eslint-disable-next-line es-x/no-math-trunc -- safe
+module.exports = Math.trunc || function trunc(x) {
+  var n = +x;
+  return (n > 0 ? floor : ceil)(n);
+};
+
+},{}],"../node_modules/core-js-pure/internals/to-integer-or-infinity.js":[function(require,module,exports) {
+var trunc = require('../internals/math-trunc');
+
+// `ToIntegerOrInfinity` abstract operation
+// https://tc39.es/ecma262/#sec-tointegerorinfinity
+module.exports = function (argument) {
+  var number = +argument;
+  // eslint-disable-next-line no-self-compare -- NaN check
+  return number !== number || number === 0 ? 0 : trunc(number);
+};
+
+},{"../internals/math-trunc":"../node_modules/core-js-pure/internals/math-trunc.js"}],"../node_modules/core-js-pure/internals/to-absolute-index.js":[function(require,module,exports) {
+var toIntegerOrInfinity = require('../internals/to-integer-or-infinity');
+
+var max = Math.max;
+var min = Math.min;
+
+// Helper for a popular repeating case of the spec:
+// Let integer be ? ToInteger(index).
+// If integer < 0, let result be max((length + integer), 0); else let result be min(integer, length).
+module.exports = function (index, length) {
+  var integer = toIntegerOrInfinity(index);
+  return integer < 0 ? max(integer + length, 0) : min(integer, length);
+};
+
+},{"../internals/to-integer-or-infinity":"../node_modules/core-js-pure/internals/to-integer-or-infinity.js"}],"../node_modules/core-js-pure/internals/to-length.js":[function(require,module,exports) {
+var toIntegerOrInfinity = require('../internals/to-integer-or-infinity');
+
+var min = Math.min;
+
+// `ToLength` abstract operation
+// https://tc39.es/ecma262/#sec-tolength
+module.exports = function (argument) {
+  return argument > 0 ? min(toIntegerOrInfinity(argument), 0x1FFFFFFFFFFFFF) : 0; // 2 ** 53 - 1 == 9007199254740991
+};
+
+},{"../internals/to-integer-or-infinity":"../node_modules/core-js-pure/internals/to-integer-or-infinity.js"}],"../node_modules/core-js-pure/internals/length-of-array-like.js":[function(require,module,exports) {
+var toLength = require('../internals/to-length');
+
+// `LengthOfArrayLike` abstract operation
+// https://tc39.es/ecma262/#sec-lengthofarraylike
+module.exports = function (obj) {
+  return toLength(obj.length);
+};
+
+},{"../internals/to-length":"../node_modules/core-js-pure/internals/to-length.js"}],"../node_modules/core-js-pure/internals/array-fill.js":[function(require,module,exports) {
+'use strict';
+var toObject = require('../internals/to-object');
+var toAbsoluteIndex = require('../internals/to-absolute-index');
+var lengthOfArrayLike = require('../internals/length-of-array-like');
+
+// `Array.prototype.fill` method implementation
+// https://tc39.es/ecma262/#sec-array.prototype.fill
+module.exports = function fill(value /* , start = 0, end = @length */) {
+  var O = toObject(this);
+  var length = lengthOfArrayLike(O);
+  var argumentsLength = arguments.length;
+  var index = toAbsoluteIndex(argumentsLength > 1 ? arguments[1] : undefined, length);
+  var end = argumentsLength > 2 ? arguments[2] : undefined;
+  var endPos = end === undefined ? length : toAbsoluteIndex(end, length);
+  while (endPos > index) O[index++] = value;
+  return O;
+};
+
+},{"../internals/to-object":"../node_modules/core-js-pure/internals/to-object.js","../internals/to-absolute-index":"../node_modules/core-js-pure/internals/to-absolute-index.js","../internals/length-of-array-like":"../node_modules/core-js-pure/internals/length-of-array-like.js"}],"../node_modules/core-js-pure/internals/add-to-unscopables.js":[function(require,module,exports) {
+module.exports = function () { /* empty */ };
+
+},{}],"../node_modules/core-js-pure/modules/es.array.fill.js":[function(require,module,exports) {
+var $ = require('../internals/export');
+var fill = require('../internals/array-fill');
+var addToUnscopables = require('../internals/add-to-unscopables');
+
+// `Array.prototype.fill` method
+// https://tc39.es/ecma262/#sec-array.prototype.fill
+$({ target: 'Array', proto: true }, {
+  fill: fill
+});
+
+// https://tc39.es/ecma262/#sec-array.prototype-@@unscopables
+addToUnscopables('fill');
+
+},{"../internals/export":"../node_modules/core-js-pure/internals/export.js","../internals/array-fill":"../node_modules/core-js-pure/internals/array-fill.js","../internals/add-to-unscopables":"../node_modules/core-js-pure/internals/add-to-unscopables.js"}],"../node_modules/core-js-pure/internals/entry-unbind.js":[function(require,module,exports) {
+var getBuiltIn = require('../internals/get-built-in');
+
+module.exports = getBuiltIn;
+
+},{"../internals/get-built-in":"../node_modules/core-js-pure/internals/get-built-in.js"}],"../node_modules/core-js-pure/es/array/fill.js":[function(require,module,exports) {
+require('../../modules/es.array.fill');
+var entryUnbind = require('../../internals/entry-unbind');
+
+module.exports = entryUnbind('Array', 'fill');
+
+},{"../../modules/es.array.fill":"../node_modules/core-js-pure/modules/es.array.fill.js","../../internals/entry-unbind":"../node_modules/core-js-pure/internals/entry-unbind.js"}],"../node_modules/core-js-pure/stable/array/fill.js":[function(require,module,exports) {
+var parent = require('../../es/array/fill');
+
+module.exports = parent;
+
+},{"../../es/array/fill":"../node_modules/core-js-pure/es/array/fill.js"}],"../node_modules/core-js-pure/actual/array/fill.js":[function(require,module,exports) {
+var parent = require('../../stable/array/fill');
+
+module.exports = parent;
+
+},{"../../stable/array/fill":"../node_modules/core-js-pure/stable/array/fill.js"}],"../node_modules/core-js-pure/full/array/fill.js":[function(require,module,exports) {
+var parent = require('../../actual/array/fill');
+
+module.exports = parent;
+
+},{"../../actual/array/fill":"../node_modules/core-js-pure/actual/array/fill.js"}],"../node_modules/core-js-pure/features/array/fill.js":[function(require,module,exports) {
+module.exports = require('../../full/array/fill');
+
+},{"../../full/array/fill":"../node_modules/core-js-pure/full/array/fill.js"}],"../node_modules/lodash/union.js":[function(require,module,exports) {
+var baseFlatten = require('./_baseFlatten'),
+    baseRest = require('./_baseRest'),
+    baseUniq = require('./_baseUniq'),
+    isArrayLikeObject = require('./isArrayLikeObject');
+
+/**
+ * Creates an array of unique values, in order, from all given arrays using
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * for equality comparisons.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Array
+ * @param {...Array} [arrays] The arrays to inspect.
+ * @returns {Array} Returns the new array of combined values.
+ * @example
+ *
+ * _.union([2], [1, 2]);
+ * // => [2, 1]
+ */
+var union = baseRest(function(arrays) {
+  return baseUniq(baseFlatten(arrays, 1, isArrayLikeObject, true));
+});
+
+module.exports = union;
+
+},{"./_baseFlatten":"../node_modules/lodash/_baseFlatten.js","./_baseRest":"../node_modules/lodash/_baseRest.js","./_baseUniq":"../node_modules/lodash/_baseUniq.js","./isArrayLikeObject":"../node_modules/lodash/isArrayLikeObject.js"}],"../node_modules/jsonpointer/jsonpointer.js":[function(require,module,exports) {
+var hasExcape = /~/;
+var escapeMatcher = /~[01]/g;
+
+function escapeReplacer(m) {
+  switch (m) {
+    case '~1':
+      return '/';
+
+    case '~0':
+      return '~';
+  }
+
+  throw new Error('Invalid tilde escape: ' + m);
+}
+
+function untilde(str) {
+  if (!hasExcape.test(str)) return str;
+  return str.replace(escapeMatcher, escapeReplacer);
+}
+
+function setter(obj, pointer, value) {
+  var part;
+  var hasNextPart;
+
+  for (var p = 1, len = pointer.length; p < len;) {
+    if (pointer[p] === 'constructor' || pointer[p] === 'prototype' || pointer[p] === '__proto__') return obj;
+    part = untilde(pointer[p++]);
+    hasNextPart = len > p;
+
+    if (typeof obj[part] === 'undefined') {
+      // support setting of /-
+      if (Array.isArray(obj) && part === '-') {
+        part = obj.length;
+      } // support nested objects/array when setting values
+
+
+      if (hasNextPart) {
+        if (pointer[p] !== '' && pointer[p] < Infinity || pointer[p] === '-') obj[part] = [];else obj[part] = {};
+      }
+    }
+
+    if (!hasNextPart) break;
+    obj = obj[part];
+  }
+
+  var oldValue = obj[part];
+  if (value === undefined) delete obj[part];else obj[part] = value;
+  return oldValue;
+}
+
+function compilePointer(pointer) {
+  if (typeof pointer === 'string') {
+    pointer = pointer.split('/');
+    if (pointer[0] === '') return pointer;
+    throw new Error('Invalid JSON pointer.');
+  } else if (Array.isArray(pointer)) {
+    for (const part of pointer) {
+      if (typeof part !== 'string' && typeof part !== 'number') {
+        throw new Error('Invalid JSON pointer. Must be of type string or number.');
+      }
+    }
+
+    return pointer;
+  }
+
+  throw new Error('Invalid JSON pointer.');
+}
+
+function get(obj, pointer) {
+  if (typeof obj !== 'object') throw new Error('Invalid input object.');
+  pointer = compilePointer(pointer);
+  var len = pointer.length;
+  if (len === 1) return obj;
+
+  for (var p = 1; p < len;) {
+    obj = obj[untilde(pointer[p++])];
+    if (len === p) return obj;
+    if (typeof obj !== 'object') return undefined;
+  }
+}
+
+function set(obj, pointer, value) {
+  if (typeof obj !== 'object') throw new Error('Invalid input object.');
+  pointer = compilePointer(pointer);
+  if (pointer.length === 0) throw new Error('Invalid JSON pointer for set.');
+  return setter(obj, pointer, value);
+}
+
+function compile(pointer) {
+  var compiled = compilePointer(pointer);
+  return {
+    get: function (object) {
+      return get(object, compiled);
+    },
+    set: function (object, value) {
+      return set(object, compiled, value);
+    }
+  };
+}
+
+exports.get = get;
+exports.set = set;
+exports.compile = compile;
+},{}],"../node_modules/@rjsf/core/dist/es/components/IconButton.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = IconButton;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function IconButton(props) {
+  var _props$type = props.type,
+      type = _props$type === void 0 ? "default" : _props$type,
+      icon = props.icon,
+      className = props.className,
+      otherProps = _objectWithoutProperties(props, ["type", "icon", "className"]);
+
+  return _react.default.createElement("button", _extends({
+    type: "button",
+    className: "btn btn-".concat(type, " ").concat(className)
+  }, otherProps), _react.default.createElement("i", {
+    className: "glyphicon glyphicon-".concat(icon)
+  }));
+}
+},{"react":"../node_modules/react/index.js"}],"../node_modules/@rjsf/core/dist/es/components/AddButton.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = AddButton;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _IconButton = _interopRequireDefault(require("./IconButton"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function AddButton(_ref) {
+  var className = _ref.className,
+      onClick = _ref.onClick,
+      disabled = _ref.disabled;
+  return _react.default.createElement("div", {
+    className: "row"
+  }, _react.default.createElement("p", {
+    className: "col-xs-3 col-xs-offset-9 text-right ".concat(className)
+  }, _react.default.createElement(_IconButton.default, {
+    type: "info",
+    icon: "plus",
+    className: "btn-add col-xs-12",
+    "aria-label": "Add",
+    tabIndex: "0",
+    onClick: onClick,
+    disabled: disabled
+  })));
+}
+},{"react":"../node_modules/react/index.js","./IconButton":"../node_modules/@rjsf/core/dist/es/components/IconButton.js"}],"../node_modules/core-js-pure/internals/array-includes.js":[function(require,module,exports) {
+var toIndexedObject = require('../internals/to-indexed-object');
+var toAbsoluteIndex = require('../internals/to-absolute-index');
+var lengthOfArrayLike = require('../internals/length-of-array-like');
+
+// `Array.prototype.{ indexOf, includes }` methods implementation
+var createMethod = function (IS_INCLUDES) {
+  return function ($this, el, fromIndex) {
+    var O = toIndexedObject($this);
+    var length = lengthOfArrayLike(O);
+    var index = toAbsoluteIndex(fromIndex, length);
+    var value;
+    // Array#includes uses SameValueZero equality algorithm
+    // eslint-disable-next-line no-self-compare -- NaN check
+    if (IS_INCLUDES && el != el) while (length > index) {
+      value = O[index++];
+      // eslint-disable-next-line no-self-compare -- NaN check
+      if (value != value) return true;
+    // Array#indexOf ignores holes, Array#includes - not
+    } else for (;length > index; index++) {
+      if ((IS_INCLUDES || index in O) && O[index] === el) return IS_INCLUDES || index || 0;
+    } return !IS_INCLUDES && -1;
+  };
+};
+
+module.exports = {
+  // `Array.prototype.includes` method
+  // https://tc39.es/ecma262/#sec-array.prototype.includes
+  includes: createMethod(true),
+  // `Array.prototype.indexOf` method
+  // https://tc39.es/ecma262/#sec-array.prototype.indexof
+  indexOf: createMethod(false)
+};
+
+},{"../internals/to-indexed-object":"../node_modules/core-js-pure/internals/to-indexed-object.js","../internals/to-absolute-index":"../node_modules/core-js-pure/internals/to-absolute-index.js","../internals/length-of-array-like":"../node_modules/core-js-pure/internals/length-of-array-like.js"}],"../node_modules/core-js-pure/modules/es.array.includes.js":[function(require,module,exports) {
+'use strict';
+var $ = require('../internals/export');
+var $includes = require('../internals/array-includes').includes;
+var fails = require('../internals/fails');
+var addToUnscopables = require('../internals/add-to-unscopables');
+
+// FF99+ bug
+var BROKEN_ON_SPARSE = fails(function () {
+  return !Array(1).includes();
+});
+
+// `Array.prototype.includes` method
+// https://tc39.es/ecma262/#sec-array.prototype.includes
+$({ target: 'Array', proto: true, forced: BROKEN_ON_SPARSE }, {
+  includes: function includes(el /* , fromIndex = 0 */) {
+    return $includes(this, el, arguments.length > 1 ? arguments[1] : undefined);
+  }
+});
+
+// https://tc39.es/ecma262/#sec-array.prototype-@@unscopables
+addToUnscopables('includes');
+
+},{"../internals/export":"../node_modules/core-js-pure/internals/export.js","../internals/array-includes":"../node_modules/core-js-pure/internals/array-includes.js","../internals/fails":"../node_modules/core-js-pure/internals/fails.js","../internals/add-to-unscopables":"../node_modules/core-js-pure/internals/add-to-unscopables.js"}],"../node_modules/core-js-pure/es/array/includes.js":[function(require,module,exports) {
+require('../../modules/es.array.includes');
+var entryUnbind = require('../../internals/entry-unbind');
+
+module.exports = entryUnbind('Array', 'includes');
+
+},{"../../modules/es.array.includes":"../node_modules/core-js-pure/modules/es.array.includes.js","../../internals/entry-unbind":"../node_modules/core-js-pure/internals/entry-unbind.js"}],"../node_modules/@rjsf/core/dist/es/types.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.registry = exports.fieldProps = void 0;
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var registry = _propTypes.default.shape({
+  ArrayFieldTemplate: _propTypes.default.elementType,
+  FieldTemplate: _propTypes.default.elementType,
+  ObjectFieldTemplate: _propTypes.default.elementType,
+  definitions: _propTypes.default.object.isRequired,
+  rootSchema: _propTypes.default.object,
+  fields: _propTypes.default.objectOf(_propTypes.default.elementType).isRequired,
+  formContext: _propTypes.default.object.isRequired,
+  widgets: _propTypes.default.objectOf(_propTypes.default.oneOfType([_propTypes.default.func, _propTypes.default.object])).isRequired
+});
+
+exports.registry = registry;
+var fieldProps = {
+  autofocus: _propTypes.default.bool,
+  disabled: _propTypes.default.bool,
+  errorSchema: _propTypes.default.object,
+  formData: _propTypes.default.any,
+  idSchema: _propTypes.default.object,
+  onBlur: _propTypes.default.func,
+  onChange: _propTypes.default.func.isRequired,
+  onFocus: _propTypes.default.func,
+  rawErrors: _propTypes.default.arrayOf(_propTypes.default.string),
+  readonly: _propTypes.default.bool,
+  registry: registry.isRequired,
+  required: _propTypes.default.bool,
+  schema: _propTypes.default.object.isRequired,
+  uiSchema: _propTypes.default.shape({
+    "ui:options": _propTypes.default.shape({
+      addable: _propTypes.default.bool,
+      orderable: _propTypes.default.bool,
+      removable: _propTypes.default.bool
+    })
+  })
+};
+exports.fieldProps = fieldProps;
+},{"prop-types":"../node_modules/prop-types/index.js"}],"../node_modules/nanoid/url-alphabet/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.urlAlphabet = void 0;
+let urlAlphabet = 'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict';
+exports.urlAlphabet = urlAlphabet;
+},{}],"../node_modules/nanoid/index.browser.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.random = exports.nanoid = exports.customRandom = exports.customAlphabet = void 0;
+Object.defineProperty(exports, "urlAlphabet", {
+  enumerable: true,
+  get: function () {
+    return _index.urlAlphabet;
+  }
+});
+
+var _index = require("./url-alphabet/index.js");
+
+var random = function random(bytes) {
+  return crypto.getRandomValues(new Uint8Array(bytes));
+};
+
+exports.random = random;
+
+var customRandom = function customRandom(alphabet, defaultSize, getRandom) {
+  var mask = (2 << Math.log(alphabet.length - 1) / Math.LN2) - 1;
+  var step = -~(1.6 * mask * defaultSize / alphabet.length);
+  return function () {
+    var size = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultSize;
+    var id = '';
+
+    while (true) {
+      var bytes = getRandom(step);
+      var j = step;
+
+      while (j--) {
+        id += alphabet[bytes[j] & mask] || '';
+        if (id.length === size) return id;
+      }
+    }
+  };
+};
+
+exports.customRandom = customRandom;
+
+var customAlphabet = function customAlphabet(alphabet) {
+  var size = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 21;
+  return customRandom(alphabet, size, random);
+};
+
+exports.customAlphabet = customAlphabet;
+
+var nanoid = function nanoid() {
+  var size = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 21;
+  return crypto.getRandomValues(new Uint8Array(size)).reduce(function (id, byte) {
+    byte &= 63;
+
+    if (byte < 36) {
+      id += byte.toString(36);
+    } else if (byte < 62) {
+      id += (byte - 26).toString(36).toUpperCase();
+    } else if (byte > 62) {
+      id += '-';
+    } else {
+      id += '_';
+    }
+
+    return id;
+  }, '');
+};
+
+exports.nanoid = nanoid;
+},{"./url-alphabet/index.js":"../node_modules/nanoid/url-alphabet/index.js"}],"../node_modules/@rjsf/core/dist/es/components/fields/ArrayField.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _AddButton = _interopRequireDefault(require("../AddButton"));
+
+var _IconButton = _interopRequireDefault(require("../IconButton"));
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _includes = _interopRequireDefault(require("core-js-pure/es/array/includes"));
+
+var types = _interopRequireWildcard(require("../../types"));
+
+var _utils = require("../../utils");
+
+var _nanoid = require("nanoid");
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof2(obj) { "@babel/helpers - typeof"; return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+    var ownKeys = Object.keys(source);
+
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+      ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+      }));
+    }
+
+    ownKeys.forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    });
+  }
+
+  return target;
+}
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance");
+}
+
+function _iterableToArray(iter) {
+  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
+      arr2[i] = arr[i];
+    }
+
+    return arr2;
+  }
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return _assertThisInitialized(self);
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function ArrayFieldTitle(_ref) {
+  var TitleField = _ref.TitleField,
+      idSchema = _ref.idSchema,
+      title = _ref.title,
+      required = _ref.required;
+
+  if (!title) {
+    return null;
+  }
+
+  var id = "".concat(idSchema.$id, "__title");
+  return _react.default.createElement(TitleField, {
+    id: id,
+    title: title,
+    required: required
+  });
+}
+
+function ArrayFieldDescription(_ref2) {
+  var DescriptionField = _ref2.DescriptionField,
+      idSchema = _ref2.idSchema,
+      description = _ref2.description;
+
+  if (!description) {
+    return null;
+  }
+
+  var id = "".concat(idSchema.$id, "__description");
+  return _react.default.createElement(DescriptionField, {
+    id: id,
+    description: description
+  });
+} // Used in the two templates
+
+
+function DefaultArrayItem(props) {
+  var btnStyle = {
+    flex: 1,
+    paddingLeft: 6,
+    paddingRight: 6,
+    fontWeight: "bold"
+  };
+  return _react.default.createElement("div", {
+    key: props.key,
+    className: props.className
+  }, _react.default.createElement("div", {
+    className: props.hasToolbar ? "col-xs-9" : "col-xs-12"
+  }, props.children), props.hasToolbar && _react.default.createElement("div", {
+    className: "col-xs-3 array-item-toolbox"
+  }, _react.default.createElement("div", {
+    className: "btn-group",
+    style: {
+      display: "flex",
+      justifyContent: "space-around"
+    }
+  }, (props.hasMoveUp || props.hasMoveDown) && _react.default.createElement(_IconButton.default, {
+    icon: "arrow-up",
+    "aria-label": "Move up",
+    className: "array-item-move-up",
+    tabIndex: "-1",
+    style: btnStyle,
+    disabled: props.disabled || props.readonly || !props.hasMoveUp,
+    onClick: props.onReorderClick(props.index, props.index - 1)
+  }), (props.hasMoveUp || props.hasMoveDown) && _react.default.createElement(_IconButton.default, {
+    icon: "arrow-down",
+    className: "array-item-move-down",
+    "aria-label": "Move down",
+    tabIndex: "-1",
+    style: btnStyle,
+    disabled: props.disabled || props.readonly || !props.hasMoveDown,
+    onClick: props.onReorderClick(props.index, props.index + 1)
+  }), props.hasRemove && _react.default.createElement(_IconButton.default, {
+    type: "danger",
+    icon: "remove",
+    "aria-label": "Remove",
+    className: "array-item-remove",
+    tabIndex: "-1",
+    style: btnStyle,
+    disabled: props.disabled || props.readonly,
+    onClick: props.onDropIndexClick(props.index)
+  }))));
+}
+
+function DefaultFixedArrayFieldTemplate(props) {
+  return _react.default.createElement("fieldset", {
+    className: props.className,
+    id: props.idSchema.$id
+  }, _react.default.createElement(ArrayFieldTitle, {
+    key: "array-field-title-".concat(props.idSchema.$id),
+    TitleField: props.TitleField,
+    idSchema: props.idSchema,
+    title: props.uiSchema["ui:title"] || props.title,
+    required: props.required
+  }), (props.uiSchema["ui:description"] || props.schema.description) && _react.default.createElement("div", {
+    className: "field-description",
+    key: "field-description-".concat(props.idSchema.$id)
+  }, props.uiSchema["ui:description"] || props.schema.description), _react.default.createElement("div", {
+    className: "row array-item-list",
+    key: "array-item-list-".concat(props.idSchema.$id)
+  }, props.items && props.items.map(DefaultArrayItem)), props.canAdd && _react.default.createElement(_AddButton.default, {
+    className: "array-item-add",
+    onClick: props.onAddClick,
+    disabled: props.disabled || props.readonly
+  }));
+}
+
+function DefaultNormalArrayFieldTemplate(props) {
+  return _react.default.createElement("fieldset", {
+    className: props.className,
+    id: props.idSchema.$id
+  }, _react.default.createElement(ArrayFieldTitle, {
+    key: "array-field-title-".concat(props.idSchema.$id),
+    TitleField: props.TitleField,
+    idSchema: props.idSchema,
+    title: props.uiSchema["ui:title"] || props.title,
+    required: props.required
+  }), (props.uiSchema["ui:description"] || props.schema.description) && _react.default.createElement(ArrayFieldDescription, {
+    key: "array-field-description-".concat(props.idSchema.$id),
+    DescriptionField: props.DescriptionField,
+    idSchema: props.idSchema,
+    description: props.uiSchema["ui:description"] || props.schema.description
+  }), _react.default.createElement("div", {
+    className: "row array-item-list",
+    key: "array-item-list-".concat(props.idSchema.$id)
+  }, props.items && props.items.map(function (p) {
+    return DefaultArrayItem(p);
+  })), props.canAdd && _react.default.createElement(_AddButton.default, {
+    className: "array-item-add",
+    onClick: props.onAddClick,
+    disabled: props.disabled || props.readonly
+  }));
+}
+
+function generateRowId() {
+  return (0, _nanoid.nanoid)();
+}
+
+function generateKeyedFormData(formData) {
+  return !Array.isArray(formData) ? [] : formData.map(function (item) {
+    return {
+      key: generateRowId(),
+      item: item
+    };
+  });
+}
+
+function keyedToPlainFormData(keyedFormData) {
+  return keyedFormData.map(function (keyedItem) {
+    return keyedItem.item;
+  });
+}
+
+var ArrayField = /*#__PURE__*/function (_Component) {
+  _inherits(ArrayField, _Component);
+
+  function ArrayField(props) {
+    var _this;
+
+    _classCallCheck(this, ArrayField);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(ArrayField).call(this, props));
+
+    _defineProperty(_assertThisInitialized(_this), "_getNewFormDataRow", function () {
+      var _this$props = _this.props,
+          schema = _this$props.schema,
+          _this$props$registry = _this$props.registry,
+          registry = _this$props$registry === void 0 ? (0, _utils.getDefaultRegistry)() : _this$props$registry;
+      var rootSchema = registry.rootSchema;
+      var itemSchema = schema.items;
+
+      if ((0, _utils.isFixedItems)(schema) && (0, _utils.allowAdditionalItems)(schema)) {
+        itemSchema = schema.additionalItems;
+      }
+
+      return (0, _utils.getDefaultFormState)(itemSchema, undefined, rootSchema);
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onAddClick", function (event) {
+      if (event) {
+        event.preventDefault();
+      }
+
+      var onChange = _this.props.onChange;
+      var newKeyedFormDataRow = {
+        key: generateRowId(),
+        item: _this._getNewFormDataRow()
+      };
+      var newKeyedFormData = [].concat(_toConsumableArray(_this.state.keyedFormData), [newKeyedFormDataRow]);
+
+      _this.setState({
+        keyedFormData: newKeyedFormData,
+        updatedKeyedFormData: true
+      }, function () {
+        return onChange(keyedToPlainFormData(newKeyedFormData));
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onAddIndexClick", function (index) {
+      return function (event) {
+        if (event) {
+          event.preventDefault();
+        }
+
+        var onChange = _this.props.onChange;
+        var newKeyedFormDataRow = {
+          key: generateRowId(),
+          item: _this._getNewFormDataRow()
+        };
+
+        var newKeyedFormData = _toConsumableArray(_this.state.keyedFormData);
+
+        newKeyedFormData.splice(index, 0, newKeyedFormDataRow);
+
+        _this.setState({
+          keyedFormData: newKeyedFormData,
+          updatedKeyedFormData: true
+        }, function () {
+          return onChange(keyedToPlainFormData(newKeyedFormData));
+        });
+      };
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onDropIndexClick", function (index) {
+      return function (event) {
+        if (event) {
+          event.preventDefault();
+        }
+
+        var onChange = _this.props.onChange;
+        var keyedFormData = _this.state.keyedFormData; // refs #195: revalidate to ensure properly reindexing errors
+
+        var newErrorSchema;
+
+        if (_this.props.errorSchema) {
+          newErrorSchema = {};
+          var errorSchema = _this.props.errorSchema;
+
+          for (var i in errorSchema) {
+            i = parseInt(i);
+
+            if (i < index) {
+              newErrorSchema[i] = errorSchema[i];
+            } else if (i > index) {
+              newErrorSchema[i - 1] = errorSchema[i];
+            }
+          }
+        }
+
+        var newKeyedFormData = keyedFormData.filter(function (_, i) {
+          return i !== index;
+        });
+
+        _this.setState({
+          keyedFormData: newKeyedFormData,
+          updatedKeyedFormData: true
+        }, function () {
+          return onChange(keyedToPlainFormData(newKeyedFormData), newErrorSchema);
+        });
+      };
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onReorderClick", function (index, newIndex) {
+      return function (event) {
+        if (event) {
+          event.preventDefault();
+          event.target.blur();
+        }
+
+        var onChange = _this.props.onChange;
+        var newErrorSchema;
+
+        if (_this.props.errorSchema) {
+          newErrorSchema = {};
+          var errorSchema = _this.props.errorSchema;
+
+          for (var i in errorSchema) {
+            if (i == index) {
+              newErrorSchema[newIndex] = errorSchema[index];
+            } else if (i == newIndex) {
+              newErrorSchema[index] = errorSchema[newIndex];
+            } else {
+              newErrorSchema[i] = errorSchema[i];
+            }
+          }
+        }
+
+        var keyedFormData = _this.state.keyedFormData;
+
+        function reOrderArray() {
+          // Copy item
+          var _newKeyedFormData = keyedFormData.slice(); // Moves item from index to newIndex
+
+
+          _newKeyedFormData.splice(index, 1);
+
+          _newKeyedFormData.splice(newIndex, 0, keyedFormData[index]);
+
+          return _newKeyedFormData;
+        }
+
+        var newKeyedFormData = reOrderArray();
+
+        _this.setState({
+          keyedFormData: newKeyedFormData
+        }, function () {
+          return onChange(keyedToPlainFormData(newKeyedFormData), newErrorSchema);
+        });
+      };
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onChangeForIndex", function (index) {
+      return function (value, errorSchema) {
+        var _this$props2 = _this.props,
+            formData = _this$props2.formData,
+            onChange = _this$props2.onChange;
+        var newFormData = formData.map(function (item, i) {
+          // We need to treat undefined items as nulls to have validation.
+          // See https://github.com/tdegrunt/jsonschema/issues/206
+          var jsonValue = typeof value === "undefined" ? null : value;
+          return index === i ? jsonValue : item;
+        });
+        onChange(newFormData, errorSchema && _this.props.errorSchema && _objectSpread({}, _this.props.errorSchema, _defineProperty({}, index, errorSchema)));
+      };
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onSelectChange", function (value) {
+      _this.props.onChange(value);
+    });
+
+    var _formData = props.formData;
+
+    var _keyedFormData = generateKeyedFormData(_formData);
+
+    _this.state = {
+      keyedFormData: _keyedFormData,
+      updatedKeyedFormData: false
+    };
+    return _this;
+  }
+
+  _createClass(ArrayField, [{
+    key: "isItemRequired",
+    value: function isItemRequired(itemSchema) {
+      if (Array.isArray(itemSchema.type)) {
+        // While we don't yet support composite/nullable jsonschema types, it's
+        // future-proof to check for requirement against these.
+        return !(0, _includes.default)(itemSchema.type, "null");
+      } // All non-null array item types are inherently required by design
+
+
+      return itemSchema.type !== "null";
+    }
+  }, {
+    key: "canAddItem",
+    value: function canAddItem(formItems) {
+      var _this$props3 = this.props,
+          schema = _this$props3.schema,
+          uiSchema = _this$props3.uiSchema;
+
+      var _getUiOptions = (0, _utils.getUiOptions)(uiSchema),
+          addable = _getUiOptions.addable;
+
+      if (addable !== false) {
+        // if ui:options.addable was not explicitly set to false, we can add
+        // another item if we have not exceeded maxItems yet
+        if (schema.maxItems !== undefined) {
+          addable = formItems.length < schema.maxItems;
+        } else {
+          addable = true;
+        }
+      }
+
+      return addable;
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this$props4 = this.props,
+          schema = _this$props4.schema,
+          uiSchema = _this$props4.uiSchema,
+          idSchema = _this$props4.idSchema,
+          _this$props4$registry = _this$props4.registry,
+          registry = _this$props4$registry === void 0 ? (0, _utils.getDefaultRegistry)() : _this$props4$registry;
+      var rootSchema = registry.rootSchema;
+
+      if (!schema.hasOwnProperty("items")) {
+        var fields = registry.fields;
+        var UnsupportedField = fields.UnsupportedField;
+        return _react.default.createElement(UnsupportedField, {
+          schema: schema,
+          idSchema: idSchema,
+          reason: "Missing items definition"
+        });
+      }
+
+      if ((0, _utils.isMultiSelect)(schema, rootSchema)) {
+        // If array has enum or uniqueItems set to true, call renderMultiSelect() to render the default multiselect widget or a custom widget, if specified.
+        return this.renderMultiSelect();
+      }
+
+      if ((0, _utils.isCustomWidget)(uiSchema)) {
+        return this.renderCustomWidget();
+      }
+
+      if ((0, _utils.isFixedItems)(schema)) {
+        return this.renderFixedArray();
+      }
+
+      if ((0, _utils.isFilesArray)(schema, uiSchema, rootSchema)) {
+        return this.renderFiles();
+      }
+
+      return this.renderNormalArray();
+    }
+  }, {
+    key: "renderNormalArray",
+    value: function renderNormalArray() {
+      var _this2 = this;
+
+      var _this$props5 = this.props,
+          schema = _this$props5.schema,
+          uiSchema = _this$props5.uiSchema,
+          errorSchema = _this$props5.errorSchema,
+          idSchema = _this$props5.idSchema,
+          name = _this$props5.name,
+          required = _this$props5.required,
+          disabled = _this$props5.disabled,
+          readonly = _this$props5.readonly,
+          hideError = _this$props5.hideError,
+          autofocus = _this$props5.autofocus,
+          _this$props5$registry = _this$props5.registry,
+          registry = _this$props5$registry === void 0 ? (0, _utils.getDefaultRegistry)() : _this$props5$registry,
+          onBlur = _this$props5.onBlur,
+          onFocus = _this$props5.onFocus,
+          idPrefix = _this$props5.idPrefix,
+          _this$props5$idSepara = _this$props5.idSeparator,
+          idSeparator = _this$props5$idSepara === void 0 ? "_" : _this$props5$idSepara,
+          rawErrors = _this$props5.rawErrors;
+      var title = schema.title === undefined ? name : schema.title;
+      var ArrayFieldTemplate = registry.ArrayFieldTemplate,
+          rootSchema = registry.rootSchema,
+          fields = registry.fields,
+          formContext = registry.formContext;
+      var TitleField = fields.TitleField,
+          DescriptionField = fields.DescriptionField;
+      var itemsSchema = (0, _utils.retrieveSchema)(schema.items, rootSchema);
+      var formData = keyedToPlainFormData(this.state.keyedFormData);
+      var arrayProps = {
+        canAdd: this.canAddItem(formData),
+        items: this.state.keyedFormData.map(function (keyedItem, index) {
+          var key = keyedItem.key,
+              item = keyedItem.item;
+          var itemSchema = (0, _utils.retrieveSchema)(schema.items, rootSchema, item);
+          var itemErrorSchema = errorSchema ? errorSchema[index] : undefined;
+          var itemIdPrefix = idSchema.$id + idSeparator + index;
+          var itemIdSchema = (0, _utils.toIdSchema)(itemSchema, itemIdPrefix, rootSchema, item, idPrefix, idSeparator);
+          return _this2.renderArrayFieldItem({
+            key: key,
+            index: index,
+            canMoveUp: index > 0,
+            canMoveDown: index < formData.length - 1,
+            itemSchema: itemSchema,
+            itemIdSchema: itemIdSchema,
+            itemErrorSchema: itemErrorSchema,
+            itemData: item,
+            itemUiSchema: uiSchema.items,
+            autofocus: autofocus && index === 0,
+            onBlur: onBlur,
+            onFocus: onFocus
+          });
+        }),
+        className: "field field-array field-array-of-".concat(itemsSchema.type),
+        DescriptionField: DescriptionField,
+        disabled: disabled,
+        idSchema: idSchema,
+        uiSchema: uiSchema,
+        onAddClick: this.onAddClick,
+        readonly: readonly,
+        hideError: hideError,
+        required: required,
+        schema: schema,
+        title: title,
+        TitleField: TitleField,
+        formContext: formContext,
+        formData: formData,
+        rawErrors: rawErrors,
+        registry: registry
+      }; // Check if a custom render function was passed in
+
+      var Component = uiSchema["ui:ArrayFieldTemplate"] || ArrayFieldTemplate || DefaultNormalArrayFieldTemplate;
+      return _react.default.createElement(Component, arrayProps);
+    }
+  }, {
+    key: "renderCustomWidget",
+    value: function renderCustomWidget() {
+      var _this$props6 = this.props,
+          schema = _this$props6.schema,
+          idSchema = _this$props6.idSchema,
+          uiSchema = _this$props6.uiSchema,
+          disabled = _this$props6.disabled,
+          readonly = _this$props6.readonly,
+          hideError = _this$props6.hideError,
+          required = _this$props6.required,
+          placeholder = _this$props6.placeholder,
+          autofocus = _this$props6.autofocus,
+          onBlur = _this$props6.onBlur,
+          onFocus = _this$props6.onFocus,
+          items = _this$props6.formData,
+          _this$props6$registry = _this$props6.registry,
+          registry = _this$props6$registry === void 0 ? (0, _utils.getDefaultRegistry)() : _this$props6$registry,
+          rawErrors = _this$props6.rawErrors,
+          name = _this$props6.name;
+      var widgets = registry.widgets,
+          formContext = registry.formContext;
+      var title = schema.title || name;
+
+      var _getUiOptions2 = _objectSpread({}, (0, _utils.getUiOptions)(uiSchema)),
+          widget = _getUiOptions2.widget,
+          options = _objectWithoutProperties(_getUiOptions2, ["widget"]);
+
+      var Widget = (0, _utils.getWidget)(schema, widget, widgets);
+      return _react.default.createElement(Widget, {
+        id: idSchema && idSchema.$id,
+        multiple: true,
+        onChange: this.onSelectChange,
+        onBlur: onBlur,
+        onFocus: onFocus,
+        options: options,
+        schema: schema,
+        registry: registry,
+        value: items,
+        disabled: disabled,
+        readonly: readonly,
+        hideError: hideError,
+        required: required,
+        label: title,
+        placeholder: placeholder,
+        formContext: formContext,
+        autofocus: autofocus,
+        rawErrors: rawErrors
+      });
+    }
+  }, {
+    key: "renderMultiSelect",
+    value: function renderMultiSelect() {
+      var _this$props7 = this.props,
+          schema = _this$props7.schema,
+          idSchema = _this$props7.idSchema,
+          uiSchema = _this$props7.uiSchema,
+          formData = _this$props7.formData,
+          disabled = _this$props7.disabled,
+          readonly = _this$props7.readonly,
+          required = _this$props7.required,
+          placeholder = _this$props7.placeholder,
+          autofocus = _this$props7.autofocus,
+          onBlur = _this$props7.onBlur,
+          onFocus = _this$props7.onFocus,
+          _this$props7$registry = _this$props7.registry,
+          registry = _this$props7$registry === void 0 ? (0, _utils.getDefaultRegistry)() : _this$props7$registry,
+          rawErrors = _this$props7.rawErrors,
+          name = _this$props7.name;
+      var items = this.props.formData;
+      var widgets = registry.widgets,
+          rootSchema = registry.rootSchema,
+          formContext = registry.formContext;
+      var itemsSchema = (0, _utils.retrieveSchema)(schema.items, rootSchema, formData);
+      var title = schema.title || name;
+      var enumOptions = (0, _utils.optionsList)(itemsSchema);
+
+      var _getUiOptions$enumOpt = _objectSpread({}, (0, _utils.getUiOptions)(uiSchema), {
+        enumOptions: enumOptions
+      }),
+          _getUiOptions$enumOpt2 = _getUiOptions$enumOpt.widget,
+          widget = _getUiOptions$enumOpt2 === void 0 ? "select" : _getUiOptions$enumOpt2,
+          options = _objectWithoutProperties(_getUiOptions$enumOpt, ["widget"]);
+
+      var Widget = (0, _utils.getWidget)(schema, widget, widgets);
+      return _react.default.createElement(Widget, {
+        id: idSchema && idSchema.$id,
+        multiple: true,
+        onChange: this.onSelectChange,
+        onBlur: onBlur,
+        onFocus: onFocus,
+        options: options,
+        schema: schema,
+        registry: registry,
+        value: items,
+        disabled: disabled,
+        readonly: readonly,
+        required: required,
+        label: title,
+        placeholder: placeholder,
+        formContext: formContext,
+        autofocus: autofocus,
+        rawErrors: rawErrors
+      });
+    }
+  }, {
+    key: "renderFiles",
+    value: function renderFiles() {
+      var _this$props8 = this.props,
+          schema = _this$props8.schema,
+          uiSchema = _this$props8.uiSchema,
+          idSchema = _this$props8.idSchema,
+          name = _this$props8.name,
+          disabled = _this$props8.disabled,
+          readonly = _this$props8.readonly,
+          autofocus = _this$props8.autofocus,
+          onBlur = _this$props8.onBlur,
+          onFocus = _this$props8.onFocus,
+          _this$props8$registry = _this$props8.registry,
+          registry = _this$props8$registry === void 0 ? (0, _utils.getDefaultRegistry)() : _this$props8$registry,
+          rawErrors = _this$props8.rawErrors;
+      var title = schema.title || name;
+      var items = this.props.formData;
+      var widgets = registry.widgets,
+          formContext = registry.formContext;
+
+      var _getUiOptions3 = (0, _utils.getUiOptions)(uiSchema),
+          _getUiOptions3$widget = _getUiOptions3.widget,
+          widget = _getUiOptions3$widget === void 0 ? "files" : _getUiOptions3$widget,
+          options = _objectWithoutProperties(_getUiOptions3, ["widget"]);
+
+      var Widget = (0, _utils.getWidget)(schema, widget, widgets);
+      return _react.default.createElement(Widget, {
+        options: options,
+        id: idSchema && idSchema.$id,
+        multiple: true,
+        onChange: this.onSelectChange,
+        onBlur: onBlur,
+        onFocus: onFocus,
+        schema: schema,
+        title: title,
+        value: items,
+        disabled: disabled,
+        readonly: readonly,
+        formContext: formContext,
+        autofocus: autofocus,
+        rawErrors: rawErrors
+      });
+    }
+  }, {
+    key: "renderFixedArray",
+    value: function renderFixedArray() {
+      var _this3 = this;
+
+      var _this$props9 = this.props,
+          schema = _this$props9.schema,
+          uiSchema = _this$props9.uiSchema,
+          formData = _this$props9.formData,
+          errorSchema = _this$props9.errorSchema,
+          idPrefix = _this$props9.idPrefix,
+          _this$props9$idSepara = _this$props9.idSeparator,
+          idSeparator = _this$props9$idSepara === void 0 ? "_" : _this$props9$idSepara,
+          idSchema = _this$props9.idSchema,
+          name = _this$props9.name,
+          required = _this$props9.required,
+          disabled = _this$props9.disabled,
+          readonly = _this$props9.readonly,
+          autofocus = _this$props9.autofocus,
+          _this$props9$registry = _this$props9.registry,
+          registry = _this$props9$registry === void 0 ? (0, _utils.getDefaultRegistry)() : _this$props9$registry,
+          onBlur = _this$props9.onBlur,
+          onFocus = _this$props9.onFocus,
+          rawErrors = _this$props9.rawErrors;
+      var title = schema.title || name;
+      var items = this.props.formData;
+      var ArrayFieldTemplate = registry.ArrayFieldTemplate,
+          rootSchema = registry.rootSchema,
+          fields = registry.fields,
+          formContext = registry.formContext;
+      var TitleField = fields.TitleField;
+      var itemSchemas = schema.items.map(function (item, index) {
+        return (0, _utils.retrieveSchema)(item, rootSchema, formData[index]);
+      });
+      var additionalSchema = (0, _utils.allowAdditionalItems)(schema) ? (0, _utils.retrieveSchema)(schema.additionalItems, rootSchema, formData) : null;
+
+      if (!items || items.length < itemSchemas.length) {
+        // to make sure at least all fixed items are generated
+        items = items || [];
+        items = items.concat(new Array(itemSchemas.length - items.length));
+      } // These are the props passed into the render function
+
+
+      var arrayProps = {
+        canAdd: this.canAddItem(items) && additionalSchema,
+        className: "field field-array field-array-fixed-items",
+        disabled: disabled,
+        idSchema: idSchema,
+        formData: formData,
+        items: this.state.keyedFormData.map(function (keyedItem, index) {
+          var key = keyedItem.key,
+              item = keyedItem.item;
+          var additional = index >= itemSchemas.length;
+          var itemSchema = additional ? (0, _utils.retrieveSchema)(schema.additionalItems, rootSchema, item) : itemSchemas[index];
+          var itemIdPrefix = idSchema.$id + idSeparator + index;
+          var itemIdSchema = (0, _utils.toIdSchema)(itemSchema, itemIdPrefix, rootSchema, item, idPrefix, idSeparator);
+          var itemUiSchema = additional ? uiSchema.additionalItems || {} : Array.isArray(uiSchema.items) ? uiSchema.items[index] : uiSchema.items || {};
+          var itemErrorSchema = errorSchema ? errorSchema[index] : undefined;
+          return _this3.renderArrayFieldItem({
+            key: key,
+            index: index,
+            canRemove: additional,
+            canMoveUp: index >= itemSchemas.length + 1,
+            canMoveDown: additional && index < items.length - 1,
+            itemSchema: itemSchema,
+            itemData: item,
+            itemUiSchema: itemUiSchema,
+            itemIdSchema: itemIdSchema,
+            itemErrorSchema: itemErrorSchema,
+            autofocus: autofocus && index === 0,
+            onBlur: onBlur,
+            onFocus: onFocus
+          });
+        }),
+        onAddClick: this.onAddClick,
+        readonly: readonly,
+        required: required,
+        schema: schema,
+        uiSchema: uiSchema,
+        title: title,
+        TitleField: TitleField,
+        formContext: formContext,
+        rawErrors: rawErrors
+      }; // Check if a custom template template was passed in
+
+      var Template = uiSchema["ui:ArrayFieldTemplate"] || ArrayFieldTemplate || DefaultFixedArrayFieldTemplate;
+      return _react.default.createElement(Template, arrayProps);
+    }
+  }, {
+    key: "renderArrayFieldItem",
+    value: function renderArrayFieldItem(props) {
+      var key = props.key,
+          index = props.index,
+          _props$canRemove = props.canRemove,
+          canRemove = _props$canRemove === void 0 ? true : _props$canRemove,
+          _props$canMoveUp = props.canMoveUp,
+          canMoveUp = _props$canMoveUp === void 0 ? true : _props$canMoveUp,
+          _props$canMoveDown = props.canMoveDown,
+          canMoveDown = _props$canMoveDown === void 0 ? true : _props$canMoveDown,
+          itemSchema = props.itemSchema,
+          itemData = props.itemData,
+          itemUiSchema = props.itemUiSchema,
+          itemIdSchema = props.itemIdSchema,
+          itemErrorSchema = props.itemErrorSchema,
+          autofocus = props.autofocus,
+          onBlur = props.onBlur,
+          onFocus = props.onFocus,
+          rawErrors = props.rawErrors;
+      var _this$props10 = this.props,
+          disabled = _this$props10.disabled,
+          readonly = _this$props10.readonly,
+          uiSchema = _this$props10.uiSchema,
+          _this$props10$registr = _this$props10.registry,
+          registry = _this$props10$registr === void 0 ? (0, _utils.getDefaultRegistry)() : _this$props10$registr;
+      var SchemaField = registry.fields.SchemaField;
+
+      var _getUiOptions4 = (0, _utils.getUiOptions)(uiSchema),
+          _getUiOptions4$ordera = _getUiOptions4.orderable,
+          orderable = _getUiOptions4$ordera === void 0 ? true : _getUiOptions4$ordera,
+          _getUiOptions4$remova = _getUiOptions4.removable,
+          removable = _getUiOptions4$remova === void 0 ? true : _getUiOptions4$remova;
+
+      var has = {
+        moveUp: orderable && canMoveUp,
+        moveDown: orderable && canMoveDown,
+        remove: removable && canRemove
+      };
+      has.toolbar = Object.keys(has).some(function (key) {
+        return has[key];
+      });
+      return {
+        children: _react.default.createElement(SchemaField, {
+          index: index,
+          schema: itemSchema,
+          uiSchema: itemUiSchema,
+          formData: itemData,
+          errorSchema: itemErrorSchema,
+          idPrefix: this.props.idPrefix,
+          idSeparator: this.props.idSeparator,
+          idSchema: itemIdSchema,
+          required: this.isItemRequired(itemSchema),
+          onChange: this.onChangeForIndex(index),
+          onBlur: onBlur,
+          onFocus: onFocus,
+          registry: this.props.registry,
+          disabled: this.props.disabled,
+          readonly: this.props.readonly,
+          hideError: this.props.hideError,
+          autofocus: autofocus,
+          rawErrors: rawErrors
+        }),
+        className: "array-item",
+        disabled: disabled,
+        hasToolbar: has.toolbar,
+        hasMoveUp: has.moveUp,
+        hasMoveDown: has.moveDown,
+        hasRemove: has.remove,
+        index: index,
+        key: key,
+        onAddIndexClick: this.onAddIndexClick,
+        onDropIndexClick: this.onDropIndexClick,
+        onReorderClick: this.onReorderClick,
+        readonly: readonly
+      };
+    }
+  }, {
+    key: "itemTitle",
+    get: function get() {
+      var schema = this.props.schema;
+      return schema.items.title || schema.items.description || "Item";
+    }
+  }], [{
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(nextProps, prevState) {
+      // Don't call getDerivedStateFromProps if keyed formdata was just updated.
+      if (prevState.updatedKeyedFormData) {
+        return {
+          updatedKeyedFormData: false
+        };
+      }
+
+      var nextFormData = nextProps.formData || [];
+      var previousKeyedFormData = prevState.keyedFormData || [];
+      var newKeyedFormData = nextFormData.length === previousKeyedFormData.length ? previousKeyedFormData.map(function (previousKeyedFormDatum, index) {
+        return {
+          key: previousKeyedFormDatum.key,
+          item: nextFormData[index]
+        };
+      }) : generateKeyedFormData(nextFormData);
+      return {
+        keyedFormData: newKeyedFormData
+      };
+    }
+  }]);
+
+  return ArrayField;
+}(_react.Component);
+
+_defineProperty(ArrayField, "defaultProps", {
+  uiSchema: {},
+  formData: [],
+  idSchema: {},
+  required: false,
+  disabled: false,
+  readonly: false,
+  autofocus: false
+});
+
+if ("development" !== "production") {
+  ArrayField.propTypes = types.fieldProps;
+}
+
+var _default = ArrayField;
+exports.default = _default;
+},{"../AddButton":"../node_modules/@rjsf/core/dist/es/components/AddButton.js","../IconButton":"../node_modules/@rjsf/core/dist/es/components/IconButton.js","react":"../node_modules/react/index.js","core-js-pure/es/array/includes":"../node_modules/core-js-pure/es/array/includes.js","../../types":"../node_modules/@rjsf/core/dist/es/types.js","../../utils":"../node_modules/@rjsf/core/dist/es/utils.js","nanoid":"../node_modules/nanoid/index.browser.js"}],"../node_modules/@rjsf/core/dist/es/components/fields/BooleanField.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var types = _interopRequireWildcard(require("../../types"));
+
+var _utils = require("../../utils");
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+    var ownKeys = Object.keys(source);
+
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+      ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+      }));
+    }
+
+    ownKeys.forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    });
+  }
+
+  return target;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function BooleanField(props) {
+  var schema = props.schema,
+      name = props.name,
+      uiSchema = props.uiSchema,
+      idSchema = props.idSchema,
+      formData = props.formData,
+      _props$registry = props.registry,
+      registry = _props$registry === void 0 ? (0, _utils.getDefaultRegistry)() : _props$registry,
+      required = props.required,
+      disabled = props.disabled,
+      readonly = props.readonly,
+      autofocus = props.autofocus,
+      onChange = props.onChange,
+      onFocus = props.onFocus,
+      onBlur = props.onBlur,
+      rawErrors = props.rawErrors;
+  var title = schema.title;
+  var widgets = registry.widgets,
+      formContext = registry.formContext,
+      fields = registry.fields;
+
+  var _getUiOptions = (0, _utils.getUiOptions)(uiSchema),
+      _getUiOptions$widget = _getUiOptions.widget,
+      widget = _getUiOptions$widget === void 0 ? "checkbox" : _getUiOptions$widget,
+      options = _objectWithoutProperties(_getUiOptions, ["widget"]);
+
+  var Widget = (0, _utils.getWidget)(schema, widget, widgets);
+  var enumOptions;
+
+  if (Array.isArray(schema.oneOf)) {
+    enumOptions = (0, _utils.optionsList)({
+      oneOf: schema.oneOf.map(function (option) {
+        return _objectSpread({}, option, {
+          title: option.title || (option["const"] === true ? "Yes" : "No")
+        });
+      })
+    });
+  } else {
+    enumOptions = (0, _utils.optionsList)({
+      "enum": schema["enum"] || [true, false],
+      enumNames: schema.enumNames || (schema["enum"] && schema["enum"][0] === false ? ["No", "Yes"] : ["Yes", "No"])
+    });
+  }
+
+  return _react.default.createElement(Widget, {
+    options: _objectSpread({}, options, {
+      enumOptions: enumOptions
+    }),
+    schema: schema,
+    uiSchema: uiSchema,
+    id: idSchema && idSchema.$id,
+    onChange: onChange,
+    onFocus: onFocus,
+    onBlur: onBlur,
+    label: title === undefined ? name : title,
+    value: formData,
+    required: required,
+    disabled: disabled,
+    readonly: readonly,
+    registry: registry,
+    formContext: formContext,
+    autofocus: autofocus,
+    rawErrors: rawErrors,
+    DescriptionField: fields.DescriptionField
+  });
+}
+
+if ("development" !== "production") {
+  BooleanField.propTypes = types.fieldProps;
+}
+
+BooleanField.defaultProps = {
+  uiSchema: {},
+  disabled: false,
+  readonly: false,
+  autofocus: false
+};
+var _default = BooleanField;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","../../types":"../node_modules/@rjsf/core/dist/es/types.js","../../utils":"../node_modules/@rjsf/core/dist/es/utils.js"}],"../node_modules/@rjsf/core/dist/es/components/fields/DescriptionField.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function DescriptionField(props) {
+  var id = props.id,
+      description = props.description;
+
+  if (!description) {
+    return null;
+  }
+
+  if (typeof description === "string") {
+    return _react.default.createElement("p", {
+      id: id,
+      className: "field-description"
+    }, description);
+  } else {
+    return _react.default.createElement("div", {
+      id: id,
+      className: "field-description"
+    }, description);
+  }
+}
+
+if ("development" !== "production") {
+  DescriptionField.propTypes = {
+    id: _propTypes.default.string,
+    description: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.element])
+  };
+}
+
+var _default = DescriptionField;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js"}],"../node_modules/@rjsf/core/dist/es/components/fields/MultiSchemaField.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var types = _interopRequireWildcard(require("../../types"));
+
+var _utils = require("../../utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _typeof2(obj) { "@babel/helpers - typeof"; return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return _assertThisInitialized(self);
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+var AnyOfField = /*#__PURE__*/function (_Component) {
+  _inherits(AnyOfField, _Component);
+
+  function AnyOfField(props) {
+    var _this;
+
+    _classCallCheck(this, AnyOfField);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(AnyOfField).call(this, props));
+
+    _defineProperty(_assertThisInitialized(_this), "onOptionChange", function (option) {
+      var selectedOption = parseInt(option, 10);
+      var _this$props = _this.props,
+          formData = _this$props.formData,
+          onChange = _this$props.onChange,
+          options = _this$props.options,
+          registry = _this$props.registry;
+      var rootSchema = registry.rootSchema;
+      var newOption = (0, _utils.retrieveSchema)(options[selectedOption], rootSchema, formData); // If the new option is of type object and the current data is an object,
+      // discard properties added using the old option.
+
+      var newFormData = undefined;
+
+      if ((0, _utils.guessType)(formData) === "object" && (newOption.type === "object" || newOption.properties)) {
+        newFormData = Object.assign({}, formData);
+        var optionsToDiscard = options.slice();
+        optionsToDiscard.splice(selectedOption, 1); // Discard any data added using other options
+
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = optionsToDiscard[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var _option = _step.value;
+
+            if (_option.properties) {
+              for (var key in _option.properties) {
+                if (newFormData.hasOwnProperty(key)) {
+                  delete newFormData[key];
+                }
+              }
+            }
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+              _iterator["return"]();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      } // Call getDefaultFormState to make sure defaults are populated on change.
+
+
+      onChange((0, _utils.getDefaultFormState)(options[selectedOption], newFormData, rootSchema));
+
+      _this.setState({
+        selectedOption: parseInt(option, 10)
+      });
+    });
+
+    var _this$props2 = _this.props,
+        _formData = _this$props2.formData,
+        _options = _this$props2.options;
+    _this.state = {
+      selectedOption: _this.getMatchingOption(_formData, _options)
+    };
+    return _this;
+  }
+
+  _createClass(AnyOfField, [{
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps, prevState) {
+      if (!(0, _utils.deepEquals)(this.props.formData, prevProps.formData) && this.props.idSchema.$id === prevProps.idSchema.$id) {
+        var matchingOption = this.getMatchingOption(this.props.formData, this.props.options);
+
+        if (!prevState || matchingOption === this.state.selectedOption) {
+          return;
+        }
+
+        this.setState({
+          selectedOption: matchingOption
+        });
+      }
+    }
+  }, {
+    key: "getMatchingOption",
+    value: function getMatchingOption(formData, options) {
+      var rootSchema = this.props.registry.rootSchema;
+      var option = (0, _utils.getMatchingOption)(formData, options, rootSchema);
+
+      if (option !== 0) {
+        return option;
+      } // If the form data matches none of the options, use the currently selected
+      // option, assuming it's available; otherwise use the first option
+
+
+      return this && this.state ? this.state.selectedOption : 0;
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this$props3 = this.props,
+          baseType = _this$props3.baseType,
+          disabled = _this$props3.disabled,
+          readonly = _this$props3.readonly,
+          hideError = _this$props3.hideError,
+          errorSchema = _this$props3.errorSchema,
+          formData = _this$props3.formData,
+          idPrefix = _this$props3.idPrefix,
+          idSeparator = _this$props3.idSeparator,
+          idSchema = _this$props3.idSchema,
+          onBlur = _this$props3.onBlur,
+          onChange = _this$props3.onChange,
+          onFocus = _this$props3.onFocus,
+          options = _this$props3.options,
+          registry = _this$props3.registry,
+          uiSchema = _this$props3.uiSchema,
+          schema = _this$props3.schema;
+      var _SchemaField = registry.fields.SchemaField;
+      var widgets = registry.widgets;
+      var selectedOption = this.state.selectedOption;
+
+      var _getUiOptions = (0, _utils.getUiOptions)(uiSchema),
+          _getUiOptions$widget = _getUiOptions.widget,
+          widget = _getUiOptions$widget === void 0 ? "select" : _getUiOptions$widget,
+          uiOptions = _objectWithoutProperties(_getUiOptions, ["widget"]);
+
+      var Widget = (0, _utils.getWidget)({
+        type: "number"
+      }, widget, widgets);
+      var option = options[selectedOption] || null;
+      var optionSchema;
+
+      if (option) {
+        // If the subschema doesn't declare a type, infer the type from the
+        // parent schema
+        optionSchema = option.type ? option : Object.assign({}, option, {
+          type: baseType
+        });
+      }
+
+      var enumOptions = options.map(function (option, index) {
+        return {
+          label: option.title || "Option ".concat(index + 1),
+          value: index
+        };
+      });
+      return _react.default.createElement("div", {
+        className: "panel panel-default panel-body"
+      }, _react.default.createElement("div", {
+        className: "form-group"
+      }, _react.default.createElement(Widget, _extends({
+        id: "".concat(idSchema.$id).concat(schema.oneOf ? "__oneof_select" : "__anyof_select"),
+        schema: {
+          type: "number",
+          "default": 0
+        },
+        onChange: this.onOptionChange,
+        onBlur: onBlur,
+        onFocus: onFocus,
+        value: selectedOption,
+        options: {
+          enumOptions: enumOptions
+        }
+      }, uiOptions))), option !== null && _react.default.createElement(_SchemaField, {
+        schema: optionSchema,
+        uiSchema: uiSchema,
+        errorSchema: errorSchema,
+        idSchema: idSchema,
+        idPrefix: idPrefix,
+        idSeparator: idSeparator,
+        formData: formData,
+        onChange: onChange,
+        onBlur: onBlur,
+        onFocus: onFocus,
+        registry: registry,
+        disabled: disabled,
+        readonly: readonly,
+        hideError: hideError
+      }));
+    }
+  }]);
+
+  return AnyOfField;
+}(_react.Component);
+
+AnyOfField.defaultProps = {
+  disabled: false,
+  readonly: false,
+  hideError: false,
+  errorSchema: {},
+  idSchema: {},
+  uiSchema: {}
+};
+
+if ("development" !== "production") {
+  AnyOfField.propTypes = {
+    options: _propTypes.default.arrayOf(_propTypes.default.object).isRequired,
+    baseType: _propTypes.default.string,
+    uiSchema: _propTypes.default.object,
+    idSchema: _propTypes.default.object,
+    formData: _propTypes.default.any,
+    errorSchema: _propTypes.default.object,
+    registry: types.registry.isRequired
+  };
+}
+
+var _default = AnyOfField;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","../../types":"../node_modules/@rjsf/core/dist/es/types.js","../../utils":"../node_modules/@rjsf/core/dist/es/utils.js"}],"../node_modules/@rjsf/core/dist/es/components/fields/NumberField.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var types = _interopRequireWildcard(require("../../types"));
+
+var _utils = require("../../utils");
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof2(obj) { "@babel/helpers - typeof"; return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return _assertThisInitialized(self);
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+// Matches a string that ends in a . character, optionally followed by a sequence of
+// digits followed by any number of 0 characters up until the end of the line.
+// Ensuring that there is at least one prefixed character is important so that
+// you don't incorrectly match against "0".
+var trailingCharMatcherWithPrefix = /\.([0-9]*0)*$/; // This is used for trimming the trailing 0 and . characters without affecting
+// the rest of the string. Its possible to use one RegEx with groups for this
+// functionality, but it is fairly complex compared to simply defining two
+// different matchers.
+
+var trailingCharMatcher = /[0.]0*$/;
+/**
+ * The NumberField class has some special handling for dealing with trailing
+ * decimal points and/or zeroes. This logic is designed to allow trailing values
+ * to be visible in the input element, but not be represented in the
+ * corresponding form data.
+ *
+ * The algorithm is as follows:
+ *
+ * 1. When the input value changes the value is cached in the component state
+ *
+ * 2. The value is then normalized, removing trailing decimal points and zeros,
+ *    then passed to the "onChange" callback
+ *
+ * 3. When the component is rendered, the formData value is checked against the
+ *    value cached in the state. If it matches the cached value, the cached
+ *    value is passed to the input instead of the formData value
+ */
+
+var NumberField = /*#__PURE__*/function (_React$Component) {
+  _inherits(NumberField, _React$Component);
+
+  function NumberField(props) {
+    var _this;
+
+    _classCallCheck(this, NumberField);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(NumberField).call(this, props));
+
+    _defineProperty(_assertThisInitialized(_this), "handleChange", function (value) {
+      // Cache the original value in component state
+      _this.setState({
+        lastValue: value
+      }); // Normalize decimals that don't start with a zero character in advance so
+      // that the rest of the normalization logic is simpler
+
+
+      if ("".concat(value).charAt(0) === ".") {
+        value = "0".concat(value);
+      } // Check that the value is a string (this can happen if the widget used is a
+      // <select>, due to an enum declaration etc) then, if the value ends in a
+      // trailing decimal point or multiple zeroes, strip the trailing values
+
+
+      var processed = typeof value === "string" && value.match(trailingCharMatcherWithPrefix) ? (0, _utils.asNumber)(value.replace(trailingCharMatcher, "")) : (0, _utils.asNumber)(value);
+
+      _this.props.onChange(processed);
+    });
+
+    _this.state = {
+      lastValue: props.value
+    };
+    return _this;
+  }
+
+  _createClass(NumberField, [{
+    key: "render",
+    value: function render() {
+      var StringField = this.props.registry.fields.StringField;
+
+      var _this$props = this.props,
+          formData = _this$props.formData,
+          props = _objectWithoutProperties(_this$props, ["formData"]);
+
+      var lastValue = this.state.lastValue;
+      var value = formData;
+
+      if (typeof lastValue === "string" && typeof value === "number") {
+        // Construct a regular expression that checks for a string that consists
+        // of the formData value suffixed with zero or one '.' characters and zero
+        // or more '0' characters
+        var re = new RegExp("".concat(value).replace(".", "\\.") + "\\.?0*$"); // If the cached "lastValue" is a match, use that instead of the formData
+        // value to prevent the input value from changing in the UI
+
+        if (lastValue.match(re)) {
+          value = lastValue;
+        }
+      }
+
+      return _react.default.createElement(StringField, _extends({}, props, {
+        formData: value,
+        onChange: this.handleChange
+      }));
+    }
+  }]);
+
+  return NumberField;
+}(_react.default.Component);
+
+if ("development" !== "production") {
+  NumberField.propTypes = types.fieldProps;
+}
+
+NumberField.defaultProps = {
+  uiSchema: {}
+};
+var _default = NumberField;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","../../types":"../node_modules/@rjsf/core/dist/es/types.js","../../utils":"../node_modules/@rjsf/core/dist/es/utils.js"}],"../node_modules/@rjsf/core/dist/es/components/fields/ObjectField.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _AddButton = _interopRequireDefault(require("../AddButton"));
+
+var _react = _interopRequireWildcard(require("react"));
+
+var types = _interopRequireWildcard(require("../../types"));
+
+var _utils = require("../../utils");
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof2(obj) { "@babel/helpers - typeof"; return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance");
+}
+
+function _iterableToArray(iter) {
+  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
+      arr2[i] = arr[i];
+    }
+
+    return arr2;
+  }
+}
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+    var ownKeys = Object.keys(source);
+
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+      ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+      }));
+    }
+
+    ownKeys.forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    });
+  }
+
+  return target;
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return _assertThisInitialized(self);
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function DefaultObjectFieldTemplate(props) {
+  var TitleField = props.TitleField,
+      DescriptionField = props.DescriptionField;
+  return _react.default.createElement("fieldset", {
+    id: props.idSchema.$id
+  }, (props.uiSchema["ui:title"] || props.title) && _react.default.createElement(TitleField, {
+    id: "".concat(props.idSchema.$id, "__title"),
+    title: props.title || props.uiSchema["ui:title"],
+    required: props.required,
+    formContext: props.formContext
+  }), props.description && _react.default.createElement(DescriptionField, {
+    id: "".concat(props.idSchema.$id, "__description"),
+    description: props.description,
+    formContext: props.formContext
+  }), props.properties.map(function (prop) {
+    return prop.content;
+  }), (0, _utils.canExpand)(props.schema, props.uiSchema, props.formData) && _react.default.createElement(_AddButton.default, {
+    className: "object-property-expand",
+    onClick: props.onAddClick(props.schema),
+    disabled: props.disabled || props.readonly
+  }));
+}
+
+var ObjectField = /*#__PURE__*/function (_Component) {
+  _inherits(ObjectField, _Component);
+
+  function ObjectField() {
+    var _getPrototypeOf2;
+
+    var _this;
+
+    _classCallCheck(this, ObjectField);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(ObjectField)).call.apply(_getPrototypeOf2, [this].concat(args)));
+
+    _defineProperty(_assertThisInitialized(_this), "state", {
+      wasPropertyKeyModified: false,
+      additionalProperties: {}
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onPropertyChange", function (name) {
+      var addedByAdditionalProperties = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      return function (value, errorSchema) {
+        if (value === undefined && addedByAdditionalProperties) {
+          // Don't set value = undefined for fields added by
+          // additionalProperties. Doing so removes them from the
+          // formData, which causes them to completely disappear
+          // (including the input field for the property name). Unlike
+          // fields which are "mandated" by the schema, these fields can
+          // be set to undefined by clicking a "delete field" button, so
+          // set empty values to the empty string.
+          value = "";
+        }
+
+        var newFormData = _objectSpread({}, _this.props.formData, _defineProperty({}, name, value));
+
+        _this.props.onChange(newFormData, errorSchema && _this.props.errorSchema && _objectSpread({}, _this.props.errorSchema, _defineProperty({}, name, errorSchema)));
+      };
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onDropPropertyClick", function (key) {
+      return function (event) {
+        event.preventDefault();
+        var _this$props = _this.props,
+            onChange = _this$props.onChange,
+            formData = _this$props.formData;
+
+        var copiedFormData = _objectSpread({}, formData);
+
+        delete copiedFormData[key];
+        onChange(copiedFormData);
+      };
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "getAvailableKey", function (preferredKey, formData) {
+      var index = 0;
+      var newKey = preferredKey;
+
+      while (formData.hasOwnProperty(newKey)) {
+        newKey = "".concat(preferredKey, "-").concat(++index);
+      }
+
+      return newKey;
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onKeyChange", function (oldValue) {
+      return function (value, errorSchema) {
+        if (oldValue === value) {
+          return;
+        }
+
+        value = _this.getAvailableKey(value, _this.props.formData);
+
+        var newFormData = _objectSpread({}, _this.props.formData);
+
+        var newKeys = _defineProperty({}, oldValue, value);
+
+        var keyValues = Object.keys(newFormData).map(function (key) {
+          var newKey = newKeys[key] || key;
+          return _defineProperty({}, newKey, newFormData[key]);
+        });
+        var renamedObj = Object.assign.apply(Object, [{}].concat(_toConsumableArray(keyValues)));
+
+        _this.setState({
+          wasPropertyKeyModified: true
+        });
+
+        _this.props.onChange(renamedObj, errorSchema && _this.props.errorSchema && _objectSpread({}, _this.props.errorSchema, _defineProperty({}, value, errorSchema)));
+      };
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "handleAddClick", function (schema) {
+      return function () {
+        var type = schema.additionalProperties.type;
+
+        var newFormData = _objectSpread({}, _this.props.formData);
+
+        if (schema.additionalProperties.hasOwnProperty("$ref")) {
+          var _this$props$registry = _this.props.registry,
+              registry = _this$props$registry === void 0 ? (0, _utils.getDefaultRegistry)() : _this$props$registry;
+          var refSchema = (0, _utils.retrieveSchema)({
+            $ref: schema.additionalProperties["$ref"]
+          }, registry.rootSchema, _this.props.formData);
+          type = refSchema.type;
+        }
+
+        newFormData[_this.getAvailableKey("newKey", newFormData)] = _this.getDefaultValue(type);
+
+        _this.props.onChange(newFormData);
+      };
+    });
+
+    return _this;
+  }
+
+  _createClass(ObjectField, [{
+    key: "isRequired",
+    value: function isRequired(name) {
+      var schema = this.props.schema;
+      return Array.isArray(schema.required) && schema.required.indexOf(name) !== -1;
+    }
+  }, {
+    key: "getDefaultValue",
+    value: function getDefaultValue(type) {
+      switch (type) {
+        case "string":
+          return "New Value";
+
+        case "array":
+          return [];
+
+        case "boolean":
+          return false;
+
+        case "null":
+          return null;
+
+        case "number":
+          return 0;
+
+        case "object":
+          return {};
+
+        default:
+          // We don't have a datatype for some reason (perhaps additionalProperties was true)
+          return "New Value";
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var _this$props2 = this.props,
+          uiSchema = _this$props2.uiSchema,
+          formData = _this$props2.formData,
+          errorSchema = _this$props2.errorSchema,
+          idSchema = _this$props2.idSchema,
+          name = _this$props2.name,
+          required = _this$props2.required,
+          disabled = _this$props2.disabled,
+          readonly = _this$props2.readonly,
+          hideError = _this$props2.hideError,
+          idPrefix = _this$props2.idPrefix,
+          idSeparator = _this$props2.idSeparator,
+          onBlur = _this$props2.onBlur,
+          onFocus = _this$props2.onFocus,
+          _this$props2$registry = _this$props2.registry,
+          registry = _this$props2$registry === void 0 ? (0, _utils.getDefaultRegistry)() : _this$props2$registry;
+      var rootSchema = registry.rootSchema,
+          fields = registry.fields,
+          formContext = registry.formContext;
+      var SchemaField = fields.SchemaField,
+          TitleField = fields.TitleField,
+          DescriptionField = fields.DescriptionField;
+      var schema = (0, _utils.retrieveSchema)(this.props.schema, rootSchema, formData);
+      var title = schema.title === undefined ? name : schema.title;
+      var description = uiSchema["ui:description"] || schema.description;
+      var orderedProperties;
+
+      try {
+        var properties = Object.keys(schema.properties || {});
+        orderedProperties = (0, _utils.orderProperties)(properties, uiSchema["ui:order"]);
+      } catch (err) {
+        return _react.default.createElement("div", null, _react.default.createElement("p", {
+          className: "config-error",
+          style: {
+            color: "red"
+          }
+        }, "Invalid ", name || "root", " object field configuration:", _react.default.createElement("em", null, err.message), "."), _react.default.createElement("pre", null, JSON.stringify(schema)));
+      }
+
+      var Template = uiSchema["ui:ObjectFieldTemplate"] || registry.ObjectFieldTemplate || DefaultObjectFieldTemplate;
+      var templateProps = {
+        title: uiSchema["ui:title"] || title,
+        description: description,
+        TitleField: TitleField,
+        DescriptionField: DescriptionField,
+        properties: orderedProperties.map(function (name) {
+          var addedByAdditionalProperties = schema.properties[name].hasOwnProperty(_utils.ADDITIONAL_PROPERTY_FLAG);
+          var fieldUiSchema = addedByAdditionalProperties ? uiSchema.additionalProperties : uiSchema[name];
+          var hidden = fieldUiSchema && fieldUiSchema["ui:widget"] === "hidden";
+          return {
+            content: _react.default.createElement(SchemaField, {
+              key: name,
+              name: name,
+              required: _this2.isRequired(name),
+              schema: schema.properties[name],
+              uiSchema: fieldUiSchema,
+              errorSchema: errorSchema[name],
+              idSchema: idSchema[name],
+              idPrefix: idPrefix,
+              idSeparator: idSeparator,
+              formData: (formData || {})[name],
+              wasPropertyKeyModified: _this2.state.wasPropertyKeyModified,
+              onKeyChange: _this2.onKeyChange(name),
+              onChange: _this2.onPropertyChange(name, addedByAdditionalProperties),
+              onBlur: onBlur,
+              onFocus: onFocus,
+              registry: registry,
+              disabled: disabled,
+              readonly: readonly,
+              hideError: hideError,
+              onDropPropertyClick: _this2.onDropPropertyClick
+            }),
+            name: name,
+            readonly: readonly,
+            disabled: disabled,
+            required: required,
+            hidden: hidden
+          };
+        }),
+        readonly: readonly,
+        disabled: disabled,
+        required: required,
+        idSchema: idSchema,
+        uiSchema: uiSchema,
+        schema: schema,
+        formData: formData,
+        formContext: formContext,
+        registry: registry
+      };
+      return _react.default.createElement(Template, _extends({}, templateProps, {
+        onAddClick: this.handleAddClick
+      }));
+    }
+  }]);
+
+  return ObjectField;
+}(_react.Component);
+
+_defineProperty(ObjectField, "defaultProps", {
+  uiSchema: {},
+  formData: {},
+  errorSchema: {},
+  idSchema: {},
+  required: false,
+  disabled: false,
+  readonly: false
+});
+
+if ("development" !== "production") {
+  ObjectField.propTypes = types.fieldProps;
+}
+
+var _default = ObjectField;
+exports.default = _default;
+},{"../AddButton":"../node_modules/@rjsf/core/dist/es/components/AddButton.js","react":"../node_modules/react/index.js","../../types":"../node_modules/@rjsf/core/dist/es/types.js","../../utils":"../node_modules/@rjsf/core/dist/es/utils.js"}],"../node_modules/@rjsf/core/dist/es/components/fields/SchemaField.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _IconButton = _interopRequireDefault(require("../IconButton"));
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var types = _interopRequireWildcard(require("../../types"));
+
+var _utils = require("../../utils");
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof2(obj) { "@babel/helpers - typeof"; return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return _assertThisInitialized(self);
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+    var ownKeys = Object.keys(source);
+
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+      ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+      }));
+    }
+
+    ownKeys.forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    });
+  }
+
+  return target;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+var REQUIRED_FIELD_SYMBOL = "*";
+var COMPONENT_TYPES = {
+  array: "ArrayField",
+  "boolean": "BooleanField",
+  integer: "NumberField",
+  number: "NumberField",
+  object: "ObjectField",
+  string: "StringField",
+  "null": "NullField"
+};
+
+function getFieldComponent(schema, uiSchema, idSchema, fields) {
+  var field = uiSchema["ui:field"];
+
+  if (typeof field === "function") {
+    return field;
+  }
+
+  if (typeof field === "string" && field in fields) {
+    return fields[field];
+  }
+
+  var componentName = COMPONENT_TYPES[(0, _utils.getSchemaType)(schema)]; // If the type is not defined and the schema uses 'anyOf' or 'oneOf', don't
+  // render a field and let the MultiSchemaField component handle the form display
+
+  if (!componentName && (schema.anyOf || schema.oneOf)) {
+    return function () {
+      return null;
+    };
+  }
+
+  return componentName in fields ? fields[componentName] : function () {
+    var UnsupportedField = fields.UnsupportedField;
+    return _react.default.createElement(UnsupportedField, {
+      schema: schema,
+      idSchema: idSchema,
+      reason: "Unknown field type ".concat(schema.type)
+    });
+  };
+}
+
+function Label(props) {
+  var label = props.label,
+      required = props.required,
+      id = props.id;
+
+  if (!label) {
+    return null;
+  }
+
+  return _react.default.createElement("label", {
+    className: "control-label",
+    htmlFor: id
+  }, label, required && _react.default.createElement("span", {
+    className: "required"
+  }, REQUIRED_FIELD_SYMBOL));
+}
+
+function LabelInput(props) {
+  var id = props.id,
+      label = props.label,
+      onChange = props.onChange;
+  return _react.default.createElement("input", {
+    className: "form-control",
+    type: "text",
+    id: id,
+    onBlur: function onBlur(event) {
+      return onChange(event.target.value);
+    },
+    defaultValue: label
+  });
+}
+
+function Help(props) {
+  var id = props.id,
+      help = props.help;
+
+  if (!help) {
+    return null;
+  }
+
+  if (typeof help === "string") {
+    return _react.default.createElement("p", {
+      id: id,
+      className: "help-block"
+    }, help);
+  }
+
+  return _react.default.createElement("div", {
+    id: id,
+    className: "help-block"
+  }, help);
+}
+
+function ErrorList(props) {
+  var _props$errors = props.errors,
+      errors = _props$errors === void 0 ? [] : _props$errors;
+
+  if (errors.length === 0) {
+    return null;
+  }
+
+  return _react.default.createElement("div", null, _react.default.createElement("ul", {
+    className: "error-detail bs-callout bs-callout-info"
+  }, errors.filter(function (elem) {
+    return !!elem;
+  }).map(function (error, index) {
+    return _react.default.createElement("li", {
+      className: "text-danger",
+      key: index
+    }, error);
+  })));
+}
+
+function DefaultTemplate(props) {
+  var id = props.id,
+      label = props.label,
+      children = props.children,
+      errors = props.errors,
+      help = props.help,
+      description = props.description,
+      hidden = props.hidden,
+      required = props.required,
+      displayLabel = props.displayLabel;
+
+  if (hidden) {
+    return _react.default.createElement("div", {
+      className: "hidden"
+    }, children);
+  }
+
+  return _react.default.createElement(WrapIfAdditional, props, displayLabel && _react.default.createElement(Label, {
+    label: label,
+    required: required,
+    id: id
+  }), displayLabel && description ? description : null, children, errors, help);
+}
+
+if ("development" !== "production") {
+  DefaultTemplate.propTypes = {
+    id: _propTypes.default.string,
+    classNames: _propTypes.default.string,
+    label: _propTypes.default.string,
+    children: _propTypes.default.node.isRequired,
+    errors: _propTypes.default.element,
+    rawErrors: _propTypes.default.arrayOf(_propTypes.default.string),
+    help: _propTypes.default.element,
+    rawHelp: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.element]),
+    description: _propTypes.default.element,
+    rawDescription: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.element]),
+    hidden: _propTypes.default.bool,
+    required: _propTypes.default.bool,
+    readonly: _propTypes.default.bool,
+    displayLabel: _propTypes.default.bool,
+    fields: _propTypes.default.object,
+    formContext: _propTypes.default.object
+  };
+}
+
+DefaultTemplate.defaultProps = {
+  hidden: false,
+  readonly: false,
+  required: false,
+  displayLabel: true
+};
+
+function WrapIfAdditional(props) {
+  var id = props.id,
+      classNames = props.classNames,
+      disabled = props.disabled,
+      label = props.label,
+      onKeyChange = props.onKeyChange,
+      onDropPropertyClick = props.onDropPropertyClick,
+      readonly = props.readonly,
+      required = props.required,
+      schema = props.schema;
+  var keyLabel = "".concat(label, " Key"); // i18n ?
+
+  var additional = schema.hasOwnProperty(_utils.ADDITIONAL_PROPERTY_FLAG);
+
+  if (!additional) {
+    return _react.default.createElement("div", {
+      className: classNames
+    }, props.children);
+  }
+
+  return _react.default.createElement("div", {
+    className: classNames
+  }, _react.default.createElement("div", {
+    className: "row"
+  }, _react.default.createElement("div", {
+    className: "col-xs-5 form-additional"
+  }, _react.default.createElement("div", {
+    className: "form-group"
+  }, _react.default.createElement(Label, {
+    label: keyLabel,
+    required: required,
+    id: "".concat(id, "-key")
+  }), _react.default.createElement(LabelInput, {
+    label: label,
+    required: required,
+    id: "".concat(id, "-key"),
+    onChange: onKeyChange
+  }))), _react.default.createElement("div", {
+    className: "form-additional form-group col-xs-5"
+  }, props.children), _react.default.createElement("div", {
+    className: "col-xs-2"
+  }, _react.default.createElement(_IconButton.default, {
+    type: "danger",
+    icon: "remove",
+    className: "array-item-remove btn-block",
+    tabIndex: "-1",
+    style: {
+      border: "0"
+    },
+    disabled: disabled || readonly,
+    onClick: onDropPropertyClick(label)
+  }))));
+}
+
+function SchemaFieldRender(props) {
+  var uiSchema = props.uiSchema,
+      formData = props.formData,
+      errorSchema = props.errorSchema,
+      idPrefix = props.idPrefix,
+      idSeparator = props.idSeparator,
+      name = props.name,
+      onChange = props.onChange,
+      onKeyChange = props.onKeyChange,
+      onDropPropertyClick = props.onDropPropertyClick,
+      required = props.required,
+      _props$registry = props.registry,
+      registry = _props$registry === void 0 ? (0, _utils.getDefaultRegistry)() : _props$registry,
+      _props$wasPropertyKey = props.wasPropertyKeyModified,
+      wasPropertyKeyModified = _props$wasPropertyKey === void 0 ? false : _props$wasPropertyKey;
+  var rootSchema = registry.rootSchema,
+      fields = registry.fields,
+      formContext = registry.formContext;
+  var FieldTemplate = uiSchema["ui:FieldTemplate"] || registry.FieldTemplate || DefaultTemplate;
+  var idSchema = props.idSchema;
+  var schema = (0, _utils.retrieveSchema)(props.schema, rootSchema, formData);
+  idSchema = (0, _utils.mergeObjects)((0, _utils.toIdSchema)(schema, null, rootSchema, formData, idPrefix, idSeparator), idSchema);
+  var FieldComponent = getFieldComponent(schema, uiSchema, idSchema, fields);
+  var DescriptionField = fields.DescriptionField;
+  var disabled = Boolean(props.disabled || uiSchema["ui:disabled"]);
+  var readonly = Boolean(props.readonly || uiSchema["ui:readonly"] || props.schema.readOnly || schema.readOnly);
+  var uiSchemaHideError = uiSchema["ui:hideError"]; // Set hideError to the value provided in the uiSchema, otherwise stick with the prop to propagate to children
+
+  var hideError = uiSchemaHideError === undefined ? props.hideError : Boolean(uiSchemaHideError);
+  var autofocus = Boolean(props.autofocus || uiSchema["ui:autofocus"]);
+
+  if (Object.keys(schema).length === 0) {
+    return null;
+  }
+
+  var displayLabel = (0, _utils.getDisplayLabel)(schema, uiSchema, rootSchema);
+
+  var __errors = errorSchema.__errors,
+      fieldErrorSchema = _objectWithoutProperties(errorSchema, ["__errors"]); // See #439: uiSchema: Don't pass consumed class names to child components
+
+
+  var field = _react.default.createElement(FieldComponent, _extends({}, props, {
+    idSchema: idSchema,
+    schema: schema,
+    uiSchema: _objectSpread({}, uiSchema, {
+      classNames: undefined
+    }),
+    disabled: disabled,
+    readonly: readonly,
+    hideError: hideError,
+    autofocus: autofocus,
+    errorSchema: fieldErrorSchema,
+    formContext: formContext,
+    rawErrors: __errors
+  }));
+
+  var id = idSchema.$id; // If this schema has a title defined, but the user has set a new key/label, retain their input.
+
+  var label;
+
+  if (wasPropertyKeyModified) {
+    label = name;
+  } else {
+    label = uiSchema["ui:title"] || props.schema.title || schema.title || name;
+  }
+
+  var description = uiSchema["ui:description"] || props.schema.description || schema.description;
+  var errors = __errors;
+  var help = uiSchema["ui:help"];
+  var hidden = uiSchema["ui:widget"] === "hidden";
+  var classNames = ["form-group", "field", "field-".concat(schema.type)];
+
+  if (!hideError && errors && errors.length > 0) {
+    classNames.push("field-error has-error has-danger");
+  }
+
+  classNames.push(uiSchema.classNames);
+  classNames = classNames.join(" ").trim();
+  var fieldProps = {
+    description: _react.default.createElement(DescriptionField, {
+      id: id + "__description",
+      description: description,
+      formContext: formContext
+    }),
+    rawDescription: description,
+    help: _react.default.createElement(Help, {
+      id: id + "__help",
+      help: help
+    }),
+    rawHelp: typeof help === "string" ? help : undefined,
+    errors: hideError ? undefined : _react.default.createElement(ErrorList, {
+      errors: errors
+    }),
+    rawErrors: hideError ? undefined : errors,
+    id: id,
+    label: label,
+    hidden: hidden,
+    onChange: onChange,
+    onKeyChange: onKeyChange,
+    onDropPropertyClick: onDropPropertyClick,
+    required: required,
+    disabled: disabled,
+    readonly: readonly,
+    hideError: hideError,
+    displayLabel: displayLabel,
+    classNames: classNames,
+    formContext: formContext,
+    formData: formData,
+    fields: fields,
+    schema: schema,
+    uiSchema: uiSchema,
+    registry: registry
+  };
+  var _AnyOfField = registry.fields.AnyOfField;
+  var _OneOfField = registry.fields.OneOfField;
+  return _react.default.createElement(FieldTemplate, fieldProps, _react.default.createElement(_react.default.Fragment, null, field, schema.anyOf && !(0, _utils.isSelect)(schema) && _react.default.createElement(_AnyOfField, {
+    disabled: disabled,
+    readonly: readonly,
+    hideError: hideError,
+    errorSchema: errorSchema,
+    formData: formData,
+    idPrefix: idPrefix,
+    idSchema: idSchema,
+    idSeparator: idSeparator,
+    onBlur: props.onBlur,
+    onChange: props.onChange,
+    onFocus: props.onFocus,
+    options: schema.anyOf.map(function (_schema) {
+      return (0, _utils.retrieveSchema)(_schema, rootSchema, formData);
+    }),
+    baseType: schema.type,
+    registry: registry,
+    schema: schema,
+    uiSchema: uiSchema
+  }), schema.oneOf && !(0, _utils.isSelect)(schema) && _react.default.createElement(_OneOfField, {
+    disabled: disabled,
+    readonly: readonly,
+    hideError: hideError,
+    errorSchema: errorSchema,
+    formData: formData,
+    idPrefix: idPrefix,
+    idSchema: idSchema,
+    idSeparator: idSeparator,
+    onBlur: props.onBlur,
+    onChange: props.onChange,
+    onFocus: props.onFocus,
+    options: schema.oneOf.map(function (_schema) {
+      return (0, _utils.retrieveSchema)(_schema, rootSchema, formData);
+    }),
+    baseType: schema.type,
+    registry: registry,
+    schema: schema,
+    uiSchema: uiSchema
+  })));
+}
+
+var SchemaField = /*#__PURE__*/function (_React$Component) {
+  _inherits(SchemaField, _React$Component);
+
+  function SchemaField() {
+    _classCallCheck(this, SchemaField);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(SchemaField).apply(this, arguments));
+  }
+
+  _createClass(SchemaField, [{
+    key: "shouldComponentUpdate",
+    value: function shouldComponentUpdate(nextProps, nextState) {
+      return !(0, _utils.deepEquals)(this.props, nextProps);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return SchemaFieldRender(this.props);
+    }
+  }]);
+
+  return SchemaField;
+}(_react.default.Component);
+
+SchemaField.defaultProps = {
+  uiSchema: {},
+  errorSchema: {},
+  idSchema: {},
+  disabled: false,
+  readonly: false,
+  autofocus: false,
+  hideError: false
+};
+
+if ("development" !== "production") {
+  SchemaField.propTypes = {
+    schema: _propTypes.default.object.isRequired,
+    uiSchema: _propTypes.default.object,
+    idSchema: _propTypes.default.object,
+    formData: _propTypes.default.any,
+    errorSchema: _propTypes.default.object,
+    registry: types.registry.isRequired
+  };
+}
+
+var _default = SchemaField;
+exports.default = _default;
+},{"../IconButton":"../node_modules/@rjsf/core/dist/es/components/IconButton.js","react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","../../types":"../node_modules/@rjsf/core/dist/es/types.js","../../utils":"../node_modules/@rjsf/core/dist/es/utils.js"}],"../node_modules/@rjsf/core/dist/es/components/fields/StringField.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var types = _interopRequireWildcard(require("../../types"));
+
+var _utils = require("../../utils");
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+    var ownKeys = Object.keys(source);
+
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+      ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+      }));
+    }
+
+    ownKeys.forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    });
+  }
+
+  return target;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function StringField(props) {
+  var schema = props.schema,
+      name = props.name,
+      uiSchema = props.uiSchema,
+      idSchema = props.idSchema,
+      formData = props.formData,
+      required = props.required,
+      disabled = props.disabled,
+      readonly = props.readonly,
+      autofocus = props.autofocus,
+      onChange = props.onChange,
+      onBlur = props.onBlur,
+      onFocus = props.onFocus,
+      _props$registry = props.registry,
+      registry = _props$registry === void 0 ? (0, _utils.getDefaultRegistry)() : _props$registry,
+      rawErrors = props.rawErrors;
+  var title = schema.title,
+      format = schema.format;
+  var widgets = registry.widgets,
+      formContext = registry.formContext;
+  var enumOptions = (0, _utils.isSelect)(schema) && (0, _utils.optionsList)(schema);
+  var defaultWidget = enumOptions ? "select" : "text";
+
+  if (format && (0, _utils.hasWidget)(schema, format, widgets)) {
+    defaultWidget = format;
+  }
+
+  var _getUiOptions = (0, _utils.getUiOptions)(uiSchema),
+      _getUiOptions$widget = _getUiOptions.widget,
+      widget = _getUiOptions$widget === void 0 ? defaultWidget : _getUiOptions$widget,
+      _getUiOptions$placeho = _getUiOptions.placeholder,
+      placeholder = _getUiOptions$placeho === void 0 ? "" : _getUiOptions$placeho,
+      options = _objectWithoutProperties(_getUiOptions, ["widget", "placeholder"]);
+
+  var Widget = (0, _utils.getWidget)(schema, widget, widgets);
+  return _react.default.createElement(Widget, {
+    options: _objectSpread({}, options, {
+      enumOptions: enumOptions
+    }),
+    schema: schema,
+    uiSchema: uiSchema,
+    id: idSchema && idSchema.$id,
+    label: title === undefined ? name : title,
+    value: formData,
+    onChange: onChange,
+    onBlur: onBlur,
+    onFocus: onFocus,
+    required: required,
+    disabled: disabled,
+    readonly: readonly,
+    formContext: formContext,
+    autofocus: autofocus,
+    registry: registry,
+    placeholder: placeholder,
+    rawErrors: rawErrors
+  });
+}
+
+if ("development" !== "production") {
+  StringField.propTypes = types.fieldProps;
+}
+
+StringField.defaultProps = {
+  uiSchema: {},
+  disabled: false,
+  readonly: false,
+  autofocus: false
+};
+var _default = StringField;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","../../types":"../node_modules/@rjsf/core/dist/es/types.js","../../utils":"../node_modules/@rjsf/core/dist/es/utils.js"}],"../node_modules/@rjsf/core/dist/es/components/fields/TitleField.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var REQUIRED_FIELD_SYMBOL = "*";
+
+function TitleField(props) {
+  var id = props.id,
+      title = props.title,
+      required = props.required;
+  return _react.default.createElement("legend", {
+    id: id
+  }, title, required && _react.default.createElement("span", {
+    className: "required"
+  }, REQUIRED_FIELD_SYMBOL));
+}
+
+if ("development" !== "production") {
+  TitleField.propTypes = {
+    id: _propTypes.default.string,
+    title: _propTypes.default.string,
+    required: _propTypes.default.bool
+  };
+}
+
+var _default = TitleField;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js"}],"../node_modules/@rjsf/core/dist/es/components/fields/NullField.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = require("react");
+
+var types = _interopRequireWildcard(require("../../types"));
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _typeof2(obj) { "@babel/helpers - typeof"; return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return _assertThisInitialized(self);
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+var NullField = /*#__PURE__*/function (_Component) {
+  _inherits(NullField, _Component);
+
+  function NullField() {
+    _classCallCheck(this, NullField);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(NullField).apply(this, arguments));
+  }
+
+  _createClass(NullField, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      if (this.props.formData === undefined) {
+        this.props.onChange(null);
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return null;
+    }
+  }]);
+
+  return NullField;
+}(_react.Component);
+
+if ("development" !== "production") {
+  NullField.propTypes = types.fieldProps;
+}
+
+var _default = NullField;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","../../types":"../node_modules/@rjsf/core/dist/es/types.js"}],"../node_modules/@rjsf/core/dist/es/components/fields/UnsupportedField.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function UnsupportedField(_ref) {
+  var schema = _ref.schema,
+      idSchema = _ref.idSchema,
+      reason = _ref.reason;
+  return _react.default.createElement("div", {
+    className: "unsupported-field"
+  }, _react.default.createElement("p", null, "Unsupported field schema", idSchema && idSchema.$id && _react.default.createElement("span", null, " for", " field ", _react.default.createElement("code", null, idSchema.$id)), reason && _react.default.createElement("em", null, ": ", reason), "."), schema && _react.default.createElement("pre", null, JSON.stringify(schema, null, 2)));
+}
+
+if ("development" !== "production") {
+  UnsupportedField.propTypes = {
+    schema: _propTypes.default.object.isRequired,
+    idSchema: _propTypes.default.object,
+    reason: _propTypes.default.string
+  };
+}
+
+var _default = UnsupportedField;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js"}],"../node_modules/@rjsf/core/dist/es/components/fields/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _ArrayField = _interopRequireDefault(require("./ArrayField"));
+
+var _BooleanField = _interopRequireDefault(require("./BooleanField"));
+
+var _DescriptionField = _interopRequireDefault(require("./DescriptionField"));
+
+var _MultiSchemaField = _interopRequireDefault(require("./MultiSchemaField"));
+
+var _NumberField = _interopRequireDefault(require("./NumberField"));
+
+var _ObjectField = _interopRequireDefault(require("./ObjectField"));
+
+var _SchemaField = _interopRequireDefault(require("./SchemaField"));
+
+var _StringField = _interopRequireDefault(require("./StringField"));
+
+var _TitleField = _interopRequireDefault(require("./TitleField"));
+
+var _NullField = _interopRequireDefault(require("./NullField"));
+
+var _UnsupportedField = _interopRequireDefault(require("./UnsupportedField"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _default = {
+  AnyOfField: _MultiSchemaField.default,
+  ArrayField: _ArrayField.default,
+  BooleanField: _BooleanField.default,
+  DescriptionField: _DescriptionField.default,
+  NumberField: _NumberField.default,
+  ObjectField: _ObjectField.default,
+  OneOfField: _MultiSchemaField.default,
+  SchemaField: _SchemaField.default,
+  StringField: _StringField.default,
+  TitleField: _TitleField.default,
+  NullField: _NullField.default,
+  UnsupportedField: _UnsupportedField.default
+};
+exports.default = _default;
+},{"./ArrayField":"../node_modules/@rjsf/core/dist/es/components/fields/ArrayField.js","./BooleanField":"../node_modules/@rjsf/core/dist/es/components/fields/BooleanField.js","./DescriptionField":"../node_modules/@rjsf/core/dist/es/components/fields/DescriptionField.js","./MultiSchemaField":"../node_modules/@rjsf/core/dist/es/components/fields/MultiSchemaField.js","./NumberField":"../node_modules/@rjsf/core/dist/es/components/fields/NumberField.js","./ObjectField":"../node_modules/@rjsf/core/dist/es/components/fields/ObjectField.js","./SchemaField":"../node_modules/@rjsf/core/dist/es/components/fields/SchemaField.js","./StringField":"../node_modules/@rjsf/core/dist/es/components/fields/StringField.js","./TitleField":"../node_modules/@rjsf/core/dist/es/components/fields/TitleField.js","./NullField":"../node_modules/@rjsf/core/dist/es/components/fields/NullField.js","./UnsupportedField":"../node_modules/@rjsf/core/dist/es/components/fields/UnsupportedField.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/AltDateWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _utils = require("../../utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _typeof2(obj) { "@babel/helpers - typeof"; return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return _assertThisInitialized(self);
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function rangeOptions(start, stop) {
+  var options = [];
+
+  for (var i = start; i <= stop; i++) {
+    options.push({
+      value: i,
+      label: (0, _utils.pad)(i, 2)
+    });
+  }
+
+  return options;
+}
+
+function readyForChange(state) {
+  return Object.keys(state).every(function (key) {
+    return state[key] !== -1;
+  });
+}
+
+function DateElement(props) {
+  var type = props.type,
+      range = props.range,
+      value = props.value,
+      select = props.select,
+      rootId = props.rootId,
+      disabled = props.disabled,
+      readonly = props.readonly,
+      autofocus = props.autofocus,
+      registry = props.registry,
+      onBlur = props.onBlur;
+  var id = rootId + "_" + type;
+  var SelectWidget = registry.widgets.SelectWidget;
+  return _react.default.createElement(SelectWidget, {
+    schema: {
+      type: "integer"
+    },
+    id: id,
+    className: "form-control",
+    options: {
+      enumOptions: rangeOptions(range[0], range[1])
+    },
+    placeholder: type,
+    value: value,
+    disabled: disabled,
+    readonly: readonly,
+    autofocus: autofocus,
+    onChange: function onChange(value) {
+      return select(type, value);
+    },
+    onBlur: onBlur
+  });
+}
+
+var AltDateWidget = /*#__PURE__*/function (_Component) {
+  _inherits(AltDateWidget, _Component);
+
+  function AltDateWidget(props) {
+    var _this;
+
+    _classCallCheck(this, AltDateWidget);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(AltDateWidget).call(this, props));
+
+    _defineProperty(_assertThisInitialized(_this), "onChange", function (property, value) {
+      _this.setState(_defineProperty({}, property, typeof value === "undefined" ? -1 : value), function () {
+        // Only propagate to parent state if we have a complete date{time}
+        if (readyForChange(_this.state)) {
+          _this.props.onChange((0, _utils.toDateString)(_this.state, _this.props.time));
+        }
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "setNow", function (event) {
+      event.preventDefault();
+      var _this$props = _this.props,
+          time = _this$props.time,
+          disabled = _this$props.disabled,
+          readonly = _this$props.readonly,
+          onChange = _this$props.onChange;
+
+      if (disabled || readonly) {
+        return;
+      }
+
+      var nowDateObj = (0, _utils.parseDateString)(new Date().toJSON(), time);
+
+      _this.setState(nowDateObj, function () {
+        return onChange((0, _utils.toDateString)(_this.state, time));
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "clear", function (event) {
+      event.preventDefault();
+      var _this$props2 = _this.props,
+          time = _this$props2.time,
+          disabled = _this$props2.disabled,
+          readonly = _this$props2.readonly,
+          onChange = _this$props2.onChange;
+
+      if (disabled || readonly) {
+        return;
+      }
+
+      _this.setState((0, _utils.parseDateString)("", time), function () {
+        return onChange(undefined);
+      });
+    });
+
+    _this.state = (0, _utils.parseDateString)(props.value, props.time);
+    return _this;
+  }
+
+  _createClass(AltDateWidget, [{
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps, prevState) {
+      if (prevProps.value && prevProps.value !== (0, _utils.parseDateString)(this.props.value, this.props.time)) {
+        this.setState((0, _utils.parseDateString)(this.props.value, this.props.time));
+      }
+    }
+  }, {
+    key: "shouldComponentUpdate",
+    value: function shouldComponentUpdate(nextProps, nextState) {
+      return (0, _utils.shouldRender)(this, nextProps, nextState);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var _this$props3 = this.props,
+          id = _this$props3.id,
+          disabled = _this$props3.disabled,
+          readonly = _this$props3.readonly,
+          autofocus = _this$props3.autofocus,
+          registry = _this$props3.registry,
+          onBlur = _this$props3.onBlur,
+          options = _this$props3.options;
+      return _react.default.createElement("ul", {
+        className: "list-inline"
+      }, this.dateElementProps.map(function (elemProps, i) {
+        return _react.default.createElement("li", {
+          key: i
+        }, _react.default.createElement(DateElement, _extends({
+          rootId: id,
+          select: _this2.onChange
+        }, elemProps, {
+          disabled: disabled,
+          readonly: readonly,
+          registry: registry,
+          onBlur: onBlur,
+          autofocus: autofocus && i === 0
+        })));
+      }), (options.hideNowButton !== "undefined" ? !options.hideNowButton : true) && _react.default.createElement("li", null, _react.default.createElement("a", {
+        href: "#",
+        className: "btn btn-info btn-now",
+        onClick: this.setNow
+      }, "Now")), (options.hideClearButton !== "undefined" ? !options.hideClearButton : true) && _react.default.createElement("li", null, _react.default.createElement("a", {
+        href: "#",
+        className: "btn btn-warning btn-clear",
+        onClick: this.clear
+      }, "Clear")));
+    }
+  }, {
+    key: "dateElementProps",
+    get: function get() {
+      var _this$props4 = this.props,
+          time = _this$props4.time,
+          options = _this$props4.options;
+      var _this$state = this.state,
+          year = _this$state.year,
+          month = _this$state.month,
+          day = _this$state.day,
+          hour = _this$state.hour,
+          minute = _this$state.minute,
+          second = _this$state.second;
+      var data = [{
+        type: "year",
+        range: options.yearsRange,
+        value: year
+      }, {
+        type: "month",
+        range: [1, 12],
+        value: month
+      }, {
+        type: "day",
+        range: [1, 31],
+        value: day
+      }];
+
+      if (time) {
+        data.push({
+          type: "hour",
+          range: [0, 23],
+          value: hour
+        }, {
+          type: "minute",
+          range: [0, 59],
+          value: minute
+        }, {
+          type: "second",
+          range: [0, 59],
+          value: second
+        });
+      }
+
+      return data;
+    }
+  }]);
+
+  return AltDateWidget;
+}(_react.Component);
+
+_defineProperty(AltDateWidget, "defaultProps", {
+  time: false,
+  disabled: false,
+  readonly: false,
+  autofocus: false,
+  options: {
+    yearsRange: [1900, new Date().getFullYear() + 2]
+  }
+});
+
+if ("development" !== "production") {
+  AltDateWidget.propTypes = {
+    schema: _propTypes.default.object.isRequired,
+    id: _propTypes.default.string.isRequired,
+    value: _propTypes.default.string,
+    required: _propTypes.default.bool,
+    disabled: _propTypes.default.bool,
+    readonly: _propTypes.default.bool,
+    autofocus: _propTypes.default.bool,
+    onChange: _propTypes.default.func,
+    onBlur: _propTypes.default.func,
+    time: _propTypes.default.bool,
+    options: _propTypes.default.object
+  };
+}
+
+var _default = AltDateWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","../../utils":"../node_modules/@rjsf/core/dist/es/utils.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/AltDateTimeWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _AltDateWidget = _interopRequireDefault(require("./AltDateWidget"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+    var ownKeys = Object.keys(source);
+
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+      ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+      }));
+    }
+
+    ownKeys.forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    });
+  }
+
+  return target;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function AltDateTimeWidget(props) {
+  var AltDateWidget = props.registry.widgets.AltDateWidget;
+  return _react.default.createElement(AltDateWidget, _extends({
+    time: true
+  }, props));
+}
+
+if ("development" !== "production") {
+  AltDateTimeWidget.propTypes = {
+    schema: _propTypes.default.object.isRequired,
+    id: _propTypes.default.string.isRequired,
+    value: _propTypes.default.string,
+    required: _propTypes.default.bool,
+    onChange: _propTypes.default.func,
+    options: _propTypes.default.object
+  };
+}
+
+AltDateTimeWidget.defaultProps = _objectSpread({}, _AltDateWidget.default.defaultProps, {
+  time: true
+});
+var _default = AltDateTimeWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","./AltDateWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/AltDateWidget.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/BaseInput.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance");
+}
+
+function _iterableToArray(iter) {
+  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
+      arr2[i] = arr[i];
+    }
+
+    return arr2;
+  }
+}
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function BaseInput(props) {
+  // Note: since React 15.2.0 we can't forward unknown element attributes, so we
+  // exclude the "options" and "schema" ones here.
+  if (!props.id) {
+    console.log("No id for", props);
+    throw new Error("no id for props ".concat(JSON.stringify(props)));
+  }
+
+  var value = props.value,
+      readonly = props.readonly,
+      disabled = props.disabled,
+      autofocus = props.autofocus,
+      onBlur = props.onBlur,
+      onFocus = props.onFocus,
+      options = props.options,
+      schema = props.schema,
+      uiSchema = props.uiSchema,
+      formContext = props.formContext,
+      registry = props.registry,
+      rawErrors = props.rawErrors,
+      inputProps = _objectWithoutProperties(props, ["value", "readonly", "disabled", "autofocus", "onBlur", "onFocus", "options", "schema", "uiSchema", "formContext", "registry", "rawErrors"]); // If options.inputType is set use that as the input type
+
+
+  if (options.inputType) {
+    inputProps.type = options.inputType;
+  } else if (!inputProps.type) {
+    // If the schema is of type number or integer, set the input type to number
+    if (schema.type === "number") {
+      inputProps.type = "number"; // Setting step to 'any' fixes a bug in Safari where decimals are not
+      // allowed in number inputs
+
+      inputProps.step = "any";
+    } else if (schema.type === "integer") {
+      inputProps.type = "number"; // Since this is integer, you always want to step up or down in multiples
+      // of 1
+
+      inputProps.step = "1";
+    } else {
+      inputProps.type = "text";
+    }
+  }
+
+  if (options.autocomplete) {
+    inputProps.autoComplete = options.autocomplete;
+  } // If multipleOf is defined, use this as the step value. This mainly improves
+  // the experience for keyboard users (who can use the up/down KB arrows).
+
+
+  if (schema.multipleOf) {
+    inputProps.step = schema.multipleOf;
+  }
+
+  if (typeof schema.minimum !== "undefined") {
+    inputProps.min = schema.minimum;
+  }
+
+  if (typeof schema.maximum !== "undefined") {
+    inputProps.max = schema.maximum;
+  }
+
+  var _onChange = function _onChange(_ref) {
+    var value = _ref.target.value;
+    return props.onChange(value === "" ? options.emptyValue : value);
+  };
+
+  return [_react.default.createElement("input", _extends({
+    key: inputProps.id,
+    className: "form-control",
+    readOnly: readonly,
+    disabled: disabled,
+    autoFocus: autofocus,
+    value: value == null ? "" : value
+  }, inputProps, {
+    list: schema.examples ? "examples_".concat(inputProps.id) : null,
+    onChange: _onChange,
+    onBlur: onBlur && function (event) {
+      return onBlur(inputProps.id, event.target.value);
+    },
+    onFocus: onFocus && function (event) {
+      return onFocus(inputProps.id, event.target.value);
+    }
+  })), schema.examples ? _react.default.createElement("datalist", {
+    key: "datalist_".concat(inputProps.id),
+    id: "examples_".concat(inputProps.id)
+  }, _toConsumableArray(new Set(schema.examples.concat(schema["default"] ? [schema["default"]] : []))).map(function (example) {
+    return _react.default.createElement("option", {
+      key: example,
+      value: example
+    });
+  })) : null];
+}
+
+BaseInput.defaultProps = {
+  required: false,
+  disabled: false,
+  readonly: false,
+  autofocus: false
+};
+
+if ("development" !== "production") {
+  BaseInput.propTypes = {
+    id: _propTypes.default.string.isRequired,
+    placeholder: _propTypes.default.string,
+    value: _propTypes.default.any,
+    required: _propTypes.default.bool,
+    disabled: _propTypes.default.bool,
+    readonly: _propTypes.default.bool,
+    autofocus: _propTypes.default.bool,
+    onChange: _propTypes.default.func,
+    onBlur: _propTypes.default.func,
+    onFocus: _propTypes.default.func
+  };
+}
+
+var _default = BaseInput;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/CheckboxWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _utils = require("../../utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function CheckboxWidget(props) {
+  var schema = props.schema,
+      id = props.id,
+      value = props.value,
+      disabled = props.disabled,
+      readonly = props.readonly,
+      label = props.label,
+      autofocus = props.autofocus,
+      onBlur = props.onBlur,
+      onFocus = props.onFocus,
+      _onChange = props.onChange,
+      DescriptionField = props.DescriptionField; // Because an unchecked checkbox will cause html5 validation to fail, only add
+  // the "required" attribute if the field value must be "true", due to the
+  // "const" or "enum" keywords
+
+  var required = (0, _utils.schemaRequiresTrueValue)(schema);
+  return _react.default.createElement("div", {
+    className: "checkbox ".concat(disabled || readonly ? "disabled" : "")
+  }, schema.description && _react.default.createElement(DescriptionField, {
+    description: schema.description
+  }), _react.default.createElement("label", null, _react.default.createElement("input", {
+    type: "checkbox",
+    id: id,
+    checked: typeof value === "undefined" ? false : value,
+    required: required,
+    disabled: disabled || readonly,
+    autoFocus: autofocus,
+    onChange: function onChange(event) {
+      return _onChange(event.target.checked);
+    },
+    onBlur: onBlur && function (event) {
+      return onBlur(id, event.target.checked);
+    },
+    onFocus: onFocus && function (event) {
+      return onFocus(id, event.target.checked);
+    }
+  }), _react.default.createElement("span", null, label)));
+}
+
+CheckboxWidget.defaultProps = {
+  autofocus: false
+};
+
+if ("development" !== "production") {
+  CheckboxWidget.propTypes = {
+    schema: _propTypes.default.object.isRequired,
+    id: _propTypes.default.string.isRequired,
+    value: _propTypes.default.bool,
+    required: _propTypes.default.bool,
+    disabled: _propTypes.default.bool,
+    readonly: _propTypes.default.bool,
+    autofocus: _propTypes.default.bool,
+    onChange: _propTypes.default.func
+  };
+}
+
+var _default = CheckboxWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","../../utils":"../node_modules/@rjsf/core/dist/es/utils.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/CheckboxesWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function selectValue(value, selected, all) {
+  var at = all.indexOf(value);
+  var updated = selected.slice(0, at).concat(value, selected.slice(at)); // As inserting values at predefined index positions doesn't work with empty
+  // arrays, we need to reorder the updated selection to match the initial order
+
+  return updated.sort(function (a, b) {
+    return all.indexOf(a) > all.indexOf(b);
+  });
+}
+
+function deselectValue(value, selected) {
+  return selected.filter(function (v) {
+    return v !== value;
+  });
+}
+
+function CheckboxesWidget(props) {
+  var id = props.id,
+      disabled = props.disabled,
+      options = props.options,
+      value = props.value,
+      autofocus = props.autofocus,
+      readonly = props.readonly,
+      _onChange = props.onChange;
+  var enumOptions = options.enumOptions,
+      enumDisabled = options.enumDisabled,
+      inline = options.inline;
+  return _react.default.createElement("div", {
+    className: "checkboxes",
+    id: id
+  }, enumOptions.map(function (option, index) {
+    var checked = value.indexOf(option.value) !== -1;
+    var itemDisabled = enumDisabled && enumDisabled.indexOf(option.value) != -1;
+    var disabledCls = disabled || itemDisabled || readonly ? "disabled" : "";
+
+    var checkbox = _react.default.createElement("span", null, _react.default.createElement("input", {
+      type: "checkbox",
+      id: "".concat(id, "_").concat(index),
+      checked: checked,
+      disabled: disabled || itemDisabled || readonly,
+      autoFocus: autofocus && index === 0,
+      onChange: function onChange(event) {
+        var all = enumOptions.map(function (_ref) {
+          var value = _ref.value;
+          return value;
+        });
+
+        if (event.target.checked) {
+          _onChange(selectValue(option.value, value, all));
+        } else {
+          _onChange(deselectValue(option.value, value));
+        }
+      }
+    }), _react.default.createElement("span", null, option.label));
+
+    return inline ? _react.default.createElement("label", {
+      key: index,
+      className: "checkbox-inline ".concat(disabledCls)
+    }, checkbox) : _react.default.createElement("div", {
+      key: index,
+      className: "checkbox ".concat(disabledCls)
+    }, _react.default.createElement("label", null, checkbox));
+  }));
+}
+
+CheckboxesWidget.defaultProps = {
+  autofocus: false,
+  options: {
+    inline: false
+  }
+};
+
+if ("development" !== "production") {
+  CheckboxesWidget.propTypes = {
+    schema: _propTypes.default.object.isRequired,
+    id: _propTypes.default.string.isRequired,
+    options: _propTypes.default.shape({
+      enumOptions: _propTypes.default.array,
+      inline: _propTypes.default.bool
+    }).isRequired,
+    value: _propTypes.default.any,
+    required: _propTypes.default.bool,
+    readonly: _propTypes.default.bool,
+    disabled: _propTypes.default.bool,
+    multiple: _propTypes.default.bool,
+    autofocus: _propTypes.default.bool,
+    onChange: _propTypes.default.func
+  };
+}
+
+var _default = CheckboxesWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/ColorWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function ColorWidget(props) {
+  var disabled = props.disabled,
+      readonly = props.readonly,
+      BaseInput = props.registry.widgets.BaseInput;
+  return _react.default.createElement(BaseInput, _extends({
+    type: "color"
+  }, props, {
+    disabled: disabled || readonly
+  }));
+}
+
+if ("development" !== "production") {
+  ColorWidget.propTypes = {
+    schema: _propTypes.default.object.isRequired,
+    id: _propTypes.default.string.isRequired,
+    value: _propTypes.default.string,
+    required: _propTypes.default.bool,
+    disabled: _propTypes.default.bool,
+    readonly: _propTypes.default.bool,
+    autofocus: _propTypes.default.bool,
+    onChange: _propTypes.default.func
+  };
+}
+
+var _default = ColorWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/DateWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function DateWidget(props) {
+  var _onChange = props.onChange,
+      BaseInput = props.registry.widgets.BaseInput;
+  return _react.default.createElement(BaseInput, _extends({
+    type: "date"
+  }, props, {
+    onChange: function onChange(value) {
+      return _onChange(value || undefined);
+    }
+  }));
+}
+
+if ("development" !== "production") {
+  DateWidget.propTypes = {
+    value: _propTypes.default.string
+  };
+}
+
+var _default = DateWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/DateTimeWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _utils = require("../../utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function DateTimeWidget(props) {
+  var value = props.value,
+      _onChange = props.onChange,
+      BaseInput = props.registry.widgets.BaseInput;
+  return _react.default.createElement(BaseInput, _extends({
+    type: "datetime-local"
+  }, props, {
+    value: (0, _utils.utcToLocal)(value),
+    onChange: function onChange(value) {
+      return _onChange((0, _utils.localToUTC)(value));
+    }
+  }));
+}
+
+if ("development" !== "production") {
+  DateTimeWidget.propTypes = {
+    value: _propTypes.default.string
+  };
+}
+
+var _default = DateTimeWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","../../utils":"../node_modules/@rjsf/core/dist/es/utils.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/EmailWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function EmailWidget(props) {
+  var BaseInput = props.registry.widgets.BaseInput;
+  return _react.default.createElement(BaseInput, _extends({
+    type: "email"
+  }, props));
+}
+
+if ("development" !== "production") {
+  EmailWidget.propTypes = {
+    value: _propTypes.default.string
+  };
+}
+
+var _default = EmailWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/FileWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _utils = require("../../utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _typeof2(obj) { "@babel/helpers - typeof"; return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return _assertThisInitialized(self);
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function addNameToDataURL(dataURL, name) {
+  return dataURL.replace(";base64", ";name=".concat(encodeURIComponent(name), ";base64"));
+}
+
+function processFile(file) {
+  var name = file.name,
+      size = file.size,
+      type = file.type;
+  return new Promise(function (resolve, reject) {
+    var reader = new window.FileReader();
+    reader.onerror = reject;
+
+    reader.onload = function (event) {
+      resolve({
+        dataURL: addNameToDataURL(event.target.result, name),
+        name: name,
+        size: size,
+        type: type
+      });
+    };
+
+    reader.readAsDataURL(file);
+  });
+}
+
+function processFiles(files) {
+  return Promise.all([].map.call(files, processFile));
+}
+
+function FilesInfo(props) {
+  var filesInfo = props.filesInfo;
+
+  if (filesInfo.length === 0) {
+    return null;
+  }
+
+  return _react.default.createElement("ul", {
+    className: "file-info"
+  }, filesInfo.map(function (fileInfo, key) {
+    var name = fileInfo.name,
+        size = fileInfo.size,
+        type = fileInfo.type;
+    return _react.default.createElement("li", {
+      key: key
+    }, _react.default.createElement("strong", null, name), " (", type, ", ", size, " bytes)");
+  }));
+}
+
+function extractFileInfo(dataURLs) {
+  return dataURLs.filter(function (dataURL) {
+    return typeof dataURL !== "undefined";
+  }).map(function (dataURL) {
+    var _dataURItoBlob = (0, _utils.dataURItoBlob)(dataURL),
+        blob = _dataURItoBlob.blob,
+        name = _dataURItoBlob.name;
+
+    return {
+      name: name,
+      size: blob.size,
+      type: blob.type
+    };
+  });
+}
+
+var FileWidget = /*#__PURE__*/function (_Component) {
+  _inherits(FileWidget, _Component);
+
+  function FileWidget(props) {
+    var _this;
+
+    _classCallCheck(this, FileWidget);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(FileWidget).call(this, props));
+
+    _defineProperty(_assertThisInitialized(_this), "onChange", function (event) {
+      var _this$props = _this.props,
+          multiple = _this$props.multiple,
+          onChange = _this$props.onChange;
+      processFiles(event.target.files).then(function (filesInfo) {
+        var state = {
+          values: filesInfo.map(function (fileInfo) {
+            return fileInfo.dataURL;
+          }),
+          filesInfo: filesInfo
+        };
+
+        _this.setState(state, function () {
+          if (multiple) {
+            onChange(state.values);
+          } else {
+            onChange(state.values[0]);
+          }
+        });
+      });
+    });
+
+    var value = props.value;
+    var values = Array.isArray(value) ? value : [value];
+    _this.state = {
+      values: values,
+      filesInfo: extractFileInfo(values)
+    };
+    return _this;
+  }
+
+  _createClass(FileWidget, [{
+    key: "shouldComponentUpdate",
+    value: function shouldComponentUpdate(nextProps, nextState) {
+      return (0, _utils.shouldRender)(this, nextProps, nextState);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var _this$props2 = this.props,
+          multiple = _this$props2.multiple,
+          id = _this$props2.id,
+          readonly = _this$props2.readonly,
+          disabled = _this$props2.disabled,
+          autofocus = _this$props2.autofocus,
+          options = _this$props2.options;
+      var filesInfo = this.state.filesInfo;
+      return _react.default.createElement("div", null, _react.default.createElement("p", null, _react.default.createElement("input", {
+        ref: function ref(_ref) {
+          return _this2.inputRef = _ref;
+        },
+        id: id,
+        type: "file",
+        disabled: readonly || disabled,
+        onChange: this.onChange,
+        defaultValue: "",
+        autoFocus: autofocus,
+        multiple: multiple,
+        accept: options.accept
+      })), _react.default.createElement(FilesInfo, {
+        filesInfo: filesInfo
+      }));
+    }
+  }]);
+
+  return FileWidget;
+}(_react.Component);
+
+FileWidget.defaultProps = {
+  autofocus: false
+};
+
+if ("development" !== "production") {
+  FileWidget.propTypes = {
+    multiple: _propTypes.default.bool,
+    value: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.arrayOf(_propTypes.default.string)]),
+    autofocus: _propTypes.default.bool
+  };
+}
+
+var _default = FileWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","../../utils":"../node_modules/@rjsf/core/dist/es/utils.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/HiddenWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function HiddenWidget(_ref) {
+  var id = _ref.id,
+      value = _ref.value;
+  return _react.default.createElement("input", {
+    type: "hidden",
+    id: id,
+    value: typeof value === "undefined" ? "" : value
+  });
+}
+
+if ("development" !== "production") {
+  HiddenWidget.propTypes = {
+    id: _propTypes.default.string.isRequired,
+    value: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.number, _propTypes.default.bool])
+  };
+}
+
+var _default = HiddenWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/PasswordWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function PasswordWidget(props) {
+  var BaseInput = props.registry.widgets.BaseInput;
+  return _react.default.createElement(BaseInput, _extends({
+    type: "password"
+  }, props));
+}
+
+if ("development" !== "production") {
+  PasswordWidget.propTypes = {
+    value: _propTypes.default.string
+  };
+}
+
+var _default = PasswordWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/RadioWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function RadioWidget(props) {
+  var options = props.options,
+      value = props.value,
+      required = props.required,
+      disabled = props.disabled,
+      readonly = props.readonly,
+      autofocus = props.autofocus,
+      onBlur = props.onBlur,
+      onFocus = props.onFocus,
+      _onChange = props.onChange,
+      id = props.id; // Generating a unique field name to identify this set of radio buttons
+
+  var name = Math.random().toString();
+  var enumOptions = options.enumOptions,
+      enumDisabled = options.enumDisabled,
+      inline = options.inline; // checked={checked} has been moved above name={name}, As mentioned in #349;
+  // this is a temporary fix for radio button rendering bug in React, facebook/react#7630.
+
+  return _react.default.createElement("div", {
+    className: "field-radio-group",
+    id: id
+  }, enumOptions.map(function (option, i) {
+    var checked = option.value === value;
+    var itemDisabled = enumDisabled && enumDisabled.indexOf(option.value) != -1;
+    var disabledCls = disabled || itemDisabled || readonly ? "disabled" : "";
+
+    var radio = _react.default.createElement("span", null, _react.default.createElement("input", {
+      type: "radio",
+      checked: checked,
+      name: name,
+      required: required,
+      value: option.value,
+      disabled: disabled || itemDisabled || readonly,
+      autoFocus: autofocus && i === 0,
+      onChange: function onChange(_) {
+        return _onChange(option.value);
+      },
+      onBlur: onBlur && function (event) {
+        return onBlur(id, event.target.value);
+      },
+      onFocus: onFocus && function (event) {
+        return onFocus(id, event.target.value);
+      }
+    }), _react.default.createElement("span", null, option.label));
+
+    return inline ? _react.default.createElement("label", {
+      key: i,
+      className: "radio-inline ".concat(disabledCls)
+    }, radio) : _react.default.createElement("div", {
+      key: i,
+      className: "radio ".concat(disabledCls)
+    }, _react.default.createElement("label", null, radio));
+  }));
+}
+
+RadioWidget.defaultProps = {
+  autofocus: false
+};
+
+if ("development" !== "production") {
+  RadioWidget.propTypes = {
+    schema: _propTypes.default.object.isRequired,
+    id: _propTypes.default.string.isRequired,
+    options: _propTypes.default.shape({
+      enumOptions: _propTypes.default.array,
+      inline: _propTypes.default.bool
+    }).isRequired,
+    value: _propTypes.default.any,
+    required: _propTypes.default.bool,
+    disabled: _propTypes.default.bool,
+    readonly: _propTypes.default.bool,
+    autofocus: _propTypes.default.bool,
+    onChange: _propTypes.default.func
+  };
+}
+
+var _default = RadioWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/RangeWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _utils = require("../../utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function RangeWidget(props) {
+  var schema = props.schema,
+      value = props.value,
+      BaseInput = props.registry.widgets.BaseInput;
+  return _react.default.createElement("div", {
+    className: "field-range-wrapper"
+  }, _react.default.createElement(BaseInput, _extends({
+    type: "range"
+  }, props, (0, _utils.rangeSpec)(schema))), _react.default.createElement("span", {
+    className: "range-view"
+  }, value));
+}
+
+if ("development" !== "production") {
+  RangeWidget.propTypes = {
+    value: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.number])
+  };
+}
+
+var _default = RangeWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","../../utils":"../node_modules/@rjsf/core/dist/es/utils.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/SelectWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _utils = require("../../utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var nums = new Set(["number", "integer"]);
+/**
+ * This is a silly limitation in the DOM where option change event values are
+ * always retrieved as strings.
+ */
+
+function processValue(schema, value) {
+  // "enum" is a reserved word, so only "type" and "items" can be destructured
+  var type = schema.type,
+      items = schema.items;
+
+  if (value === "") {
+    return undefined;
+  } else if (type === "array" && items && nums.has(items.type)) {
+    return value.map(_utils.asNumber);
+  } else if (type === "boolean") {
+    return value === "true";
+  } else if (type === "number") {
+    return (0, _utils.asNumber)(value);
+  } // If type is undefined, but an enum is present, try and infer the type from
+  // the enum values
+
+
+  if (schema["enum"]) {
+    if (schema["enum"].every(function (x) {
+      return (0, _utils.guessType)(x) === "number";
+    })) {
+      return (0, _utils.asNumber)(value);
+    } else if (schema["enum"].every(function (x) {
+      return (0, _utils.guessType)(x) === "boolean";
+    })) {
+      return value === "true";
+    }
+  }
+
+  return value;
+}
+
+function getValue(event, multiple) {
+  if (multiple) {
+    return [].slice.call(event.target.options).filter(function (o) {
+      return o.selected;
+    }).map(function (o) {
+      return o.value;
+    });
+  } else {
+    return event.target.value;
+  }
+}
+
+function SelectWidget(props) {
+  var schema = props.schema,
+      id = props.id,
+      options = props.options,
+      value = props.value,
+      required = props.required,
+      disabled = props.disabled,
+      readonly = props.readonly,
+      multiple = props.multiple,
+      autofocus = props.autofocus,
+      _onChange = props.onChange,
+      onBlur = props.onBlur,
+      onFocus = props.onFocus,
+      placeholder = props.placeholder;
+  var enumOptions = options.enumOptions,
+      enumDisabled = options.enumDisabled;
+  var emptyValue = multiple ? [] : "";
+  return _react.default.createElement("select", {
+    id: id,
+    multiple: multiple,
+    className: "form-control",
+    value: typeof value === "undefined" ? emptyValue : value,
+    required: required,
+    disabled: disabled || readonly,
+    autoFocus: autofocus,
+    onBlur: onBlur && function (event) {
+      var newValue = getValue(event, multiple);
+      onBlur(id, processValue(schema, newValue));
+    },
+    onFocus: onFocus && function (event) {
+      var newValue = getValue(event, multiple);
+      onFocus(id, processValue(schema, newValue));
+    },
+    onChange: function onChange(event) {
+      var newValue = getValue(event, multiple);
+
+      _onChange(processValue(schema, newValue));
+    }
+  }, !multiple && schema["default"] === undefined && _react.default.createElement("option", {
+    value: ""
+  }, placeholder), enumOptions.map(function (_ref, i) {
+    var value = _ref.value,
+        label = _ref.label;
+    var disabled = enumDisabled && enumDisabled.indexOf(value) != -1;
+    return _react.default.createElement("option", {
+      key: i,
+      value: value,
+      disabled: disabled
+    }, label);
+  }));
+}
+
+SelectWidget.defaultProps = {
+  autofocus: false
+};
+
+if ("development" !== "production") {
+  SelectWidget.propTypes = {
+    schema: _propTypes.default.object.isRequired,
+    id: _propTypes.default.string.isRequired,
+    options: _propTypes.default.shape({
+      enumOptions: _propTypes.default.array
+    }).isRequired,
+    value: _propTypes.default.any,
+    required: _propTypes.default.bool,
+    disabled: _propTypes.default.bool,
+    readonly: _propTypes.default.bool,
+    multiple: _propTypes.default.bool,
+    autofocus: _propTypes.default.bool,
+    onChange: _propTypes.default.func,
+    onBlur: _propTypes.default.func,
+    onFocus: _propTypes.default.func
+  };
+}
+
+var _default = SelectWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","../../utils":"../node_modules/@rjsf/core/dist/es/utils.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/TextareaWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function TextareaWidget(props) {
+  var id = props.id,
+      options = props.options,
+      placeholder = props.placeholder,
+      value = props.value,
+      required = props.required,
+      disabled = props.disabled,
+      readonly = props.readonly,
+      autofocus = props.autofocus,
+      onChange = props.onChange,
+      onBlur = props.onBlur,
+      onFocus = props.onFocus;
+
+  var _onChange = function _onChange(_ref) {
+    var value = _ref.target.value;
+    return onChange(value === "" ? options.emptyValue : value);
+  };
+
+  return _react.default.createElement("textarea", {
+    id: id,
+    className: "form-control",
+    value: value ? value : "",
+    placeholder: placeholder,
+    required: required,
+    disabled: disabled,
+    readOnly: readonly,
+    autoFocus: autofocus,
+    rows: options.rows,
+    onBlur: onBlur && function (event) {
+      return onBlur(id, event.target.value);
+    },
+    onFocus: onFocus && function (event) {
+      return onFocus(id, event.target.value);
+    },
+    onChange: _onChange
+  });
+}
+
+TextareaWidget.defaultProps = {
+  autofocus: false,
+  options: {}
+};
+
+if ("development" !== "production") {
+  TextareaWidget.propTypes = {
+    schema: _propTypes.default.object.isRequired,
+    id: _propTypes.default.string.isRequired,
+    placeholder: _propTypes.default.string,
+    options: _propTypes.default.shape({
+      rows: _propTypes.default.number
+    }),
+    value: _propTypes.default.string,
+    required: _propTypes.default.bool,
+    disabled: _propTypes.default.bool,
+    readonly: _propTypes.default.bool,
+    autofocus: _propTypes.default.bool,
+    onChange: _propTypes.default.func,
+    onBlur: _propTypes.default.func,
+    onFocus: _propTypes.default.func
+  };
+}
+
+var _default = TextareaWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/TextWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function TextWidget(props) {
+  var BaseInput = props.registry.widgets.BaseInput;
+  return _react.default.createElement(BaseInput, props);
+}
+
+if ("development" !== "production") {
+  TextWidget.propTypes = {
+    value: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.number]),
+    id: _propTypes.default.string
+  };
+}
+
+var _default = TextWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/URLWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function URLWidget(props) {
+  var BaseInput = props.registry.widgets.BaseInput;
+  return _react.default.createElement(BaseInput, _extends({
+    type: "url"
+  }, props));
+}
+
+if ("development" !== "production") {
+  URLWidget.propTypes = {
+    value: _propTypes.default.string
+  };
+}
+
+var _default = URLWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/UpDownWidget.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _utils = require("../../utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function UpDownWidget(props) {
+  var BaseInput = props.registry.widgets.BaseInput;
+  return _react.default.createElement(BaseInput, _extends({
+    type: "number"
+  }, props, (0, _utils.rangeSpec)(props.schema)));
+}
+
+if ("development" !== "production") {
+  UpDownWidget.propTypes = {
+    value: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.string])
+  };
+}
+
+var _default = UpDownWidget;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","../../utils":"../node_modules/@rjsf/core/dist/es/utils.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/SubmitButton.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = SubmitButton;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _utils = require(".././../utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function SubmitButton(_ref) {
+  var uiSchema = _ref.uiSchema;
+
+  var _getSubmitButtonOptio = (0, _utils.getSubmitButtonOptions)(uiSchema),
+      submitText = _getSubmitButtonOptio.submitText,
+      norender = _getSubmitButtonOptio.norender,
+      submitButtonProps = _getSubmitButtonOptio.props;
+
+  return _react.default.createElement("div", null, !norender && _react.default.createElement("button", _extends({
+    type: "submit"
+  }, submitButtonProps, {
+    className: "btn btn-info"
+  }), submitText));
+}
+},{"react":"../node_modules/react/index.js",".././../utils":"../node_modules/@rjsf/core/dist/es/utils.js"}],"../node_modules/@rjsf/core/dist/es/components/widgets/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _AltDateWidget = _interopRequireDefault(require("./AltDateWidget"));
+
+var _AltDateTimeWidget = _interopRequireDefault(require("./AltDateTimeWidget"));
+
+var _BaseInput = _interopRequireDefault(require("./BaseInput"));
+
+var _CheckboxWidget = _interopRequireDefault(require("./CheckboxWidget"));
+
+var _CheckboxesWidget = _interopRequireDefault(require("./CheckboxesWidget"));
+
+var _ColorWidget = _interopRequireDefault(require("./ColorWidget"));
+
+var _DateWidget = _interopRequireDefault(require("./DateWidget"));
+
+var _DateTimeWidget = _interopRequireDefault(require("./DateTimeWidget"));
+
+var _EmailWidget = _interopRequireDefault(require("./EmailWidget"));
+
+var _FileWidget = _interopRequireDefault(require("./FileWidget"));
+
+var _HiddenWidget = _interopRequireDefault(require("./HiddenWidget"));
+
+var _PasswordWidget = _interopRequireDefault(require("./PasswordWidget"));
+
+var _RadioWidget = _interopRequireDefault(require("./RadioWidget"));
+
+var _RangeWidget = _interopRequireDefault(require("./RangeWidget"));
+
+var _SelectWidget = _interopRequireDefault(require("./SelectWidget"));
+
+var _TextareaWidget = _interopRequireDefault(require("./TextareaWidget"));
+
+var _TextWidget = _interopRequireDefault(require("./TextWidget"));
+
+var _URLWidget = _interopRequireDefault(require("./URLWidget"));
+
+var _UpDownWidget = _interopRequireDefault(require("./UpDownWidget"));
+
+var _SubmitButton = _interopRequireDefault(require("./SubmitButton"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _default = {
+  BaseInput: _BaseInput.default,
+  PasswordWidget: _PasswordWidget.default,
+  RadioWidget: _RadioWidget.default,
+  UpDownWidget: _UpDownWidget.default,
+  RangeWidget: _RangeWidget.default,
+  SelectWidget: _SelectWidget.default,
+  TextWidget: _TextWidget.default,
+  DateWidget: _DateWidget.default,
+  DateTimeWidget: _DateTimeWidget.default,
+  AltDateWidget: _AltDateWidget.default,
+  AltDateTimeWidget: _AltDateTimeWidget.default,
+  EmailWidget: _EmailWidget.default,
+  URLWidget: _URLWidget.default,
+  TextareaWidget: _TextareaWidget.default,
+  HiddenWidget: _HiddenWidget.default,
+  ColorWidget: _ColorWidget.default,
+  FileWidget: _FileWidget.default,
+  CheckboxWidget: _CheckboxWidget.default,
+  CheckboxesWidget: _CheckboxesWidget.default,
+  SubmitButton: _SubmitButton.default
+};
+exports.default = _default;
+},{"./AltDateWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/AltDateWidget.js","./AltDateTimeWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/AltDateTimeWidget.js","./BaseInput":"../node_modules/@rjsf/core/dist/es/components/widgets/BaseInput.js","./CheckboxWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/CheckboxWidget.js","./CheckboxesWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/CheckboxesWidget.js","./ColorWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/ColorWidget.js","./DateWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/DateWidget.js","./DateTimeWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/DateTimeWidget.js","./EmailWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/EmailWidget.js","./FileWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/FileWidget.js","./HiddenWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/HiddenWidget.js","./PasswordWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/PasswordWidget.js","./RadioWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/RadioWidget.js","./RangeWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/RangeWidget.js","./SelectWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/SelectWidget.js","./TextareaWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/TextareaWidget.js","./TextWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/TextWidget.js","./URLWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/URLWidget.js","./UpDownWidget":"../node_modules/@rjsf/core/dist/es/components/widgets/UpDownWidget.js","./SubmitButton":"../node_modules/@rjsf/core/dist/es/components/widgets/SubmitButton.js"}],"../node_modules/lodash/toPath.js":[function(require,module,exports) {
+var arrayMap = require('./_arrayMap'),
+    copyArray = require('./_copyArray'),
+    isArray = require('./isArray'),
+    isSymbol = require('./isSymbol'),
+    stringToPath = require('./_stringToPath'),
+    toKey = require('./_toKey'),
+    toString = require('./toString');
+
+/**
+ * Converts `value` to a property path array.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Util
+ * @param {*} value The value to convert.
+ * @returns {Array} Returns the new property path array.
+ * @example
+ *
+ * _.toPath('a.b.c');
+ * // => ['a', 'b', 'c']
+ *
+ * _.toPath('a[0].b.c');
+ * // => ['a', '0', 'b', 'c']
+ */
+function toPath(value) {
+  if (isArray(value)) {
+    return arrayMap(value, toKey);
+  }
+  return isSymbol(value) ? [value] : copyArray(stringToPath(toString(value)));
+}
+
+module.exports = toPath;
+
+},{"./_arrayMap":"../node_modules/lodash/_arrayMap.js","./_copyArray":"../node_modules/lodash/_copyArray.js","./isArray":"../node_modules/lodash/isArray.js","./isSymbol":"../node_modules/lodash/isSymbol.js","./_stringToPath":"../node_modules/lodash/_stringToPath.js","./_toKey":"../node_modules/lodash/_toKey.js","./toString":"../node_modules/lodash/toString.js"}],"../node_modules/uri-js/dist/es5/uri.all.js":[function(require,module,exports) {
+var define;
+var global = arguments[3];
+/** @license URI.js v4.4.1 (c) 2011 Gary Court. License: http://github.com/garycourt/uri-js */
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	(factory((global.URI = global.URI || {})));
+}(this, (function (exports) { 'use strict';
+
+function merge() {
+    for (var _len = arguments.length, sets = Array(_len), _key = 0; _key < _len; _key++) {
+        sets[_key] = arguments[_key];
+    }
+
+    if (sets.length > 1) {
+        sets[0] = sets[0].slice(0, -1);
+        var xl = sets.length - 1;
+        for (var x = 1; x < xl; ++x) {
+            sets[x] = sets[x].slice(1, -1);
+        }
+        sets[xl] = sets[xl].slice(1);
+        return sets.join('');
+    } else {
+        return sets[0];
+    }
+}
+function subexp(str) {
+    return "(?:" + str + ")";
+}
+function typeOf(o) {
+    return o === undefined ? "undefined" : o === null ? "null" : Object.prototype.toString.call(o).split(" ").pop().split("]").shift().toLowerCase();
+}
+function toUpperCase(str) {
+    return str.toUpperCase();
+}
+function toArray(obj) {
+    return obj !== undefined && obj !== null ? obj instanceof Array ? obj : typeof obj.length !== "number" || obj.split || obj.setInterval || obj.call ? [obj] : Array.prototype.slice.call(obj) : [];
+}
+function assign(target, source) {
+    var obj = target;
+    if (source) {
+        for (var key in source) {
+            obj[key] = source[key];
+        }
+    }
+    return obj;
+}
+
+function buildExps(isIRI) {
+    var ALPHA$$ = "[A-Za-z]",
+        CR$ = "[\\x0D]",
+        DIGIT$$ = "[0-9]",
+        DQUOTE$$ = "[\\x22]",
+        HEXDIG$$ = merge(DIGIT$$, "[A-Fa-f]"),
+        //case-insensitive
+    LF$$ = "[\\x0A]",
+        SP$$ = "[\\x20]",
+        PCT_ENCODED$ = subexp(subexp("%[EFef]" + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$) + "|" + subexp("%[89A-Fa-f]" + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$) + "|" + subexp("%" + HEXDIG$$ + HEXDIG$$)),
+        //expanded
+    GEN_DELIMS$$ = "[\\:\\/\\?\\#\\[\\]\\@]",
+        SUB_DELIMS$$ = "[\\!\\$\\&\\'\\(\\)\\*\\+\\,\\;\\=]",
+        RESERVED$$ = merge(GEN_DELIMS$$, SUB_DELIMS$$),
+        UCSCHAR$$ = isIRI ? "[\\xA0-\\u200D\\u2010-\\u2029\\u202F-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF]" : "[]",
+        //subset, excludes bidi control characters
+    IPRIVATE$$ = isIRI ? "[\\uE000-\\uF8FF]" : "[]",
+        //subset
+    UNRESERVED$$ = merge(ALPHA$$, DIGIT$$, "[\\-\\.\\_\\~]", UCSCHAR$$),
+        SCHEME$ = subexp(ALPHA$$ + merge(ALPHA$$, DIGIT$$, "[\\+\\-\\.]") + "*"),
+        USERINFO$ = subexp(subexp(PCT_ENCODED$ + "|" + merge(UNRESERVED$$, SUB_DELIMS$$, "[\\:]")) + "*"),
+        DEC_OCTET$ = subexp(subexp("25[0-5]") + "|" + subexp("2[0-4]" + DIGIT$$) + "|" + subexp("1" + DIGIT$$ + DIGIT$$) + "|" + subexp("[1-9]" + DIGIT$$) + "|" + DIGIT$$),
+        DEC_OCTET_RELAXED$ = subexp(subexp("25[0-5]") + "|" + subexp("2[0-4]" + DIGIT$$) + "|" + subexp("1" + DIGIT$$ + DIGIT$$) + "|" + subexp("0?[1-9]" + DIGIT$$) + "|0?0?" + DIGIT$$),
+        //relaxed parsing rules
+    IPV4ADDRESS$ = subexp(DEC_OCTET_RELAXED$ + "\\." + DEC_OCTET_RELAXED$ + "\\." + DEC_OCTET_RELAXED$ + "\\." + DEC_OCTET_RELAXED$),
+        H16$ = subexp(HEXDIG$$ + "{1,4}"),
+        LS32$ = subexp(subexp(H16$ + "\\:" + H16$) + "|" + IPV4ADDRESS$),
+        IPV6ADDRESS1$ = subexp(subexp(H16$ + "\\:") + "{6}" + LS32$),
+        //                           6( h16 ":" ) ls32
+    IPV6ADDRESS2$ = subexp("\\:\\:" + subexp(H16$ + "\\:") + "{5}" + LS32$),
+        //                      "::" 5( h16 ":" ) ls32
+    IPV6ADDRESS3$ = subexp(subexp(H16$) + "?\\:\\:" + subexp(H16$ + "\\:") + "{4}" + LS32$),
+        //[               h16 ] "::" 4( h16 ":" ) ls32
+    IPV6ADDRESS4$ = subexp(subexp(subexp(H16$ + "\\:") + "{0,1}" + H16$) + "?\\:\\:" + subexp(H16$ + "\\:") + "{3}" + LS32$),
+        //[ *1( h16 ":" ) h16 ] "::" 3( h16 ":" ) ls32
+    IPV6ADDRESS5$ = subexp(subexp(subexp(H16$ + "\\:") + "{0,2}" + H16$) + "?\\:\\:" + subexp(H16$ + "\\:") + "{2}" + LS32$),
+        //[ *2( h16 ":" ) h16 ] "::" 2( h16 ":" ) ls32
+    IPV6ADDRESS6$ = subexp(subexp(subexp(H16$ + "\\:") + "{0,3}" + H16$) + "?\\:\\:" + H16$ + "\\:" + LS32$),
+        //[ *3( h16 ":" ) h16 ] "::"    h16 ":"   ls32
+    IPV6ADDRESS7$ = subexp(subexp(subexp(H16$ + "\\:") + "{0,4}" + H16$) + "?\\:\\:" + LS32$),
+        //[ *4( h16 ":" ) h16 ] "::"              ls32
+    IPV6ADDRESS8$ = subexp(subexp(subexp(H16$ + "\\:") + "{0,5}" + H16$) + "?\\:\\:" + H16$),
+        //[ *5( h16 ":" ) h16 ] "::"              h16
+    IPV6ADDRESS9$ = subexp(subexp(subexp(H16$ + "\\:") + "{0,6}" + H16$) + "?\\:\\:"),
+        //[ *6( h16 ":" ) h16 ] "::"
+    IPV6ADDRESS$ = subexp([IPV6ADDRESS1$, IPV6ADDRESS2$, IPV6ADDRESS3$, IPV6ADDRESS4$, IPV6ADDRESS5$, IPV6ADDRESS6$, IPV6ADDRESS7$, IPV6ADDRESS8$, IPV6ADDRESS9$].join("|")),
+        ZONEID$ = subexp(subexp(UNRESERVED$$ + "|" + PCT_ENCODED$) + "+"),
+        //RFC 6874
+    IPV6ADDRZ$ = subexp(IPV6ADDRESS$ + "\\%25" + ZONEID$),
+        //RFC 6874
+    IPV6ADDRZ_RELAXED$ = subexp(IPV6ADDRESS$ + subexp("\\%25|\\%(?!" + HEXDIG$$ + "{2})") + ZONEID$),
+        //RFC 6874, with relaxed parsing rules
+    IPVFUTURE$ = subexp("[vV]" + HEXDIG$$ + "+\\." + merge(UNRESERVED$$, SUB_DELIMS$$, "[\\:]") + "+"),
+        IP_LITERAL$ = subexp("\\[" + subexp(IPV6ADDRZ_RELAXED$ + "|" + IPV6ADDRESS$ + "|" + IPVFUTURE$) + "\\]"),
+        //RFC 6874
+    REG_NAME$ = subexp(subexp(PCT_ENCODED$ + "|" + merge(UNRESERVED$$, SUB_DELIMS$$)) + "*"),
+        HOST$ = subexp(IP_LITERAL$ + "|" + IPV4ADDRESS$ + "(?!" + REG_NAME$ + ")" + "|" + REG_NAME$),
+        PORT$ = subexp(DIGIT$$ + "*"),
+        AUTHORITY$ = subexp(subexp(USERINFO$ + "@") + "?" + HOST$ + subexp("\\:" + PORT$) + "?"),
+        PCHAR$ = subexp(PCT_ENCODED$ + "|" + merge(UNRESERVED$$, SUB_DELIMS$$, "[\\:\\@]")),
+        SEGMENT$ = subexp(PCHAR$ + "*"),
+        SEGMENT_NZ$ = subexp(PCHAR$ + "+"),
+        SEGMENT_NZ_NC$ = subexp(subexp(PCT_ENCODED$ + "|" + merge(UNRESERVED$$, SUB_DELIMS$$, "[\\@]")) + "+"),
+        PATH_ABEMPTY$ = subexp(subexp("\\/" + SEGMENT$) + "*"),
+        PATH_ABSOLUTE$ = subexp("\\/" + subexp(SEGMENT_NZ$ + PATH_ABEMPTY$) + "?"),
+        //simplified
+    PATH_NOSCHEME$ = subexp(SEGMENT_NZ_NC$ + PATH_ABEMPTY$),
+        //simplified
+    PATH_ROOTLESS$ = subexp(SEGMENT_NZ$ + PATH_ABEMPTY$),
+        //simplified
+    PATH_EMPTY$ = "(?!" + PCHAR$ + ")",
+        PATH$ = subexp(PATH_ABEMPTY$ + "|" + PATH_ABSOLUTE$ + "|" + PATH_NOSCHEME$ + "|" + PATH_ROOTLESS$ + "|" + PATH_EMPTY$),
+        QUERY$ = subexp(subexp(PCHAR$ + "|" + merge("[\\/\\?]", IPRIVATE$$)) + "*"),
+        FRAGMENT$ = subexp(subexp(PCHAR$ + "|[\\/\\?]") + "*"),
+        HIER_PART$ = subexp(subexp("\\/\\/" + AUTHORITY$ + PATH_ABEMPTY$) + "|" + PATH_ABSOLUTE$ + "|" + PATH_ROOTLESS$ + "|" + PATH_EMPTY$),
+        URI$ = subexp(SCHEME$ + "\\:" + HIER_PART$ + subexp("\\?" + QUERY$) + "?" + subexp("\\#" + FRAGMENT$) + "?"),
+        RELATIVE_PART$ = subexp(subexp("\\/\\/" + AUTHORITY$ + PATH_ABEMPTY$) + "|" + PATH_ABSOLUTE$ + "|" + PATH_NOSCHEME$ + "|" + PATH_EMPTY$),
+        RELATIVE$ = subexp(RELATIVE_PART$ + subexp("\\?" + QUERY$) + "?" + subexp("\\#" + FRAGMENT$) + "?"),
+        URI_REFERENCE$ = subexp(URI$ + "|" + RELATIVE$),
+        ABSOLUTE_URI$ = subexp(SCHEME$ + "\\:" + HIER_PART$ + subexp("\\?" + QUERY$) + "?"),
+        GENERIC_REF$ = "^(" + SCHEME$ + ")\\:" + subexp(subexp("\\/\\/(" + subexp("(" + USERINFO$ + ")@") + "?(" + HOST$ + ")" + subexp("\\:(" + PORT$ + ")") + "?)") + "?(" + PATH_ABEMPTY$ + "|" + PATH_ABSOLUTE$ + "|" + PATH_ROOTLESS$ + "|" + PATH_EMPTY$ + ")") + subexp("\\?(" + QUERY$ + ")") + "?" + subexp("\\#(" + FRAGMENT$ + ")") + "?$",
+        RELATIVE_REF$ = "^(){0}" + subexp(subexp("\\/\\/(" + subexp("(" + USERINFO$ + ")@") + "?(" + HOST$ + ")" + subexp("\\:(" + PORT$ + ")") + "?)") + "?(" + PATH_ABEMPTY$ + "|" + PATH_ABSOLUTE$ + "|" + PATH_NOSCHEME$ + "|" + PATH_EMPTY$ + ")") + subexp("\\?(" + QUERY$ + ")") + "?" + subexp("\\#(" + FRAGMENT$ + ")") + "?$",
+        ABSOLUTE_REF$ = "^(" + SCHEME$ + ")\\:" + subexp(subexp("\\/\\/(" + subexp("(" + USERINFO$ + ")@") + "?(" + HOST$ + ")" + subexp("\\:(" + PORT$ + ")") + "?)") + "?(" + PATH_ABEMPTY$ + "|" + PATH_ABSOLUTE$ + "|" + PATH_ROOTLESS$ + "|" + PATH_EMPTY$ + ")") + subexp("\\?(" + QUERY$ + ")") + "?$",
+        SAMEDOC_REF$ = "^" + subexp("\\#(" + FRAGMENT$ + ")") + "?$",
+        AUTHORITY_REF$ = "^" + subexp("(" + USERINFO$ + ")@") + "?(" + HOST$ + ")" + subexp("\\:(" + PORT$ + ")") + "?$";
+    return {
+        NOT_SCHEME: new RegExp(merge("[^]", ALPHA$$, DIGIT$$, "[\\+\\-\\.]"), "g"),
+        NOT_USERINFO: new RegExp(merge("[^\\%\\:]", UNRESERVED$$, SUB_DELIMS$$), "g"),
+        NOT_HOST: new RegExp(merge("[^\\%\\[\\]\\:]", UNRESERVED$$, SUB_DELIMS$$), "g"),
+        NOT_PATH: new RegExp(merge("[^\\%\\/\\:\\@]", UNRESERVED$$, SUB_DELIMS$$), "g"),
+        NOT_PATH_NOSCHEME: new RegExp(merge("[^\\%\\/\\@]", UNRESERVED$$, SUB_DELIMS$$), "g"),
+        NOT_QUERY: new RegExp(merge("[^\\%]", UNRESERVED$$, SUB_DELIMS$$, "[\\:\\@\\/\\?]", IPRIVATE$$), "g"),
+        NOT_FRAGMENT: new RegExp(merge("[^\\%]", UNRESERVED$$, SUB_DELIMS$$, "[\\:\\@\\/\\?]"), "g"),
+        ESCAPE: new RegExp(merge("[^]", UNRESERVED$$, SUB_DELIMS$$), "g"),
+        UNRESERVED: new RegExp(UNRESERVED$$, "g"),
+        OTHER_CHARS: new RegExp(merge("[^\\%]", UNRESERVED$$, RESERVED$$), "g"),
+        PCT_ENCODED: new RegExp(PCT_ENCODED$, "g"),
+        IPV4ADDRESS: new RegExp("^(" + IPV4ADDRESS$ + ")$"),
+        IPV6ADDRESS: new RegExp("^\\[?(" + IPV6ADDRESS$ + ")" + subexp(subexp("\\%25|\\%(?!" + HEXDIG$$ + "{2})") + "(" + ZONEID$ + ")") + "?\\]?$") //RFC 6874, with relaxed parsing rules
+    };
+}
+var URI_PROTOCOL = buildExps(false);
+
+var IRI_PROTOCOL = buildExps(true);
+
+var slicedToArray = function () {
+  function sliceIterator(arr, i) {
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+    var _e = undefined;
+
+    try {
+      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+        _arr.push(_s.value);
+
+        if (i && _arr.length === i) break;
+      }
+    } catch (err) {
+      _d = true;
+      _e = err;
+    } finally {
+      try {
+        if (!_n && _i["return"]) _i["return"]();
+      } finally {
+        if (_d) throw _e;
+      }
+    }
+
+    return _arr;
+  }
+
+  return function (arr, i) {
+    if (Array.isArray(arr)) {
+      return arr;
+    } else if (Symbol.iterator in Object(arr)) {
+      return sliceIterator(arr, i);
+    } else {
+      throw new TypeError("Invalid attempt to destructure non-iterable instance");
+    }
+  };
+}();
+
+
+
+
+
+
+
+
+
+
+
+
+
+var toConsumableArray = function (arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  } else {
+    return Array.from(arr);
+  }
+};
+
+/** Highest positive signed 32-bit float value */
+
+var maxInt = 2147483647; // aka. 0x7FFFFFFF or 2^31-1
+
+/** Bootstring parameters */
+var base = 36;
+var tMin = 1;
+var tMax = 26;
+var skew = 38;
+var damp = 700;
+var initialBias = 72;
+var initialN = 128; // 0x80
+var delimiter = '-'; // '\x2D'
+
+/** Regular expressions */
+var regexPunycode = /^xn--/;
+var regexNonASCII = /[^\0-\x7E]/; // non-ASCII chars
+var regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g; // RFC 3490 separators
+
+/** Error messages */
+var errors = {
+	'overflow': 'Overflow: input needs wider integers to process',
+	'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
+	'invalid-input': 'Invalid input'
+};
+
+/** Convenience shortcuts */
+var baseMinusTMin = base - tMin;
+var floor = Math.floor;
+var stringFromCharCode = String.fromCharCode;
+
+/*--------------------------------------------------------------------------*/
+
+/**
+ * A generic error utility function.
+ * @private
+ * @param {String} type The error type.
+ * @returns {Error} Throws a `RangeError` with the applicable error message.
+ */
+function error$1(type) {
+	throw new RangeError(errors[type]);
+}
+
+/**
+ * A generic `Array#map` utility function.
+ * @private
+ * @param {Array} array The array to iterate over.
+ * @param {Function} callback The function that gets called for every array
+ * item.
+ * @returns {Array} A new array of values returned by the callback function.
+ */
+function map(array, fn) {
+	var result = [];
+	var length = array.length;
+	while (length--) {
+		result[length] = fn(array[length]);
+	}
+	return result;
+}
+
+/**
+ * A simple `Array#map`-like wrapper to work with domain name strings or email
+ * addresses.
+ * @private
+ * @param {String} domain The domain name or email address.
+ * @param {Function} callback The function that gets called for every
+ * character.
+ * @returns {Array} A new string of characters returned by the callback
+ * function.
+ */
+function mapDomain(string, fn) {
+	var parts = string.split('@');
+	var result = '';
+	if (parts.length > 1) {
+		// In email addresses, only the domain name should be punycoded. Leave
+		// the local part (i.e. everything up to `@`) intact.
+		result = parts[0] + '@';
+		string = parts[1];
+	}
+	// Avoid `split(regex)` for IE8 compatibility. See #17.
+	string = string.replace(regexSeparators, '\x2E');
+	var labels = string.split('.');
+	var encoded = map(labels, fn).join('.');
+	return result + encoded;
+}
+
+/**
+ * Creates an array containing the numeric code points of each Unicode
+ * character in the string. While JavaScript uses UCS-2 internally,
+ * this function will convert a pair of surrogate halves (each of which
+ * UCS-2 exposes as separate characters) into a single code point,
+ * matching UTF-16.
+ * @see `punycode.ucs2.encode`
+ * @see <https://mathiasbynens.be/notes/javascript-encoding>
+ * @memberOf punycode.ucs2
+ * @name decode
+ * @param {String} string The Unicode input string (UCS-2).
+ * @returns {Array} The new array of code points.
+ */
+function ucs2decode(string) {
+	var output = [];
+	var counter = 0;
+	var length = string.length;
+	while (counter < length) {
+		var value = string.charCodeAt(counter++);
+		if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+			// It's a high surrogate, and there is a next character.
+			var extra = string.charCodeAt(counter++);
+			if ((extra & 0xFC00) == 0xDC00) {
+				// Low surrogate.
+				output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+			} else {
+				// It's an unmatched surrogate; only append this code unit, in case the
+				// next code unit is the high surrogate of a surrogate pair.
+				output.push(value);
+				counter--;
+			}
+		} else {
+			output.push(value);
+		}
+	}
+	return output;
+}
+
+/**
+ * Creates a string based on an array of numeric code points.
+ * @see `punycode.ucs2.decode`
+ * @memberOf punycode.ucs2
+ * @name encode
+ * @param {Array} codePoints The array of numeric code points.
+ * @returns {String} The new Unicode string (UCS-2).
+ */
+var ucs2encode = function ucs2encode(array) {
+	return String.fromCodePoint.apply(String, toConsumableArray(array));
+};
+
+/**
+ * Converts a basic code point into a digit/integer.
+ * @see `digitToBasic()`
+ * @private
+ * @param {Number} codePoint The basic numeric code point value.
+ * @returns {Number} The numeric value of a basic code point (for use in
+ * representing integers) in the range `0` to `base - 1`, or `base` if
+ * the code point does not represent a value.
+ */
+var basicToDigit = function basicToDigit(codePoint) {
+	if (codePoint - 0x30 < 0x0A) {
+		return codePoint - 0x16;
+	}
+	if (codePoint - 0x41 < 0x1A) {
+		return codePoint - 0x41;
+	}
+	if (codePoint - 0x61 < 0x1A) {
+		return codePoint - 0x61;
+	}
+	return base;
+};
+
+/**
+ * Converts a digit/integer into a basic code point.
+ * @see `basicToDigit()`
+ * @private
+ * @param {Number} digit The numeric value of a basic code point.
+ * @returns {Number} The basic code point whose value (when used for
+ * representing integers) is `digit`, which needs to be in the range
+ * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
+ * used; else, the lowercase form is used. The behavior is undefined
+ * if `flag` is non-zero and `digit` has no uppercase form.
+ */
+var digitToBasic = function digitToBasic(digit, flag) {
+	//  0..25 map to ASCII a..z or A..Z
+	// 26..35 map to ASCII 0..9
+	return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
+};
+
+/**
+ * Bias adaptation function as per section 3.4 of RFC 3492.
+ * https://tools.ietf.org/html/rfc3492#section-3.4
+ * @private
+ */
+var adapt = function adapt(delta, numPoints, firstTime) {
+	var k = 0;
+	delta = firstTime ? floor(delta / damp) : delta >> 1;
+	delta += floor(delta / numPoints);
+	for (; /* no initialization */delta > baseMinusTMin * tMax >> 1; k += base) {
+		delta = floor(delta / baseMinusTMin);
+	}
+	return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
+};
+
+/**
+ * Converts a Punycode string of ASCII-only symbols to a string of Unicode
+ * symbols.
+ * @memberOf punycode
+ * @param {String} input The Punycode string of ASCII-only symbols.
+ * @returns {String} The resulting string of Unicode symbols.
+ */
+var decode = function decode(input) {
+	// Don't use UCS-2.
+	var output = [];
+	var inputLength = input.length;
+	var i = 0;
+	var n = initialN;
+	var bias = initialBias;
+
+	// Handle the basic code points: let `basic` be the number of input code
+	// points before the last delimiter, or `0` if there is none, then copy
+	// the first basic code points to the output.
+
+	var basic = input.lastIndexOf(delimiter);
+	if (basic < 0) {
+		basic = 0;
+	}
+
+	for (var j = 0; j < basic; ++j) {
+		// if it's not a basic code point
+		if (input.charCodeAt(j) >= 0x80) {
+			error$1('not-basic');
+		}
+		output.push(input.charCodeAt(j));
+	}
+
+	// Main decoding loop: start just after the last delimiter if any basic code
+	// points were copied; start at the beginning otherwise.
+
+	for (var index = basic > 0 ? basic + 1 : 0; index < inputLength;) /* no final expression */{
+
+		// `index` is the index of the next character to be consumed.
+		// Decode a generalized variable-length integer into `delta`,
+		// which gets added to `i`. The overflow checking is easier
+		// if we increase `i` as we go, then subtract off its starting
+		// value at the end to obtain `delta`.
+		var oldi = i;
+		for (var w = 1, k = base;; /* no condition */k += base) {
+
+			if (index >= inputLength) {
+				error$1('invalid-input');
+			}
+
+			var digit = basicToDigit(input.charCodeAt(index++));
+
+			if (digit >= base || digit > floor((maxInt - i) / w)) {
+				error$1('overflow');
+			}
+
+			i += digit * w;
+			var t = k <= bias ? tMin : k >= bias + tMax ? tMax : k - bias;
+
+			if (digit < t) {
+				break;
+			}
+
+			var baseMinusT = base - t;
+			if (w > floor(maxInt / baseMinusT)) {
+				error$1('overflow');
+			}
+
+			w *= baseMinusT;
+		}
+
+		var out = output.length + 1;
+		bias = adapt(i - oldi, out, oldi == 0);
+
+		// `i` was supposed to wrap around from `out` to `0`,
+		// incrementing `n` each time, so we'll fix that now:
+		if (floor(i / out) > maxInt - n) {
+			error$1('overflow');
+		}
+
+		n += floor(i / out);
+		i %= out;
+
+		// Insert `n` at position `i` of the output.
+		output.splice(i++, 0, n);
+	}
+
+	return String.fromCodePoint.apply(String, output);
+};
+
+/**
+ * Converts a string of Unicode symbols (e.g. a domain name label) to a
+ * Punycode string of ASCII-only symbols.
+ * @memberOf punycode
+ * @param {String} input The string of Unicode symbols.
+ * @returns {String} The resulting Punycode string of ASCII-only symbols.
+ */
+var encode = function encode(input) {
+	var output = [];
+
+	// Convert the input in UCS-2 to an array of Unicode code points.
+	input = ucs2decode(input);
+
+	// Cache the length.
+	var inputLength = input.length;
+
+	// Initialize the state.
+	var n = initialN;
+	var delta = 0;
+	var bias = initialBias;
+
+	// Handle the basic code points.
+	var _iteratorNormalCompletion = true;
+	var _didIteratorError = false;
+	var _iteratorError = undefined;
+
+	try {
+		for (var _iterator = input[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+			var _currentValue2 = _step.value;
+
+			if (_currentValue2 < 0x80) {
+				output.push(stringFromCharCode(_currentValue2));
+			}
+		}
+	} catch (err) {
+		_didIteratorError = true;
+		_iteratorError = err;
+	} finally {
+		try {
+			if (!_iteratorNormalCompletion && _iterator.return) {
+				_iterator.return();
+			}
+		} finally {
+			if (_didIteratorError) {
+				throw _iteratorError;
+			}
+		}
+	}
+
+	var basicLength = output.length;
+	var handledCPCount = basicLength;
+
+	// `handledCPCount` is the number of code points that have been handled;
+	// `basicLength` is the number of basic code points.
+
+	// Finish the basic string with a delimiter unless it's empty.
+	if (basicLength) {
+		output.push(delimiter);
+	}
+
+	// Main encoding loop:
+	while (handledCPCount < inputLength) {
+
+		// All non-basic code points < n have been handled already. Find the next
+		// larger one:
+		var m = maxInt;
+		var _iteratorNormalCompletion2 = true;
+		var _didIteratorError2 = false;
+		var _iteratorError2 = undefined;
+
+		try {
+			for (var _iterator2 = input[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+				var currentValue = _step2.value;
+
+				if (currentValue >= n && currentValue < m) {
+					m = currentValue;
+				}
+			}
+
+			// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
+			// but guard against overflow.
+		} catch (err) {
+			_didIteratorError2 = true;
+			_iteratorError2 = err;
+		} finally {
+			try {
+				if (!_iteratorNormalCompletion2 && _iterator2.return) {
+					_iterator2.return();
+				}
+			} finally {
+				if (_didIteratorError2) {
+					throw _iteratorError2;
+				}
+			}
+		}
+
+		var handledCPCountPlusOne = handledCPCount + 1;
+		if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
+			error$1('overflow');
+		}
+
+		delta += (m - n) * handledCPCountPlusOne;
+		n = m;
+
+		var _iteratorNormalCompletion3 = true;
+		var _didIteratorError3 = false;
+		var _iteratorError3 = undefined;
+
+		try {
+			for (var _iterator3 = input[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+				var _currentValue = _step3.value;
+
+				if (_currentValue < n && ++delta > maxInt) {
+					error$1('overflow');
+				}
+				if (_currentValue == n) {
+					// Represent delta as a generalized variable-length integer.
+					var q = delta;
+					for (var k = base;; /* no condition */k += base) {
+						var t = k <= bias ? tMin : k >= bias + tMax ? tMax : k - bias;
+						if (q < t) {
+							break;
+						}
+						var qMinusT = q - t;
+						var baseMinusT = base - t;
+						output.push(stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0)));
+						q = floor(qMinusT / baseMinusT);
+					}
+
+					output.push(stringFromCharCode(digitToBasic(q, 0)));
+					bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
+					delta = 0;
+					++handledCPCount;
+				}
+			}
+		} catch (err) {
+			_didIteratorError3 = true;
+			_iteratorError3 = err;
+		} finally {
+			try {
+				if (!_iteratorNormalCompletion3 && _iterator3.return) {
+					_iterator3.return();
+				}
+			} finally {
+				if (_didIteratorError3) {
+					throw _iteratorError3;
+				}
+			}
+		}
+
+		++delta;
+		++n;
+	}
+	return output.join('');
+};
+
+/**
+ * Converts a Punycode string representing a domain name or an email address
+ * to Unicode. Only the Punycoded parts of the input will be converted, i.e.
+ * it doesn't matter if you call it on a string that has already been
+ * converted to Unicode.
+ * @memberOf punycode
+ * @param {String} input The Punycoded domain name or email address to
+ * convert to Unicode.
+ * @returns {String} The Unicode representation of the given Punycode
+ * string.
+ */
+var toUnicode = function toUnicode(input) {
+	return mapDomain(input, function (string) {
+		return regexPunycode.test(string) ? decode(string.slice(4).toLowerCase()) : string;
+	});
+};
+
+/**
+ * Converts a Unicode string representing a domain name or an email address to
+ * Punycode. Only the non-ASCII parts of the domain name will be converted,
+ * i.e. it doesn't matter if you call it with a domain that's already in
+ * ASCII.
+ * @memberOf punycode
+ * @param {String} input The domain name or email address to convert, as a
+ * Unicode string.
+ * @returns {String} The Punycode representation of the given domain name or
+ * email address.
+ */
+var toASCII = function toASCII(input) {
+	return mapDomain(input, function (string) {
+		return regexNonASCII.test(string) ? 'xn--' + encode(string) : string;
+	});
+};
+
+/*--------------------------------------------------------------------------*/
+
+/** Define the public API */
+var punycode = {
+	/**
+  * A string representing the current Punycode.js version number.
+  * @memberOf punycode
+  * @type String
+  */
+	'version': '2.1.0',
+	/**
+  * An object of methods to convert from JavaScript's internal character
+  * representation (UCS-2) to Unicode code points, and back.
+  * @see <https://mathiasbynens.be/notes/javascript-encoding>
+  * @memberOf punycode
+  * @type Object
+  */
+	'ucs2': {
+		'decode': ucs2decode,
+		'encode': ucs2encode
+	},
+	'decode': decode,
+	'encode': encode,
+	'toASCII': toASCII,
+	'toUnicode': toUnicode
+};
+
+/**
+ * URI.js
+ *
+ * @fileoverview An RFC 3986 compliant, scheme extendable URI parsing/validating/resolving library for JavaScript.
+ * @author <a href="mailto:gary.court@gmail.com">Gary Court</a>
+ * @see http://github.com/garycourt/uri-js
+ */
+/**
+ * Copyright 2011 Gary Court. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are
+ * permitted provided that the following conditions are met:
+ *
+ *    1. Redistributions of source code must retain the above copyright notice, this list of
+ *       conditions and the following disclaimer.
+ *
+ *    2. Redistributions in binary form must reproduce the above copyright notice, this list
+ *       of conditions and the following disclaimer in the documentation and/or other materials
+ *       provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY GARY COURT ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL GARY COURT OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * The views and conclusions contained in the software and documentation are those of the
+ * authors and should not be interpreted as representing official policies, either expressed
+ * or implied, of Gary Court.
+ */
+var SCHEMES = {};
+function pctEncChar(chr) {
+    var c = chr.charCodeAt(0);
+    var e = void 0;
+    if (c < 16) e = "%0" + c.toString(16).toUpperCase();else if (c < 128) e = "%" + c.toString(16).toUpperCase();else if (c < 2048) e = "%" + (c >> 6 | 192).toString(16).toUpperCase() + "%" + (c & 63 | 128).toString(16).toUpperCase();else e = "%" + (c >> 12 | 224).toString(16).toUpperCase() + "%" + (c >> 6 & 63 | 128).toString(16).toUpperCase() + "%" + (c & 63 | 128).toString(16).toUpperCase();
+    return e;
+}
+function pctDecChars(str) {
+    var newStr = "";
+    var i = 0;
+    var il = str.length;
+    while (i < il) {
+        var c = parseInt(str.substr(i + 1, 2), 16);
+        if (c < 128) {
+            newStr += String.fromCharCode(c);
+            i += 3;
+        } else if (c >= 194 && c < 224) {
+            if (il - i >= 6) {
+                var c2 = parseInt(str.substr(i + 4, 2), 16);
+                newStr += String.fromCharCode((c & 31) << 6 | c2 & 63);
+            } else {
+                newStr += str.substr(i, 6);
+            }
+            i += 6;
+        } else if (c >= 224) {
+            if (il - i >= 9) {
+                var _c = parseInt(str.substr(i + 4, 2), 16);
+                var c3 = parseInt(str.substr(i + 7, 2), 16);
+                newStr += String.fromCharCode((c & 15) << 12 | (_c & 63) << 6 | c3 & 63);
+            } else {
+                newStr += str.substr(i, 9);
+            }
+            i += 9;
+        } else {
+            newStr += str.substr(i, 3);
+            i += 3;
+        }
+    }
+    return newStr;
+}
+function _normalizeComponentEncoding(components, protocol) {
+    function decodeUnreserved(str) {
+        var decStr = pctDecChars(str);
+        return !decStr.match(protocol.UNRESERVED) ? str : decStr;
+    }
+    if (components.scheme) components.scheme = String(components.scheme).replace(protocol.PCT_ENCODED, decodeUnreserved).toLowerCase().replace(protocol.NOT_SCHEME, "");
+    if (components.userinfo !== undefined) components.userinfo = String(components.userinfo).replace(protocol.PCT_ENCODED, decodeUnreserved).replace(protocol.NOT_USERINFO, pctEncChar).replace(protocol.PCT_ENCODED, toUpperCase);
+    if (components.host !== undefined) components.host = String(components.host).replace(protocol.PCT_ENCODED, decodeUnreserved).toLowerCase().replace(protocol.NOT_HOST, pctEncChar).replace(protocol.PCT_ENCODED, toUpperCase);
+    if (components.path !== undefined) components.path = String(components.path).replace(protocol.PCT_ENCODED, decodeUnreserved).replace(components.scheme ? protocol.NOT_PATH : protocol.NOT_PATH_NOSCHEME, pctEncChar).replace(protocol.PCT_ENCODED, toUpperCase);
+    if (components.query !== undefined) components.query = String(components.query).replace(protocol.PCT_ENCODED, decodeUnreserved).replace(protocol.NOT_QUERY, pctEncChar).replace(protocol.PCT_ENCODED, toUpperCase);
+    if (components.fragment !== undefined) components.fragment = String(components.fragment).replace(protocol.PCT_ENCODED, decodeUnreserved).replace(protocol.NOT_FRAGMENT, pctEncChar).replace(protocol.PCT_ENCODED, toUpperCase);
+    return components;
+}
+
+function _stripLeadingZeros(str) {
+    return str.replace(/^0*(.*)/, "$1") || "0";
+}
+function _normalizeIPv4(host, protocol) {
+    var matches = host.match(protocol.IPV4ADDRESS) || [];
+
+    var _matches = slicedToArray(matches, 2),
+        address = _matches[1];
+
+    if (address) {
+        return address.split(".").map(_stripLeadingZeros).join(".");
+    } else {
+        return host;
+    }
+}
+function _normalizeIPv6(host, protocol) {
+    var matches = host.match(protocol.IPV6ADDRESS) || [];
+
+    var _matches2 = slicedToArray(matches, 3),
+        address = _matches2[1],
+        zone = _matches2[2];
+
+    if (address) {
+        var _address$toLowerCase$ = address.toLowerCase().split('::').reverse(),
+            _address$toLowerCase$2 = slicedToArray(_address$toLowerCase$, 2),
+            last = _address$toLowerCase$2[0],
+            first = _address$toLowerCase$2[1];
+
+        var firstFields = first ? first.split(":").map(_stripLeadingZeros) : [];
+        var lastFields = last.split(":").map(_stripLeadingZeros);
+        var isLastFieldIPv4Address = protocol.IPV4ADDRESS.test(lastFields[lastFields.length - 1]);
+        var fieldCount = isLastFieldIPv4Address ? 7 : 8;
+        var lastFieldsStart = lastFields.length - fieldCount;
+        var fields = Array(fieldCount);
+        for (var x = 0; x < fieldCount; ++x) {
+            fields[x] = firstFields[x] || lastFields[lastFieldsStart + x] || '';
+        }
+        if (isLastFieldIPv4Address) {
+            fields[fieldCount - 1] = _normalizeIPv4(fields[fieldCount - 1], protocol);
+        }
+        var allZeroFields = fields.reduce(function (acc, field, index) {
+            if (!field || field === "0") {
+                var lastLongest = acc[acc.length - 1];
+                if (lastLongest && lastLongest.index + lastLongest.length === index) {
+                    lastLongest.length++;
+                } else {
+                    acc.push({ index: index, length: 1 });
+                }
+            }
+            return acc;
+        }, []);
+        var longestZeroFields = allZeroFields.sort(function (a, b) {
+            return b.length - a.length;
+        })[0];
+        var newHost = void 0;
+        if (longestZeroFields && longestZeroFields.length > 1) {
+            var newFirst = fields.slice(0, longestZeroFields.index);
+            var newLast = fields.slice(longestZeroFields.index + longestZeroFields.length);
+            newHost = newFirst.join(":") + "::" + newLast.join(":");
+        } else {
+            newHost = fields.join(":");
+        }
+        if (zone) {
+            newHost += "%" + zone;
+        }
+        return newHost;
+    } else {
+        return host;
+    }
+}
+var URI_PARSE = /^(?:([^:\/?#]+):)?(?:\/\/((?:([^\/?#@]*)@)?(\[[^\/?#\]]+\]|[^\/?#:]*)(?:\:(\d*))?))?([^?#]*)(?:\?([^#]*))?(?:#((?:.|\n|\r)*))?/i;
+var NO_MATCH_IS_UNDEFINED = "".match(/(){0}/)[1] === undefined;
+function parse(uriString) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    var components = {};
+    var protocol = options.iri !== false ? IRI_PROTOCOL : URI_PROTOCOL;
+    if (options.reference === "suffix") uriString = (options.scheme ? options.scheme + ":" : "") + "//" + uriString;
+    var matches = uriString.match(URI_PARSE);
+    if (matches) {
+        if (NO_MATCH_IS_UNDEFINED) {
+            //store each component
+            components.scheme = matches[1];
+            components.userinfo = matches[3];
+            components.host = matches[4];
+            components.port = parseInt(matches[5], 10);
+            components.path = matches[6] || "";
+            components.query = matches[7];
+            components.fragment = matches[8];
+            //fix port number
+            if (isNaN(components.port)) {
+                components.port = matches[5];
+            }
+        } else {
+            //IE FIX for improper RegExp matching
+            //store each component
+            components.scheme = matches[1] || undefined;
+            components.userinfo = uriString.indexOf("@") !== -1 ? matches[3] : undefined;
+            components.host = uriString.indexOf("//") !== -1 ? matches[4] : undefined;
+            components.port = parseInt(matches[5], 10);
+            components.path = matches[6] || "";
+            components.query = uriString.indexOf("?") !== -1 ? matches[7] : undefined;
+            components.fragment = uriString.indexOf("#") !== -1 ? matches[8] : undefined;
+            //fix port number
+            if (isNaN(components.port)) {
+                components.port = uriString.match(/\/\/(?:.|\n)*\:(?:\/|\?|\#|$)/) ? matches[4] : undefined;
+            }
+        }
+        if (components.host) {
+            //normalize IP hosts
+            components.host = _normalizeIPv6(_normalizeIPv4(components.host, protocol), protocol);
+        }
+        //determine reference type
+        if (components.scheme === undefined && components.userinfo === undefined && components.host === undefined && components.port === undefined && !components.path && components.query === undefined) {
+            components.reference = "same-document";
+        } else if (components.scheme === undefined) {
+            components.reference = "relative";
+        } else if (components.fragment === undefined) {
+            components.reference = "absolute";
+        } else {
+            components.reference = "uri";
+        }
+        //check for reference errors
+        if (options.reference && options.reference !== "suffix" && options.reference !== components.reference) {
+            components.error = components.error || "URI is not a " + options.reference + " reference.";
+        }
+        //find scheme handler
+        var schemeHandler = SCHEMES[(options.scheme || components.scheme || "").toLowerCase()];
+        //check if scheme can't handle IRIs
+        if (!options.unicodeSupport && (!schemeHandler || !schemeHandler.unicodeSupport)) {
+            //if host component is a domain name
+            if (components.host && (options.domainHost || schemeHandler && schemeHandler.domainHost)) {
+                //convert Unicode IDN -> ASCII IDN
+                try {
+                    components.host = punycode.toASCII(components.host.replace(protocol.PCT_ENCODED, pctDecChars).toLowerCase());
+                } catch (e) {
+                    components.error = components.error || "Host's domain name can not be converted to ASCII via punycode: " + e;
+                }
+            }
+            //convert IRI -> URI
+            _normalizeComponentEncoding(components, URI_PROTOCOL);
+        } else {
+            //normalize encodings
+            _normalizeComponentEncoding(components, protocol);
+        }
+        //perform scheme specific parsing
+        if (schemeHandler && schemeHandler.parse) {
+            schemeHandler.parse(components, options);
+        }
+    } else {
+        components.error = components.error || "URI can not be parsed.";
+    }
+    return components;
+}
+
+function _recomposeAuthority(components, options) {
+    var protocol = options.iri !== false ? IRI_PROTOCOL : URI_PROTOCOL;
+    var uriTokens = [];
+    if (components.userinfo !== undefined) {
+        uriTokens.push(components.userinfo);
+        uriTokens.push("@");
+    }
+    if (components.host !== undefined) {
+        //normalize IP hosts, add brackets and escape zone separator for IPv6
+        uriTokens.push(_normalizeIPv6(_normalizeIPv4(String(components.host), protocol), protocol).replace(protocol.IPV6ADDRESS, function (_, $1, $2) {
+            return "[" + $1 + ($2 ? "%25" + $2 : "") + "]";
+        }));
+    }
+    if (typeof components.port === "number" || typeof components.port === "string") {
+        uriTokens.push(":");
+        uriTokens.push(String(components.port));
+    }
+    return uriTokens.length ? uriTokens.join("") : undefined;
+}
+
+var RDS1 = /^\.\.?\//;
+var RDS2 = /^\/\.(\/|$)/;
+var RDS3 = /^\/\.\.(\/|$)/;
+var RDS5 = /^\/?(?:.|\n)*?(?=\/|$)/;
+function removeDotSegments(input) {
+    var output = [];
+    while (input.length) {
+        if (input.match(RDS1)) {
+            input = input.replace(RDS1, "");
+        } else if (input.match(RDS2)) {
+            input = input.replace(RDS2, "/");
+        } else if (input.match(RDS3)) {
+            input = input.replace(RDS3, "/");
+            output.pop();
+        } else if (input === "." || input === "..") {
+            input = "";
+        } else {
+            var im = input.match(RDS5);
+            if (im) {
+                var s = im[0];
+                input = input.slice(s.length);
+                output.push(s);
+            } else {
+                throw new Error("Unexpected dot segment condition");
+            }
+        }
+    }
+    return output.join("");
+}
+
+function serialize(components) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    var protocol = options.iri ? IRI_PROTOCOL : URI_PROTOCOL;
+    var uriTokens = [];
+    //find scheme handler
+    var schemeHandler = SCHEMES[(options.scheme || components.scheme || "").toLowerCase()];
+    //perform scheme specific serialization
+    if (schemeHandler && schemeHandler.serialize) schemeHandler.serialize(components, options);
+    if (components.host) {
+        //if host component is an IPv6 address
+        if (protocol.IPV6ADDRESS.test(components.host)) {}
+        //TODO: normalize IPv6 address as per RFC 5952
+
+        //if host component is a domain name
+        else if (options.domainHost || schemeHandler && schemeHandler.domainHost) {
+                //convert IDN via punycode
+                try {
+                    components.host = !options.iri ? punycode.toASCII(components.host.replace(protocol.PCT_ENCODED, pctDecChars).toLowerCase()) : punycode.toUnicode(components.host);
+                } catch (e) {
+                    components.error = components.error || "Host's domain name can not be converted to " + (!options.iri ? "ASCII" : "Unicode") + " via punycode: " + e;
+                }
+            }
+    }
+    //normalize encoding
+    _normalizeComponentEncoding(components, protocol);
+    if (options.reference !== "suffix" && components.scheme) {
+        uriTokens.push(components.scheme);
+        uriTokens.push(":");
+    }
+    var authority = _recomposeAuthority(components, options);
+    if (authority !== undefined) {
+        if (options.reference !== "suffix") {
+            uriTokens.push("//");
+        }
+        uriTokens.push(authority);
+        if (components.path && components.path.charAt(0) !== "/") {
+            uriTokens.push("/");
+        }
+    }
+    if (components.path !== undefined) {
+        var s = components.path;
+        if (!options.absolutePath && (!schemeHandler || !schemeHandler.absolutePath)) {
+            s = removeDotSegments(s);
+        }
+        if (authority === undefined) {
+            s = s.replace(/^\/\//, "/%2F"); //don't allow the path to start with "//"
+        }
+        uriTokens.push(s);
+    }
+    if (components.query !== undefined) {
+        uriTokens.push("?");
+        uriTokens.push(components.query);
+    }
+    if (components.fragment !== undefined) {
+        uriTokens.push("#");
+        uriTokens.push(components.fragment);
+    }
+    return uriTokens.join(""); //merge tokens into a string
+}
+
+function resolveComponents(base, relative) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var skipNormalization = arguments[3];
+
+    var target = {};
+    if (!skipNormalization) {
+        base = parse(serialize(base, options), options); //normalize base components
+        relative = parse(serialize(relative, options), options); //normalize relative components
+    }
+    options = options || {};
+    if (!options.tolerant && relative.scheme) {
+        target.scheme = relative.scheme;
+        //target.authority = relative.authority;
+        target.userinfo = relative.userinfo;
+        target.host = relative.host;
+        target.port = relative.port;
+        target.path = removeDotSegments(relative.path || "");
+        target.query = relative.query;
+    } else {
+        if (relative.userinfo !== undefined || relative.host !== undefined || relative.port !== undefined) {
+            //target.authority = relative.authority;
+            target.userinfo = relative.userinfo;
+            target.host = relative.host;
+            target.port = relative.port;
+            target.path = removeDotSegments(relative.path || "");
+            target.query = relative.query;
+        } else {
+            if (!relative.path) {
+                target.path = base.path;
+                if (relative.query !== undefined) {
+                    target.query = relative.query;
+                } else {
+                    target.query = base.query;
+                }
+            } else {
+                if (relative.path.charAt(0) === "/") {
+                    target.path = removeDotSegments(relative.path);
+                } else {
+                    if ((base.userinfo !== undefined || base.host !== undefined || base.port !== undefined) && !base.path) {
+                        target.path = "/" + relative.path;
+                    } else if (!base.path) {
+                        target.path = relative.path;
+                    } else {
+                        target.path = base.path.slice(0, base.path.lastIndexOf("/") + 1) + relative.path;
+                    }
+                    target.path = removeDotSegments(target.path);
+                }
+                target.query = relative.query;
+            }
+            //target.authority = base.authority;
+            target.userinfo = base.userinfo;
+            target.host = base.host;
+            target.port = base.port;
+        }
+        target.scheme = base.scheme;
+    }
+    target.fragment = relative.fragment;
+    return target;
+}
+
+function resolve(baseURI, relativeURI, options) {
+    var schemelessOptions = assign({ scheme: 'null' }, options);
+    return serialize(resolveComponents(parse(baseURI, schemelessOptions), parse(relativeURI, schemelessOptions), schemelessOptions, true), schemelessOptions);
+}
+
+function normalize(uri, options) {
+    if (typeof uri === "string") {
+        uri = serialize(parse(uri, options), options);
+    } else if (typeOf(uri) === "object") {
+        uri = parse(serialize(uri, options), options);
+    }
+    return uri;
+}
+
+function equal(uriA, uriB, options) {
+    if (typeof uriA === "string") {
+        uriA = serialize(parse(uriA, options), options);
+    } else if (typeOf(uriA) === "object") {
+        uriA = serialize(uriA, options);
+    }
+    if (typeof uriB === "string") {
+        uriB = serialize(parse(uriB, options), options);
+    } else if (typeOf(uriB) === "object") {
+        uriB = serialize(uriB, options);
+    }
+    return uriA === uriB;
+}
+
+function escapeComponent(str, options) {
+    return str && str.toString().replace(!options || !options.iri ? URI_PROTOCOL.ESCAPE : IRI_PROTOCOL.ESCAPE, pctEncChar);
+}
+
+function unescapeComponent(str, options) {
+    return str && str.toString().replace(!options || !options.iri ? URI_PROTOCOL.PCT_ENCODED : IRI_PROTOCOL.PCT_ENCODED, pctDecChars);
+}
+
+var handler = {
+    scheme: "http",
+    domainHost: true,
+    parse: function parse(components, options) {
+        //report missing host
+        if (!components.host) {
+            components.error = components.error || "HTTP URIs must have a host.";
+        }
+        return components;
+    },
+    serialize: function serialize(components, options) {
+        var secure = String(components.scheme).toLowerCase() === "https";
+        //normalize the default port
+        if (components.port === (secure ? 443 : 80) || components.port === "") {
+            components.port = undefined;
+        }
+        //normalize the empty path
+        if (!components.path) {
+            components.path = "/";
+        }
+        //NOTE: We do not parse query strings for HTTP URIs
+        //as WWW Form Url Encoded query strings are part of the HTML4+ spec,
+        //and not the HTTP spec.
+        return components;
+    }
+};
+
+var handler$1 = {
+    scheme: "https",
+    domainHost: handler.domainHost,
+    parse: handler.parse,
+    serialize: handler.serialize
+};
+
+function isSecure(wsComponents) {
+    return typeof wsComponents.secure === 'boolean' ? wsComponents.secure : String(wsComponents.scheme).toLowerCase() === "wss";
+}
+//RFC 6455
+var handler$2 = {
+    scheme: "ws",
+    domainHost: true,
+    parse: function parse(components, options) {
+        var wsComponents = components;
+        //indicate if the secure flag is set
+        wsComponents.secure = isSecure(wsComponents);
+        //construct resouce name
+        wsComponents.resourceName = (wsComponents.path || '/') + (wsComponents.query ? '?' + wsComponents.query : '');
+        wsComponents.path = undefined;
+        wsComponents.query = undefined;
+        return wsComponents;
+    },
+    serialize: function serialize(wsComponents, options) {
+        //normalize the default port
+        if (wsComponents.port === (isSecure(wsComponents) ? 443 : 80) || wsComponents.port === "") {
+            wsComponents.port = undefined;
+        }
+        //ensure scheme matches secure flag
+        if (typeof wsComponents.secure === 'boolean') {
+            wsComponents.scheme = wsComponents.secure ? 'wss' : 'ws';
+            wsComponents.secure = undefined;
+        }
+        //reconstruct path from resource name
+        if (wsComponents.resourceName) {
+            var _wsComponents$resourc = wsComponents.resourceName.split('?'),
+                _wsComponents$resourc2 = slicedToArray(_wsComponents$resourc, 2),
+                path = _wsComponents$resourc2[0],
+                query = _wsComponents$resourc2[1];
+
+            wsComponents.path = path && path !== '/' ? path : undefined;
+            wsComponents.query = query;
+            wsComponents.resourceName = undefined;
+        }
+        //forbid fragment component
+        wsComponents.fragment = undefined;
+        return wsComponents;
+    }
+};
+
+var handler$3 = {
+    scheme: "wss",
+    domainHost: handler$2.domainHost,
+    parse: handler$2.parse,
+    serialize: handler$2.serialize
+};
+
+var O = {};
+var isIRI = true;
+//RFC 3986
+var UNRESERVED$$ = "[A-Za-z0-9\\-\\.\\_\\~" + (isIRI ? "\\xA0-\\u200D\\u2010-\\u2029\\u202F-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF" : "") + "]";
+var HEXDIG$$ = "[0-9A-Fa-f]"; //case-insensitive
+var PCT_ENCODED$ = subexp(subexp("%[EFef]" + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$) + "|" + subexp("%[89A-Fa-f]" + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$) + "|" + subexp("%" + HEXDIG$$ + HEXDIG$$)); //expanded
+//RFC 5322, except these symbols as per RFC 6068: @ : / ? # [ ] & ; =
+//const ATEXT$$ = "[A-Za-z0-9\\!\\#\\$\\%\\&\\'\\*\\+\\-\\/\\=\\?\\^\\_\\`\\{\\|\\}\\~]";
+//const WSP$$ = "[\\x20\\x09]";
+//const OBS_QTEXT$$ = "[\\x01-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F]";  //(%d1-8 / %d11-12 / %d14-31 / %d127)
+//const QTEXT$$ = merge("[\\x21\\x23-\\x5B\\x5D-\\x7E]", OBS_QTEXT$$);  //%d33 / %d35-91 / %d93-126 / obs-qtext
+//const VCHAR$$ = "[\\x21-\\x7E]";
+//const WSP$$ = "[\\x20\\x09]";
+//const OBS_QP$ = subexp("\\\\" + merge("[\\x00\\x0D\\x0A]", OBS_QTEXT$$));  //%d0 / CR / LF / obs-qtext
+//const FWS$ = subexp(subexp(WSP$$ + "*" + "\\x0D\\x0A") + "?" + WSP$$ + "+");
+//const QUOTED_PAIR$ = subexp(subexp("\\\\" + subexp(VCHAR$$ + "|" + WSP$$)) + "|" + OBS_QP$);
+//const QUOTED_STRING$ = subexp('\\"' + subexp(FWS$ + "?" + QCONTENT$) + "*" + FWS$ + "?" + '\\"');
+var ATEXT$$ = "[A-Za-z0-9\\!\\$\\%\\'\\*\\+\\-\\^\\_\\`\\{\\|\\}\\~]";
+var QTEXT$$ = "[\\!\\$\\%\\'\\(\\)\\*\\+\\,\\-\\.0-9\\<\\>A-Z\\x5E-\\x7E]";
+var VCHAR$$ = merge(QTEXT$$, "[\\\"\\\\]");
+var SOME_DELIMS$$ = "[\\!\\$\\'\\(\\)\\*\\+\\,\\;\\:\\@]";
+var UNRESERVED = new RegExp(UNRESERVED$$, "g");
+var PCT_ENCODED = new RegExp(PCT_ENCODED$, "g");
+var NOT_LOCAL_PART = new RegExp(merge("[^]", ATEXT$$, "[\\.]", '[\\"]', VCHAR$$), "g");
+var NOT_HFNAME = new RegExp(merge("[^]", UNRESERVED$$, SOME_DELIMS$$), "g");
+var NOT_HFVALUE = NOT_HFNAME;
+function decodeUnreserved(str) {
+    var decStr = pctDecChars(str);
+    return !decStr.match(UNRESERVED) ? str : decStr;
+}
+var handler$4 = {
+    scheme: "mailto",
+    parse: function parse$$1(components, options) {
+        var mailtoComponents = components;
+        var to = mailtoComponents.to = mailtoComponents.path ? mailtoComponents.path.split(",") : [];
+        mailtoComponents.path = undefined;
+        if (mailtoComponents.query) {
+            var unknownHeaders = false;
+            var headers = {};
+            var hfields = mailtoComponents.query.split("&");
+            for (var x = 0, xl = hfields.length; x < xl; ++x) {
+                var hfield = hfields[x].split("=");
+                switch (hfield[0]) {
+                    case "to":
+                        var toAddrs = hfield[1].split(",");
+                        for (var _x = 0, _xl = toAddrs.length; _x < _xl; ++_x) {
+                            to.push(toAddrs[_x]);
+                        }
+                        break;
+                    case "subject":
+                        mailtoComponents.subject = unescapeComponent(hfield[1], options);
+                        break;
+                    case "body":
+                        mailtoComponents.body = unescapeComponent(hfield[1], options);
+                        break;
+                    default:
+                        unknownHeaders = true;
+                        headers[unescapeComponent(hfield[0], options)] = unescapeComponent(hfield[1], options);
+                        break;
+                }
+            }
+            if (unknownHeaders) mailtoComponents.headers = headers;
+        }
+        mailtoComponents.query = undefined;
+        for (var _x2 = 0, _xl2 = to.length; _x2 < _xl2; ++_x2) {
+            var addr = to[_x2].split("@");
+            addr[0] = unescapeComponent(addr[0]);
+            if (!options.unicodeSupport) {
+                //convert Unicode IDN -> ASCII IDN
+                try {
+                    addr[1] = punycode.toASCII(unescapeComponent(addr[1], options).toLowerCase());
+                } catch (e) {
+                    mailtoComponents.error = mailtoComponents.error || "Email address's domain name can not be converted to ASCII via punycode: " + e;
+                }
+            } else {
+                addr[1] = unescapeComponent(addr[1], options).toLowerCase();
+            }
+            to[_x2] = addr.join("@");
+        }
+        return mailtoComponents;
+    },
+    serialize: function serialize$$1(mailtoComponents, options) {
+        var components = mailtoComponents;
+        var to = toArray(mailtoComponents.to);
+        if (to) {
+            for (var x = 0, xl = to.length; x < xl; ++x) {
+                var toAddr = String(to[x]);
+                var atIdx = toAddr.lastIndexOf("@");
+                var localPart = toAddr.slice(0, atIdx).replace(PCT_ENCODED, decodeUnreserved).replace(PCT_ENCODED, toUpperCase).replace(NOT_LOCAL_PART, pctEncChar);
+                var domain = toAddr.slice(atIdx + 1);
+                //convert IDN via punycode
+                try {
+                    domain = !options.iri ? punycode.toASCII(unescapeComponent(domain, options).toLowerCase()) : punycode.toUnicode(domain);
+                } catch (e) {
+                    components.error = components.error || "Email address's domain name can not be converted to " + (!options.iri ? "ASCII" : "Unicode") + " via punycode: " + e;
+                }
+                to[x] = localPart + "@" + domain;
+            }
+            components.path = to.join(",");
+        }
+        var headers = mailtoComponents.headers = mailtoComponents.headers || {};
+        if (mailtoComponents.subject) headers["subject"] = mailtoComponents.subject;
+        if (mailtoComponents.body) headers["body"] = mailtoComponents.body;
+        var fields = [];
+        for (var name in headers) {
+            if (headers[name] !== O[name]) {
+                fields.push(name.replace(PCT_ENCODED, decodeUnreserved).replace(PCT_ENCODED, toUpperCase).replace(NOT_HFNAME, pctEncChar) + "=" + headers[name].replace(PCT_ENCODED, decodeUnreserved).replace(PCT_ENCODED, toUpperCase).replace(NOT_HFVALUE, pctEncChar));
+            }
+        }
+        if (fields.length) {
+            components.query = fields.join("&");
+        }
+        return components;
+    }
+};
+
+var URN_PARSE = /^([^\:]+)\:(.*)/;
+//RFC 2141
+var handler$5 = {
+    scheme: "urn",
+    parse: function parse$$1(components, options) {
+        var matches = components.path && components.path.match(URN_PARSE);
+        var urnComponents = components;
+        if (matches) {
+            var scheme = options.scheme || urnComponents.scheme || "urn";
+            var nid = matches[1].toLowerCase();
+            var nss = matches[2];
+            var urnScheme = scheme + ":" + (options.nid || nid);
+            var schemeHandler = SCHEMES[urnScheme];
+            urnComponents.nid = nid;
+            urnComponents.nss = nss;
+            urnComponents.path = undefined;
+            if (schemeHandler) {
+                urnComponents = schemeHandler.parse(urnComponents, options);
+            }
+        } else {
+            urnComponents.error = urnComponents.error || "URN can not be parsed.";
+        }
+        return urnComponents;
+    },
+    serialize: function serialize$$1(urnComponents, options) {
+        var scheme = options.scheme || urnComponents.scheme || "urn";
+        var nid = urnComponents.nid;
+        var urnScheme = scheme + ":" + (options.nid || nid);
+        var schemeHandler = SCHEMES[urnScheme];
+        if (schemeHandler) {
+            urnComponents = schemeHandler.serialize(urnComponents, options);
+        }
+        var uriComponents = urnComponents;
+        var nss = urnComponents.nss;
+        uriComponents.path = (nid || options.nid) + ":" + nss;
+        return uriComponents;
+    }
+};
+
+var UUID = /^[0-9A-Fa-f]{8}(?:\-[0-9A-Fa-f]{4}){3}\-[0-9A-Fa-f]{12}$/;
+//RFC 4122
+var handler$6 = {
+    scheme: "urn:uuid",
+    parse: function parse(urnComponents, options) {
+        var uuidComponents = urnComponents;
+        uuidComponents.uuid = uuidComponents.nss;
+        uuidComponents.nss = undefined;
+        if (!options.tolerant && (!uuidComponents.uuid || !uuidComponents.uuid.match(UUID))) {
+            uuidComponents.error = uuidComponents.error || "UUID is not valid.";
+        }
+        return uuidComponents;
+    },
+    serialize: function serialize(uuidComponents, options) {
+        var urnComponents = uuidComponents;
+        //normalize UUID
+        urnComponents.nss = (uuidComponents.uuid || "").toLowerCase();
+        return urnComponents;
+    }
+};
+
+SCHEMES[handler.scheme] = handler;
+SCHEMES[handler$1.scheme] = handler$1;
+SCHEMES[handler$2.scheme] = handler$2;
+SCHEMES[handler$3.scheme] = handler$3;
+SCHEMES[handler$4.scheme] = handler$4;
+SCHEMES[handler$5.scheme] = handler$5;
+SCHEMES[handler$6.scheme] = handler$6;
+
+exports.SCHEMES = SCHEMES;
+exports.pctEncChar = pctEncChar;
+exports.pctDecChars = pctDecChars;
+exports.parse = parse;
+exports.removeDotSegments = removeDotSegments;
+exports.serialize = serialize;
+exports.resolveComponents = resolveComponents;
+exports.resolve = resolve;
+exports.normalize = normalize;
+exports.equal = equal;
+exports.escapeComponent = escapeComponent;
+exports.unescapeComponent = unescapeComponent;
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+})));
+
+
+},{}],"../node_modules/fast-deep-equal/index.js":[function(require,module,exports) {
+'use strict';
+
+// do not edit .js files directly - edit src/index.jst
+
+
+
+module.exports = function equal(a, b) {
+  if (a === b) return true;
+
+  if (a && b && typeof a == 'object' && typeof b == 'object') {
+    if (a.constructor !== b.constructor) return false;
+
+    var length, i, keys;
+    if (Array.isArray(a)) {
+      length = a.length;
+      if (length != b.length) return false;
+      for (i = length; i-- !== 0;)
+        if (!equal(a[i], b[i])) return false;
+      return true;
+    }
+
+
+
+    if (a.constructor === RegExp) return a.source === b.source && a.flags === b.flags;
+    if (a.valueOf !== Object.prototype.valueOf) return a.valueOf() === b.valueOf();
+    if (a.toString !== Object.prototype.toString) return a.toString() === b.toString();
+
+    keys = Object.keys(a);
+    length = keys.length;
+    if (length !== Object.keys(b).length) return false;
+
+    for (i = length; i-- !== 0;)
+      if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
+
+    for (i = length; i-- !== 0;) {
+      var key = keys[i];
+
+      if (!equal(a[key], b[key])) return false;
+    }
+
+    return true;
+  }
+
+  // true if both NaN, false otherwise
+  return a!==a && b!==b;
+};
+
+},{}],"../node_modules/ajv/lib/compile/ucs2length.js":[function(require,module,exports) {
+'use strict';
+
+// https://mathiasbynens.be/notes/javascript-encoding
+// https://github.com/bestiejs/punycode.js - punycode.ucs2.decode
+module.exports = function ucs2length(str) {
+  var length = 0
+    , len = str.length
+    , pos = 0
+    , value;
+  while (pos < len) {
+    length++;
+    value = str.charCodeAt(pos++);
+    if (value >= 0xD800 && value <= 0xDBFF && pos < len) {
+      // high surrogate, and there is a next character
+      value = str.charCodeAt(pos);
+      if ((value & 0xFC00) == 0xDC00) pos++; // low surrogate
+    }
+  }
+  return length;
+};
+
+},{}],"../node_modules/ajv/lib/compile/util.js":[function(require,module,exports) {
+'use strict';
+
+
+module.exports = {
+  copy: copy,
+  checkDataType: checkDataType,
+  checkDataTypes: checkDataTypes,
+  coerceToTypes: coerceToTypes,
+  toHash: toHash,
+  getProperty: getProperty,
+  escapeQuotes: escapeQuotes,
+  equal: require('fast-deep-equal'),
+  ucs2length: require('./ucs2length'),
+  varOccurences: varOccurences,
+  varReplace: varReplace,
+  schemaHasRules: schemaHasRules,
+  schemaHasRulesExcept: schemaHasRulesExcept,
+  schemaUnknownRules: schemaUnknownRules,
+  toQuotedString: toQuotedString,
+  getPathExpr: getPathExpr,
+  getPath: getPath,
+  getData: getData,
+  unescapeFragment: unescapeFragment,
+  unescapeJsonPointer: unescapeJsonPointer,
+  escapeFragment: escapeFragment,
+  escapeJsonPointer: escapeJsonPointer
+};
+
+
+function copy(o, to) {
+  to = to || {};
+  for (var key in o) to[key] = o[key];
+  return to;
+}
+
+
+function checkDataType(dataType, data, strictNumbers, negate) {
+  var EQUAL = negate ? ' !== ' : ' === '
+    , AND = negate ? ' || ' : ' && '
+    , OK = negate ? '!' : ''
+    , NOT = negate ? '' : '!';
+  switch (dataType) {
+    case 'null': return data + EQUAL + 'null';
+    case 'array': return OK + 'Array.isArray(' + data + ')';
+    case 'object': return '(' + OK + data + AND +
+                          'typeof ' + data + EQUAL + '"object"' + AND +
+                          NOT + 'Array.isArray(' + data + '))';
+    case 'integer': return '(typeof ' + data + EQUAL + '"number"' + AND +
+                           NOT + '(' + data + ' % 1)' +
+                           AND + data + EQUAL + data +
+                           (strictNumbers ? (AND + OK + 'isFinite(' + data + ')') : '') + ')';
+    case 'number': return '(typeof ' + data + EQUAL + '"' + dataType + '"' +
+                          (strictNumbers ? (AND + OK + 'isFinite(' + data + ')') : '') + ')';
+    default: return 'typeof ' + data + EQUAL + '"' + dataType + '"';
+  }
+}
+
+
+function checkDataTypes(dataTypes, data, strictNumbers) {
+  switch (dataTypes.length) {
+    case 1: return checkDataType(dataTypes[0], data, strictNumbers, true);
+    default:
+      var code = '';
+      var types = toHash(dataTypes);
+      if (types.array && types.object) {
+        code = types.null ? '(': '(!' + data + ' || ';
+        code += 'typeof ' + data + ' !== "object")';
+        delete types.null;
+        delete types.array;
+        delete types.object;
+      }
+      if (types.number) delete types.integer;
+      for (var t in types)
+        code += (code ? ' && ' : '' ) + checkDataType(t, data, strictNumbers, true);
+
+      return code;
+  }
+}
+
+
+var COERCE_TO_TYPES = toHash([ 'string', 'number', 'integer', 'boolean', 'null' ]);
+function coerceToTypes(optionCoerceTypes, dataTypes) {
+  if (Array.isArray(dataTypes)) {
+    var types = [];
+    for (var i=0; i<dataTypes.length; i++) {
+      var t = dataTypes[i];
+      if (COERCE_TO_TYPES[t]) types[types.length] = t;
+      else if (optionCoerceTypes === 'array' && t === 'array') types[types.length] = t;
+    }
+    if (types.length) return types;
+  } else if (COERCE_TO_TYPES[dataTypes]) {
+    return [dataTypes];
+  } else if (optionCoerceTypes === 'array' && dataTypes === 'array') {
+    return ['array'];
+  }
+}
+
+
+function toHash(arr) {
+  var hash = {};
+  for (var i=0; i<arr.length; i++) hash[arr[i]] = true;
+  return hash;
+}
+
+
+var IDENTIFIER = /^[a-z$_][a-z$_0-9]*$/i;
+var SINGLE_QUOTE = /'|\\/g;
+function getProperty(key) {
+  return typeof key == 'number'
+          ? '[' + key + ']'
+          : IDENTIFIER.test(key)
+            ? '.' + key
+            : "['" + escapeQuotes(key) + "']";
+}
+
+
+function escapeQuotes(str) {
+  return str.replace(SINGLE_QUOTE, '\\$&')
+            .replace(/\n/g, '\\n')
+            .replace(/\r/g, '\\r')
+            .replace(/\f/g, '\\f')
+            .replace(/\t/g, '\\t');
+}
+
+
+function varOccurences(str, dataVar) {
+  dataVar += '[^0-9]';
+  var matches = str.match(new RegExp(dataVar, 'g'));
+  return matches ? matches.length : 0;
+}
+
+
+function varReplace(str, dataVar, expr) {
+  dataVar += '([^0-9])';
+  expr = expr.replace(/\$/g, '$$$$');
+  return str.replace(new RegExp(dataVar, 'g'), expr + '$1');
+}
+
+
+function schemaHasRules(schema, rules) {
+  if (typeof schema == 'boolean') return !schema;
+  for (var key in schema) if (rules[key]) return true;
+}
+
+
+function schemaHasRulesExcept(schema, rules, exceptKeyword) {
+  if (typeof schema == 'boolean') return !schema && exceptKeyword != 'not';
+  for (var key in schema) if (key != exceptKeyword && rules[key]) return true;
+}
+
+
+function schemaUnknownRules(schema, rules) {
+  if (typeof schema == 'boolean') return;
+  for (var key in schema) if (!rules[key]) return key;
+}
+
+
+function toQuotedString(str) {
+  return '\'' + escapeQuotes(str) + '\'';
+}
+
+
+function getPathExpr(currentPath, expr, jsonPointers, isNumber) {
+  var path = jsonPointers // false by default
+              ? '\'/\' + ' + expr + (isNumber ? '' : '.replace(/~/g, \'~0\').replace(/\\//g, \'~1\')')
+              : (isNumber ? '\'[\' + ' + expr + ' + \']\'' : '\'[\\\'\' + ' + expr + ' + \'\\\']\'');
+  return joinPaths(currentPath, path);
+}
+
+
+function getPath(currentPath, prop, jsonPointers) {
+  var path = jsonPointers // false by default
+              ? toQuotedString('/' + escapeJsonPointer(prop))
+              : toQuotedString(getProperty(prop));
+  return joinPaths(currentPath, path);
+}
+
+
+var JSON_POINTER = /^\/(?:[^~]|~0|~1)*$/;
+var RELATIVE_JSON_POINTER = /^([0-9]+)(#|\/(?:[^~]|~0|~1)*)?$/;
+function getData($data, lvl, paths) {
+  var up, jsonPointer, data, matches;
+  if ($data === '') return 'rootData';
+  if ($data[0] == '/') {
+    if (!JSON_POINTER.test($data)) throw new Error('Invalid JSON-pointer: ' + $data);
+    jsonPointer = $data;
+    data = 'rootData';
+  } else {
+    matches = $data.match(RELATIVE_JSON_POINTER);
+    if (!matches) throw new Error('Invalid JSON-pointer: ' + $data);
+    up = +matches[1];
+    jsonPointer = matches[2];
+    if (jsonPointer == '#') {
+      if (up >= lvl) throw new Error('Cannot access property/index ' + up + ' levels up, current level is ' + lvl);
+      return paths[lvl - up];
+    }
+
+    if (up > lvl) throw new Error('Cannot access data ' + up + ' levels up, current level is ' + lvl);
+    data = 'data' + ((lvl - up) || '');
+    if (!jsonPointer) return data;
+  }
+
+  var expr = data;
+  var segments = jsonPointer.split('/');
+  for (var i=0; i<segments.length; i++) {
+    var segment = segments[i];
+    if (segment) {
+      data += getProperty(unescapeJsonPointer(segment));
+      expr += ' && ' + data;
+    }
+  }
+  return expr;
+}
+
+
+function joinPaths (a, b) {
+  if (a == '""') return b;
+  return (a + ' + ' + b).replace(/([^\\])' \+ '/g, '$1');
+}
+
+
+function unescapeFragment(str) {
+  return unescapeJsonPointer(decodeURIComponent(str));
+}
+
+
+function escapeFragment(str) {
+  return encodeURIComponent(escapeJsonPointer(str));
+}
+
+
+function escapeJsonPointer(str) {
+  return str.replace(/~/g, '~0').replace(/\//g, '~1');
+}
+
+
+function unescapeJsonPointer(str) {
+  return str.replace(/~1/g, '/').replace(/~0/g, '~');
+}
+
+},{"fast-deep-equal":"../node_modules/fast-deep-equal/index.js","./ucs2length":"../node_modules/ajv/lib/compile/ucs2length.js"}],"../node_modules/ajv/lib/compile/schema_obj.js":[function(require,module,exports) {
+'use strict';
+
+var util = require('./util');
+
+module.exports = SchemaObject;
+
+function SchemaObject(obj) {
+  util.copy(obj, this);
+}
+
+},{"./util":"../node_modules/ajv/lib/compile/util.js"}],"../node_modules/json-schema-traverse/index.js":[function(require,module,exports) {
+'use strict';
+
+var traverse = module.exports = function (schema, opts, cb) {
+  // Legacy support for v0.3.1 and earlier.
+  if (typeof opts == 'function') {
+    cb = opts;
+    opts = {};
+  }
+
+  cb = opts.cb || cb;
+  var pre = (typeof cb == 'function') ? cb : cb.pre || function() {};
+  var post = cb.post || function() {};
+
+  _traverse(opts, pre, post, schema, '', schema);
+};
+
+
+traverse.keywords = {
+  additionalItems: true,
+  items: true,
+  contains: true,
+  additionalProperties: true,
+  propertyNames: true,
+  not: true
+};
+
+traverse.arrayKeywords = {
+  items: true,
+  allOf: true,
+  anyOf: true,
+  oneOf: true
+};
+
+traverse.propsKeywords = {
+  definitions: true,
+  properties: true,
+  patternProperties: true,
+  dependencies: true
+};
+
+traverse.skipKeywords = {
+  default: true,
+  enum: true,
+  const: true,
+  required: true,
+  maximum: true,
+  minimum: true,
+  exclusiveMaximum: true,
+  exclusiveMinimum: true,
+  multipleOf: true,
+  maxLength: true,
+  minLength: true,
+  pattern: true,
+  format: true,
+  maxItems: true,
+  minItems: true,
+  uniqueItems: true,
+  maxProperties: true,
+  minProperties: true
+};
+
+
+function _traverse(opts, pre, post, schema, jsonPtr, rootSchema, parentJsonPtr, parentKeyword, parentSchema, keyIndex) {
+  if (schema && typeof schema == 'object' && !Array.isArray(schema)) {
+    pre(schema, jsonPtr, rootSchema, parentJsonPtr, parentKeyword, parentSchema, keyIndex);
+    for (var key in schema) {
+      var sch = schema[key];
+      if (Array.isArray(sch)) {
+        if (key in traverse.arrayKeywords) {
+          for (var i=0; i<sch.length; i++)
+            _traverse(opts, pre, post, sch[i], jsonPtr + '/' + key + '/' + i, rootSchema, jsonPtr, key, schema, i);
+        }
+      } else if (key in traverse.propsKeywords) {
+        if (sch && typeof sch == 'object') {
+          for (var prop in sch)
+            _traverse(opts, pre, post, sch[prop], jsonPtr + '/' + key + '/' + escapeJsonPtr(prop), rootSchema, jsonPtr, key, schema, prop);
+        }
+      } else if (key in traverse.keywords || (opts.allKeys && !(key in traverse.skipKeywords))) {
+        _traverse(opts, pre, post, sch, jsonPtr + '/' + key, rootSchema, jsonPtr, key, schema);
+      }
+    }
+    post(schema, jsonPtr, rootSchema, parentJsonPtr, parentKeyword, parentSchema, keyIndex);
+  }
+}
+
+
+function escapeJsonPtr(str) {
+  return str.replace(/~/g, '~0').replace(/\//g, '~1');
+}
+
+},{}],"../node_modules/ajv/lib/compile/resolve.js":[function(require,module,exports) {
+'use strict';
+
+var URI = require('uri-js')
+  , equal = require('fast-deep-equal')
+  , util = require('./util')
+  , SchemaObject = require('./schema_obj')
+  , traverse = require('json-schema-traverse');
+
+module.exports = resolve;
+
+resolve.normalizeId = normalizeId;
+resolve.fullPath = getFullPath;
+resolve.url = resolveUrl;
+resolve.ids = resolveIds;
+resolve.inlineRef = inlineRef;
+resolve.schema = resolveSchema;
+
+/**
+ * [resolve and compile the references ($ref)]
+ * @this   Ajv
+ * @param  {Function} compile reference to schema compilation funciton (localCompile)
+ * @param  {Object} root object with information about the root schema for the current schema
+ * @param  {String} ref reference to resolve
+ * @return {Object|Function} schema object (if the schema can be inlined) or validation function
+ */
+function resolve(compile, root, ref) {
+  /* jshint validthis: true */
+  var refVal = this._refs[ref];
+  if (typeof refVal == 'string') {
+    if (this._refs[refVal]) refVal = this._refs[refVal];
+    else return resolve.call(this, compile, root, refVal);
+  }
+
+  refVal = refVal || this._schemas[ref];
+  if (refVal instanceof SchemaObject) {
+    return inlineRef(refVal.schema, this._opts.inlineRefs)
+            ? refVal.schema
+            : refVal.validate || this._compile(refVal);
+  }
+
+  var res = resolveSchema.call(this, root, ref);
+  var schema, v, baseId;
+  if (res) {
+    schema = res.schema;
+    root = res.root;
+    baseId = res.baseId;
+  }
+
+  if (schema instanceof SchemaObject) {
+    v = schema.validate || compile.call(this, schema.schema, root, undefined, baseId);
+  } else if (schema !== undefined) {
+    v = inlineRef(schema, this._opts.inlineRefs)
+        ? schema
+        : compile.call(this, schema, root, undefined, baseId);
+  }
+
+  return v;
+}
+
+
+/**
+ * Resolve schema, its root and baseId
+ * @this Ajv
+ * @param  {Object} root root object with properties schema, refVal, refs
+ * @param  {String} ref  reference to resolve
+ * @return {Object} object with properties schema, root, baseId
+ */
+function resolveSchema(root, ref) {
+  /* jshint validthis: true */
+  var p = URI.parse(ref)
+    , refPath = _getFullPath(p)
+    , baseId = getFullPath(this._getId(root.schema));
+  if (Object.keys(root.schema).length === 0 || refPath !== baseId) {
+    var id = normalizeId(refPath);
+    var refVal = this._refs[id];
+    if (typeof refVal == 'string') {
+      return resolveRecursive.call(this, root, refVal, p);
+    } else if (refVal instanceof SchemaObject) {
+      if (!refVal.validate) this._compile(refVal);
+      root = refVal;
+    } else {
+      refVal = this._schemas[id];
+      if (refVal instanceof SchemaObject) {
+        if (!refVal.validate) this._compile(refVal);
+        if (id == normalizeId(ref))
+          return { schema: refVal, root: root, baseId: baseId };
+        root = refVal;
+      } else {
+        return;
+      }
+    }
+    if (!root.schema) return;
+    baseId = getFullPath(this._getId(root.schema));
+  }
+  return getJsonPointer.call(this, p, baseId, root.schema, root);
+}
+
+
+/* @this Ajv */
+function resolveRecursive(root, ref, parsedRef) {
+  /* jshint validthis: true */
+  var res = resolveSchema.call(this, root, ref);
+  if (res) {
+    var schema = res.schema;
+    var baseId = res.baseId;
+    root = res.root;
+    var id = this._getId(schema);
+    if (id) baseId = resolveUrl(baseId, id);
+    return getJsonPointer.call(this, parsedRef, baseId, schema, root);
+  }
+}
+
+
+var PREVENT_SCOPE_CHANGE = util.toHash(['properties', 'patternProperties', 'enum', 'dependencies', 'definitions']);
+/* @this Ajv */
+function getJsonPointer(parsedRef, baseId, schema, root) {
+  /* jshint validthis: true */
+  parsedRef.fragment = parsedRef.fragment || '';
+  if (parsedRef.fragment.slice(0,1) != '/') return;
+  var parts = parsedRef.fragment.split('/');
+
+  for (var i = 1; i < parts.length; i++) {
+    var part = parts[i];
+    if (part) {
+      part = util.unescapeFragment(part);
+      schema = schema[part];
+      if (schema === undefined) break;
+      var id;
+      if (!PREVENT_SCOPE_CHANGE[part]) {
+        id = this._getId(schema);
+        if (id) baseId = resolveUrl(baseId, id);
+        if (schema.$ref) {
+          var $ref = resolveUrl(baseId, schema.$ref);
+          var res = resolveSchema.call(this, root, $ref);
+          if (res) {
+            schema = res.schema;
+            root = res.root;
+            baseId = res.baseId;
+          }
+        }
+      }
+    }
+  }
+  if (schema !== undefined && schema !== root.schema)
+    return { schema: schema, root: root, baseId: baseId };
+}
+
+
+var SIMPLE_INLINED = util.toHash([
+  'type', 'format', 'pattern',
+  'maxLength', 'minLength',
+  'maxProperties', 'minProperties',
+  'maxItems', 'minItems',
+  'maximum', 'minimum',
+  'uniqueItems', 'multipleOf',
+  'required', 'enum'
+]);
+function inlineRef(schema, limit) {
+  if (limit === false) return false;
+  if (limit === undefined || limit === true) return checkNoRef(schema);
+  else if (limit) return countKeys(schema) <= limit;
+}
+
+
+function checkNoRef(schema) {
+  var item;
+  if (Array.isArray(schema)) {
+    for (var i=0; i<schema.length; i++) {
+      item = schema[i];
+      if (typeof item == 'object' && !checkNoRef(item)) return false;
+    }
+  } else {
+    for (var key in schema) {
+      if (key == '$ref') return false;
+      item = schema[key];
+      if (typeof item == 'object' && !checkNoRef(item)) return false;
+    }
+  }
+  return true;
+}
+
+
+function countKeys(schema) {
+  var count = 0, item;
+  if (Array.isArray(schema)) {
+    for (var i=0; i<schema.length; i++) {
+      item = schema[i];
+      if (typeof item == 'object') count += countKeys(item);
+      if (count == Infinity) return Infinity;
+    }
+  } else {
+    for (var key in schema) {
+      if (key == '$ref') return Infinity;
+      if (SIMPLE_INLINED[key]) {
+        count++;
+      } else {
+        item = schema[key];
+        if (typeof item == 'object') count += countKeys(item) + 1;
+        if (count == Infinity) return Infinity;
+      }
+    }
+  }
+  return count;
+}
+
+
+function getFullPath(id, normalize) {
+  if (normalize !== false) id = normalizeId(id);
+  var p = URI.parse(id);
+  return _getFullPath(p);
+}
+
+
+function _getFullPath(p) {
+  return URI.serialize(p).split('#')[0] + '#';
+}
+
+
+var TRAILING_SLASH_HASH = /#\/?$/;
+function normalizeId(id) {
+  return id ? id.replace(TRAILING_SLASH_HASH, '') : '';
+}
+
+
+function resolveUrl(baseId, id) {
+  id = normalizeId(id);
+  return URI.resolve(baseId, id);
+}
+
+
+/* @this Ajv */
+function resolveIds(schema) {
+  var schemaId = normalizeId(this._getId(schema));
+  var baseIds = {'': schemaId};
+  var fullPaths = {'': getFullPath(schemaId, false)};
+  var localRefs = {};
+  var self = this;
+
+  traverse(schema, {allKeys: true}, function(sch, jsonPtr, rootSchema, parentJsonPtr, parentKeyword, parentSchema, keyIndex) {
+    if (jsonPtr === '') return;
+    var id = self._getId(sch);
+    var baseId = baseIds[parentJsonPtr];
+    var fullPath = fullPaths[parentJsonPtr] + '/' + parentKeyword;
+    if (keyIndex !== undefined)
+      fullPath += '/' + (typeof keyIndex == 'number' ? keyIndex : util.escapeFragment(keyIndex));
+
+    if (typeof id == 'string') {
+      id = baseId = normalizeId(baseId ? URI.resolve(baseId, id) : id);
+
+      var refVal = self._refs[id];
+      if (typeof refVal == 'string') refVal = self._refs[refVal];
+      if (refVal && refVal.schema) {
+        if (!equal(sch, refVal.schema))
+          throw new Error('id "' + id + '" resolves to more than one schema');
+      } else if (id != normalizeId(fullPath)) {
+        if (id[0] == '#') {
+          if (localRefs[id] && !equal(sch, localRefs[id]))
+            throw new Error('id "' + id + '" resolves to more than one schema');
+          localRefs[id] = sch;
+        } else {
+          self._refs[id] = fullPath;
+        }
+      }
+    }
+    baseIds[jsonPtr] = baseId;
+    fullPaths[jsonPtr] = fullPath;
+  });
+
+  return localRefs;
+}
+
+},{"uri-js":"../node_modules/uri-js/dist/es5/uri.all.js","fast-deep-equal":"../node_modules/fast-deep-equal/index.js","./util":"../node_modules/ajv/lib/compile/util.js","./schema_obj":"../node_modules/ajv/lib/compile/schema_obj.js","json-schema-traverse":"../node_modules/json-schema-traverse/index.js"}],"../node_modules/ajv/lib/compile/error_classes.js":[function(require,module,exports) {
+'use strict';
+
+var resolve = require('./resolve');
+
+module.exports = {
+  Validation: errorSubclass(ValidationError),
+  MissingRef: errorSubclass(MissingRefError)
+};
+
+
+function ValidationError(errors) {
+  this.message = 'validation failed';
+  this.errors = errors;
+  this.ajv = this.validation = true;
+}
+
+
+MissingRefError.message = function (baseId, ref) {
+  return 'can\'t resolve reference ' + ref + ' from id ' + baseId;
+};
+
+
+function MissingRefError(baseId, ref, message) {
+  this.message = message || MissingRefError.message(baseId, ref);
+  this.missingRef = resolve.url(baseId, ref);
+  this.missingSchema = resolve.normalizeId(resolve.fullPath(this.missingRef));
+}
+
+
+function errorSubclass(Subclass) {
+  Subclass.prototype = Object.create(Error.prototype);
+  Subclass.prototype.constructor = Subclass;
+  return Subclass;
+}
+
+},{"./resolve":"../node_modules/ajv/lib/compile/resolve.js"}],"../node_modules/fast-json-stable-stringify/index.js":[function(require,module,exports) {
+'use strict';
+
+module.exports = function (data, opts) {
+    if (!opts) opts = {};
+    if (typeof opts === 'function') opts = { cmp: opts };
+    var cycles = (typeof opts.cycles === 'boolean') ? opts.cycles : false;
+
+    var cmp = opts.cmp && (function (f) {
+        return function (node) {
+            return function (a, b) {
+                var aobj = { key: a, value: node[a] };
+                var bobj = { key: b, value: node[b] };
+                return f(aobj, bobj);
+            };
+        };
+    })(opts.cmp);
+
+    var seen = [];
+    return (function stringify (node) {
+        if (node && node.toJSON && typeof node.toJSON === 'function') {
+            node = node.toJSON();
+        }
+
+        if (node === undefined) return;
+        if (typeof node == 'number') return isFinite(node) ? '' + node : 'null';
+        if (typeof node !== 'object') return JSON.stringify(node);
+
+        var i, out;
+        if (Array.isArray(node)) {
+            out = '[';
+            for (i = 0; i < node.length; i++) {
+                if (i) out += ',';
+                out += stringify(node[i]) || 'null';
+            }
+            return out + ']';
+        }
+
+        if (node === null) return 'null';
+
+        if (seen.indexOf(node) !== -1) {
+            if (cycles) return JSON.stringify('__cycle__');
+            throw new TypeError('Converting circular structure to JSON');
+        }
+
+        var seenIndex = seen.push(node) - 1;
+        var keys = Object.keys(node).sort(cmp && cmp(node));
+        out = '';
+        for (i = 0; i < keys.length; i++) {
+            var key = keys[i];
+            var value = stringify(node[key]);
+
+            if (!value) continue;
+            if (out) out += ',';
+            out += JSON.stringify(key) + ':' + value;
+        }
+        seen.splice(seenIndex, 1);
+        return '{' + out + '}';
+    })(data);
+};
+
+},{}],"../node_modules/ajv/lib/dotjs/validate.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_validate(it, $keyword, $ruleType) {
+  var out = '';
+  var $async = it.schema.$async === true,
+    $refKeywords = it.util.schemaHasRulesExcept(it.schema, it.RULES.all, '$ref'),
+    $id = it.self._getId(it.schema);
+  if (it.opts.strictKeywords) {
+    var $unknownKwd = it.util.schemaUnknownRules(it.schema, it.RULES.keywords);
+    if ($unknownKwd) {
+      var $keywordsMsg = 'unknown keyword: ' + $unknownKwd;
+      if (it.opts.strictKeywords === 'log') it.logger.warn($keywordsMsg);
+      else throw new Error($keywordsMsg);
+    }
+  }
+  if (it.isTop) {
+    out += ' var validate = ';
+    if ($async) {
+      it.async = true;
+      out += 'async ';
+    }
+    out += 'function(data, dataPath, parentData, parentDataProperty, rootData) { \'use strict\'; ';
+    if ($id && (it.opts.sourceCode || it.opts.processCode)) {
+      out += ' ' + ('/\*# sourceURL=' + $id + ' */') + ' ';
+    }
+  }
+  if (typeof it.schema == 'boolean' || !($refKeywords || it.schema.$ref)) {
+    var $keyword = 'false schema';
+    var $lvl = it.level;
+    var $dataLvl = it.dataLevel;
+    var $schema = it.schema[$keyword];
+    var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+    var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+    var $breakOnError = !it.opts.allErrors;
+    var $errorKeyword;
+    var $data = 'data' + ($dataLvl || '');
+    var $valid = 'valid' + $lvl;
+    if (it.schema === false) {
+      if (it.isTop) {
+        $breakOnError = true;
+      } else {
+        out += ' var ' + ($valid) + ' = false; ';
+      }
+      var $$outStack = $$outStack || [];
+      $$outStack.push(out);
+      out = ''; /* istanbul ignore else */
+      if (it.createErrors !== false) {
+        out += ' { keyword: \'' + ($errorKeyword || 'false schema') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: {} ';
+        if (it.opts.messages !== false) {
+          out += ' , message: \'boolean schema is false\' ';
+        }
+        if (it.opts.verbose) {
+          out += ' , schema: false , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+        }
+        out += ' } ';
+      } else {
+        out += ' {} ';
+      }
+      var __err = out;
+      out = $$outStack.pop();
+      if (!it.compositeRule && $breakOnError) {
+        /* istanbul ignore if */
+        if (it.async) {
+          out += ' throw new ValidationError([' + (__err) + ']); ';
+        } else {
+          out += ' validate.errors = [' + (__err) + ']; return false; ';
+        }
+      } else {
+        out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+      }
+    } else {
+      if (it.isTop) {
+        if ($async) {
+          out += ' return data; ';
+        } else {
+          out += ' validate.errors = null; return true; ';
+        }
+      } else {
+        out += ' var ' + ($valid) + ' = true; ';
+      }
+    }
+    if (it.isTop) {
+      out += ' }; return validate; ';
+    }
+    return out;
+  }
+  if (it.isTop) {
+    var $top = it.isTop,
+      $lvl = it.level = 0,
+      $dataLvl = it.dataLevel = 0,
+      $data = 'data';
+    it.rootId = it.resolve.fullPath(it.self._getId(it.root.schema));
+    it.baseId = it.baseId || it.rootId;
+    delete it.isTop;
+    it.dataPathArr = [""];
+    if (it.schema.default !== undefined && it.opts.useDefaults && it.opts.strictDefaults) {
+      var $defaultMsg = 'default is ignored in the schema root';
+      if (it.opts.strictDefaults === 'log') it.logger.warn($defaultMsg);
+      else throw new Error($defaultMsg);
+    }
+    out += ' var vErrors = null; ';
+    out += ' var errors = 0;     ';
+    out += ' if (rootData === undefined) rootData = data; ';
+  } else {
+    var $lvl = it.level,
+      $dataLvl = it.dataLevel,
+      $data = 'data' + ($dataLvl || '');
+    if ($id) it.baseId = it.resolve.url(it.baseId, $id);
+    if ($async && !it.async) throw new Error('async schema in sync schema');
+    out += ' var errs_' + ($lvl) + ' = errors;';
+  }
+  var $valid = 'valid' + $lvl,
+    $breakOnError = !it.opts.allErrors,
+    $closingBraces1 = '',
+    $closingBraces2 = '';
+  var $errorKeyword;
+  var $typeSchema = it.schema.type,
+    $typeIsArray = Array.isArray($typeSchema);
+  if ($typeSchema && it.opts.nullable && it.schema.nullable === true) {
+    if ($typeIsArray) {
+      if ($typeSchema.indexOf('null') == -1) $typeSchema = $typeSchema.concat('null');
+    } else if ($typeSchema != 'null') {
+      $typeSchema = [$typeSchema, 'null'];
+      $typeIsArray = true;
+    }
+  }
+  if ($typeIsArray && $typeSchema.length == 1) {
+    $typeSchema = $typeSchema[0];
+    $typeIsArray = false;
+  }
+  if (it.schema.$ref && $refKeywords) {
+    if (it.opts.extendRefs == 'fail') {
+      throw new Error('$ref: validation keywords used in schema at path "' + it.errSchemaPath + '" (see option extendRefs)');
+    } else if (it.opts.extendRefs !== true) {
+      $refKeywords = false;
+      it.logger.warn('$ref: keywords ignored in schema at path "' + it.errSchemaPath + '"');
+    }
+  }
+  if (it.schema.$comment && it.opts.$comment) {
+    out += ' ' + (it.RULES.all.$comment.code(it, '$comment'));
+  }
+  if ($typeSchema) {
+    if (it.opts.coerceTypes) {
+      var $coerceToTypes = it.util.coerceToTypes(it.opts.coerceTypes, $typeSchema);
+    }
+    var $rulesGroup = it.RULES.types[$typeSchema];
+    if ($coerceToTypes || $typeIsArray || $rulesGroup === true || ($rulesGroup && !$shouldUseGroup($rulesGroup))) {
+      var $schemaPath = it.schemaPath + '.type',
+        $errSchemaPath = it.errSchemaPath + '/type';
+      var $schemaPath = it.schemaPath + '.type',
+        $errSchemaPath = it.errSchemaPath + '/type',
+        $method = $typeIsArray ? 'checkDataTypes' : 'checkDataType';
+      out += ' if (' + (it.util[$method]($typeSchema, $data, it.opts.strictNumbers, true)) + ') { ';
+      if ($coerceToTypes) {
+        var $dataType = 'dataType' + $lvl,
+          $coerced = 'coerced' + $lvl;
+        out += ' var ' + ($dataType) + ' = typeof ' + ($data) + '; var ' + ($coerced) + ' = undefined; ';
+        if (it.opts.coerceTypes == 'array') {
+          out += ' if (' + ($dataType) + ' == \'object\' && Array.isArray(' + ($data) + ') && ' + ($data) + '.length == 1) { ' + ($data) + ' = ' + ($data) + '[0]; ' + ($dataType) + ' = typeof ' + ($data) + '; if (' + (it.util.checkDataType(it.schema.type, $data, it.opts.strictNumbers)) + ') ' + ($coerced) + ' = ' + ($data) + '; } ';
+        }
+        out += ' if (' + ($coerced) + ' !== undefined) ; ';
+        var arr1 = $coerceToTypes;
+        if (arr1) {
+          var $type, $i = -1,
+            l1 = arr1.length - 1;
+          while ($i < l1) {
+            $type = arr1[$i += 1];
+            if ($type == 'string') {
+              out += ' else if (' + ($dataType) + ' == \'number\' || ' + ($dataType) + ' == \'boolean\') ' + ($coerced) + ' = \'\' + ' + ($data) + '; else if (' + ($data) + ' === null) ' + ($coerced) + ' = \'\'; ';
+            } else if ($type == 'number' || $type == 'integer') {
+              out += ' else if (' + ($dataType) + ' == \'boolean\' || ' + ($data) + ' === null || (' + ($dataType) + ' == \'string\' && ' + ($data) + ' && ' + ($data) + ' == +' + ($data) + ' ';
+              if ($type == 'integer') {
+                out += ' && !(' + ($data) + ' % 1)';
+              }
+              out += ')) ' + ($coerced) + ' = +' + ($data) + '; ';
+            } else if ($type == 'boolean') {
+              out += ' else if (' + ($data) + ' === \'false\' || ' + ($data) + ' === 0 || ' + ($data) + ' === null) ' + ($coerced) + ' = false; else if (' + ($data) + ' === \'true\' || ' + ($data) + ' === 1) ' + ($coerced) + ' = true; ';
+            } else if ($type == 'null') {
+              out += ' else if (' + ($data) + ' === \'\' || ' + ($data) + ' === 0 || ' + ($data) + ' === false) ' + ($coerced) + ' = null; ';
+            } else if (it.opts.coerceTypes == 'array' && $type == 'array') {
+              out += ' else if (' + ($dataType) + ' == \'string\' || ' + ($dataType) + ' == \'number\' || ' + ($dataType) + ' == \'boolean\' || ' + ($data) + ' == null) ' + ($coerced) + ' = [' + ($data) + ']; ';
+            }
+          }
+        }
+        out += ' else {   ';
+        var $$outStack = $$outStack || [];
+        $$outStack.push(out);
+        out = ''; /* istanbul ignore else */
+        if (it.createErrors !== false) {
+          out += ' { keyword: \'' + ($errorKeyword || 'type') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { type: \'';
+          if ($typeIsArray) {
+            out += '' + ($typeSchema.join(","));
+          } else {
+            out += '' + ($typeSchema);
+          }
+          out += '\' } ';
+          if (it.opts.messages !== false) {
+            out += ' , message: \'should be ';
+            if ($typeIsArray) {
+              out += '' + ($typeSchema.join(","));
+            } else {
+              out += '' + ($typeSchema);
+            }
+            out += '\' ';
+          }
+          if (it.opts.verbose) {
+            out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+          }
+          out += ' } ';
+        } else {
+          out += ' {} ';
+        }
+        var __err = out;
+        out = $$outStack.pop();
+        if (!it.compositeRule && $breakOnError) {
+          /* istanbul ignore if */
+          if (it.async) {
+            out += ' throw new ValidationError([' + (__err) + ']); ';
+          } else {
+            out += ' validate.errors = [' + (__err) + ']; return false; ';
+          }
+        } else {
+          out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+        }
+        out += ' } if (' + ($coerced) + ' !== undefined) {  ';
+        var $parentData = $dataLvl ? 'data' + (($dataLvl - 1) || '') : 'parentData',
+          $parentDataProperty = $dataLvl ? it.dataPathArr[$dataLvl] : 'parentDataProperty';
+        out += ' ' + ($data) + ' = ' + ($coerced) + '; ';
+        if (!$dataLvl) {
+          out += 'if (' + ($parentData) + ' !== undefined)';
+        }
+        out += ' ' + ($parentData) + '[' + ($parentDataProperty) + '] = ' + ($coerced) + '; } ';
+      } else {
+        var $$outStack = $$outStack || [];
+        $$outStack.push(out);
+        out = ''; /* istanbul ignore else */
+        if (it.createErrors !== false) {
+          out += ' { keyword: \'' + ($errorKeyword || 'type') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { type: \'';
+          if ($typeIsArray) {
+            out += '' + ($typeSchema.join(","));
+          } else {
+            out += '' + ($typeSchema);
+          }
+          out += '\' } ';
+          if (it.opts.messages !== false) {
+            out += ' , message: \'should be ';
+            if ($typeIsArray) {
+              out += '' + ($typeSchema.join(","));
+            } else {
+              out += '' + ($typeSchema);
+            }
+            out += '\' ';
+          }
+          if (it.opts.verbose) {
+            out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+          }
+          out += ' } ';
+        } else {
+          out += ' {} ';
+        }
+        var __err = out;
+        out = $$outStack.pop();
+        if (!it.compositeRule && $breakOnError) {
+          /* istanbul ignore if */
+          if (it.async) {
+            out += ' throw new ValidationError([' + (__err) + ']); ';
+          } else {
+            out += ' validate.errors = [' + (__err) + ']; return false; ';
+          }
+        } else {
+          out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+        }
+      }
+      out += ' } ';
+    }
+  }
+  if (it.schema.$ref && !$refKeywords) {
+    out += ' ' + (it.RULES.all.$ref.code(it, '$ref')) + ' ';
+    if ($breakOnError) {
+      out += ' } if (errors === ';
+      if ($top) {
+        out += '0';
+      } else {
+        out += 'errs_' + ($lvl);
+      }
+      out += ') { ';
+      $closingBraces2 += '}';
+    }
+  } else {
+    var arr2 = it.RULES;
+    if (arr2) {
+      var $rulesGroup, i2 = -1,
+        l2 = arr2.length - 1;
+      while (i2 < l2) {
+        $rulesGroup = arr2[i2 += 1];
+        if ($shouldUseGroup($rulesGroup)) {
+          if ($rulesGroup.type) {
+            out += ' if (' + (it.util.checkDataType($rulesGroup.type, $data, it.opts.strictNumbers)) + ') { ';
+          }
+          if (it.opts.useDefaults) {
+            if ($rulesGroup.type == 'object' && it.schema.properties) {
+              var $schema = it.schema.properties,
+                $schemaKeys = Object.keys($schema);
+              var arr3 = $schemaKeys;
+              if (arr3) {
+                var $propertyKey, i3 = -1,
+                  l3 = arr3.length - 1;
+                while (i3 < l3) {
+                  $propertyKey = arr3[i3 += 1];
+                  var $sch = $schema[$propertyKey];
+                  if ($sch.default !== undefined) {
+                    var $passData = $data + it.util.getProperty($propertyKey);
+                    if (it.compositeRule) {
+                      if (it.opts.strictDefaults) {
+                        var $defaultMsg = 'default is ignored for: ' + $passData;
+                        if (it.opts.strictDefaults === 'log') it.logger.warn($defaultMsg);
+                        else throw new Error($defaultMsg);
+                      }
+                    } else {
+                      out += ' if (' + ($passData) + ' === undefined ';
+                      if (it.opts.useDefaults == 'empty') {
+                        out += ' || ' + ($passData) + ' === null || ' + ($passData) + ' === \'\' ';
+                      }
+                      out += ' ) ' + ($passData) + ' = ';
+                      if (it.opts.useDefaults == 'shared') {
+                        out += ' ' + (it.useDefault($sch.default)) + ' ';
+                      } else {
+                        out += ' ' + (JSON.stringify($sch.default)) + ' ';
+                      }
+                      out += '; ';
+                    }
+                  }
+                }
+              }
+            } else if ($rulesGroup.type == 'array' && Array.isArray(it.schema.items)) {
+              var arr4 = it.schema.items;
+              if (arr4) {
+                var $sch, $i = -1,
+                  l4 = arr4.length - 1;
+                while ($i < l4) {
+                  $sch = arr4[$i += 1];
+                  if ($sch.default !== undefined) {
+                    var $passData = $data + '[' + $i + ']';
+                    if (it.compositeRule) {
+                      if (it.opts.strictDefaults) {
+                        var $defaultMsg = 'default is ignored for: ' + $passData;
+                        if (it.opts.strictDefaults === 'log') it.logger.warn($defaultMsg);
+                        else throw new Error($defaultMsg);
+                      }
+                    } else {
+                      out += ' if (' + ($passData) + ' === undefined ';
+                      if (it.opts.useDefaults == 'empty') {
+                        out += ' || ' + ($passData) + ' === null || ' + ($passData) + ' === \'\' ';
+                      }
+                      out += ' ) ' + ($passData) + ' = ';
+                      if (it.opts.useDefaults == 'shared') {
+                        out += ' ' + (it.useDefault($sch.default)) + ' ';
+                      } else {
+                        out += ' ' + (JSON.stringify($sch.default)) + ' ';
+                      }
+                      out += '; ';
+                    }
+                  }
+                }
+              }
+            }
+          }
+          var arr5 = $rulesGroup.rules;
+          if (arr5) {
+            var $rule, i5 = -1,
+              l5 = arr5.length - 1;
+            while (i5 < l5) {
+              $rule = arr5[i5 += 1];
+              if ($shouldUseRule($rule)) {
+                var $code = $rule.code(it, $rule.keyword, $rulesGroup.type);
+                if ($code) {
+                  out += ' ' + ($code) + ' ';
+                  if ($breakOnError) {
+                    $closingBraces1 += '}';
+                  }
+                }
+              }
+            }
+          }
+          if ($breakOnError) {
+            out += ' ' + ($closingBraces1) + ' ';
+            $closingBraces1 = '';
+          }
+          if ($rulesGroup.type) {
+            out += ' } ';
+            if ($typeSchema && $typeSchema === $rulesGroup.type && !$coerceToTypes) {
+              out += ' else { ';
+              var $schemaPath = it.schemaPath + '.type',
+                $errSchemaPath = it.errSchemaPath + '/type';
+              var $$outStack = $$outStack || [];
+              $$outStack.push(out);
+              out = ''; /* istanbul ignore else */
+              if (it.createErrors !== false) {
+                out += ' { keyword: \'' + ($errorKeyword || 'type') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { type: \'';
+                if ($typeIsArray) {
+                  out += '' + ($typeSchema.join(","));
+                } else {
+                  out += '' + ($typeSchema);
+                }
+                out += '\' } ';
+                if (it.opts.messages !== false) {
+                  out += ' , message: \'should be ';
+                  if ($typeIsArray) {
+                    out += '' + ($typeSchema.join(","));
+                  } else {
+                    out += '' + ($typeSchema);
+                  }
+                  out += '\' ';
+                }
+                if (it.opts.verbose) {
+                  out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+                }
+                out += ' } ';
+              } else {
+                out += ' {} ';
+              }
+              var __err = out;
+              out = $$outStack.pop();
+              if (!it.compositeRule && $breakOnError) {
+                /* istanbul ignore if */
+                if (it.async) {
+                  out += ' throw new ValidationError([' + (__err) + ']); ';
+                } else {
+                  out += ' validate.errors = [' + (__err) + ']; return false; ';
+                }
+              } else {
+                out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+              }
+              out += ' } ';
+            }
+          }
+          if ($breakOnError) {
+            out += ' if (errors === ';
+            if ($top) {
+              out += '0';
+            } else {
+              out += 'errs_' + ($lvl);
+            }
+            out += ') { ';
+            $closingBraces2 += '}';
+          }
+        }
+      }
+    }
+  }
+  if ($breakOnError) {
+    out += ' ' + ($closingBraces2) + ' ';
+  }
+  if ($top) {
+    if ($async) {
+      out += ' if (errors === 0) return data;           ';
+      out += ' else throw new ValidationError(vErrors); ';
+    } else {
+      out += ' validate.errors = vErrors; ';
+      out += ' return errors === 0;       ';
+    }
+    out += ' }; return validate;';
+  } else {
+    out += ' var ' + ($valid) + ' = errors === errs_' + ($lvl) + ';';
+  }
+
+  function $shouldUseGroup($rulesGroup) {
+    var rules = $rulesGroup.rules;
+    for (var i = 0; i < rules.length; i++)
+      if ($shouldUseRule(rules[i])) return true;
+  }
+
+  function $shouldUseRule($rule) {
+    return it.schema[$rule.keyword] !== undefined || ($rule.implements && $ruleImplementsSomeKeyword($rule));
+  }
+
+  function $ruleImplementsSomeKeyword($rule) {
+    var impl = $rule.implements;
+    for (var i = 0; i < impl.length; i++)
+      if (it.schema[impl[i]] !== undefined) return true;
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/compile/index.js":[function(require,module,exports) {
+'use strict';
+
+var resolve = require('./resolve')
+  , util = require('./util')
+  , errorClasses = require('./error_classes')
+  , stableStringify = require('fast-json-stable-stringify');
+
+var validateGenerator = require('../dotjs/validate');
+
+/**
+ * Functions below are used inside compiled validations function
+ */
+
+var ucs2length = util.ucs2length;
+var equal = require('fast-deep-equal');
+
+// this error is thrown by async schemas to return validation errors via exception
+var ValidationError = errorClasses.Validation;
+
+module.exports = compile;
+
+
+/**
+ * Compiles schema to validation function
+ * @this   Ajv
+ * @param  {Object} schema schema object
+ * @param  {Object} root object with information about the root schema for this schema
+ * @param  {Object} localRefs the hash of local references inside the schema (created by resolve.id), used for inline resolution
+ * @param  {String} baseId base ID for IDs in the schema
+ * @return {Function} validation function
+ */
+function compile(schema, root, localRefs, baseId) {
+  /* jshint validthis: true, evil: true */
+  /* eslint no-shadow: 0 */
+  var self = this
+    , opts = this._opts
+    , refVal = [ undefined ]
+    , refs = {}
+    , patterns = []
+    , patternsHash = {}
+    , defaults = []
+    , defaultsHash = {}
+    , customRules = [];
+
+  root = root || { schema: schema, refVal: refVal, refs: refs };
+
+  var c = checkCompiling.call(this, schema, root, baseId);
+  var compilation = this._compilations[c.index];
+  if (c.compiling) return (compilation.callValidate = callValidate);
+
+  var formats = this._formats;
+  var RULES = this.RULES;
+
+  try {
+    var v = localCompile(schema, root, localRefs, baseId);
+    compilation.validate = v;
+    var cv = compilation.callValidate;
+    if (cv) {
+      cv.schema = v.schema;
+      cv.errors = null;
+      cv.refs = v.refs;
+      cv.refVal = v.refVal;
+      cv.root = v.root;
+      cv.$async = v.$async;
+      if (opts.sourceCode) cv.source = v.source;
+    }
+    return v;
+  } finally {
+    endCompiling.call(this, schema, root, baseId);
+  }
+
+  /* @this   {*} - custom context, see passContext option */
+  function callValidate() {
+    /* jshint validthis: true */
+    var validate = compilation.validate;
+    var result = validate.apply(this, arguments);
+    callValidate.errors = validate.errors;
+    return result;
+  }
+
+  function localCompile(_schema, _root, localRefs, baseId) {
+    var isRoot = !_root || (_root && _root.schema == _schema);
+    if (_root.schema != root.schema)
+      return compile.call(self, _schema, _root, localRefs, baseId);
+
+    var $async = _schema.$async === true;
+
+    var sourceCode = validateGenerator({
+      isTop: true,
+      schema: _schema,
+      isRoot: isRoot,
+      baseId: baseId,
+      root: _root,
+      schemaPath: '',
+      errSchemaPath: '#',
+      errorPath: '""',
+      MissingRefError: errorClasses.MissingRef,
+      RULES: RULES,
+      validate: validateGenerator,
+      util: util,
+      resolve: resolve,
+      resolveRef: resolveRef,
+      usePattern: usePattern,
+      useDefault: useDefault,
+      useCustomRule: useCustomRule,
+      opts: opts,
+      formats: formats,
+      logger: self.logger,
+      self: self
+    });
+
+    sourceCode = vars(refVal, refValCode) + vars(patterns, patternCode)
+                   + vars(defaults, defaultCode) + vars(customRules, customRuleCode)
+                   + sourceCode;
+
+    if (opts.processCode) sourceCode = opts.processCode(sourceCode, _schema);
+    // console.log('\n\n\n *** \n', JSON.stringify(sourceCode));
+    var validate;
+    try {
+      var makeValidate = new Function(
+        'self',
+        'RULES',
+        'formats',
+        'root',
+        'refVal',
+        'defaults',
+        'customRules',
+        'equal',
+        'ucs2length',
+        'ValidationError',
+        sourceCode
+      );
+
+      validate = makeValidate(
+        self,
+        RULES,
+        formats,
+        root,
+        refVal,
+        defaults,
+        customRules,
+        equal,
+        ucs2length,
+        ValidationError
+      );
+
+      refVal[0] = validate;
+    } catch(e) {
+      self.logger.error('Error compiling schema, function code:', sourceCode);
+      throw e;
+    }
+
+    validate.schema = _schema;
+    validate.errors = null;
+    validate.refs = refs;
+    validate.refVal = refVal;
+    validate.root = isRoot ? validate : _root;
+    if ($async) validate.$async = true;
+    if (opts.sourceCode === true) {
+      validate.source = {
+        code: sourceCode,
+        patterns: patterns,
+        defaults: defaults
+      };
+    }
+
+    return validate;
+  }
+
+  function resolveRef(baseId, ref, isRoot) {
+    ref = resolve.url(baseId, ref);
+    var refIndex = refs[ref];
+    var _refVal, refCode;
+    if (refIndex !== undefined) {
+      _refVal = refVal[refIndex];
+      refCode = 'refVal[' + refIndex + ']';
+      return resolvedRef(_refVal, refCode);
+    }
+    if (!isRoot && root.refs) {
+      var rootRefId = root.refs[ref];
+      if (rootRefId !== undefined) {
+        _refVal = root.refVal[rootRefId];
+        refCode = addLocalRef(ref, _refVal);
+        return resolvedRef(_refVal, refCode);
+      }
+    }
+
+    refCode = addLocalRef(ref);
+    var v = resolve.call(self, localCompile, root, ref);
+    if (v === undefined) {
+      var localSchema = localRefs && localRefs[ref];
+      if (localSchema) {
+        v = resolve.inlineRef(localSchema, opts.inlineRefs)
+            ? localSchema
+            : compile.call(self, localSchema, root, localRefs, baseId);
+      }
+    }
+
+    if (v === undefined) {
+      removeLocalRef(ref);
+    } else {
+      replaceLocalRef(ref, v);
+      return resolvedRef(v, refCode);
+    }
+  }
+
+  function addLocalRef(ref, v) {
+    var refId = refVal.length;
+    refVal[refId] = v;
+    refs[ref] = refId;
+    return 'refVal' + refId;
+  }
+
+  function removeLocalRef(ref) {
+    delete refs[ref];
+  }
+
+  function replaceLocalRef(ref, v) {
+    var refId = refs[ref];
+    refVal[refId] = v;
+  }
+
+  function resolvedRef(refVal, code) {
+    return typeof refVal == 'object' || typeof refVal == 'boolean'
+            ? { code: code, schema: refVal, inline: true }
+            : { code: code, $async: refVal && !!refVal.$async };
+  }
+
+  function usePattern(regexStr) {
+    var index = patternsHash[regexStr];
+    if (index === undefined) {
+      index = patternsHash[regexStr] = patterns.length;
+      patterns[index] = regexStr;
+    }
+    return 'pattern' + index;
+  }
+
+  function useDefault(value) {
+    switch (typeof value) {
+      case 'boolean':
+      case 'number':
+        return '' + value;
+      case 'string':
+        return util.toQuotedString(value);
+      case 'object':
+        if (value === null) return 'null';
+        var valueStr = stableStringify(value);
+        var index = defaultsHash[valueStr];
+        if (index === undefined) {
+          index = defaultsHash[valueStr] = defaults.length;
+          defaults[index] = value;
+        }
+        return 'default' + index;
+    }
+  }
+
+  function useCustomRule(rule, schema, parentSchema, it) {
+    if (self._opts.validateSchema !== false) {
+      var deps = rule.definition.dependencies;
+      if (deps && !deps.every(function(keyword) {
+        return Object.prototype.hasOwnProperty.call(parentSchema, keyword);
+      }))
+        throw new Error('parent schema must have all required keywords: ' + deps.join(','));
+
+      var validateSchema = rule.definition.validateSchema;
+      if (validateSchema) {
+        var valid = validateSchema(schema);
+        if (!valid) {
+          var message = 'keyword schema is invalid: ' + self.errorsText(validateSchema.errors);
+          if (self._opts.validateSchema == 'log') self.logger.error(message);
+          else throw new Error(message);
+        }
+      }
+    }
+
+    var compile = rule.definition.compile
+      , inline = rule.definition.inline
+      , macro = rule.definition.macro;
+
+    var validate;
+    if (compile) {
+      validate = compile.call(self, schema, parentSchema, it);
+    } else if (macro) {
+      validate = macro.call(self, schema, parentSchema, it);
+      if (opts.validateSchema !== false) self.validateSchema(validate, true);
+    } else if (inline) {
+      validate = inline.call(self, it, rule.keyword, schema, parentSchema);
+    } else {
+      validate = rule.definition.validate;
+      if (!validate) return;
+    }
+
+    if (validate === undefined)
+      throw new Error('custom keyword "' + rule.keyword + '"failed to compile');
+
+    var index = customRules.length;
+    customRules[index] = validate;
+
+    return {
+      code: 'customRule' + index,
+      validate: validate
+    };
+  }
+}
+
+
+/**
+ * Checks if the schema is currently compiled
+ * @this   Ajv
+ * @param  {Object} schema schema to compile
+ * @param  {Object} root root object
+ * @param  {String} baseId base schema ID
+ * @return {Object} object with properties "index" (compilation index) and "compiling" (boolean)
+ */
+function checkCompiling(schema, root, baseId) {
+  /* jshint validthis: true */
+  var index = compIndex.call(this, schema, root, baseId);
+  if (index >= 0) return { index: index, compiling: true };
+  index = this._compilations.length;
+  this._compilations[index] = {
+    schema: schema,
+    root: root,
+    baseId: baseId
+  };
+  return { index: index, compiling: false };
+}
+
+
+/**
+ * Removes the schema from the currently compiled list
+ * @this   Ajv
+ * @param  {Object} schema schema to compile
+ * @param  {Object} root root object
+ * @param  {String} baseId base schema ID
+ */
+function endCompiling(schema, root, baseId) {
+  /* jshint validthis: true */
+  var i = compIndex.call(this, schema, root, baseId);
+  if (i >= 0) this._compilations.splice(i, 1);
+}
+
+
+/**
+ * Index of schema compilation in the currently compiled list
+ * @this   Ajv
+ * @param  {Object} schema schema to compile
+ * @param  {Object} root root object
+ * @param  {String} baseId base schema ID
+ * @return {Integer} compilation index
+ */
+function compIndex(schema, root, baseId) {
+  /* jshint validthis: true */
+  for (var i=0; i<this._compilations.length; i++) {
+    var c = this._compilations[i];
+    if (c.schema == schema && c.root == root && c.baseId == baseId) return i;
+  }
+  return -1;
+}
+
+
+function patternCode(i, patterns) {
+  return 'var pattern' + i + ' = new RegExp(' + util.toQuotedString(patterns[i]) + ');';
+}
+
+
+function defaultCode(i) {
+  return 'var default' + i + ' = defaults[' + i + '];';
+}
+
+
+function refValCode(i, refVal) {
+  return refVal[i] === undefined ? '' : 'var refVal' + i + ' = refVal[' + i + '];';
+}
+
+
+function customRuleCode(i) {
+  return 'var customRule' + i + ' = customRules[' + i + '];';
+}
+
+
+function vars(arr, statement) {
+  if (!arr.length) return '';
+  var code = '';
+  for (var i=0; i<arr.length; i++)
+    code += statement(i, arr);
+  return code;
+}
+
+},{"./resolve":"../node_modules/ajv/lib/compile/resolve.js","./util":"../node_modules/ajv/lib/compile/util.js","./error_classes":"../node_modules/ajv/lib/compile/error_classes.js","fast-json-stable-stringify":"../node_modules/fast-json-stable-stringify/index.js","../dotjs/validate":"../node_modules/ajv/lib/dotjs/validate.js","fast-deep-equal":"../node_modules/fast-deep-equal/index.js"}],"../node_modules/ajv/lib/cache.js":[function(require,module,exports) {
+'use strict';
+
+
+var Cache = module.exports = function Cache() {
+  this._cache = {};
+};
+
+
+Cache.prototype.put = function Cache_put(key, value) {
+  this._cache[key] = value;
+};
+
+
+Cache.prototype.get = function Cache_get(key) {
+  return this._cache[key];
+};
+
+
+Cache.prototype.del = function Cache_del(key) {
+  delete this._cache[key];
+};
+
+
+Cache.prototype.clear = function Cache_clear() {
+  this._cache = {};
+};
+
+},{}],"../node_modules/ajv/lib/compile/formats.js":[function(require,module,exports) {
+'use strict';
+
+var util = require('./util');
+
+var DATE = /^(\d\d\d\d)-(\d\d)-(\d\d)$/;
+var DAYS = [0,31,28,31,30,31,30,31,31,30,31,30,31];
+var TIME = /^(\d\d):(\d\d):(\d\d)(\.\d+)?(z|[+-]\d\d(?::?\d\d)?)?$/i;
+var HOSTNAME = /^(?=.{1,253}\.?$)[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[-0-9a-z]{0,61}[0-9a-z])?)*\.?$/i;
+var URI = /^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:]|%[0-9a-f]{2})*@)?(?:\[(?:(?:(?:(?:[0-9a-f]{1,4}:){6}|::(?:[0-9a-f]{1,4}:){5}|(?:[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){4}|(?:(?:[0-9a-f]{1,4}:){0,1}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){3}|(?:(?:[0-9a-f]{1,4}:){0,2}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){2}|(?:(?:[0-9a-f]{1,4}:){0,3}[0-9a-f]{1,4})?::[0-9a-f]{1,4}:|(?:(?:[0-9a-f]{1,4}:){0,4}[0-9a-f]{1,4})?::)(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))|(?:(?:[0-9a-f]{1,4}:){0,5}[0-9a-f]{1,4})?::[0-9a-f]{1,4}|(?:(?:[0-9a-f]{1,4}:){0,6}[0-9a-f]{1,4})?::)|[Vv][0-9a-f]+\.[a-z0-9\-._~!$&'()*+,;=:]+)\]|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|(?:[a-z0-9\-._~!$&'()*+,;=]|%[0-9a-f]{2})*)(?::\d*)?(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*|\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)?|(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)(?:\?(?:[a-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9a-f]{2})*)?(?:#(?:[a-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9a-f]{2})*)?$/i;
+var URIREF = /^(?:[a-z][a-z0-9+\-.]*:)?(?:\/?\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:]|%[0-9a-f]{2})*@)?(?:\[(?:(?:(?:(?:[0-9a-f]{1,4}:){6}|::(?:[0-9a-f]{1,4}:){5}|(?:[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){4}|(?:(?:[0-9a-f]{1,4}:){0,1}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){3}|(?:(?:[0-9a-f]{1,4}:){0,2}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){2}|(?:(?:[0-9a-f]{1,4}:){0,3}[0-9a-f]{1,4})?::[0-9a-f]{1,4}:|(?:(?:[0-9a-f]{1,4}:){0,4}[0-9a-f]{1,4})?::)(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))|(?:(?:[0-9a-f]{1,4}:){0,5}[0-9a-f]{1,4})?::[0-9a-f]{1,4}|(?:(?:[0-9a-f]{1,4}:){0,6}[0-9a-f]{1,4})?::)|[Vv][0-9a-f]+\.[a-z0-9\-._~!$&'()*+,;=:]+)\]|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|(?:[a-z0-9\-._~!$&'"()*+,;=]|%[0-9a-f]{2})*)(?::\d*)?(?:\/(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})*)*|\/(?:(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})*)*)?|(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})*)*)?(?:\?(?:[a-z0-9\-._~!$&'"()*+,;=:@/?]|%[0-9a-f]{2})*)?(?:#(?:[a-z0-9\-._~!$&'"()*+,;=:@/?]|%[0-9a-f]{2})*)?$/i;
+// uri-template: https://tools.ietf.org/html/rfc6570
+var URITEMPLATE = /^(?:(?:[^\x00-\x20"'<>%\\^`{|}]|%[0-9a-f]{2})|\{[+#./;?&=,!@|]?(?:[a-z0-9_]|%[0-9a-f]{2})+(?::[1-9][0-9]{0,3}|\*)?(?:,(?:[a-z0-9_]|%[0-9a-f]{2})+(?::[1-9][0-9]{0,3}|\*)?)*\})*$/i;
+// For the source: https://gist.github.com/dperini/729294
+// For test cases: https://mathiasbynens.be/demo/url-regex
+// @todo Delete current URL in favour of the commented out URL rule when this issue is fixed https://github.com/eslint/eslint/issues/7983.
+// var URL = /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u{00a1}-\u{ffff}0-9]+-)*[a-z\u{00a1}-\u{ffff}0-9]+)(?:\.(?:[a-z\u{00a1}-\u{ffff}0-9]+-)*[a-z\u{00a1}-\u{ffff}0-9]+)*(?:\.(?:[a-z\u{00a1}-\u{ffff}]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?$/iu;
+var URL = /^(?:(?:http[s\u017F]?|ftp):\/\/)(?:(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+(?::(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*)?@)?(?:(?!10(?:\.[0-9]{1,3}){3})(?!127(?:\.[0-9]{1,3}){3})(?!169\.254(?:\.[0-9]{1,3}){2})(?!192\.168(?:\.[0-9]{1,3}){2})(?!172\.(?:1[6-9]|2[0-9]|3[01])(?:\.[0-9]{1,3}){2})(?:[1-9][0-9]?|1[0-9][0-9]|2[01][0-9]|22[0-3])(?:\.(?:1?[0-9]{1,2}|2[0-4][0-9]|25[0-5])){2}(?:\.(?:[1-9][0-9]?|1[0-9][0-9]|2[0-4][0-9]|25[0-4]))|(?:(?:(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+-)*(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+)(?:\.(?:(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+-)*(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+)*(?:\.(?:(?:[a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]){2,})))(?::[0-9]{2,5})?(?:\/(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*)?$/i;
+var UUID = /^(?:urn:uuid:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
+var JSON_POINTER = /^(?:\/(?:[^~/]|~0|~1)*)*$/;
+var JSON_POINTER_URI_FRAGMENT = /^#(?:\/(?:[a-z0-9_\-.!$&'()*+,;:=@]|%[0-9a-f]{2}|~0|~1)*)*$/i;
+var RELATIVE_JSON_POINTER = /^(?:0|[1-9][0-9]*)(?:#|(?:\/(?:[^~/]|~0|~1)*)*)$/;
+
+
+module.exports = formats;
+
+function formats(mode) {
+  mode = mode == 'full' ? 'full' : 'fast';
+  return util.copy(formats[mode]);
+}
+
+
+formats.fast = {
+  // date: http://tools.ietf.org/html/rfc3339#section-5.6
+  date: /^\d\d\d\d-[0-1]\d-[0-3]\d$/,
+  // date-time: http://tools.ietf.org/html/rfc3339#section-5.6
+  time: /^(?:[0-2]\d:[0-5]\d:[0-5]\d|23:59:60)(?:\.\d+)?(?:z|[+-]\d\d(?::?\d\d)?)?$/i,
+  'date-time': /^\d\d\d\d-[0-1]\d-[0-3]\d[t\s](?:[0-2]\d:[0-5]\d:[0-5]\d|23:59:60)(?:\.\d+)?(?:z|[+-]\d\d(?::?\d\d)?)$/i,
+  // uri: https://github.com/mafintosh/is-my-json-valid/blob/master/formats.js
+  uri: /^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/)?[^\s]*$/i,
+  'uri-reference': /^(?:(?:[a-z][a-z0-9+\-.]*:)?\/?\/)?(?:[^\\\s#][^\s#]*)?(?:#[^\\\s]*)?$/i,
+  'uri-template': URITEMPLATE,
+  url: URL,
+  // email (sources from jsen validator):
+  // http://stackoverflow.com/questions/201323/using-a-regular-expression-to-validate-an-email-address#answer-8829363
+  // http://www.w3.org/TR/html5/forms.html#valid-e-mail-address (search for 'willful violation')
+  email: /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$/i,
+  hostname: HOSTNAME,
+  // optimized https://www.safaribooksonline.com/library/view/regular-expressions-cookbook/9780596802837/ch07s16.html
+  ipv4: /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/,
+  // optimized http://stackoverflow.com/questions/53497/regular-expression-that-matches-valid-ipv6-addresses
+  ipv6: /^\s*(?:(?:(?:[0-9a-f]{1,4}:){7}(?:[0-9a-f]{1,4}|:))|(?:(?:[0-9a-f]{1,4}:){6}(?::[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){5}(?:(?:(?::[0-9a-f]{1,4}){1,2})|:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){4}(?:(?:(?::[0-9a-f]{1,4}){1,3})|(?:(?::[0-9a-f]{1,4})?:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){3}(?:(?:(?::[0-9a-f]{1,4}){1,4})|(?:(?::[0-9a-f]{1,4}){0,2}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){2}(?:(?:(?::[0-9a-f]{1,4}){1,5})|(?:(?::[0-9a-f]{1,4}){0,3}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){1}(?:(?:(?::[0-9a-f]{1,4}){1,6})|(?:(?::[0-9a-f]{1,4}){0,4}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?::(?:(?:(?::[0-9a-f]{1,4}){1,7})|(?:(?::[0-9a-f]{1,4}){0,5}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(?:%.+)?\s*$/i,
+  regex: regex,
+  // uuid: http://tools.ietf.org/html/rfc4122
+  uuid: UUID,
+  // JSON-pointer: https://tools.ietf.org/html/rfc6901
+  // uri fragment: https://tools.ietf.org/html/rfc3986#appendix-A
+  'json-pointer': JSON_POINTER,
+  'json-pointer-uri-fragment': JSON_POINTER_URI_FRAGMENT,
+  // relative JSON-pointer: http://tools.ietf.org/html/draft-luff-relative-json-pointer-00
+  'relative-json-pointer': RELATIVE_JSON_POINTER
+};
+
+
+formats.full = {
+  date: date,
+  time: time,
+  'date-time': date_time,
+  uri: uri,
+  'uri-reference': URIREF,
+  'uri-template': URITEMPLATE,
+  url: URL,
+  email: /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i,
+  hostname: HOSTNAME,
+  ipv4: /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/,
+  ipv6: /^\s*(?:(?:(?:[0-9a-f]{1,4}:){7}(?:[0-9a-f]{1,4}|:))|(?:(?:[0-9a-f]{1,4}:){6}(?::[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){5}(?:(?:(?::[0-9a-f]{1,4}){1,2})|:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){4}(?:(?:(?::[0-9a-f]{1,4}){1,3})|(?:(?::[0-9a-f]{1,4})?:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){3}(?:(?:(?::[0-9a-f]{1,4}){1,4})|(?:(?::[0-9a-f]{1,4}){0,2}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){2}(?:(?:(?::[0-9a-f]{1,4}){1,5})|(?:(?::[0-9a-f]{1,4}){0,3}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){1}(?:(?:(?::[0-9a-f]{1,4}){1,6})|(?:(?::[0-9a-f]{1,4}){0,4}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?::(?:(?:(?::[0-9a-f]{1,4}){1,7})|(?:(?::[0-9a-f]{1,4}){0,5}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(?:%.+)?\s*$/i,
+  regex: regex,
+  uuid: UUID,
+  'json-pointer': JSON_POINTER,
+  'json-pointer-uri-fragment': JSON_POINTER_URI_FRAGMENT,
+  'relative-json-pointer': RELATIVE_JSON_POINTER
+};
+
+
+function isLeapYear(year) {
+  // https://tools.ietf.org/html/rfc3339#appendix-C
+  return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+}
+
+
+function date(str) {
+  // full-date from http://tools.ietf.org/html/rfc3339#section-5.6
+  var matches = str.match(DATE);
+  if (!matches) return false;
+
+  var year = +matches[1];
+  var month = +matches[2];
+  var day = +matches[3];
+
+  return month >= 1 && month <= 12 && day >= 1 &&
+          day <= (month == 2 && isLeapYear(year) ? 29 : DAYS[month]);
+}
+
+
+function time(str, full) {
+  var matches = str.match(TIME);
+  if (!matches) return false;
+
+  var hour = matches[1];
+  var minute = matches[2];
+  var second = matches[3];
+  var timeZone = matches[5];
+  return ((hour <= 23 && minute <= 59 && second <= 59) ||
+          (hour == 23 && minute == 59 && second == 60)) &&
+         (!full || timeZone);
+}
+
+
+var DATE_TIME_SEPARATOR = /t|\s/i;
+function date_time(str) {
+  // http://tools.ietf.org/html/rfc3339#section-5.6
+  var dateTime = str.split(DATE_TIME_SEPARATOR);
+  return dateTime.length == 2 && date(dateTime[0]) && time(dateTime[1], true);
+}
+
+
+var NOT_URI_FRAGMENT = /\/|:/;
+function uri(str) {
+  // http://jmrware.com/articles/2009/uri_regexp/URI_regex.html + optional protocol + required "."
+  return NOT_URI_FRAGMENT.test(str) && URI.test(str);
+}
+
+
+var Z_ANCHOR = /[^\\]\\Z/;
+function regex(str) {
+  if (Z_ANCHOR.test(str)) return false;
+  try {
+    new RegExp(str);
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
+},{"./util":"../node_modules/ajv/lib/compile/util.js"}],"../node_modules/ajv/lib/dotjs/ref.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_ref(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $async, $refCode;
+  if ($schema == '#' || $schema == '#/') {
+    if (it.isRoot) {
+      $async = it.async;
+      $refCode = 'validate';
+    } else {
+      $async = it.root.schema.$async === true;
+      $refCode = 'root.refVal[0]';
+    }
+  } else {
+    var $refVal = it.resolveRef(it.baseId, $schema, it.isRoot);
+    if ($refVal === undefined) {
+      var $message = it.MissingRefError.message(it.baseId, $schema);
+      if (it.opts.missingRefs == 'fail') {
+        it.logger.error($message);
+        var $$outStack = $$outStack || [];
+        $$outStack.push(out);
+        out = ''; /* istanbul ignore else */
+        if (it.createErrors !== false) {
+          out += ' { keyword: \'' + ('$ref') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { ref: \'' + (it.util.escapeQuotes($schema)) + '\' } ';
+          if (it.opts.messages !== false) {
+            out += ' , message: \'can\\\'t resolve reference ' + (it.util.escapeQuotes($schema)) + '\' ';
+          }
+          if (it.opts.verbose) {
+            out += ' , schema: ' + (it.util.toQuotedString($schema)) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+          }
+          out += ' } ';
+        } else {
+          out += ' {} ';
+        }
+        var __err = out;
+        out = $$outStack.pop();
+        if (!it.compositeRule && $breakOnError) {
+          /* istanbul ignore if */
+          if (it.async) {
+            out += ' throw new ValidationError([' + (__err) + ']); ';
+          } else {
+            out += ' validate.errors = [' + (__err) + ']; return false; ';
+          }
+        } else {
+          out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+        }
+        if ($breakOnError) {
+          out += ' if (false) { ';
+        }
+      } else if (it.opts.missingRefs == 'ignore') {
+        it.logger.warn($message);
+        if ($breakOnError) {
+          out += ' if (true) { ';
+        }
+      } else {
+        throw new it.MissingRefError(it.baseId, $schema, $message);
+      }
+    } else if ($refVal.inline) {
+      var $it = it.util.copy(it);
+      $it.level++;
+      var $nextValid = 'valid' + $it.level;
+      $it.schema = $refVal.schema;
+      $it.schemaPath = '';
+      $it.errSchemaPath = $schema;
+      var $code = it.validate($it).replace(/validate\.schema/g, $refVal.code);
+      out += ' ' + ($code) + ' ';
+      if ($breakOnError) {
+        out += ' if (' + ($nextValid) + ') { ';
+      }
+    } else {
+      $async = $refVal.$async === true || (it.async && $refVal.$async !== false);
+      $refCode = $refVal.code;
+    }
+  }
+  if ($refCode) {
+    var $$outStack = $$outStack || [];
+    $$outStack.push(out);
+    out = '';
+    if (it.opts.passContext) {
+      out += ' ' + ($refCode) + '.call(this, ';
+    } else {
+      out += ' ' + ($refCode) + '( ';
+    }
+    out += ' ' + ($data) + ', (dataPath || \'\')';
+    if (it.errorPath != '""') {
+      out += ' + ' + (it.errorPath);
+    }
+    var $parentData = $dataLvl ? 'data' + (($dataLvl - 1) || '') : 'parentData',
+      $parentDataProperty = $dataLvl ? it.dataPathArr[$dataLvl] : 'parentDataProperty';
+    out += ' , ' + ($parentData) + ' , ' + ($parentDataProperty) + ', rootData)  ';
+    var __callValidate = out;
+    out = $$outStack.pop();
+    if ($async) {
+      if (!it.async) throw new Error('async schema referenced by sync schema');
+      if ($breakOnError) {
+        out += ' var ' + ($valid) + '; ';
+      }
+      out += ' try { await ' + (__callValidate) + '; ';
+      if ($breakOnError) {
+        out += ' ' + ($valid) + ' = true; ';
+      }
+      out += ' } catch (e) { if (!(e instanceof ValidationError)) throw e; if (vErrors === null) vErrors = e.errors; else vErrors = vErrors.concat(e.errors); errors = vErrors.length; ';
+      if ($breakOnError) {
+        out += ' ' + ($valid) + ' = false; ';
+      }
+      out += ' } ';
+      if ($breakOnError) {
+        out += ' if (' + ($valid) + ') { ';
+      }
+    } else {
+      out += ' if (!' + (__callValidate) + ') { if (vErrors === null) vErrors = ' + ($refCode) + '.errors; else vErrors = vErrors.concat(' + ($refCode) + '.errors); errors = vErrors.length; } ';
+      if ($breakOnError) {
+        out += ' else { ';
+      }
+    }
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/allOf.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_allOf(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $it = it.util.copy(it);
+  var $closingBraces = '';
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  var $currentBaseId = $it.baseId,
+    $allSchemasEmpty = true;
+  var arr1 = $schema;
+  if (arr1) {
+    var $sch, $i = -1,
+      l1 = arr1.length - 1;
+    while ($i < l1) {
+      $sch = arr1[$i += 1];
+      if ((it.opts.strictKeywords ? (typeof $sch == 'object' && Object.keys($sch).length > 0) || $sch === false : it.util.schemaHasRules($sch, it.RULES.all))) {
+        $allSchemasEmpty = false;
+        $it.schema = $sch;
+        $it.schemaPath = $schemaPath + '[' + $i + ']';
+        $it.errSchemaPath = $errSchemaPath + '/' + $i;
+        out += '  ' + (it.validate($it)) + ' ';
+        $it.baseId = $currentBaseId;
+        if ($breakOnError) {
+          out += ' if (' + ($nextValid) + ') { ';
+          $closingBraces += '}';
+        }
+      }
+    }
+  }
+  if ($breakOnError) {
+    if ($allSchemasEmpty) {
+      out += ' if (true) { ';
+    } else {
+      out += ' ' + ($closingBraces.slice(0, -1)) + ' ';
+    }
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/anyOf.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_anyOf(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  var $closingBraces = '';
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  var $noEmptySchema = $schema.every(function($sch) {
+    return (it.opts.strictKeywords ? (typeof $sch == 'object' && Object.keys($sch).length > 0) || $sch === false : it.util.schemaHasRules($sch, it.RULES.all));
+  });
+  if ($noEmptySchema) {
+    var $currentBaseId = $it.baseId;
+    out += ' var ' + ($errs) + ' = errors; var ' + ($valid) + ' = false;  ';
+    var $wasComposite = it.compositeRule;
+    it.compositeRule = $it.compositeRule = true;
+    var arr1 = $schema;
+    if (arr1) {
+      var $sch, $i = -1,
+        l1 = arr1.length - 1;
+      while ($i < l1) {
+        $sch = arr1[$i += 1];
+        $it.schema = $sch;
+        $it.schemaPath = $schemaPath + '[' + $i + ']';
+        $it.errSchemaPath = $errSchemaPath + '/' + $i;
+        out += '  ' + (it.validate($it)) + ' ';
+        $it.baseId = $currentBaseId;
+        out += ' ' + ($valid) + ' = ' + ($valid) + ' || ' + ($nextValid) + '; if (!' + ($valid) + ') { ';
+        $closingBraces += '}';
+      }
+    }
+    it.compositeRule = $it.compositeRule = $wasComposite;
+    out += ' ' + ($closingBraces) + ' if (!' + ($valid) + ') {   var err =   '; /* istanbul ignore else */
+    if (it.createErrors !== false) {
+      out += ' { keyword: \'' + ('anyOf') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: {} ';
+      if (it.opts.messages !== false) {
+        out += ' , message: \'should match some schema in anyOf\' ';
+      }
+      if (it.opts.verbose) {
+        out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+      }
+      out += ' } ';
+    } else {
+      out += ' {} ';
+    }
+    out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    if (!it.compositeRule && $breakOnError) {
+      /* istanbul ignore if */
+      if (it.async) {
+        out += ' throw new ValidationError(vErrors); ';
+      } else {
+        out += ' validate.errors = vErrors; return false; ';
+      }
+    }
+    out += ' } else {  errors = ' + ($errs) + '; if (vErrors !== null) { if (' + ($errs) + ') vErrors.length = ' + ($errs) + '; else vErrors = null; } ';
+    if (it.opts.allErrors) {
+      out += ' } ';
+    }
+  } else {
+    if ($breakOnError) {
+      out += ' if (true) { ';
+    }
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/comment.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_comment(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $schema = it.schema[$keyword];
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $comment = it.util.toQuotedString($schema);
+  if (it.opts.$comment === true) {
+    out += ' console.log(' + ($comment) + ');';
+  } else if (typeof it.opts.$comment == 'function') {
+    out += ' self._opts.$comment(' + ($comment) + ', ' + (it.util.toQuotedString($errSchemaPath)) + ', validate.root.schema);';
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/const.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_const(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $isData = it.opts.$data && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  if (!$isData) {
+    out += ' var schema' + ($lvl) + ' = validate.schema' + ($schemaPath) + ';';
+  }
+  out += 'var ' + ($valid) + ' = equal(' + ($data) + ', schema' + ($lvl) + '); if (!' + ($valid) + ') {   ';
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ('const') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { allowedValue: schema' + ($lvl) + ' } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should be equal to constant\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) {
+    /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += ' }';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/contains.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_contains(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  var $closingBraces = '';
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  var $idx = 'i' + $lvl,
+    $dataNxt = $it.dataLevel = it.dataLevel + 1,
+    $nextData = 'data' + $dataNxt,
+    $currentBaseId = it.baseId,
+    $nonEmptySchema = (it.opts.strictKeywords ? (typeof $schema == 'object' && Object.keys($schema).length > 0) || $schema === false : it.util.schemaHasRules($schema, it.RULES.all));
+  out += 'var ' + ($errs) + ' = errors;var ' + ($valid) + ';';
+  if ($nonEmptySchema) {
+    var $wasComposite = it.compositeRule;
+    it.compositeRule = $it.compositeRule = true;
+    $it.schema = $schema;
+    $it.schemaPath = $schemaPath;
+    $it.errSchemaPath = $errSchemaPath;
+    out += ' var ' + ($nextValid) + ' = false; for (var ' + ($idx) + ' = 0; ' + ($idx) + ' < ' + ($data) + '.length; ' + ($idx) + '++) { ';
+    $it.errorPath = it.util.getPathExpr(it.errorPath, $idx, it.opts.jsonPointers, true);
+    var $passData = $data + '[' + $idx + ']';
+    $it.dataPathArr[$dataNxt] = $idx;
+    var $code = it.validate($it);
+    $it.baseId = $currentBaseId;
+    if (it.util.varOccurences($code, $nextData) < 2) {
+      out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+    } else {
+      out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+    }
+    out += ' if (' + ($nextValid) + ') break; }  ';
+    it.compositeRule = $it.compositeRule = $wasComposite;
+    out += ' ' + ($closingBraces) + ' if (!' + ($nextValid) + ') {';
+  } else {
+    out += ' if (' + ($data) + '.length == 0) {';
+  }
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ('contains') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: {} ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should contain a valid item\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) {
+    /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += ' } else { ';
+  if ($nonEmptySchema) {
+    out += '  errors = ' + ($errs) + '; if (vErrors !== null) { if (' + ($errs) + ') vErrors.length = ' + ($errs) + '; else vErrors = null; } ';
+  }
+  if (it.opts.allErrors) {
+    out += ' } ';
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/dependencies.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_dependencies(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  var $closingBraces = '';
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  var $schemaDeps = {},
+    $propertyDeps = {},
+    $ownProperties = it.opts.ownProperties;
+  for ($property in $schema) {
+    if ($property == '__proto__') continue;
+    var $sch = $schema[$property];
+    var $deps = Array.isArray($sch) ? $propertyDeps : $schemaDeps;
+    $deps[$property] = $sch;
+  }
+  out += 'var ' + ($errs) + ' = errors;';
+  var $currentErrorPath = it.errorPath;
+  out += 'var missing' + ($lvl) + ';';
+  for (var $property in $propertyDeps) {
+    $deps = $propertyDeps[$property];
+    if ($deps.length) {
+      out += ' if ( ' + ($data) + (it.util.getProperty($property)) + ' !== undefined ';
+      if ($ownProperties) {
+        out += ' && Object.prototype.hasOwnProperty.call(' + ($data) + ', \'' + (it.util.escapeQuotes($property)) + '\') ';
+      }
+      if ($breakOnError) {
+        out += ' && ( ';
+        var arr1 = $deps;
+        if (arr1) {
+          var $propertyKey, $i = -1,
+            l1 = arr1.length - 1;
+          while ($i < l1) {
+            $propertyKey = arr1[$i += 1];
+            if ($i) {
+              out += ' || ';
+            }
+            var $prop = it.util.getProperty($propertyKey),
+              $useData = $data + $prop;
+            out += ' ( ( ' + ($useData) + ' === undefined ';
+            if ($ownProperties) {
+              out += ' || ! Object.prototype.hasOwnProperty.call(' + ($data) + ', \'' + (it.util.escapeQuotes($propertyKey)) + '\') ';
+            }
+            out += ') && (missing' + ($lvl) + ' = ' + (it.util.toQuotedString(it.opts.jsonPointers ? $propertyKey : $prop)) + ') ) ';
+          }
+        }
+        out += ')) {  ';
+        var $propertyPath = 'missing' + $lvl,
+          $missingProperty = '\' + ' + $propertyPath + ' + \'';
+        if (it.opts._errorDataPathProperty) {
+          it.errorPath = it.opts.jsonPointers ? it.util.getPathExpr($currentErrorPath, $propertyPath, true) : $currentErrorPath + ' + ' + $propertyPath;
+        }
+        var $$outStack = $$outStack || [];
+        $$outStack.push(out);
+        out = ''; /* istanbul ignore else */
+        if (it.createErrors !== false) {
+          out += ' { keyword: \'' + ('dependencies') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { property: \'' + (it.util.escapeQuotes($property)) + '\', missingProperty: \'' + ($missingProperty) + '\', depsCount: ' + ($deps.length) + ', deps: \'' + (it.util.escapeQuotes($deps.length == 1 ? $deps[0] : $deps.join(", "))) + '\' } ';
+          if (it.opts.messages !== false) {
+            out += ' , message: \'should have ';
+            if ($deps.length == 1) {
+              out += 'property ' + (it.util.escapeQuotes($deps[0]));
+            } else {
+              out += 'properties ' + (it.util.escapeQuotes($deps.join(", ")));
+            }
+            out += ' when property ' + (it.util.escapeQuotes($property)) + ' is present\' ';
+          }
+          if (it.opts.verbose) {
+            out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+          }
+          out += ' } ';
+        } else {
+          out += ' {} ';
+        }
+        var __err = out;
+        out = $$outStack.pop();
+        if (!it.compositeRule && $breakOnError) {
+          /* istanbul ignore if */
+          if (it.async) {
+            out += ' throw new ValidationError([' + (__err) + ']); ';
+          } else {
+            out += ' validate.errors = [' + (__err) + ']; return false; ';
+          }
+        } else {
+          out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+        }
+      } else {
+        out += ' ) { ';
+        var arr2 = $deps;
+        if (arr2) {
+          var $propertyKey, i2 = -1,
+            l2 = arr2.length - 1;
+          while (i2 < l2) {
+            $propertyKey = arr2[i2 += 1];
+            var $prop = it.util.getProperty($propertyKey),
+              $missingProperty = it.util.escapeQuotes($propertyKey),
+              $useData = $data + $prop;
+            if (it.opts._errorDataPathProperty) {
+              it.errorPath = it.util.getPath($currentErrorPath, $propertyKey, it.opts.jsonPointers);
+            }
+            out += ' if ( ' + ($useData) + ' === undefined ';
+            if ($ownProperties) {
+              out += ' || ! Object.prototype.hasOwnProperty.call(' + ($data) + ', \'' + (it.util.escapeQuotes($propertyKey)) + '\') ';
+            }
+            out += ') {  var err =   '; /* istanbul ignore else */
+            if (it.createErrors !== false) {
+              out += ' { keyword: \'' + ('dependencies') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { property: \'' + (it.util.escapeQuotes($property)) + '\', missingProperty: \'' + ($missingProperty) + '\', depsCount: ' + ($deps.length) + ', deps: \'' + (it.util.escapeQuotes($deps.length == 1 ? $deps[0] : $deps.join(", "))) + '\' } ';
+              if (it.opts.messages !== false) {
+                out += ' , message: \'should have ';
+                if ($deps.length == 1) {
+                  out += 'property ' + (it.util.escapeQuotes($deps[0]));
+                } else {
+                  out += 'properties ' + (it.util.escapeQuotes($deps.join(", ")));
+                }
+                out += ' when property ' + (it.util.escapeQuotes($property)) + ' is present\' ';
+              }
+              if (it.opts.verbose) {
+                out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+              }
+              out += ' } ';
+            } else {
+              out += ' {} ';
+            }
+            out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; } ';
+          }
+        }
+      }
+      out += ' }   ';
+      if ($breakOnError) {
+        $closingBraces += '}';
+        out += ' else { ';
+      }
+    }
+  }
+  it.errorPath = $currentErrorPath;
+  var $currentBaseId = $it.baseId;
+  for (var $property in $schemaDeps) {
+    var $sch = $schemaDeps[$property];
+    if ((it.opts.strictKeywords ? (typeof $sch == 'object' && Object.keys($sch).length > 0) || $sch === false : it.util.schemaHasRules($sch, it.RULES.all))) {
+      out += ' ' + ($nextValid) + ' = true; if ( ' + ($data) + (it.util.getProperty($property)) + ' !== undefined ';
+      if ($ownProperties) {
+        out += ' && Object.prototype.hasOwnProperty.call(' + ($data) + ', \'' + (it.util.escapeQuotes($property)) + '\') ';
+      }
+      out += ') { ';
+      $it.schema = $sch;
+      $it.schemaPath = $schemaPath + it.util.getProperty($property);
+      $it.errSchemaPath = $errSchemaPath + '/' + it.util.escapeFragment($property);
+      out += '  ' + (it.validate($it)) + ' ';
+      $it.baseId = $currentBaseId;
+      out += ' }  ';
+      if ($breakOnError) {
+        out += ' if (' + ($nextValid) + ') { ';
+        $closingBraces += '}';
+      }
+    }
+  }
+  if ($breakOnError) {
+    out += '   ' + ($closingBraces) + ' if (' + ($errs) + ' == errors) {';
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/enum.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_enum(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $isData = it.opts.$data && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  var $i = 'i' + $lvl,
+    $vSchema = 'schema' + $lvl;
+  if (!$isData) {
+    out += ' var ' + ($vSchema) + ' = validate.schema' + ($schemaPath) + ';';
+  }
+  out += 'var ' + ($valid) + ';';
+  if ($isData) {
+    out += ' if (schema' + ($lvl) + ' === undefined) ' + ($valid) + ' = true; else if (!Array.isArray(schema' + ($lvl) + ')) ' + ($valid) + ' = false; else {';
+  }
+  out += '' + ($valid) + ' = false;for (var ' + ($i) + '=0; ' + ($i) + '<' + ($vSchema) + '.length; ' + ($i) + '++) if (equal(' + ($data) + ', ' + ($vSchema) + '[' + ($i) + '])) { ' + ($valid) + ' = true; break; }';
+  if ($isData) {
+    out += '  }  ';
+  }
+  out += ' if (!' + ($valid) + ') {   ';
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ('enum') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { allowedValues: schema' + ($lvl) + ' } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should be equal to one of the allowed values\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) {
+    /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += ' }';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/format.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_format(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  if (it.opts.format === false) {
+    if ($breakOnError) {
+      out += ' if (true) { ';
+    }
+    return out;
+  }
+  var $isData = it.opts.$data && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  var $unknownFormats = it.opts.unknownFormats,
+    $allowUnknown = Array.isArray($unknownFormats);
+  if ($isData) {
+    var $format = 'format' + $lvl,
+      $isObject = 'isObject' + $lvl,
+      $formatType = 'formatType' + $lvl;
+    out += ' var ' + ($format) + ' = formats[' + ($schemaValue) + ']; var ' + ($isObject) + ' = typeof ' + ($format) + ' == \'object\' && !(' + ($format) + ' instanceof RegExp) && ' + ($format) + '.validate; var ' + ($formatType) + ' = ' + ($isObject) + ' && ' + ($format) + '.type || \'string\'; if (' + ($isObject) + ') { ';
+    if (it.async) {
+      out += ' var async' + ($lvl) + ' = ' + ($format) + '.async; ';
+    }
+    out += ' ' + ($format) + ' = ' + ($format) + '.validate; } if (  ';
+    if ($isData) {
+      out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'string\') || ';
+    }
+    out += ' (';
+    if ($unknownFormats != 'ignore') {
+      out += ' (' + ($schemaValue) + ' && !' + ($format) + ' ';
+      if ($allowUnknown) {
+        out += ' && self._opts.unknownFormats.indexOf(' + ($schemaValue) + ') == -1 ';
+      }
+      out += ') || ';
+    }
+    out += ' (' + ($format) + ' && ' + ($formatType) + ' == \'' + ($ruleType) + '\' && !(typeof ' + ($format) + ' == \'function\' ? ';
+    if (it.async) {
+      out += ' (async' + ($lvl) + ' ? await ' + ($format) + '(' + ($data) + ') : ' + ($format) + '(' + ($data) + ')) ';
+    } else {
+      out += ' ' + ($format) + '(' + ($data) + ') ';
+    }
+    out += ' : ' + ($format) + '.test(' + ($data) + '))))) {';
+  } else {
+    var $format = it.formats[$schema];
+    if (!$format) {
+      if ($unknownFormats == 'ignore') {
+        it.logger.warn('unknown format "' + $schema + '" ignored in schema at path "' + it.errSchemaPath + '"');
+        if ($breakOnError) {
+          out += ' if (true) { ';
+        }
+        return out;
+      } else if ($allowUnknown && $unknownFormats.indexOf($schema) >= 0) {
+        if ($breakOnError) {
+          out += ' if (true) { ';
+        }
+        return out;
+      } else {
+        throw new Error('unknown format "' + $schema + '" is used in schema at path "' + it.errSchemaPath + '"');
+      }
+    }
+    var $isObject = typeof $format == 'object' && !($format instanceof RegExp) && $format.validate;
+    var $formatType = $isObject && $format.type || 'string';
+    if ($isObject) {
+      var $async = $format.async === true;
+      $format = $format.validate;
+    }
+    if ($formatType != $ruleType) {
+      if ($breakOnError) {
+        out += ' if (true) { ';
+      }
+      return out;
+    }
+    if ($async) {
+      if (!it.async) throw new Error('async format in sync schema');
+      var $formatRef = 'formats' + it.util.getProperty($schema) + '.validate';
+      out += ' if (!(await ' + ($formatRef) + '(' + ($data) + '))) { ';
+    } else {
+      out += ' if (! ';
+      var $formatRef = 'formats' + it.util.getProperty($schema);
+      if ($isObject) $formatRef += '.validate';
+      if (typeof $format == 'function') {
+        out += ' ' + ($formatRef) + '(' + ($data) + ') ';
+      } else {
+        out += ' ' + ($formatRef) + '.test(' + ($data) + ') ';
+      }
+      out += ') { ';
+    }
+  }
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ('format') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { format:  ';
+    if ($isData) {
+      out += '' + ($schemaValue);
+    } else {
+      out += '' + (it.util.toQuotedString($schema));
+    }
+    out += '  } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should match format "';
+      if ($isData) {
+        out += '\' + ' + ($schemaValue) + ' + \'';
+      } else {
+        out += '' + (it.util.escapeQuotes($schema));
+      }
+      out += '"\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema:  ';
+      if ($isData) {
+        out += 'validate.schema' + ($schemaPath);
+      } else {
+        out += '' + (it.util.toQuotedString($schema));
+      }
+      out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) {
+    /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += ' } ';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/if.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_if(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  var $thenSch = it.schema['then'],
+    $elseSch = it.schema['else'],
+    $thenPresent = $thenSch !== undefined && (it.opts.strictKeywords ? (typeof $thenSch == 'object' && Object.keys($thenSch).length > 0) || $thenSch === false : it.util.schemaHasRules($thenSch, it.RULES.all)),
+    $elsePresent = $elseSch !== undefined && (it.opts.strictKeywords ? (typeof $elseSch == 'object' && Object.keys($elseSch).length > 0) || $elseSch === false : it.util.schemaHasRules($elseSch, it.RULES.all)),
+    $currentBaseId = $it.baseId;
+  if ($thenPresent || $elsePresent) {
+    var $ifClause;
+    $it.createErrors = false;
+    $it.schema = $schema;
+    $it.schemaPath = $schemaPath;
+    $it.errSchemaPath = $errSchemaPath;
+    out += ' var ' + ($errs) + ' = errors; var ' + ($valid) + ' = true;  ';
+    var $wasComposite = it.compositeRule;
+    it.compositeRule = $it.compositeRule = true;
+    out += '  ' + (it.validate($it)) + ' ';
+    $it.baseId = $currentBaseId;
+    $it.createErrors = true;
+    out += '  errors = ' + ($errs) + '; if (vErrors !== null) { if (' + ($errs) + ') vErrors.length = ' + ($errs) + '; else vErrors = null; }  ';
+    it.compositeRule = $it.compositeRule = $wasComposite;
+    if ($thenPresent) {
+      out += ' if (' + ($nextValid) + ') {  ';
+      $it.schema = it.schema['then'];
+      $it.schemaPath = it.schemaPath + '.then';
+      $it.errSchemaPath = it.errSchemaPath + '/then';
+      out += '  ' + (it.validate($it)) + ' ';
+      $it.baseId = $currentBaseId;
+      out += ' ' + ($valid) + ' = ' + ($nextValid) + '; ';
+      if ($thenPresent && $elsePresent) {
+        $ifClause = 'ifClause' + $lvl;
+        out += ' var ' + ($ifClause) + ' = \'then\'; ';
+      } else {
+        $ifClause = '\'then\'';
+      }
+      out += ' } ';
+      if ($elsePresent) {
+        out += ' else { ';
+      }
+    } else {
+      out += ' if (!' + ($nextValid) + ') { ';
+    }
+    if ($elsePresent) {
+      $it.schema = it.schema['else'];
+      $it.schemaPath = it.schemaPath + '.else';
+      $it.errSchemaPath = it.errSchemaPath + '/else';
+      out += '  ' + (it.validate($it)) + ' ';
+      $it.baseId = $currentBaseId;
+      out += ' ' + ($valid) + ' = ' + ($nextValid) + '; ';
+      if ($thenPresent && $elsePresent) {
+        $ifClause = 'ifClause' + $lvl;
+        out += ' var ' + ($ifClause) + ' = \'else\'; ';
+      } else {
+        $ifClause = '\'else\'';
+      }
+      out += ' } ';
+    }
+    out += ' if (!' + ($valid) + ') {   var err =   '; /* istanbul ignore else */
+    if (it.createErrors !== false) {
+      out += ' { keyword: \'' + ('if') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { failingKeyword: ' + ($ifClause) + ' } ';
+      if (it.opts.messages !== false) {
+        out += ' , message: \'should match "\' + ' + ($ifClause) + ' + \'" schema\' ';
+      }
+      if (it.opts.verbose) {
+        out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+      }
+      out += ' } ';
+    } else {
+      out += ' {} ';
+    }
+    out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    if (!it.compositeRule && $breakOnError) {
+      /* istanbul ignore if */
+      if (it.async) {
+        out += ' throw new ValidationError(vErrors); ';
+      } else {
+        out += ' validate.errors = vErrors; return false; ';
+      }
+    }
+    out += ' }   ';
+    if ($breakOnError) {
+      out += ' else { ';
+    }
+  } else {
+    if ($breakOnError) {
+      out += ' if (true) { ';
+    }
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/items.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_items(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  var $closingBraces = '';
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  var $idx = 'i' + $lvl,
+    $dataNxt = $it.dataLevel = it.dataLevel + 1,
+    $nextData = 'data' + $dataNxt,
+    $currentBaseId = it.baseId;
+  out += 'var ' + ($errs) + ' = errors;var ' + ($valid) + ';';
+  if (Array.isArray($schema)) {
+    var $additionalItems = it.schema.additionalItems;
+    if ($additionalItems === false) {
+      out += ' ' + ($valid) + ' = ' + ($data) + '.length <= ' + ($schema.length) + '; ';
+      var $currErrSchemaPath = $errSchemaPath;
+      $errSchemaPath = it.errSchemaPath + '/additionalItems';
+      out += '  if (!' + ($valid) + ') {   ';
+      var $$outStack = $$outStack || [];
+      $$outStack.push(out);
+      out = ''; /* istanbul ignore else */
+      if (it.createErrors !== false) {
+        out += ' { keyword: \'' + ('additionalItems') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { limit: ' + ($schema.length) + ' } ';
+        if (it.opts.messages !== false) {
+          out += ' , message: \'should NOT have more than ' + ($schema.length) + ' items\' ';
+        }
+        if (it.opts.verbose) {
+          out += ' , schema: false , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+        }
+        out += ' } ';
+      } else {
+        out += ' {} ';
+      }
+      var __err = out;
+      out = $$outStack.pop();
+      if (!it.compositeRule && $breakOnError) {
+        /* istanbul ignore if */
+        if (it.async) {
+          out += ' throw new ValidationError([' + (__err) + ']); ';
+        } else {
+          out += ' validate.errors = [' + (__err) + ']; return false; ';
+        }
+      } else {
+        out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+      }
+      out += ' } ';
+      $errSchemaPath = $currErrSchemaPath;
+      if ($breakOnError) {
+        $closingBraces += '}';
+        out += ' else { ';
+      }
+    }
+    var arr1 = $schema;
+    if (arr1) {
+      var $sch, $i = -1,
+        l1 = arr1.length - 1;
+      while ($i < l1) {
+        $sch = arr1[$i += 1];
+        if ((it.opts.strictKeywords ? (typeof $sch == 'object' && Object.keys($sch).length > 0) || $sch === false : it.util.schemaHasRules($sch, it.RULES.all))) {
+          out += ' ' + ($nextValid) + ' = true; if (' + ($data) + '.length > ' + ($i) + ') { ';
+          var $passData = $data + '[' + $i + ']';
+          $it.schema = $sch;
+          $it.schemaPath = $schemaPath + '[' + $i + ']';
+          $it.errSchemaPath = $errSchemaPath + '/' + $i;
+          $it.errorPath = it.util.getPathExpr(it.errorPath, $i, it.opts.jsonPointers, true);
+          $it.dataPathArr[$dataNxt] = $i;
+          var $code = it.validate($it);
+          $it.baseId = $currentBaseId;
+          if (it.util.varOccurences($code, $nextData) < 2) {
+            out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+          } else {
+            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+          }
+          out += ' }  ';
+          if ($breakOnError) {
+            out += ' if (' + ($nextValid) + ') { ';
+            $closingBraces += '}';
+          }
+        }
+      }
+    }
+    if (typeof $additionalItems == 'object' && (it.opts.strictKeywords ? (typeof $additionalItems == 'object' && Object.keys($additionalItems).length > 0) || $additionalItems === false : it.util.schemaHasRules($additionalItems, it.RULES.all))) {
+      $it.schema = $additionalItems;
+      $it.schemaPath = it.schemaPath + '.additionalItems';
+      $it.errSchemaPath = it.errSchemaPath + '/additionalItems';
+      out += ' ' + ($nextValid) + ' = true; if (' + ($data) + '.length > ' + ($schema.length) + ') {  for (var ' + ($idx) + ' = ' + ($schema.length) + '; ' + ($idx) + ' < ' + ($data) + '.length; ' + ($idx) + '++) { ';
+      $it.errorPath = it.util.getPathExpr(it.errorPath, $idx, it.opts.jsonPointers, true);
+      var $passData = $data + '[' + $idx + ']';
+      $it.dataPathArr[$dataNxt] = $idx;
+      var $code = it.validate($it);
+      $it.baseId = $currentBaseId;
+      if (it.util.varOccurences($code, $nextData) < 2) {
+        out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+      } else {
+        out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+      }
+      if ($breakOnError) {
+        out += ' if (!' + ($nextValid) + ') break; ';
+      }
+      out += ' } }  ';
+      if ($breakOnError) {
+        out += ' if (' + ($nextValid) + ') { ';
+        $closingBraces += '}';
+      }
+    }
+  } else if ((it.opts.strictKeywords ? (typeof $schema == 'object' && Object.keys($schema).length > 0) || $schema === false : it.util.schemaHasRules($schema, it.RULES.all))) {
+    $it.schema = $schema;
+    $it.schemaPath = $schemaPath;
+    $it.errSchemaPath = $errSchemaPath;
+    out += '  for (var ' + ($idx) + ' = ' + (0) + '; ' + ($idx) + ' < ' + ($data) + '.length; ' + ($idx) + '++) { ';
+    $it.errorPath = it.util.getPathExpr(it.errorPath, $idx, it.opts.jsonPointers, true);
+    var $passData = $data + '[' + $idx + ']';
+    $it.dataPathArr[$dataNxt] = $idx;
+    var $code = it.validate($it);
+    $it.baseId = $currentBaseId;
+    if (it.util.varOccurences($code, $nextData) < 2) {
+      out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+    } else {
+      out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+    }
+    if ($breakOnError) {
+      out += ' if (!' + ($nextValid) + ') break; ';
+    }
+    out += ' }';
+  }
+  if ($breakOnError) {
+    out += ' ' + ($closingBraces) + ' if (' + ($errs) + ' == errors) {';
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/_limit.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate__limit(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $errorKeyword;
+  var $data = 'data' + ($dataLvl || '');
+  var $isData = it.opts.$data && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  var $isMax = $keyword == 'maximum',
+    $exclusiveKeyword = $isMax ? 'exclusiveMaximum' : 'exclusiveMinimum',
+    $schemaExcl = it.schema[$exclusiveKeyword],
+    $isDataExcl = it.opts.$data && $schemaExcl && $schemaExcl.$data,
+    $op = $isMax ? '<' : '>',
+    $notOp = $isMax ? '>' : '<',
+    $errorKeyword = undefined;
+  if (!($isData || typeof $schema == 'number' || $schema === undefined)) {
+    throw new Error($keyword + ' must be number');
+  }
+  if (!($isDataExcl || $schemaExcl === undefined || typeof $schemaExcl == 'number' || typeof $schemaExcl == 'boolean')) {
+    throw new Error($exclusiveKeyword + ' must be number or boolean');
+  }
+  if ($isDataExcl) {
+    var $schemaValueExcl = it.util.getData($schemaExcl.$data, $dataLvl, it.dataPathArr),
+      $exclusive = 'exclusive' + $lvl,
+      $exclType = 'exclType' + $lvl,
+      $exclIsNumber = 'exclIsNumber' + $lvl,
+      $opExpr = 'op' + $lvl,
+      $opStr = '\' + ' + $opExpr + ' + \'';
+    out += ' var schemaExcl' + ($lvl) + ' = ' + ($schemaValueExcl) + '; ';
+    $schemaValueExcl = 'schemaExcl' + $lvl;
+    out += ' var ' + ($exclusive) + '; var ' + ($exclType) + ' = typeof ' + ($schemaValueExcl) + '; if (' + ($exclType) + ' != \'boolean\' && ' + ($exclType) + ' != \'undefined\' && ' + ($exclType) + ' != \'number\') { ';
+    var $errorKeyword = $exclusiveKeyword;
+    var $$outStack = $$outStack || [];
+    $$outStack.push(out);
+    out = ''; /* istanbul ignore else */
+    if (it.createErrors !== false) {
+      out += ' { keyword: \'' + ($errorKeyword || '_exclusiveLimit') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: {} ';
+      if (it.opts.messages !== false) {
+        out += ' , message: \'' + ($exclusiveKeyword) + ' should be boolean\' ';
+      }
+      if (it.opts.verbose) {
+        out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+      }
+      out += ' } ';
+    } else {
+      out += ' {} ';
+    }
+    var __err = out;
+    out = $$outStack.pop();
+    if (!it.compositeRule && $breakOnError) {
+      /* istanbul ignore if */
+      if (it.async) {
+        out += ' throw new ValidationError([' + (__err) + ']); ';
+      } else {
+        out += ' validate.errors = [' + (__err) + ']; return false; ';
+      }
+    } else {
+      out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    }
+    out += ' } else if ( ';
+    if ($isData) {
+      out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'number\') || ';
+    }
+    out += ' ' + ($exclType) + ' == \'number\' ? ( (' + ($exclusive) + ' = ' + ($schemaValue) + ' === undefined || ' + ($schemaValueExcl) + ' ' + ($op) + '= ' + ($schemaValue) + ') ? ' + ($data) + ' ' + ($notOp) + '= ' + ($schemaValueExcl) + ' : ' + ($data) + ' ' + ($notOp) + ' ' + ($schemaValue) + ' ) : ( (' + ($exclusive) + ' = ' + ($schemaValueExcl) + ' === true) ? ' + ($data) + ' ' + ($notOp) + '= ' + ($schemaValue) + ' : ' + ($data) + ' ' + ($notOp) + ' ' + ($schemaValue) + ' ) || ' + ($data) + ' !== ' + ($data) + ') { var op' + ($lvl) + ' = ' + ($exclusive) + ' ? \'' + ($op) + '\' : \'' + ($op) + '=\'; ';
+    if ($schema === undefined) {
+      $errorKeyword = $exclusiveKeyword;
+      $errSchemaPath = it.errSchemaPath + '/' + $exclusiveKeyword;
+      $schemaValue = $schemaValueExcl;
+      $isData = $isDataExcl;
+    }
+  } else {
+    var $exclIsNumber = typeof $schemaExcl == 'number',
+      $opStr = $op;
+    if ($exclIsNumber && $isData) {
+      var $opExpr = '\'' + $opStr + '\'';
+      out += ' if ( ';
+      if ($isData) {
+        out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'number\') || ';
+      }
+      out += ' ( ' + ($schemaValue) + ' === undefined || ' + ($schemaExcl) + ' ' + ($op) + '= ' + ($schemaValue) + ' ? ' + ($data) + ' ' + ($notOp) + '= ' + ($schemaExcl) + ' : ' + ($data) + ' ' + ($notOp) + ' ' + ($schemaValue) + ' ) || ' + ($data) + ' !== ' + ($data) + ') { ';
+    } else {
+      if ($exclIsNumber && $schema === undefined) {
+        $exclusive = true;
+        $errorKeyword = $exclusiveKeyword;
+        $errSchemaPath = it.errSchemaPath + '/' + $exclusiveKeyword;
+        $schemaValue = $schemaExcl;
+        $notOp += '=';
+      } else {
+        if ($exclIsNumber) $schemaValue = Math[$isMax ? 'min' : 'max']($schemaExcl, $schema);
+        if ($schemaExcl === ($exclIsNumber ? $schemaValue : true)) {
+          $exclusive = true;
+          $errorKeyword = $exclusiveKeyword;
+          $errSchemaPath = it.errSchemaPath + '/' + $exclusiveKeyword;
+          $notOp += '=';
+        } else {
+          $exclusive = false;
+          $opStr += '=';
+        }
+      }
+      var $opExpr = '\'' + $opStr + '\'';
+      out += ' if ( ';
+      if ($isData) {
+        out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'number\') || ';
+      }
+      out += ' ' + ($data) + ' ' + ($notOp) + ' ' + ($schemaValue) + ' || ' + ($data) + ' !== ' + ($data) + ') { ';
+    }
+  }
+  $errorKeyword = $errorKeyword || $keyword;
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ($errorKeyword || '_limit') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { comparison: ' + ($opExpr) + ', limit: ' + ($schemaValue) + ', exclusive: ' + ($exclusive) + ' } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should be ' + ($opStr) + ' ';
+      if ($isData) {
+        out += '\' + ' + ($schemaValue);
+      } else {
+        out += '' + ($schemaValue) + '\'';
+      }
+    }
+    if (it.opts.verbose) {
+      out += ' , schema:  ';
+      if ($isData) {
+        out += 'validate.schema' + ($schemaPath);
+      } else {
+        out += '' + ($schema);
+      }
+      out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) {
+    /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += ' } ';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/_limitItems.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate__limitItems(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $errorKeyword;
+  var $data = 'data' + ($dataLvl || '');
+  var $isData = it.opts.$data && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  if (!($isData || typeof $schema == 'number')) {
+    throw new Error($keyword + ' must be number');
+  }
+  var $op = $keyword == 'maxItems' ? '>' : '<';
+  out += 'if ( ';
+  if ($isData) {
+    out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'number\') || ';
+  }
+  out += ' ' + ($data) + '.length ' + ($op) + ' ' + ($schemaValue) + ') { ';
+  var $errorKeyword = $keyword;
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ($errorKeyword || '_limitItems') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { limit: ' + ($schemaValue) + ' } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should NOT have ';
+      if ($keyword == 'maxItems') {
+        out += 'more';
+      } else {
+        out += 'fewer';
+      }
+      out += ' than ';
+      if ($isData) {
+        out += '\' + ' + ($schemaValue) + ' + \'';
+      } else {
+        out += '' + ($schema);
+      }
+      out += ' items\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema:  ';
+      if ($isData) {
+        out += 'validate.schema' + ($schemaPath);
+      } else {
+        out += '' + ($schema);
+      }
+      out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) {
+    /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += '} ';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/_limitLength.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate__limitLength(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $errorKeyword;
+  var $data = 'data' + ($dataLvl || '');
+  var $isData = it.opts.$data && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  if (!($isData || typeof $schema == 'number')) {
+    throw new Error($keyword + ' must be number');
+  }
+  var $op = $keyword == 'maxLength' ? '>' : '<';
+  out += 'if ( ';
+  if ($isData) {
+    out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'number\') || ';
+  }
+  if (it.opts.unicode === false) {
+    out += ' ' + ($data) + '.length ';
+  } else {
+    out += ' ucs2length(' + ($data) + ') ';
+  }
+  out += ' ' + ($op) + ' ' + ($schemaValue) + ') { ';
+  var $errorKeyword = $keyword;
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ($errorKeyword || '_limitLength') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { limit: ' + ($schemaValue) + ' } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should NOT be ';
+      if ($keyword == 'maxLength') {
+        out += 'longer';
+      } else {
+        out += 'shorter';
+      }
+      out += ' than ';
+      if ($isData) {
+        out += '\' + ' + ($schemaValue) + ' + \'';
+      } else {
+        out += '' + ($schema);
+      }
+      out += ' characters\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema:  ';
+      if ($isData) {
+        out += 'validate.schema' + ($schemaPath);
+      } else {
+        out += '' + ($schema);
+      }
+      out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) {
+    /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += '} ';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/_limitProperties.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate__limitProperties(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $errorKeyword;
+  var $data = 'data' + ($dataLvl || '');
+  var $isData = it.opts.$data && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  if (!($isData || typeof $schema == 'number')) {
+    throw new Error($keyword + ' must be number');
+  }
+  var $op = $keyword == 'maxProperties' ? '>' : '<';
+  out += 'if ( ';
+  if ($isData) {
+    out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'number\') || ';
+  }
+  out += ' Object.keys(' + ($data) + ').length ' + ($op) + ' ' + ($schemaValue) + ') { ';
+  var $errorKeyword = $keyword;
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ($errorKeyword || '_limitProperties') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { limit: ' + ($schemaValue) + ' } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should NOT have ';
+      if ($keyword == 'maxProperties') {
+        out += 'more';
+      } else {
+        out += 'fewer';
+      }
+      out += ' than ';
+      if ($isData) {
+        out += '\' + ' + ($schemaValue) + ' + \'';
+      } else {
+        out += '' + ($schema);
+      }
+      out += ' properties\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema:  ';
+      if ($isData) {
+        out += 'validate.schema' + ($schemaPath);
+      } else {
+        out += '' + ($schema);
+      }
+      out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) {
+    /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += '} ';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/multipleOf.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_multipleOf(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $isData = it.opts.$data && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  if (!($isData || typeof $schema == 'number')) {
+    throw new Error($keyword + ' must be number');
+  }
+  out += 'var division' + ($lvl) + ';if (';
+  if ($isData) {
+    out += ' ' + ($schemaValue) + ' !== undefined && ( typeof ' + ($schemaValue) + ' != \'number\' || ';
+  }
+  out += ' (division' + ($lvl) + ' = ' + ($data) + ' / ' + ($schemaValue) + ', ';
+  if (it.opts.multipleOfPrecision) {
+    out += ' Math.abs(Math.round(division' + ($lvl) + ') - division' + ($lvl) + ') > 1e-' + (it.opts.multipleOfPrecision) + ' ';
+  } else {
+    out += ' division' + ($lvl) + ' !== parseInt(division' + ($lvl) + ') ';
+  }
+  out += ' ) ';
+  if ($isData) {
+    out += '  )  ';
+  }
+  out += ' ) {   ';
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ('multipleOf') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { multipleOf: ' + ($schemaValue) + ' } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should be multiple of ';
+      if ($isData) {
+        out += '\' + ' + ($schemaValue);
+      } else {
+        out += '' + ($schemaValue) + '\'';
+      }
+    }
+    if (it.opts.verbose) {
+      out += ' , schema:  ';
+      if ($isData) {
+        out += 'validate.schema' + ($schemaPath);
+      } else {
+        out += '' + ($schema);
+      }
+      out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) {
+    /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += '} ';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/not.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_not(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  if ((it.opts.strictKeywords ? (typeof $schema == 'object' && Object.keys($schema).length > 0) || $schema === false : it.util.schemaHasRules($schema, it.RULES.all))) {
+    $it.schema = $schema;
+    $it.schemaPath = $schemaPath;
+    $it.errSchemaPath = $errSchemaPath;
+    out += ' var ' + ($errs) + ' = errors;  ';
+    var $wasComposite = it.compositeRule;
+    it.compositeRule = $it.compositeRule = true;
+    $it.createErrors = false;
+    var $allErrorsOption;
+    if ($it.opts.allErrors) {
+      $allErrorsOption = $it.opts.allErrors;
+      $it.opts.allErrors = false;
+    }
+    out += ' ' + (it.validate($it)) + ' ';
+    $it.createErrors = true;
+    if ($allErrorsOption) $it.opts.allErrors = $allErrorsOption;
+    it.compositeRule = $it.compositeRule = $wasComposite;
+    out += ' if (' + ($nextValid) + ') {   ';
+    var $$outStack = $$outStack || [];
+    $$outStack.push(out);
+    out = ''; /* istanbul ignore else */
+    if (it.createErrors !== false) {
+      out += ' { keyword: \'' + ('not') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: {} ';
+      if (it.opts.messages !== false) {
+        out += ' , message: \'should NOT be valid\' ';
+      }
+      if (it.opts.verbose) {
+        out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+      }
+      out += ' } ';
+    } else {
+      out += ' {} ';
+    }
+    var __err = out;
+    out = $$outStack.pop();
+    if (!it.compositeRule && $breakOnError) {
+      /* istanbul ignore if */
+      if (it.async) {
+        out += ' throw new ValidationError([' + (__err) + ']); ';
+      } else {
+        out += ' validate.errors = [' + (__err) + ']; return false; ';
+      }
+    } else {
+      out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    }
+    out += ' } else {  errors = ' + ($errs) + '; if (vErrors !== null) { if (' + ($errs) + ') vErrors.length = ' + ($errs) + '; else vErrors = null; } ';
+    if (it.opts.allErrors) {
+      out += ' } ';
+    }
+  } else {
+    out += '  var err =   '; /* istanbul ignore else */
+    if (it.createErrors !== false) {
+      out += ' { keyword: \'' + ('not') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: {} ';
+      if (it.opts.messages !== false) {
+        out += ' , message: \'should NOT be valid\' ';
+      }
+      if (it.opts.verbose) {
+        out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+      }
+      out += ' } ';
+    } else {
+      out += ' {} ';
+    }
+    out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    if ($breakOnError) {
+      out += ' if (false) { ';
+    }
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/oneOf.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_oneOf(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  var $closingBraces = '';
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  var $currentBaseId = $it.baseId,
+    $prevValid = 'prevValid' + $lvl,
+    $passingSchemas = 'passingSchemas' + $lvl;
+  out += 'var ' + ($errs) + ' = errors , ' + ($prevValid) + ' = false , ' + ($valid) + ' = false , ' + ($passingSchemas) + ' = null; ';
+  var $wasComposite = it.compositeRule;
+  it.compositeRule = $it.compositeRule = true;
+  var arr1 = $schema;
+  if (arr1) {
+    var $sch, $i = -1,
+      l1 = arr1.length - 1;
+    while ($i < l1) {
+      $sch = arr1[$i += 1];
+      if ((it.opts.strictKeywords ? (typeof $sch == 'object' && Object.keys($sch).length > 0) || $sch === false : it.util.schemaHasRules($sch, it.RULES.all))) {
+        $it.schema = $sch;
+        $it.schemaPath = $schemaPath + '[' + $i + ']';
+        $it.errSchemaPath = $errSchemaPath + '/' + $i;
+        out += '  ' + (it.validate($it)) + ' ';
+        $it.baseId = $currentBaseId;
+      } else {
+        out += ' var ' + ($nextValid) + ' = true; ';
+      }
+      if ($i) {
+        out += ' if (' + ($nextValid) + ' && ' + ($prevValid) + ') { ' + ($valid) + ' = false; ' + ($passingSchemas) + ' = [' + ($passingSchemas) + ', ' + ($i) + ']; } else { ';
+        $closingBraces += '}';
+      }
+      out += ' if (' + ($nextValid) + ') { ' + ($valid) + ' = ' + ($prevValid) + ' = true; ' + ($passingSchemas) + ' = ' + ($i) + '; }';
+    }
+  }
+  it.compositeRule = $it.compositeRule = $wasComposite;
+  out += '' + ($closingBraces) + 'if (!' + ($valid) + ') {   var err =   '; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ('oneOf') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { passingSchemas: ' + ($passingSchemas) + ' } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should match exactly one schema in oneOf\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  if (!it.compositeRule && $breakOnError) {
+    /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError(vErrors); ';
+    } else {
+      out += ' validate.errors = vErrors; return false; ';
+    }
+  }
+  out += '} else {  errors = ' + ($errs) + '; if (vErrors !== null) { if (' + ($errs) + ') vErrors.length = ' + ($errs) + '; else vErrors = null; }';
+  if (it.opts.allErrors) {
+    out += ' } ';
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/pattern.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_pattern(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $isData = it.opts.$data && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  var $regexp = $isData ? '(new RegExp(' + $schemaValue + '))' : it.usePattern($schema);
+  out += 'if ( ';
+  if ($isData) {
+    out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'string\') || ';
+  }
+  out += ' !' + ($regexp) + '.test(' + ($data) + ') ) {   ';
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ('pattern') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { pattern:  ';
+    if ($isData) {
+      out += '' + ($schemaValue);
+    } else {
+      out += '' + (it.util.toQuotedString($schema));
+    }
+    out += '  } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should match pattern "';
+      if ($isData) {
+        out += '\' + ' + ($schemaValue) + ' + \'';
+      } else {
+        out += '' + (it.util.escapeQuotes($schema));
+      }
+      out += '"\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema:  ';
+      if ($isData) {
+        out += 'validate.schema' + ($schemaPath);
+      } else {
+        out += '' + (it.util.toQuotedString($schema));
+      }
+      out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) {
+    /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += '} ';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/properties.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_properties(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  var $closingBraces = '';
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  var $key = 'key' + $lvl,
+    $idx = 'idx' + $lvl,
+    $dataNxt = $it.dataLevel = it.dataLevel + 1,
+    $nextData = 'data' + $dataNxt,
+    $dataProperties = 'dataProperties' + $lvl;
+  var $schemaKeys = Object.keys($schema || {}).filter(notProto),
+    $pProperties = it.schema.patternProperties || {},
+    $pPropertyKeys = Object.keys($pProperties).filter(notProto),
+    $aProperties = it.schema.additionalProperties,
+    $someProperties = $schemaKeys.length || $pPropertyKeys.length,
+    $noAdditional = $aProperties === false,
+    $additionalIsSchema = typeof $aProperties == 'object' && Object.keys($aProperties).length,
+    $removeAdditional = it.opts.removeAdditional,
+    $checkAdditional = $noAdditional || $additionalIsSchema || $removeAdditional,
+    $ownProperties = it.opts.ownProperties,
+    $currentBaseId = it.baseId;
+  var $required = it.schema.required;
+  if ($required && !(it.opts.$data && $required.$data) && $required.length < it.opts.loopRequired) {
+    var $requiredHash = it.util.toHash($required);
+  }
+
+  function notProto(p) {
+    return p !== '__proto__';
+  }
+  out += 'var ' + ($errs) + ' = errors;var ' + ($nextValid) + ' = true;';
+  if ($ownProperties) {
+    out += ' var ' + ($dataProperties) + ' = undefined;';
+  }
+  if ($checkAdditional) {
+    if ($ownProperties) {
+      out += ' ' + ($dataProperties) + ' = ' + ($dataProperties) + ' || Object.keys(' + ($data) + '); for (var ' + ($idx) + '=0; ' + ($idx) + '<' + ($dataProperties) + '.length; ' + ($idx) + '++) { var ' + ($key) + ' = ' + ($dataProperties) + '[' + ($idx) + ']; ';
+    } else {
+      out += ' for (var ' + ($key) + ' in ' + ($data) + ') { ';
+    }
+    if ($someProperties) {
+      out += ' var isAdditional' + ($lvl) + ' = !(false ';
+      if ($schemaKeys.length) {
+        if ($schemaKeys.length > 8) {
+          out += ' || validate.schema' + ($schemaPath) + '.hasOwnProperty(' + ($key) + ') ';
+        } else {
+          var arr1 = $schemaKeys;
+          if (arr1) {
+            var $propertyKey, i1 = -1,
+              l1 = arr1.length - 1;
+            while (i1 < l1) {
+              $propertyKey = arr1[i1 += 1];
+              out += ' || ' + ($key) + ' == ' + (it.util.toQuotedString($propertyKey)) + ' ';
+            }
+          }
+        }
+      }
+      if ($pPropertyKeys.length) {
+        var arr2 = $pPropertyKeys;
+        if (arr2) {
+          var $pProperty, $i = -1,
+            l2 = arr2.length - 1;
+          while ($i < l2) {
+            $pProperty = arr2[$i += 1];
+            out += ' || ' + (it.usePattern($pProperty)) + '.test(' + ($key) + ') ';
+          }
+        }
+      }
+      out += ' ); if (isAdditional' + ($lvl) + ') { ';
+    }
+    if ($removeAdditional == 'all') {
+      out += ' delete ' + ($data) + '[' + ($key) + ']; ';
+    } else {
+      var $currentErrorPath = it.errorPath;
+      var $additionalProperty = '\' + ' + $key + ' + \'';
+      if (it.opts._errorDataPathProperty) {
+        it.errorPath = it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
+      }
+      if ($noAdditional) {
+        if ($removeAdditional) {
+          out += ' delete ' + ($data) + '[' + ($key) + ']; ';
+        } else {
+          out += ' ' + ($nextValid) + ' = false; ';
+          var $currErrSchemaPath = $errSchemaPath;
+          $errSchemaPath = it.errSchemaPath + '/additionalProperties';
+          var $$outStack = $$outStack || [];
+          $$outStack.push(out);
+          out = ''; /* istanbul ignore else */
+          if (it.createErrors !== false) {
+            out += ' { keyword: \'' + ('additionalProperties') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { additionalProperty: \'' + ($additionalProperty) + '\' } ';
+            if (it.opts.messages !== false) {
+              out += ' , message: \'';
+              if (it.opts._errorDataPathProperty) {
+                out += 'is an invalid additional property';
+              } else {
+                out += 'should NOT have additional properties';
+              }
+              out += '\' ';
+            }
+            if (it.opts.verbose) {
+              out += ' , schema: false , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+            }
+            out += ' } ';
+          } else {
+            out += ' {} ';
+          }
+          var __err = out;
+          out = $$outStack.pop();
+          if (!it.compositeRule && $breakOnError) {
+            /* istanbul ignore if */
+            if (it.async) {
+              out += ' throw new ValidationError([' + (__err) + ']); ';
+            } else {
+              out += ' validate.errors = [' + (__err) + ']; return false; ';
+            }
+          } else {
+            out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+          }
+          $errSchemaPath = $currErrSchemaPath;
+          if ($breakOnError) {
+            out += ' break; ';
+          }
+        }
+      } else if ($additionalIsSchema) {
+        if ($removeAdditional == 'failing') {
+          out += ' var ' + ($errs) + ' = errors;  ';
+          var $wasComposite = it.compositeRule;
+          it.compositeRule = $it.compositeRule = true;
+          $it.schema = $aProperties;
+          $it.schemaPath = it.schemaPath + '.additionalProperties';
+          $it.errSchemaPath = it.errSchemaPath + '/additionalProperties';
+          $it.errorPath = it.opts._errorDataPathProperty ? it.errorPath : it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
+          var $passData = $data + '[' + $key + ']';
+          $it.dataPathArr[$dataNxt] = $key;
+          var $code = it.validate($it);
+          $it.baseId = $currentBaseId;
+          if (it.util.varOccurences($code, $nextData) < 2) {
+            out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+          } else {
+            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+          }
+          out += ' if (!' + ($nextValid) + ') { errors = ' + ($errs) + '; if (validate.errors !== null) { if (errors) validate.errors.length = errors; else validate.errors = null; } delete ' + ($data) + '[' + ($key) + ']; }  ';
+          it.compositeRule = $it.compositeRule = $wasComposite;
+        } else {
+          $it.schema = $aProperties;
+          $it.schemaPath = it.schemaPath + '.additionalProperties';
+          $it.errSchemaPath = it.errSchemaPath + '/additionalProperties';
+          $it.errorPath = it.opts._errorDataPathProperty ? it.errorPath : it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
+          var $passData = $data + '[' + $key + ']';
+          $it.dataPathArr[$dataNxt] = $key;
+          var $code = it.validate($it);
+          $it.baseId = $currentBaseId;
+          if (it.util.varOccurences($code, $nextData) < 2) {
+            out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+          } else {
+            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+          }
+          if ($breakOnError) {
+            out += ' if (!' + ($nextValid) + ') break; ';
+          }
+        }
+      }
+      it.errorPath = $currentErrorPath;
+    }
+    if ($someProperties) {
+      out += ' } ';
+    }
+    out += ' }  ';
+    if ($breakOnError) {
+      out += ' if (' + ($nextValid) + ') { ';
+      $closingBraces += '}';
+    }
+  }
+  var $useDefaults = it.opts.useDefaults && !it.compositeRule;
+  if ($schemaKeys.length) {
+    var arr3 = $schemaKeys;
+    if (arr3) {
+      var $propertyKey, i3 = -1,
+        l3 = arr3.length - 1;
+      while (i3 < l3) {
+        $propertyKey = arr3[i3 += 1];
+        var $sch = $schema[$propertyKey];
+        if ((it.opts.strictKeywords ? (typeof $sch == 'object' && Object.keys($sch).length > 0) || $sch === false : it.util.schemaHasRules($sch, it.RULES.all))) {
+          var $prop = it.util.getProperty($propertyKey),
+            $passData = $data + $prop,
+            $hasDefault = $useDefaults && $sch.default !== undefined;
+          $it.schema = $sch;
+          $it.schemaPath = $schemaPath + $prop;
+          $it.errSchemaPath = $errSchemaPath + '/' + it.util.escapeFragment($propertyKey);
+          $it.errorPath = it.util.getPath(it.errorPath, $propertyKey, it.opts.jsonPointers);
+          $it.dataPathArr[$dataNxt] = it.util.toQuotedString($propertyKey);
+          var $code = it.validate($it);
+          $it.baseId = $currentBaseId;
+          if (it.util.varOccurences($code, $nextData) < 2) {
+            $code = it.util.varReplace($code, $nextData, $passData);
+            var $useData = $passData;
+          } else {
+            var $useData = $nextData;
+            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ';
+          }
+          if ($hasDefault) {
+            out += ' ' + ($code) + ' ';
+          } else {
+            if ($requiredHash && $requiredHash[$propertyKey]) {
+              out += ' if ( ' + ($useData) + ' === undefined ';
+              if ($ownProperties) {
+                out += ' || ! Object.prototype.hasOwnProperty.call(' + ($data) + ', \'' + (it.util.escapeQuotes($propertyKey)) + '\') ';
+              }
+              out += ') { ' + ($nextValid) + ' = false; ';
+              var $currentErrorPath = it.errorPath,
+                $currErrSchemaPath = $errSchemaPath,
+                $missingProperty = it.util.escapeQuotes($propertyKey);
+              if (it.opts._errorDataPathProperty) {
+                it.errorPath = it.util.getPath($currentErrorPath, $propertyKey, it.opts.jsonPointers);
+              }
+              $errSchemaPath = it.errSchemaPath + '/required';
+              var $$outStack = $$outStack || [];
+              $$outStack.push(out);
+              out = ''; /* istanbul ignore else */
+              if (it.createErrors !== false) {
+                out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+                if (it.opts.messages !== false) {
+                  out += ' , message: \'';
+                  if (it.opts._errorDataPathProperty) {
+                    out += 'is a required property';
+                  } else {
+                    out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
+                  }
+                  out += '\' ';
+                }
+                if (it.opts.verbose) {
+                  out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+                }
+                out += ' } ';
+              } else {
+                out += ' {} ';
+              }
+              var __err = out;
+              out = $$outStack.pop();
+              if (!it.compositeRule && $breakOnError) {
+                /* istanbul ignore if */
+                if (it.async) {
+                  out += ' throw new ValidationError([' + (__err) + ']); ';
+                } else {
+                  out += ' validate.errors = [' + (__err) + ']; return false; ';
+                }
+              } else {
+                out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+              }
+              $errSchemaPath = $currErrSchemaPath;
+              it.errorPath = $currentErrorPath;
+              out += ' } else { ';
+            } else {
+              if ($breakOnError) {
+                out += ' if ( ' + ($useData) + ' === undefined ';
+                if ($ownProperties) {
+                  out += ' || ! Object.prototype.hasOwnProperty.call(' + ($data) + ', \'' + (it.util.escapeQuotes($propertyKey)) + '\') ';
+                }
+                out += ') { ' + ($nextValid) + ' = true; } else { ';
+              } else {
+                out += ' if (' + ($useData) + ' !== undefined ';
+                if ($ownProperties) {
+                  out += ' &&   Object.prototype.hasOwnProperty.call(' + ($data) + ', \'' + (it.util.escapeQuotes($propertyKey)) + '\') ';
+                }
+                out += ' ) { ';
+              }
+            }
+            out += ' ' + ($code) + ' } ';
+          }
+        }
+        if ($breakOnError) {
+          out += ' if (' + ($nextValid) + ') { ';
+          $closingBraces += '}';
+        }
+      }
+    }
+  }
+  if ($pPropertyKeys.length) {
+    var arr4 = $pPropertyKeys;
+    if (arr4) {
+      var $pProperty, i4 = -1,
+        l4 = arr4.length - 1;
+      while (i4 < l4) {
+        $pProperty = arr4[i4 += 1];
+        var $sch = $pProperties[$pProperty];
+        if ((it.opts.strictKeywords ? (typeof $sch == 'object' && Object.keys($sch).length > 0) || $sch === false : it.util.schemaHasRules($sch, it.RULES.all))) {
+          $it.schema = $sch;
+          $it.schemaPath = it.schemaPath + '.patternProperties' + it.util.getProperty($pProperty);
+          $it.errSchemaPath = it.errSchemaPath + '/patternProperties/' + it.util.escapeFragment($pProperty);
+          if ($ownProperties) {
+            out += ' ' + ($dataProperties) + ' = ' + ($dataProperties) + ' || Object.keys(' + ($data) + '); for (var ' + ($idx) + '=0; ' + ($idx) + '<' + ($dataProperties) + '.length; ' + ($idx) + '++) { var ' + ($key) + ' = ' + ($dataProperties) + '[' + ($idx) + ']; ';
+          } else {
+            out += ' for (var ' + ($key) + ' in ' + ($data) + ') { ';
+          }
+          out += ' if (' + (it.usePattern($pProperty)) + '.test(' + ($key) + ')) { ';
+          $it.errorPath = it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
+          var $passData = $data + '[' + $key + ']';
+          $it.dataPathArr[$dataNxt] = $key;
+          var $code = it.validate($it);
+          $it.baseId = $currentBaseId;
+          if (it.util.varOccurences($code, $nextData) < 2) {
+            out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+          } else {
+            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+          }
+          if ($breakOnError) {
+            out += ' if (!' + ($nextValid) + ') break; ';
+          }
+          out += ' } ';
+          if ($breakOnError) {
+            out += ' else ' + ($nextValid) + ' = true; ';
+          }
+          out += ' }  ';
+          if ($breakOnError) {
+            out += ' if (' + ($nextValid) + ') { ';
+            $closingBraces += '}';
+          }
+        }
+      }
+    }
+  }
+  if ($breakOnError) {
+    out += ' ' + ($closingBraces) + ' if (' + ($errs) + ' == errors) {';
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/propertyNames.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_propertyNames(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  var $closingBraces = '';
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  out += 'var ' + ($errs) + ' = errors;';
+  if ((it.opts.strictKeywords ? (typeof $schema == 'object' && Object.keys($schema).length > 0) || $schema === false : it.util.schemaHasRules($schema, it.RULES.all))) {
+    $it.schema = $schema;
+    $it.schemaPath = $schemaPath;
+    $it.errSchemaPath = $errSchemaPath;
+    var $key = 'key' + $lvl,
+      $idx = 'idx' + $lvl,
+      $i = 'i' + $lvl,
+      $invalidName = '\' + ' + $key + ' + \'',
+      $dataNxt = $it.dataLevel = it.dataLevel + 1,
+      $nextData = 'data' + $dataNxt,
+      $dataProperties = 'dataProperties' + $lvl,
+      $ownProperties = it.opts.ownProperties,
+      $currentBaseId = it.baseId;
+    if ($ownProperties) {
+      out += ' var ' + ($dataProperties) + ' = undefined; ';
+    }
+    if ($ownProperties) {
+      out += ' ' + ($dataProperties) + ' = ' + ($dataProperties) + ' || Object.keys(' + ($data) + '); for (var ' + ($idx) + '=0; ' + ($idx) + '<' + ($dataProperties) + '.length; ' + ($idx) + '++) { var ' + ($key) + ' = ' + ($dataProperties) + '[' + ($idx) + ']; ';
+    } else {
+      out += ' for (var ' + ($key) + ' in ' + ($data) + ') { ';
+    }
+    out += ' var startErrs' + ($lvl) + ' = errors; ';
+    var $passData = $key;
+    var $wasComposite = it.compositeRule;
+    it.compositeRule = $it.compositeRule = true;
+    var $code = it.validate($it);
+    $it.baseId = $currentBaseId;
+    if (it.util.varOccurences($code, $nextData) < 2) {
+      out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+    } else {
+      out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+    }
+    it.compositeRule = $it.compositeRule = $wasComposite;
+    out += ' if (!' + ($nextValid) + ') { for (var ' + ($i) + '=startErrs' + ($lvl) + '; ' + ($i) + '<errors; ' + ($i) + '++) { vErrors[' + ($i) + '].propertyName = ' + ($key) + '; }   var err =   '; /* istanbul ignore else */
+    if (it.createErrors !== false) {
+      out += ' { keyword: \'' + ('propertyNames') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { propertyName: \'' + ($invalidName) + '\' } ';
+      if (it.opts.messages !== false) {
+        out += ' , message: \'property name \\\'' + ($invalidName) + '\\\' is invalid\' ';
+      }
+      if (it.opts.verbose) {
+        out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+      }
+      out += ' } ';
+    } else {
+      out += ' {} ';
+    }
+    out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    if (!it.compositeRule && $breakOnError) {
+      /* istanbul ignore if */
+      if (it.async) {
+        out += ' throw new ValidationError(vErrors); ';
+      } else {
+        out += ' validate.errors = vErrors; return false; ';
+      }
+    }
+    if ($breakOnError) {
+      out += ' break; ';
+    }
+    out += ' } }';
+  }
+  if ($breakOnError) {
+    out += ' ' + ($closingBraces) + ' if (' + ($errs) + ' == errors) {';
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/required.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_required(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $isData = it.opts.$data && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  var $vSchema = 'schema' + $lvl;
+  if (!$isData) {
+    if ($schema.length < it.opts.loopRequired && it.schema.properties && Object.keys(it.schema.properties).length) {
+      var $required = [];
+      var arr1 = $schema;
+      if (arr1) {
+        var $property, i1 = -1,
+          l1 = arr1.length - 1;
+        while (i1 < l1) {
+          $property = arr1[i1 += 1];
+          var $propertySch = it.schema.properties[$property];
+          if (!($propertySch && (it.opts.strictKeywords ? (typeof $propertySch == 'object' && Object.keys($propertySch).length > 0) || $propertySch === false : it.util.schemaHasRules($propertySch, it.RULES.all)))) {
+            $required[$required.length] = $property;
+          }
+        }
+      }
+    } else {
+      var $required = $schema;
+    }
+  }
+  if ($isData || $required.length) {
+    var $currentErrorPath = it.errorPath,
+      $loopRequired = $isData || $required.length >= it.opts.loopRequired,
+      $ownProperties = it.opts.ownProperties;
+    if ($breakOnError) {
+      out += ' var missing' + ($lvl) + '; ';
+      if ($loopRequired) {
+        if (!$isData) {
+          out += ' var ' + ($vSchema) + ' = validate.schema' + ($schemaPath) + '; ';
+        }
+        var $i = 'i' + $lvl,
+          $propertyPath = 'schema' + $lvl + '[' + $i + ']',
+          $missingProperty = '\' + ' + $propertyPath + ' + \'';
+        if (it.opts._errorDataPathProperty) {
+          it.errorPath = it.util.getPathExpr($currentErrorPath, $propertyPath, it.opts.jsonPointers);
+        }
+        out += ' var ' + ($valid) + ' = true; ';
+        if ($isData) {
+          out += ' if (schema' + ($lvl) + ' === undefined) ' + ($valid) + ' = true; else if (!Array.isArray(schema' + ($lvl) + ')) ' + ($valid) + ' = false; else {';
+        }
+        out += ' for (var ' + ($i) + ' = 0; ' + ($i) + ' < ' + ($vSchema) + '.length; ' + ($i) + '++) { ' + ($valid) + ' = ' + ($data) + '[' + ($vSchema) + '[' + ($i) + ']] !== undefined ';
+        if ($ownProperties) {
+          out += ' &&   Object.prototype.hasOwnProperty.call(' + ($data) + ', ' + ($vSchema) + '[' + ($i) + ']) ';
+        }
+        out += '; if (!' + ($valid) + ') break; } ';
+        if ($isData) {
+          out += '  }  ';
+        }
+        out += '  if (!' + ($valid) + ') {   ';
+        var $$outStack = $$outStack || [];
+        $$outStack.push(out);
+        out = ''; /* istanbul ignore else */
+        if (it.createErrors !== false) {
+          out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+          if (it.opts.messages !== false) {
+            out += ' , message: \'';
+            if (it.opts._errorDataPathProperty) {
+              out += 'is a required property';
+            } else {
+              out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
+            }
+            out += '\' ';
+          }
+          if (it.opts.verbose) {
+            out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+          }
+          out += ' } ';
+        } else {
+          out += ' {} ';
+        }
+        var __err = out;
+        out = $$outStack.pop();
+        if (!it.compositeRule && $breakOnError) {
+          /* istanbul ignore if */
+          if (it.async) {
+            out += ' throw new ValidationError([' + (__err) + ']); ';
+          } else {
+            out += ' validate.errors = [' + (__err) + ']; return false; ';
+          }
+        } else {
+          out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+        }
+        out += ' } else { ';
+      } else {
+        out += ' if ( ';
+        var arr2 = $required;
+        if (arr2) {
+          var $propertyKey, $i = -1,
+            l2 = arr2.length - 1;
+          while ($i < l2) {
+            $propertyKey = arr2[$i += 1];
+            if ($i) {
+              out += ' || ';
+            }
+            var $prop = it.util.getProperty($propertyKey),
+              $useData = $data + $prop;
+            out += ' ( ( ' + ($useData) + ' === undefined ';
+            if ($ownProperties) {
+              out += ' || ! Object.prototype.hasOwnProperty.call(' + ($data) + ', \'' + (it.util.escapeQuotes($propertyKey)) + '\') ';
+            }
+            out += ') && (missing' + ($lvl) + ' = ' + (it.util.toQuotedString(it.opts.jsonPointers ? $propertyKey : $prop)) + ') ) ';
+          }
+        }
+        out += ') {  ';
+        var $propertyPath = 'missing' + $lvl,
+          $missingProperty = '\' + ' + $propertyPath + ' + \'';
+        if (it.opts._errorDataPathProperty) {
+          it.errorPath = it.opts.jsonPointers ? it.util.getPathExpr($currentErrorPath, $propertyPath, true) : $currentErrorPath + ' + ' + $propertyPath;
+        }
+        var $$outStack = $$outStack || [];
+        $$outStack.push(out);
+        out = ''; /* istanbul ignore else */
+        if (it.createErrors !== false) {
+          out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+          if (it.opts.messages !== false) {
+            out += ' , message: \'';
+            if (it.opts._errorDataPathProperty) {
+              out += 'is a required property';
+            } else {
+              out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
+            }
+            out += '\' ';
+          }
+          if (it.opts.verbose) {
+            out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+          }
+          out += ' } ';
+        } else {
+          out += ' {} ';
+        }
+        var __err = out;
+        out = $$outStack.pop();
+        if (!it.compositeRule && $breakOnError) {
+          /* istanbul ignore if */
+          if (it.async) {
+            out += ' throw new ValidationError([' + (__err) + ']); ';
+          } else {
+            out += ' validate.errors = [' + (__err) + ']; return false; ';
+          }
+        } else {
+          out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+        }
+        out += ' } else { ';
+      }
+    } else {
+      if ($loopRequired) {
+        if (!$isData) {
+          out += ' var ' + ($vSchema) + ' = validate.schema' + ($schemaPath) + '; ';
+        }
+        var $i = 'i' + $lvl,
+          $propertyPath = 'schema' + $lvl + '[' + $i + ']',
+          $missingProperty = '\' + ' + $propertyPath + ' + \'';
+        if (it.opts._errorDataPathProperty) {
+          it.errorPath = it.util.getPathExpr($currentErrorPath, $propertyPath, it.opts.jsonPointers);
+        }
+        if ($isData) {
+          out += ' if (' + ($vSchema) + ' && !Array.isArray(' + ($vSchema) + ')) {  var err =   '; /* istanbul ignore else */
+          if (it.createErrors !== false) {
+            out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+            if (it.opts.messages !== false) {
+              out += ' , message: \'';
+              if (it.opts._errorDataPathProperty) {
+                out += 'is a required property';
+              } else {
+                out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
+              }
+              out += '\' ';
+            }
+            if (it.opts.verbose) {
+              out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+            }
+            out += ' } ';
+          } else {
+            out += ' {} ';
+          }
+          out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; } else if (' + ($vSchema) + ' !== undefined) { ';
+        }
+        out += ' for (var ' + ($i) + ' = 0; ' + ($i) + ' < ' + ($vSchema) + '.length; ' + ($i) + '++) { if (' + ($data) + '[' + ($vSchema) + '[' + ($i) + ']] === undefined ';
+        if ($ownProperties) {
+          out += ' || ! Object.prototype.hasOwnProperty.call(' + ($data) + ', ' + ($vSchema) + '[' + ($i) + ']) ';
+        }
+        out += ') {  var err =   '; /* istanbul ignore else */
+        if (it.createErrors !== false) {
+          out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+          if (it.opts.messages !== false) {
+            out += ' , message: \'';
+            if (it.opts._errorDataPathProperty) {
+              out += 'is a required property';
+            } else {
+              out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
+            }
+            out += '\' ';
+          }
+          if (it.opts.verbose) {
+            out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+          }
+          out += ' } ';
+        } else {
+          out += ' {} ';
+        }
+        out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; } } ';
+        if ($isData) {
+          out += '  }  ';
+        }
+      } else {
+        var arr3 = $required;
+        if (arr3) {
+          var $propertyKey, i3 = -1,
+            l3 = arr3.length - 1;
+          while (i3 < l3) {
+            $propertyKey = arr3[i3 += 1];
+            var $prop = it.util.getProperty($propertyKey),
+              $missingProperty = it.util.escapeQuotes($propertyKey),
+              $useData = $data + $prop;
+            if (it.opts._errorDataPathProperty) {
+              it.errorPath = it.util.getPath($currentErrorPath, $propertyKey, it.opts.jsonPointers);
+            }
+            out += ' if ( ' + ($useData) + ' === undefined ';
+            if ($ownProperties) {
+              out += ' || ! Object.prototype.hasOwnProperty.call(' + ($data) + ', \'' + (it.util.escapeQuotes($propertyKey)) + '\') ';
+            }
+            out += ') {  var err =   '; /* istanbul ignore else */
+            if (it.createErrors !== false) {
+              out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+              if (it.opts.messages !== false) {
+                out += ' , message: \'';
+                if (it.opts._errorDataPathProperty) {
+                  out += 'is a required property';
+                } else {
+                  out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
+                }
+                out += '\' ';
+              }
+              if (it.opts.verbose) {
+                out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+              }
+              out += ' } ';
+            } else {
+              out += ' {} ';
+            }
+            out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; } ';
+          }
+        }
+      }
+    }
+    it.errorPath = $currentErrorPath;
+  } else if ($breakOnError) {
+    out += ' if (true) {';
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/uniqueItems.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_uniqueItems(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $isData = it.opts.$data && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  if (($schema || $isData) && it.opts.uniqueItems !== false) {
+    if ($isData) {
+      out += ' var ' + ($valid) + '; if (' + ($schemaValue) + ' === false || ' + ($schemaValue) + ' === undefined) ' + ($valid) + ' = true; else if (typeof ' + ($schemaValue) + ' != \'boolean\') ' + ($valid) + ' = false; else { ';
+    }
+    out += ' var i = ' + ($data) + '.length , ' + ($valid) + ' = true , j; if (i > 1) { ';
+    var $itemType = it.schema.items && it.schema.items.type,
+      $typeIsArray = Array.isArray($itemType);
+    if (!$itemType || $itemType == 'object' || $itemType == 'array' || ($typeIsArray && ($itemType.indexOf('object') >= 0 || $itemType.indexOf('array') >= 0))) {
+      out += ' outer: for (;i--;) { for (j = i; j--;) { if (equal(' + ($data) + '[i], ' + ($data) + '[j])) { ' + ($valid) + ' = false; break outer; } } } ';
+    } else {
+      out += ' var itemIndices = {}, item; for (;i--;) { var item = ' + ($data) + '[i]; ';
+      var $method = 'checkDataType' + ($typeIsArray ? 's' : '');
+      out += ' if (' + (it.util[$method]($itemType, 'item', it.opts.strictNumbers, true)) + ') continue; ';
+      if ($typeIsArray) {
+        out += ' if (typeof item == \'string\') item = \'"\' + item; ';
+      }
+      out += ' if (typeof itemIndices[item] == \'number\') { ' + ($valid) + ' = false; j = itemIndices[item]; break; } itemIndices[item] = i; } ';
+    }
+    out += ' } ';
+    if ($isData) {
+      out += '  }  ';
+    }
+    out += ' if (!' + ($valid) + ') {   ';
+    var $$outStack = $$outStack || [];
+    $$outStack.push(out);
+    out = ''; /* istanbul ignore else */
+    if (it.createErrors !== false) {
+      out += ' { keyword: \'' + ('uniqueItems') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { i: i, j: j } ';
+      if (it.opts.messages !== false) {
+        out += ' , message: \'should NOT have duplicate items (items ## \' + j + \' and \' + i + \' are identical)\' ';
+      }
+      if (it.opts.verbose) {
+        out += ' , schema:  ';
+        if ($isData) {
+          out += 'validate.schema' + ($schemaPath);
+        } else {
+          out += '' + ($schema);
+        }
+        out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+      }
+      out += ' } ';
+    } else {
+      out += ' {} ';
+    }
+    var __err = out;
+    out = $$outStack.pop();
+    if (!it.compositeRule && $breakOnError) {
+      /* istanbul ignore if */
+      if (it.async) {
+        out += ' throw new ValidationError([' + (__err) + ']); ';
+      } else {
+        out += ' validate.errors = [' + (__err) + ']; return false; ';
+      }
+    } else {
+      out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    }
+    out += ' } ';
+    if ($breakOnError) {
+      out += ' else { ';
+    }
+  } else {
+    if ($breakOnError) {
+      out += ' if (true) { ';
+    }
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/dotjs/index.js":[function(require,module,exports) {
+'use strict';
+
+//all requires must be explicit because browserify won't work with dynamic requires
+module.exports = {
+  '$ref': require('./ref'),
+  allOf: require('./allOf'),
+  anyOf: require('./anyOf'),
+  '$comment': require('./comment'),
+  const: require('./const'),
+  contains: require('./contains'),
+  dependencies: require('./dependencies'),
+  'enum': require('./enum'),
+  format: require('./format'),
+  'if': require('./if'),
+  items: require('./items'),
+  maximum: require('./_limit'),
+  minimum: require('./_limit'),
+  maxItems: require('./_limitItems'),
+  minItems: require('./_limitItems'),
+  maxLength: require('./_limitLength'),
+  minLength: require('./_limitLength'),
+  maxProperties: require('./_limitProperties'),
+  minProperties: require('./_limitProperties'),
+  multipleOf: require('./multipleOf'),
+  not: require('./not'),
+  oneOf: require('./oneOf'),
+  pattern: require('./pattern'),
+  properties: require('./properties'),
+  propertyNames: require('./propertyNames'),
+  required: require('./required'),
+  uniqueItems: require('./uniqueItems'),
+  validate: require('./validate')
+};
+
+},{"./ref":"../node_modules/ajv/lib/dotjs/ref.js","./allOf":"../node_modules/ajv/lib/dotjs/allOf.js","./anyOf":"../node_modules/ajv/lib/dotjs/anyOf.js","./comment":"../node_modules/ajv/lib/dotjs/comment.js","./const":"../node_modules/ajv/lib/dotjs/const.js","./contains":"../node_modules/ajv/lib/dotjs/contains.js","./dependencies":"../node_modules/ajv/lib/dotjs/dependencies.js","./enum":"../node_modules/ajv/lib/dotjs/enum.js","./format":"../node_modules/ajv/lib/dotjs/format.js","./if":"../node_modules/ajv/lib/dotjs/if.js","./items":"../node_modules/ajv/lib/dotjs/items.js","./_limit":"../node_modules/ajv/lib/dotjs/_limit.js","./_limitItems":"../node_modules/ajv/lib/dotjs/_limitItems.js","./_limitLength":"../node_modules/ajv/lib/dotjs/_limitLength.js","./_limitProperties":"../node_modules/ajv/lib/dotjs/_limitProperties.js","./multipleOf":"../node_modules/ajv/lib/dotjs/multipleOf.js","./not":"../node_modules/ajv/lib/dotjs/not.js","./oneOf":"../node_modules/ajv/lib/dotjs/oneOf.js","./pattern":"../node_modules/ajv/lib/dotjs/pattern.js","./properties":"../node_modules/ajv/lib/dotjs/properties.js","./propertyNames":"../node_modules/ajv/lib/dotjs/propertyNames.js","./required":"../node_modules/ajv/lib/dotjs/required.js","./uniqueItems":"../node_modules/ajv/lib/dotjs/uniqueItems.js","./validate":"../node_modules/ajv/lib/dotjs/validate.js"}],"../node_modules/ajv/lib/compile/rules.js":[function(require,module,exports) {
+'use strict';
+
+var ruleModules = require('../dotjs')
+  , toHash = require('./util').toHash;
+
+module.exports = function rules() {
+  var RULES = [
+    { type: 'number',
+      rules: [ { 'maximum': ['exclusiveMaximum'] },
+               { 'minimum': ['exclusiveMinimum'] }, 'multipleOf', 'format'] },
+    { type: 'string',
+      rules: [ 'maxLength', 'minLength', 'pattern', 'format' ] },
+    { type: 'array',
+      rules: [ 'maxItems', 'minItems', 'items', 'contains', 'uniqueItems' ] },
+    { type: 'object',
+      rules: [ 'maxProperties', 'minProperties', 'required', 'dependencies', 'propertyNames',
+               { 'properties': ['additionalProperties', 'patternProperties'] } ] },
+    { rules: [ '$ref', 'const', 'enum', 'not', 'anyOf', 'oneOf', 'allOf', 'if' ] }
+  ];
+
+  var ALL = [ 'type', '$comment' ];
+  var KEYWORDS = [
+    '$schema', '$id', 'id', '$data', '$async', 'title',
+    'description', 'default', 'definitions',
+    'examples', 'readOnly', 'writeOnly',
+    'contentMediaType', 'contentEncoding',
+    'additionalItems', 'then', 'else'
+  ];
+  var TYPES = [ 'number', 'integer', 'string', 'array', 'object', 'boolean', 'null' ];
+  RULES.all = toHash(ALL);
+  RULES.types = toHash(TYPES);
+
+  RULES.forEach(function (group) {
+    group.rules = group.rules.map(function (keyword) {
+      var implKeywords;
+      if (typeof keyword == 'object') {
+        var key = Object.keys(keyword)[0];
+        implKeywords = keyword[key];
+        keyword = key;
+        implKeywords.forEach(function (k) {
+          ALL.push(k);
+          RULES.all[k] = true;
+        });
+      }
+      ALL.push(keyword);
+      var rule = RULES.all[keyword] = {
+        keyword: keyword,
+        code: ruleModules[keyword],
+        implements: implKeywords
+      };
+      return rule;
+    });
+
+    RULES.all.$comment = {
+      keyword: '$comment',
+      code: ruleModules.$comment
+    };
+
+    if (group.type) RULES.types[group.type] = group;
+  });
+
+  RULES.keywords = toHash(ALL.concat(KEYWORDS));
+  RULES.custom = {};
+
+  return RULES;
+};
+
+},{"../dotjs":"../node_modules/ajv/lib/dotjs/index.js","./util":"../node_modules/ajv/lib/compile/util.js"}],"../node_modules/ajv/lib/data.js":[function(require,module,exports) {
+'use strict';
+
+var KEYWORDS = [
+  'multipleOf',
+  'maximum',
+  'exclusiveMaximum',
+  'minimum',
+  'exclusiveMinimum',
+  'maxLength',
+  'minLength',
+  'pattern',
+  'additionalItems',
+  'maxItems',
+  'minItems',
+  'uniqueItems',
+  'maxProperties',
+  'minProperties',
+  'required',
+  'additionalProperties',
+  'enum',
+  'format',
+  'const'
+];
+
+module.exports = function (metaSchema, keywordsJsonPointers) {
+  for (var i=0; i<keywordsJsonPointers.length; i++) {
+    metaSchema = JSON.parse(JSON.stringify(metaSchema));
+    var segments = keywordsJsonPointers[i].split('/');
+    var keywords = metaSchema;
+    var j;
+    for (j=1; j<segments.length; j++)
+      keywords = keywords[segments[j]];
+
+    for (j=0; j<KEYWORDS.length; j++) {
+      var key = KEYWORDS[j];
+      var schema = keywords[key];
+      if (schema) {
+        keywords[key] = {
+          anyOf: [
+            schema,
+            { $ref: 'https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#' }
+          ]
+        };
+      }
+    }
+  }
+
+  return metaSchema;
+};
+
+},{}],"../node_modules/ajv/lib/compile/async.js":[function(require,module,exports) {
+'use strict';
+
+var MissingRefError = require('./error_classes').MissingRef;
+
+module.exports = compileAsync;
+
+
+/**
+ * Creates validating function for passed schema with asynchronous loading of missing schemas.
+ * `loadSchema` option should be a function that accepts schema uri and returns promise that resolves with the schema.
+ * @this  Ajv
+ * @param {Object}   schema schema object
+ * @param {Boolean}  meta optional true to compile meta-schema; this parameter can be skipped
+ * @param {Function} callback an optional node-style callback, it is called with 2 parameters: error (or null) and validating function.
+ * @return {Promise} promise that resolves with a validating function.
+ */
+function compileAsync(schema, meta, callback) {
+  /* eslint no-shadow: 0 */
+  /* global Promise */
+  /* jshint validthis: true */
+  var self = this;
+  if (typeof this._opts.loadSchema != 'function')
+    throw new Error('options.loadSchema should be a function');
+
+  if (typeof meta == 'function') {
+    callback = meta;
+    meta = undefined;
+  }
+
+  var p = loadMetaSchemaOf(schema).then(function () {
+    var schemaObj = self._addSchema(schema, undefined, meta);
+    return schemaObj.validate || _compileAsync(schemaObj);
+  });
+
+  if (callback) {
+    p.then(
+      function(v) { callback(null, v); },
+      callback
+    );
+  }
+
+  return p;
+
+
+  function loadMetaSchemaOf(sch) {
+    var $schema = sch.$schema;
+    return $schema && !self.getSchema($schema)
+            ? compileAsync.call(self, { $ref: $schema }, true)
+            : Promise.resolve();
+  }
+
+
+  function _compileAsync(schemaObj) {
+    try { return self._compile(schemaObj); }
+    catch(e) {
+      if (e instanceof MissingRefError) return loadMissingSchema(e);
+      throw e;
+    }
+
+
+    function loadMissingSchema(e) {
+      var ref = e.missingSchema;
+      if (added(ref)) throw new Error('Schema ' + ref + ' is loaded but ' + e.missingRef + ' cannot be resolved');
+
+      var schemaPromise = self._loadingSchemas[ref];
+      if (!schemaPromise) {
+        schemaPromise = self._loadingSchemas[ref] = self._opts.loadSchema(ref);
+        schemaPromise.then(removePromise, removePromise);
+      }
+
+      return schemaPromise.then(function (sch) {
+        if (!added(ref)) {
+          return loadMetaSchemaOf(sch).then(function () {
+            if (!added(ref)) self.addSchema(sch, ref, undefined, meta);
+          });
+        }
+      }).then(function() {
+        return _compileAsync(schemaObj);
+      });
+
+      function removePromise() {
+        delete self._loadingSchemas[ref];
+      }
+
+      function added(ref) {
+        return self._refs[ref] || self._schemas[ref];
+      }
+    }
+  }
+}
+
+},{"./error_classes":"../node_modules/ajv/lib/compile/error_classes.js"}],"../node_modules/ajv/lib/dotjs/custom.js":[function(require,module,exports) {
+'use strict';
+module.exports = function generate_custom(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $errorKeyword;
+  var $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $errs = 'errs__' + $lvl;
+  var $isData = it.opts.$data && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  var $rule = this,
+    $definition = 'definition' + $lvl,
+    $rDef = $rule.definition,
+    $closingBraces = '';
+  var $compile, $inline, $macro, $ruleValidate, $validateCode;
+  if ($isData && $rDef.$data) {
+    $validateCode = 'keywordValidate' + $lvl;
+    var $validateSchema = $rDef.validateSchema;
+    out += ' var ' + ($definition) + ' = RULES.custom[\'' + ($keyword) + '\'].definition; var ' + ($validateCode) + ' = ' + ($definition) + '.validate;';
+  } else {
+    $ruleValidate = it.useCustomRule($rule, $schema, it.schema, it);
+    if (!$ruleValidate) return;
+    $schemaValue = 'validate.schema' + $schemaPath;
+    $validateCode = $ruleValidate.code;
+    $compile = $rDef.compile;
+    $inline = $rDef.inline;
+    $macro = $rDef.macro;
+  }
+  var $ruleErrs = $validateCode + '.errors',
+    $i = 'i' + $lvl,
+    $ruleErr = 'ruleErr' + $lvl,
+    $asyncKeyword = $rDef.async;
+  if ($asyncKeyword && !it.async) throw new Error('async keyword in sync schema');
+  if (!($inline || $macro)) {
+    out += '' + ($ruleErrs) + ' = null;';
+  }
+  out += 'var ' + ($errs) + ' = errors;var ' + ($valid) + ';';
+  if ($isData && $rDef.$data) {
+    $closingBraces += '}';
+    out += ' if (' + ($schemaValue) + ' === undefined) { ' + ($valid) + ' = true; } else { ';
+    if ($validateSchema) {
+      $closingBraces += '}';
+      out += ' ' + ($valid) + ' = ' + ($definition) + '.validateSchema(' + ($schemaValue) + '); if (' + ($valid) + ') { ';
+    }
+  }
+  if ($inline) {
+    if ($rDef.statements) {
+      out += ' ' + ($ruleValidate.validate) + ' ';
+    } else {
+      out += ' ' + ($valid) + ' = ' + ($ruleValidate.validate) + '; ';
+    }
+  } else if ($macro) {
+    var $it = it.util.copy(it);
+    var $closingBraces = '';
+    $it.level++;
+    var $nextValid = 'valid' + $it.level;
+    $it.schema = $ruleValidate.validate;
+    $it.schemaPath = '';
+    var $wasComposite = it.compositeRule;
+    it.compositeRule = $it.compositeRule = true;
+    var $code = it.validate($it).replace(/validate\.schema/g, $validateCode);
+    it.compositeRule = $it.compositeRule = $wasComposite;
+    out += ' ' + ($code);
+  } else {
+    var $$outStack = $$outStack || [];
+    $$outStack.push(out);
+    out = '';
+    out += '  ' + ($validateCode) + '.call( ';
+    if (it.opts.passContext) {
+      out += 'this';
+    } else {
+      out += 'self';
+    }
+    if ($compile || $rDef.schema === false) {
+      out += ' , ' + ($data) + ' ';
+    } else {
+      out += ' , ' + ($schemaValue) + ' , ' + ($data) + ' , validate.schema' + (it.schemaPath) + ' ';
+    }
+    out += ' , (dataPath || \'\')';
+    if (it.errorPath != '""') {
+      out += ' + ' + (it.errorPath);
+    }
+    var $parentData = $dataLvl ? 'data' + (($dataLvl - 1) || '') : 'parentData',
+      $parentDataProperty = $dataLvl ? it.dataPathArr[$dataLvl] : 'parentDataProperty';
+    out += ' , ' + ($parentData) + ' , ' + ($parentDataProperty) + ' , rootData )  ';
+    var def_callRuleValidate = out;
+    out = $$outStack.pop();
+    if ($rDef.errors === false) {
+      out += ' ' + ($valid) + ' = ';
+      if ($asyncKeyword) {
+        out += 'await ';
+      }
+      out += '' + (def_callRuleValidate) + '; ';
+    } else {
+      if ($asyncKeyword) {
+        $ruleErrs = 'customErrors' + $lvl;
+        out += ' var ' + ($ruleErrs) + ' = null; try { ' + ($valid) + ' = await ' + (def_callRuleValidate) + '; } catch (e) { ' + ($valid) + ' = false; if (e instanceof ValidationError) ' + ($ruleErrs) + ' = e.errors; else throw e; } ';
+      } else {
+        out += ' ' + ($ruleErrs) + ' = null; ' + ($valid) + ' = ' + (def_callRuleValidate) + '; ';
+      }
+    }
+  }
+  if ($rDef.modifying) {
+    out += ' if (' + ($parentData) + ') ' + ($data) + ' = ' + ($parentData) + '[' + ($parentDataProperty) + '];';
+  }
+  out += '' + ($closingBraces);
+  if ($rDef.valid) {
+    if ($breakOnError) {
+      out += ' if (true) { ';
+    }
+  } else {
+    out += ' if ( ';
+    if ($rDef.valid === undefined) {
+      out += ' !';
+      if ($macro) {
+        out += '' + ($nextValid);
+      } else {
+        out += '' + ($valid);
+      }
+    } else {
+      out += ' ' + (!$rDef.valid) + ' ';
+    }
+    out += ') { ';
+    $errorKeyword = $rule.keyword;
+    var $$outStack = $$outStack || [];
+    $$outStack.push(out);
+    out = '';
+    var $$outStack = $$outStack || [];
+    $$outStack.push(out);
+    out = ''; /* istanbul ignore else */
+    if (it.createErrors !== false) {
+      out += ' { keyword: \'' + ($errorKeyword || 'custom') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { keyword: \'' + ($rule.keyword) + '\' } ';
+      if (it.opts.messages !== false) {
+        out += ' , message: \'should pass "' + ($rule.keyword) + '" keyword validation\' ';
+      }
+      if (it.opts.verbose) {
+        out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+      }
+      out += ' } ';
+    } else {
+      out += ' {} ';
+    }
+    var __err = out;
+    out = $$outStack.pop();
+    if (!it.compositeRule && $breakOnError) {
+      /* istanbul ignore if */
+      if (it.async) {
+        out += ' throw new ValidationError([' + (__err) + ']); ';
+      } else {
+        out += ' validate.errors = [' + (__err) + ']; return false; ';
+      }
+    } else {
+      out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    }
+    var def_customError = out;
+    out = $$outStack.pop();
+    if ($inline) {
+      if ($rDef.errors) {
+        if ($rDef.errors != 'full') {
+          out += '  for (var ' + ($i) + '=' + ($errs) + '; ' + ($i) + '<errors; ' + ($i) + '++) { var ' + ($ruleErr) + ' = vErrors[' + ($i) + ']; if (' + ($ruleErr) + '.dataPath === undefined) ' + ($ruleErr) + '.dataPath = (dataPath || \'\') + ' + (it.errorPath) + '; if (' + ($ruleErr) + '.schemaPath === undefined) { ' + ($ruleErr) + '.schemaPath = "' + ($errSchemaPath) + '"; } ';
+          if (it.opts.verbose) {
+            out += ' ' + ($ruleErr) + '.schema = ' + ($schemaValue) + '; ' + ($ruleErr) + '.data = ' + ($data) + '; ';
+          }
+          out += ' } ';
+        }
+      } else {
+        if ($rDef.errors === false) {
+          out += ' ' + (def_customError) + ' ';
+        } else {
+          out += ' if (' + ($errs) + ' == errors) { ' + (def_customError) + ' } else {  for (var ' + ($i) + '=' + ($errs) + '; ' + ($i) + '<errors; ' + ($i) + '++) { var ' + ($ruleErr) + ' = vErrors[' + ($i) + ']; if (' + ($ruleErr) + '.dataPath === undefined) ' + ($ruleErr) + '.dataPath = (dataPath || \'\') + ' + (it.errorPath) + '; if (' + ($ruleErr) + '.schemaPath === undefined) { ' + ($ruleErr) + '.schemaPath = "' + ($errSchemaPath) + '"; } ';
+          if (it.opts.verbose) {
+            out += ' ' + ($ruleErr) + '.schema = ' + ($schemaValue) + '; ' + ($ruleErr) + '.data = ' + ($data) + '; ';
+          }
+          out += ' } } ';
+        }
+      }
+    } else if ($macro) {
+      out += '   var err =   '; /* istanbul ignore else */
+      if (it.createErrors !== false) {
+        out += ' { keyword: \'' + ($errorKeyword || 'custom') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { keyword: \'' + ($rule.keyword) + '\' } ';
+        if (it.opts.messages !== false) {
+          out += ' , message: \'should pass "' + ($rule.keyword) + '" keyword validation\' ';
+        }
+        if (it.opts.verbose) {
+          out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+        }
+        out += ' } ';
+      } else {
+        out += ' {} ';
+      }
+      out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+      if (!it.compositeRule && $breakOnError) {
+        /* istanbul ignore if */
+        if (it.async) {
+          out += ' throw new ValidationError(vErrors); ';
+        } else {
+          out += ' validate.errors = vErrors; return false; ';
+        }
+      }
+    } else {
+      if ($rDef.errors === false) {
+        out += ' ' + (def_customError) + ' ';
+      } else {
+        out += ' if (Array.isArray(' + ($ruleErrs) + ')) { if (vErrors === null) vErrors = ' + ($ruleErrs) + '; else vErrors = vErrors.concat(' + ($ruleErrs) + '); errors = vErrors.length;  for (var ' + ($i) + '=' + ($errs) + '; ' + ($i) + '<errors; ' + ($i) + '++) { var ' + ($ruleErr) + ' = vErrors[' + ($i) + ']; if (' + ($ruleErr) + '.dataPath === undefined) ' + ($ruleErr) + '.dataPath = (dataPath || \'\') + ' + (it.errorPath) + ';  ' + ($ruleErr) + '.schemaPath = "' + ($errSchemaPath) + '";  ';
+        if (it.opts.verbose) {
+          out += ' ' + ($ruleErr) + '.schema = ' + ($schemaValue) + '; ' + ($ruleErr) + '.data = ' + ($data) + '; ';
+        }
+        out += ' } } else { ' + (def_customError) + ' } ';
+      }
+    }
+    out += ' } ';
+    if ($breakOnError) {
+      out += ' else { ';
+    }
+  }
+  return out;
+}
+
+},{}],"../node_modules/ajv/lib/refs/json-schema-draft-07.json":[function(require,module,exports) {
+module.exports = {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://json-schema.org/draft-07/schema#",
+    "title": "Core schema meta-schema",
+    "definitions": {
+        "schemaArray": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#" }
+        },
+        "nonNegativeInteger": {
+            "type": "integer",
+            "minimum": 0
+        },
+        "nonNegativeIntegerDefault0": {
+            "allOf": [
+                { "$ref": "#/definitions/nonNegativeInteger" },
+                { "default": 0 }
+            ]
+        },
+        "simpleTypes": {
+            "enum": [
+                "array",
+                "boolean",
+                "integer",
+                "null",
+                "number",
+                "object",
+                "string"
+            ]
+        },
+        "stringArray": {
+            "type": "array",
+            "items": { "type": "string" },
+            "uniqueItems": true,
+            "default": []
+        }
+    },
+    "type": ["object", "boolean"],
+    "properties": {
+        "$id": {
+            "type": "string",
+            "format": "uri-reference"
+        },
+        "$schema": {
+            "type": "string",
+            "format": "uri"
+        },
+        "$ref": {
+            "type": "string",
+            "format": "uri-reference"
+        },
+        "$comment": {
+            "type": "string"
+        },
+        "title": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "default": true,
+        "readOnly": {
+            "type": "boolean",
+            "default": false
+        },
+        "examples": {
+            "type": "array",
+            "items": true
+        },
+        "multipleOf": {
+            "type": "number",
+            "exclusiveMinimum": 0
+        },
+        "maximum": {
+            "type": "number"
+        },
+        "exclusiveMaximum": {
+            "type": "number"
+        },
+        "minimum": {
+            "type": "number"
+        },
+        "exclusiveMinimum": {
+            "type": "number"
+        },
+        "maxLength": { "$ref": "#/definitions/nonNegativeInteger" },
+        "minLength": { "$ref": "#/definitions/nonNegativeIntegerDefault0" },
+        "pattern": {
+            "type": "string",
+            "format": "regex"
+        },
+        "additionalItems": { "$ref": "#" },
+        "items": {
+            "anyOf": [
+                { "$ref": "#" },
+                { "$ref": "#/definitions/schemaArray" }
+            ],
+            "default": true
+        },
+        "maxItems": { "$ref": "#/definitions/nonNegativeInteger" },
+        "minItems": { "$ref": "#/definitions/nonNegativeIntegerDefault0" },
+        "uniqueItems": {
+            "type": "boolean",
+            "default": false
+        },
+        "contains": { "$ref": "#" },
+        "maxProperties": { "$ref": "#/definitions/nonNegativeInteger" },
+        "minProperties": { "$ref": "#/definitions/nonNegativeIntegerDefault0" },
+        "required": { "$ref": "#/definitions/stringArray" },
+        "additionalProperties": { "$ref": "#" },
+        "definitions": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#" },
+            "default": {}
+        },
+        "properties": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#" },
+            "default": {}
+        },
+        "patternProperties": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#" },
+            "propertyNames": { "format": "regex" },
+            "default": {}
+        },
+        "dependencies": {
+            "type": "object",
+            "additionalProperties": {
+                "anyOf": [
+                    { "$ref": "#" },
+                    { "$ref": "#/definitions/stringArray" }
+                ]
+            }
+        },
+        "propertyNames": { "$ref": "#" },
+        "const": true,
+        "enum": {
+            "type": "array",
+            "items": true,
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "type": {
+            "anyOf": [
+                { "$ref": "#/definitions/simpleTypes" },
+                {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/simpleTypes" },
+                    "minItems": 1,
+                    "uniqueItems": true
+                }
+            ]
+        },
+        "format": { "type": "string" },
+        "contentMediaType": { "type": "string" },
+        "contentEncoding": { "type": "string" },
+        "if": {"$ref": "#"},
+        "then": {"$ref": "#"},
+        "else": {"$ref": "#"},
+        "allOf": { "$ref": "#/definitions/schemaArray" },
+        "anyOf": { "$ref": "#/definitions/schemaArray" },
+        "oneOf": { "$ref": "#/definitions/schemaArray" },
+        "not": { "$ref": "#" }
+    },
+    "default": true
+}
+;
+},{}],"../node_modules/ajv/lib/definition_schema.js":[function(require,module,exports) {
+'use strict';
+
+var metaSchema = require('./refs/json-schema-draft-07.json');
+
+module.exports = {
+  $id: 'https://github.com/ajv-validator/ajv/blob/master/lib/definition_schema.js',
+  definitions: {
+    simpleTypes: metaSchema.definitions.simpleTypes
+  },
+  type: 'object',
+  dependencies: {
+    schema: ['validate'],
+    $data: ['validate'],
+    statements: ['inline'],
+    valid: {not: {required: ['macro']}}
+  },
+  properties: {
+    type: metaSchema.properties.type,
+    schema: {type: 'boolean'},
+    statements: {type: 'boolean'},
+    dependencies: {
+      type: 'array',
+      items: {type: 'string'}
+    },
+    metaSchema: {type: 'object'},
+    modifying: {type: 'boolean'},
+    valid: {type: 'boolean'},
+    $data: {type: 'boolean'},
+    async: {type: 'boolean'},
+    errors: {
+      anyOf: [
+        {type: 'boolean'},
+        {const: 'full'}
+      ]
+    }
+  }
+};
+
+},{"./refs/json-schema-draft-07.json":"../node_modules/ajv/lib/refs/json-schema-draft-07.json"}],"../node_modules/ajv/lib/keyword.js":[function(require,module,exports) {
+'use strict';
+
+var IDENTIFIER = /^[a-z_$][a-z0-9_$-]*$/i;
+var customRuleCode = require('./dotjs/custom');
+var definitionSchema = require('./definition_schema');
+
+module.exports = {
+  add: addKeyword,
+  get: getKeyword,
+  remove: removeKeyword,
+  validate: validateKeyword
+};
+
+
+/**
+ * Define custom keyword
+ * @this  Ajv
+ * @param {String} keyword custom keyword, should be unique (including different from all standard, custom and macro keywords).
+ * @param {Object} definition keyword definition object with properties `type` (type(s) which the keyword applies to), `validate` or `compile`.
+ * @return {Ajv} this for method chaining
+ */
+function addKeyword(keyword, definition) {
+  /* jshint validthis: true */
+  /* eslint no-shadow: 0 */
+  var RULES = this.RULES;
+  if (RULES.keywords[keyword])
+    throw new Error('Keyword ' + keyword + ' is already defined');
+
+  if (!IDENTIFIER.test(keyword))
+    throw new Error('Keyword ' + keyword + ' is not a valid identifier');
+
+  if (definition) {
+    this.validateKeyword(definition, true);
+
+    var dataType = definition.type;
+    if (Array.isArray(dataType)) {
+      for (var i=0; i<dataType.length; i++)
+        _addRule(keyword, dataType[i], definition);
+    } else {
+      _addRule(keyword, dataType, definition);
+    }
+
+    var metaSchema = definition.metaSchema;
+    if (metaSchema) {
+      if (definition.$data && this._opts.$data) {
+        metaSchema = {
+          anyOf: [
+            metaSchema,
+            { '$ref': 'https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#' }
+          ]
+        };
+      }
+      definition.validateSchema = this.compile(metaSchema, true);
+    }
+  }
+
+  RULES.keywords[keyword] = RULES.all[keyword] = true;
+
+
+  function _addRule(keyword, dataType, definition) {
+    var ruleGroup;
+    for (var i=0; i<RULES.length; i++) {
+      var rg = RULES[i];
+      if (rg.type == dataType) {
+        ruleGroup = rg;
+        break;
+      }
+    }
+
+    if (!ruleGroup) {
+      ruleGroup = { type: dataType, rules: [] };
+      RULES.push(ruleGroup);
+    }
+
+    var rule = {
+      keyword: keyword,
+      definition: definition,
+      custom: true,
+      code: customRuleCode,
+      implements: definition.implements
+    };
+    ruleGroup.rules.push(rule);
+    RULES.custom[keyword] = rule;
+  }
+
+  return this;
+}
+
+
+/**
+ * Get keyword
+ * @this  Ajv
+ * @param {String} keyword pre-defined or custom keyword.
+ * @return {Object|Boolean} custom keyword definition, `true` if it is a predefined keyword, `false` otherwise.
+ */
+function getKeyword(keyword) {
+  /* jshint validthis: true */
+  var rule = this.RULES.custom[keyword];
+  return rule ? rule.definition : this.RULES.keywords[keyword] || false;
+}
+
+
+/**
+ * Remove keyword
+ * @this  Ajv
+ * @param {String} keyword pre-defined or custom keyword.
+ * @return {Ajv} this for method chaining
+ */
+function removeKeyword(keyword) {
+  /* jshint validthis: true */
+  var RULES = this.RULES;
+  delete RULES.keywords[keyword];
+  delete RULES.all[keyword];
+  delete RULES.custom[keyword];
+  for (var i=0; i<RULES.length; i++) {
+    var rules = RULES[i].rules;
+    for (var j=0; j<rules.length; j++) {
+      if (rules[j].keyword == keyword) {
+        rules.splice(j, 1);
+        break;
+      }
+    }
+  }
+  return this;
+}
+
+
+/**
+ * Validate keyword definition
+ * @this  Ajv
+ * @param {Object} definition keyword definition object.
+ * @param {Boolean} throwError true to throw exception if definition is invalid
+ * @return {boolean} validation result
+ */
+function validateKeyword(definition, throwError) {
+  validateKeyword.errors = null;
+  var v = this._validateKeyword = this._validateKeyword
+                                  || this.compile(definitionSchema, true);
+
+  if (v(definition)) return true;
+  validateKeyword.errors = v.errors;
+  if (throwError)
+    throw new Error('custom keyword definition is invalid: '  + this.errorsText(v.errors));
+  else
+    return false;
+}
+
+},{"./dotjs/custom":"../node_modules/ajv/lib/dotjs/custom.js","./definition_schema":"../node_modules/ajv/lib/definition_schema.js"}],"../node_modules/ajv/lib/refs/data.json":[function(require,module,exports) {
+module.exports = {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+    "description": "Meta-schema for $data reference (JSON Schema extension proposal)",
+    "type": "object",
+    "required": [ "$data" ],
+    "properties": {
+        "$data": {
+            "type": "string",
+            "anyOf": [
+                { "format": "relative-json-pointer" }, 
+                { "format": "json-pointer" }
+            ]
+        }
+    },
+    "additionalProperties": false
+}
+;
+},{}],"../node_modules/ajv/lib/ajv.js":[function(require,module,exports) {
+'use strict';
+
+var compileSchema = require('./compile')
+  , resolve = require('./compile/resolve')
+  , Cache = require('./cache')
+  , SchemaObject = require('./compile/schema_obj')
+  , stableStringify = require('fast-json-stable-stringify')
+  , formats = require('./compile/formats')
+  , rules = require('./compile/rules')
+  , $dataMetaSchema = require('./data')
+  , util = require('./compile/util');
+
+module.exports = Ajv;
+
+Ajv.prototype.validate = validate;
+Ajv.prototype.compile = compile;
+Ajv.prototype.addSchema = addSchema;
+Ajv.prototype.addMetaSchema = addMetaSchema;
+Ajv.prototype.validateSchema = validateSchema;
+Ajv.prototype.getSchema = getSchema;
+Ajv.prototype.removeSchema = removeSchema;
+Ajv.prototype.addFormat = addFormat;
+Ajv.prototype.errorsText = errorsText;
+
+Ajv.prototype._addSchema = _addSchema;
+Ajv.prototype._compile = _compile;
+
+Ajv.prototype.compileAsync = require('./compile/async');
+var customKeyword = require('./keyword');
+Ajv.prototype.addKeyword = customKeyword.add;
+Ajv.prototype.getKeyword = customKeyword.get;
+Ajv.prototype.removeKeyword = customKeyword.remove;
+Ajv.prototype.validateKeyword = customKeyword.validate;
+
+var errorClasses = require('./compile/error_classes');
+Ajv.ValidationError = errorClasses.Validation;
+Ajv.MissingRefError = errorClasses.MissingRef;
+Ajv.$dataMetaSchema = $dataMetaSchema;
+
+var META_SCHEMA_ID = 'http://json-schema.org/draft-07/schema';
+
+var META_IGNORE_OPTIONS = [ 'removeAdditional', 'useDefaults', 'coerceTypes', 'strictDefaults' ];
+var META_SUPPORT_DATA = ['/properties'];
+
+/**
+ * Creates validator instance.
+ * Usage: `Ajv(opts)`
+ * @param {Object} opts optional options
+ * @return {Object} ajv instance
+ */
+function Ajv(opts) {
+  if (!(this instanceof Ajv)) return new Ajv(opts);
+  opts = this._opts = util.copy(opts) || {};
+  setLogger(this);
+  this._schemas = {};
+  this._refs = {};
+  this._fragments = {};
+  this._formats = formats(opts.format);
+
+  this._cache = opts.cache || new Cache;
+  this._loadingSchemas = {};
+  this._compilations = [];
+  this.RULES = rules();
+  this._getId = chooseGetId(opts);
+
+  opts.loopRequired = opts.loopRequired || Infinity;
+  if (opts.errorDataPath == 'property') opts._errorDataPathProperty = true;
+  if (opts.serialize === undefined) opts.serialize = stableStringify;
+  this._metaOpts = getMetaSchemaOptions(this);
+
+  if (opts.formats) addInitialFormats(this);
+  if (opts.keywords) addInitialKeywords(this);
+  addDefaultMetaSchema(this);
+  if (typeof opts.meta == 'object') this.addMetaSchema(opts.meta);
+  if (opts.nullable) this.addKeyword('nullable', {metaSchema: {type: 'boolean'}});
+  addInitialSchemas(this);
+}
+
+
+
+/**
+ * Validate data using schema
+ * Schema will be compiled and cached (using serialized JSON as key. [fast-json-stable-stringify](https://github.com/epoberezkin/fast-json-stable-stringify) is used to serialize.
+ * @this   Ajv
+ * @param  {String|Object} schemaKeyRef key, ref or schema object
+ * @param  {Any} data to be validated
+ * @return {Boolean} validation result. Errors from the last validation will be available in `ajv.errors` (and also in compiled schema: `schema.errors`).
+ */
+function validate(schemaKeyRef, data) {
+  var v;
+  if (typeof schemaKeyRef == 'string') {
+    v = this.getSchema(schemaKeyRef);
+    if (!v) throw new Error('no schema with key or ref "' + schemaKeyRef + '"');
+  } else {
+    var schemaObj = this._addSchema(schemaKeyRef);
+    v = schemaObj.validate || this._compile(schemaObj);
+  }
+
+  var valid = v(data);
+  if (v.$async !== true) this.errors = v.errors;
+  return valid;
+}
+
+
+/**
+ * Create validating function for passed schema.
+ * @this   Ajv
+ * @param  {Object} schema schema object
+ * @param  {Boolean} _meta true if schema is a meta-schema. Used internally to compile meta schemas of custom keywords.
+ * @return {Function} validating function
+ */
+function compile(schema, _meta) {
+  var schemaObj = this._addSchema(schema, undefined, _meta);
+  return schemaObj.validate || this._compile(schemaObj);
+}
+
+
+/**
+ * Adds schema to the instance.
+ * @this   Ajv
+ * @param {Object|Array} schema schema or array of schemas. If array is passed, `key` and other parameters will be ignored.
+ * @param {String} key Optional schema key. Can be passed to `validate` method instead of schema object or id/ref. One schema per instance can have empty `id` and `key`.
+ * @param {Boolean} _skipValidation true to skip schema validation. Used internally, option validateSchema should be used instead.
+ * @param {Boolean} _meta true if schema is a meta-schema. Used internally, addMetaSchema should be used instead.
+ * @return {Ajv} this for method chaining
+ */
+function addSchema(schema, key, _skipValidation, _meta) {
+  if (Array.isArray(schema)){
+    for (var i=0; i<schema.length; i++) this.addSchema(schema[i], undefined, _skipValidation, _meta);
+    return this;
+  }
+  var id = this._getId(schema);
+  if (id !== undefined && typeof id != 'string')
+    throw new Error('schema id must be string');
+  key = resolve.normalizeId(key || id);
+  checkUnique(this, key);
+  this._schemas[key] = this._addSchema(schema, _skipValidation, _meta, true);
+  return this;
+}
+
+
+/**
+ * Add schema that will be used to validate other schemas
+ * options in META_IGNORE_OPTIONS are alway set to false
+ * @this   Ajv
+ * @param {Object} schema schema object
+ * @param {String} key optional schema key
+ * @param {Boolean} skipValidation true to skip schema validation, can be used to override validateSchema option for meta-schema
+ * @return {Ajv} this for method chaining
+ */
+function addMetaSchema(schema, key, skipValidation) {
+  this.addSchema(schema, key, skipValidation, true);
+  return this;
+}
+
+
+/**
+ * Validate schema
+ * @this   Ajv
+ * @param {Object} schema schema to validate
+ * @param {Boolean} throwOrLogError pass true to throw (or log) an error if invalid
+ * @return {Boolean} true if schema is valid
+ */
+function validateSchema(schema, throwOrLogError) {
+  var $schema = schema.$schema;
+  if ($schema !== undefined && typeof $schema != 'string')
+    throw new Error('$schema must be a string');
+  $schema = $schema || this._opts.defaultMeta || defaultMeta(this);
+  if (!$schema) {
+    this.logger.warn('meta-schema not available');
+    this.errors = null;
+    return true;
+  }
+  var valid = this.validate($schema, schema);
+  if (!valid && throwOrLogError) {
+    var message = 'schema is invalid: ' + this.errorsText();
+    if (this._opts.validateSchema == 'log') this.logger.error(message);
+    else throw new Error(message);
+  }
+  return valid;
+}
+
+
+function defaultMeta(self) {
+  var meta = self._opts.meta;
+  self._opts.defaultMeta = typeof meta == 'object'
+                            ? self._getId(meta) || meta
+                            : self.getSchema(META_SCHEMA_ID)
+                              ? META_SCHEMA_ID
+                              : undefined;
+  return self._opts.defaultMeta;
+}
+
+
+/**
+ * Get compiled schema from the instance by `key` or `ref`.
+ * @this   Ajv
+ * @param  {String} keyRef `key` that was passed to `addSchema` or full schema reference (`schema.id` or resolved id).
+ * @return {Function} schema validating function (with property `schema`).
+ */
+function getSchema(keyRef) {
+  var schemaObj = _getSchemaObj(this, keyRef);
+  switch (typeof schemaObj) {
+    case 'object': return schemaObj.validate || this._compile(schemaObj);
+    case 'string': return this.getSchema(schemaObj);
+    case 'undefined': return _getSchemaFragment(this, keyRef);
+  }
+}
+
+
+function _getSchemaFragment(self, ref) {
+  var res = resolve.schema.call(self, { schema: {} }, ref);
+  if (res) {
+    var schema = res.schema
+      , root = res.root
+      , baseId = res.baseId;
+    var v = compileSchema.call(self, schema, root, undefined, baseId);
+    self._fragments[ref] = new SchemaObject({
+      ref: ref,
+      fragment: true,
+      schema: schema,
+      root: root,
+      baseId: baseId,
+      validate: v
+    });
+    return v;
+  }
+}
+
+
+function _getSchemaObj(self, keyRef) {
+  keyRef = resolve.normalizeId(keyRef);
+  return self._schemas[keyRef] || self._refs[keyRef] || self._fragments[keyRef];
+}
+
+
+/**
+ * Remove cached schema(s).
+ * If no parameter is passed all schemas but meta-schemas are removed.
+ * If RegExp is passed all schemas with key/id matching pattern but meta-schemas are removed.
+ * Even if schema is referenced by other schemas it still can be removed as other schemas have local references.
+ * @this   Ajv
+ * @param  {String|Object|RegExp} schemaKeyRef key, ref, pattern to match key/ref or schema object
+ * @return {Ajv} this for method chaining
+ */
+function removeSchema(schemaKeyRef) {
+  if (schemaKeyRef instanceof RegExp) {
+    _removeAllSchemas(this, this._schemas, schemaKeyRef);
+    _removeAllSchemas(this, this._refs, schemaKeyRef);
+    return this;
+  }
+  switch (typeof schemaKeyRef) {
+    case 'undefined':
+      _removeAllSchemas(this, this._schemas);
+      _removeAllSchemas(this, this._refs);
+      this._cache.clear();
+      return this;
+    case 'string':
+      var schemaObj = _getSchemaObj(this, schemaKeyRef);
+      if (schemaObj) this._cache.del(schemaObj.cacheKey);
+      delete this._schemas[schemaKeyRef];
+      delete this._refs[schemaKeyRef];
+      return this;
+    case 'object':
+      var serialize = this._opts.serialize;
+      var cacheKey = serialize ? serialize(schemaKeyRef) : schemaKeyRef;
+      this._cache.del(cacheKey);
+      var id = this._getId(schemaKeyRef);
+      if (id) {
+        id = resolve.normalizeId(id);
+        delete this._schemas[id];
+        delete this._refs[id];
+      }
+  }
+  return this;
+}
+
+
+function _removeAllSchemas(self, schemas, regex) {
+  for (var keyRef in schemas) {
+    var schemaObj = schemas[keyRef];
+    if (!schemaObj.meta && (!regex || regex.test(keyRef))) {
+      self._cache.del(schemaObj.cacheKey);
+      delete schemas[keyRef];
+    }
+  }
+}
+
+
+/* @this   Ajv */
+function _addSchema(schema, skipValidation, meta, shouldAddSchema) {
+  if (typeof schema != 'object' && typeof schema != 'boolean')
+    throw new Error('schema should be object or boolean');
+  var serialize = this._opts.serialize;
+  var cacheKey = serialize ? serialize(schema) : schema;
+  var cached = this._cache.get(cacheKey);
+  if (cached) return cached;
+
+  shouldAddSchema = shouldAddSchema || this._opts.addUsedSchema !== false;
+
+  var id = resolve.normalizeId(this._getId(schema));
+  if (id && shouldAddSchema) checkUnique(this, id);
+
+  var willValidate = this._opts.validateSchema !== false && !skipValidation;
+  var recursiveMeta;
+  if (willValidate && !(recursiveMeta = id && id == resolve.normalizeId(schema.$schema)))
+    this.validateSchema(schema, true);
+
+  var localRefs = resolve.ids.call(this, schema);
+
+  var schemaObj = new SchemaObject({
+    id: id,
+    schema: schema,
+    localRefs: localRefs,
+    cacheKey: cacheKey,
+    meta: meta
+  });
+
+  if (id[0] != '#' && shouldAddSchema) this._refs[id] = schemaObj;
+  this._cache.put(cacheKey, schemaObj);
+
+  if (willValidate && recursiveMeta) this.validateSchema(schema, true);
+
+  return schemaObj;
+}
+
+
+/* @this   Ajv */
+function _compile(schemaObj, root) {
+  if (schemaObj.compiling) {
+    schemaObj.validate = callValidate;
+    callValidate.schema = schemaObj.schema;
+    callValidate.errors = null;
+    callValidate.root = root ? root : callValidate;
+    if (schemaObj.schema.$async === true)
+      callValidate.$async = true;
+    return callValidate;
+  }
+  schemaObj.compiling = true;
+
+  var currentOpts;
+  if (schemaObj.meta) {
+    currentOpts = this._opts;
+    this._opts = this._metaOpts;
+  }
+
+  var v;
+  try { v = compileSchema.call(this, schemaObj.schema, root, schemaObj.localRefs); }
+  catch(e) {
+    delete schemaObj.validate;
+    throw e;
+  }
+  finally {
+    schemaObj.compiling = false;
+    if (schemaObj.meta) this._opts = currentOpts;
+  }
+
+  schemaObj.validate = v;
+  schemaObj.refs = v.refs;
+  schemaObj.refVal = v.refVal;
+  schemaObj.root = v.root;
+  return v;
+
+
+  /* @this   {*} - custom context, see passContext option */
+  function callValidate() {
+    /* jshint validthis: true */
+    var _validate = schemaObj.validate;
+    var result = _validate.apply(this, arguments);
+    callValidate.errors = _validate.errors;
+    return result;
+  }
+}
+
+
+function chooseGetId(opts) {
+  switch (opts.schemaId) {
+    case 'auto': return _get$IdOrId;
+    case 'id': return _getId;
+    default: return _get$Id;
+  }
+}
+
+/* @this   Ajv */
+function _getId(schema) {
+  if (schema.$id) this.logger.warn('schema $id ignored', schema.$id);
+  return schema.id;
+}
+
+/* @this   Ajv */
+function _get$Id(schema) {
+  if (schema.id) this.logger.warn('schema id ignored', schema.id);
+  return schema.$id;
+}
+
+
+function _get$IdOrId(schema) {
+  if (schema.$id && schema.id && schema.$id != schema.id)
+    throw new Error('schema $id is different from id');
+  return schema.$id || schema.id;
+}
+
+
+/**
+ * Convert array of error message objects to string
+ * @this   Ajv
+ * @param  {Array<Object>} errors optional array of validation errors, if not passed errors from the instance are used.
+ * @param  {Object} options optional options with properties `separator` and `dataVar`.
+ * @return {String} human readable string with all errors descriptions
+ */
+function errorsText(errors, options) {
+  errors = errors || this.errors;
+  if (!errors) return 'No errors';
+  options = options || {};
+  var separator = options.separator === undefined ? ', ' : options.separator;
+  var dataVar = options.dataVar === undefined ? 'data' : options.dataVar;
+
+  var text = '';
+  for (var i=0; i<errors.length; i++) {
+    var e = errors[i];
+    if (e) text += dataVar + e.dataPath + ' ' + e.message + separator;
+  }
+  return text.slice(0, -separator.length);
+}
+
+
+/**
+ * Add custom format
+ * @this   Ajv
+ * @param {String} name format name
+ * @param {String|RegExp|Function} format string is converted to RegExp; function should return boolean (true when valid)
+ * @return {Ajv} this for method chaining
+ */
+function addFormat(name, format) {
+  if (typeof format == 'string') format = new RegExp(format);
+  this._formats[name] = format;
+  return this;
+}
+
+
+function addDefaultMetaSchema(self) {
+  var $dataSchema;
+  if (self._opts.$data) {
+    $dataSchema = require('./refs/data.json');
+    self.addMetaSchema($dataSchema, $dataSchema.$id, true);
+  }
+  if (self._opts.meta === false) return;
+  var metaSchema = require('./refs/json-schema-draft-07.json');
+  if (self._opts.$data) metaSchema = $dataMetaSchema(metaSchema, META_SUPPORT_DATA);
+  self.addMetaSchema(metaSchema, META_SCHEMA_ID, true);
+  self._refs['http://json-schema.org/schema'] = META_SCHEMA_ID;
+}
+
+
+function addInitialSchemas(self) {
+  var optsSchemas = self._opts.schemas;
+  if (!optsSchemas) return;
+  if (Array.isArray(optsSchemas)) self.addSchema(optsSchemas);
+  else for (var key in optsSchemas) self.addSchema(optsSchemas[key], key);
+}
+
+
+function addInitialFormats(self) {
+  for (var name in self._opts.formats) {
+    var format = self._opts.formats[name];
+    self.addFormat(name, format);
+  }
+}
+
+
+function addInitialKeywords(self) {
+  for (var name in self._opts.keywords) {
+    var keyword = self._opts.keywords[name];
+    self.addKeyword(name, keyword);
+  }
+}
+
+
+function checkUnique(self, id) {
+  if (self._schemas[id] || self._refs[id])
+    throw new Error('schema with key or id "' + id + '" already exists');
+}
+
+
+function getMetaSchemaOptions(self) {
+  var metaOpts = util.copy(self._opts);
+  for (var i=0; i<META_IGNORE_OPTIONS.length; i++)
+    delete metaOpts[META_IGNORE_OPTIONS[i]];
+  return metaOpts;
+}
+
+
+function setLogger(self) {
+  var logger = self._opts.logger;
+  if (logger === false) {
+    self.logger = {log: noop, warn: noop, error: noop};
+  } else {
+    if (logger === undefined) logger = console;
+    if (!(typeof logger == 'object' && logger.log && logger.warn && logger.error))
+      throw new Error('logger must implement log, warn and error methods');
+    self.logger = logger;
+  }
+}
+
+
+function noop() {}
+
+},{"./compile":"../node_modules/ajv/lib/compile/index.js","./compile/resolve":"../node_modules/ajv/lib/compile/resolve.js","./cache":"../node_modules/ajv/lib/cache.js","./compile/schema_obj":"../node_modules/ajv/lib/compile/schema_obj.js","fast-json-stable-stringify":"../node_modules/fast-json-stable-stringify/index.js","./compile/formats":"../node_modules/ajv/lib/compile/formats.js","./compile/rules":"../node_modules/ajv/lib/compile/rules.js","./data":"../node_modules/ajv/lib/data.js","./compile/util":"../node_modules/ajv/lib/compile/util.js","./compile/async":"../node_modules/ajv/lib/compile/async.js","./keyword":"../node_modules/ajv/lib/keyword.js","./compile/error_classes":"../node_modules/ajv/lib/compile/error_classes.js","./refs/data.json":"../node_modules/ajv/lib/refs/data.json","./refs/json-schema-draft-07.json":"../node_modules/ajv/lib/refs/json-schema-draft-07.json"}],"../node_modules/@rjsf/core/dist/es/validate.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = validateFormData;
+exports.isValid = isValid;
+exports.toErrorList = toErrorList;
+exports.withIdRefPrefix = withIdRefPrefix;
+
+var _toPath = _interopRequireDefault(require("lodash/toPath"));
+
+var _ajv = _interopRequireDefault(require("ajv"));
+
+var _utils = require("./utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance");
+}
+
+function _iterableToArray(iter) {
+  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
+      arr2[i] = arr[i];
+    }
+
+    return arr2;
+  }
+}
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+    var ownKeys = Object.keys(source);
+
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+      ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+      }));
+    }
+
+    ownKeys.forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    });
+  }
+
+  return target;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+var ajv = createAjvInstance();
+var formerCustomFormats = null;
+var formerMetaSchema = null;
+var ROOT_SCHEMA_PREFIX = "__rjsf_rootSchema";
+
+function createAjvInstance() {
+  var ajv = new _ajv.default({
+    errorDataPath: "property",
+    allErrors: true,
+    multipleOfPrecision: 8,
+    schemaId: "auto",
+    unknownFormats: "ignore"
+  }); // add custom formats
+
+  ajv.addFormat("data-url", /^data:([a-z]+\/[a-z0-9-+.]+)?;(?:name=(.*);)?base64,(.*)$/);
+  ajv.addFormat("color", /^(#?([0-9A-Fa-f]{3}){1,2}\b|aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|orange|purple|red|silver|teal|white|yellow|(rgb\(\s*\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b\s*,\s*\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b\s*,\s*\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b\s*\))|(rgb\(\s*(\d?\d%|100%)+\s*,\s*(\d?\d%|100%)+\s*,\s*(\d?\d%|100%)+\s*\)))$/);
+  return ajv;
+}
+
+function toErrorSchema(errors) {
+  // Transforms a ajv validation errors list:
+  // [
+  //   {property: ".level1.level2[2].level3", message: "err a"},
+  //   {property: ".level1.level2[2].level3", message: "err b"},
+  //   {property: ".level1.level2[4].level3", message: "err b"},
+  // ]
+  // Into an error tree:
+  // {
+  //   level1: {
+  //     level2: {
+  //       2: {level3: {errors: ["err a", "err b"]}},
+  //       4: {level3: {errors: ["err b"]}},
+  //     }
+  //   }
+  // };
+  if (!errors.length) {
+    return {};
+  }
+
+  return errors.reduce(function (errorSchema, error) {
+    var property = error.property,
+        message = error.message;
+    var path = (0, _toPath.default)(property);
+    var parent = errorSchema; // If the property is at the root (.level1) then toPath creates
+    // an empty array element at the first index. Remove it.
+
+    if (path.length > 0 && path[0] === "") {
+      path.splice(0, 1);
+    }
+
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+      for (var _iterator = path.slice(0)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        var segment = _step.value;
+
+        if (!(segment in parent)) {
+          parent[segment] = {};
+        }
+
+        parent = parent[segment];
+      }
+    } catch (err) {
+      _didIteratorError = true;
+      _iteratorError = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+          _iterator["return"]();
+        }
+      } finally {
+        if (_didIteratorError) {
+          throw _iteratorError;
+        }
+      }
+    }
+
+    if (Array.isArray(parent.__errors)) {
+      // We store the list of errors for this node in a property named __errors
+      // to avoid name collision with a possible sub schema field named
+      // "errors" (see `validate.createErrorHandler`).
+      parent.__errors = parent.__errors.concat(message);
+    } else {
+      if (message) {
+        parent.__errors = [message];
+      }
+    }
+
+    return errorSchema;
+  }, {});
+}
+
+function toErrorList(errorSchema) {
+  var fieldName = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "root"; // XXX: We should transform fieldName as a full field path string.
+
+  var errorList = [];
+
+  if ("__errors" in errorSchema) {
+    errorList = errorList.concat(errorSchema.__errors.map(function (stack) {
+      return {
+        stack: "".concat(fieldName, ": ").concat(stack)
+      };
+    }));
+  }
+
+  return Object.keys(errorSchema).reduce(function (acc, key) {
+    if (key !== "__errors") {
+      acc = acc.concat(toErrorList(errorSchema[key], key));
+    }
+
+    return acc;
+  }, errorList);
+}
+
+function createErrorHandler(formData) {
+  var handler = {
+    // We store the list of errors for this node in a property named __errors
+    // to avoid name collision with a possible sub schema field named
+    // "errors" (see `utils.toErrorSchema`).
+    __errors: [],
+    addError: function addError(message) {
+      this.__errors.push(message);
+    }
+  };
+
+  if ((0, _utils.isObject)(formData)) {
+    return Object.keys(formData).reduce(function (acc, key) {
+      return _objectSpread({}, acc, _defineProperty({}, key, createErrorHandler(formData[key])));
+    }, handler);
+  }
+
+  if (Array.isArray(formData)) {
+    return formData.reduce(function (acc, value, key) {
+      return _objectSpread({}, acc, _defineProperty({}, key, createErrorHandler(value)));
+    }, handler);
+  }
+
+  return handler;
+}
+
+function unwrapErrorHandler(errorHandler) {
+  return Object.keys(errorHandler).reduce(function (acc, key) {
+    if (key === "addError") {
+      return acc;
+    } else if (key === "__errors") {
+      return _objectSpread({}, acc, _defineProperty({}, key, errorHandler[key]));
+    }
+
+    return _objectSpread({}, acc, _defineProperty({}, key, unwrapErrorHandler(errorHandler[key])));
+  }, {});
+}
+/**
+ * Transforming the error output from ajv to format used by jsonschema.
+ * At some point, components should be updated to support ajv.
+ */
+
+
+function transformAjvErrors() {
+  var errors = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
+  if (errors === null) {
+    return [];
+  }
+
+  return errors.map(function (e) {
+    var dataPath = e.dataPath,
+        keyword = e.keyword,
+        message = e.message,
+        params = e.params,
+        schemaPath = e.schemaPath;
+    var property = "".concat(dataPath); // put data in expected format
+
+    return {
+      name: keyword,
+      property: property,
+      message: message,
+      params: params,
+      // specific to ajv
+      stack: "".concat(property, " ").concat(message).trim(),
+      schemaPath: schemaPath
+    };
+  });
+}
+/**
+ * This function processes the formData with a user `validate` contributed
+ * function, which receives the form data and an `errorHandler` object that
+ * will be used to add custom validation errors for each field.
+ */
+
+
+function validateFormData(formData, schema, customValidate, transformErrors) {
+  var additionalMetaSchemas = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : [];
+  var customFormats = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : {}; // Include form data with undefined values, which is required for validation.
+
+  var rootSchema = schema;
+  formData = (0, _utils.getDefaultFormState)(schema, formData, rootSchema, true);
+  var newMetaSchemas = !(0, _utils.deepEquals)(formerMetaSchema, additionalMetaSchemas);
+  var newFormats = !(0, _utils.deepEquals)(formerCustomFormats, customFormats);
+
+  if (newMetaSchemas || newFormats) {
+    ajv = createAjvInstance();
+  } // add more schemas to validate against
+
+
+  if (additionalMetaSchemas && newMetaSchemas && Array.isArray(additionalMetaSchemas)) {
+    ajv.addMetaSchema(additionalMetaSchemas);
+    formerMetaSchema = additionalMetaSchemas;
+  } // add more custom formats to validate against
+
+
+  if (customFormats && newFormats && (0, _utils.isObject)(customFormats)) {
+    Object.keys(customFormats).forEach(function (formatName) {
+      ajv.addFormat(formatName, customFormats[formatName]);
+    });
+    formerCustomFormats = customFormats;
+  }
+
+  var validationError = null;
+
+  try {
+    ajv.validate(schema, formData);
+  } catch (err) {
+    validationError = err;
+  }
+
+  var errors = transformAjvErrors(ajv.errors); // Clear errors to prevent persistent errors, see #1104
+
+  ajv.errors = null;
+  var noProperMetaSchema = validationError && validationError.message && typeof validationError.message === "string" && validationError.message.includes("no schema with key or ref ");
+
+  if (noProperMetaSchema) {
+    errors = [].concat(_toConsumableArray(errors), [{
+      stack: validationError.message
+    }]);
+  }
+
+  if (typeof transformErrors === "function") {
+    errors = transformErrors(errors);
+  }
+
+  var errorSchema = toErrorSchema(errors);
+
+  if (noProperMetaSchema) {
+    errorSchema = _objectSpread({}, errorSchema, {
+      $schema: {
+        __errors: [validationError.message]
+      }
+    });
+  }
+
+  if (typeof customValidate !== "function") {
+    return {
+      errors: errors,
+      errorSchema: errorSchema
+    };
+  }
+
+  var errorHandler = customValidate(formData, createErrorHandler(formData));
+  var userErrorSchema = unwrapErrorHandler(errorHandler);
+  var newErrorSchema = (0, _utils.mergeObjects)(errorSchema, userErrorSchema, true); // XXX: The errors list produced is not fully compliant with the format
+  // exposed by the jsonschema lib, which contains full field paths and other
+  // properties.
+
+  var newErrors = toErrorList(newErrorSchema);
+  return {
+    errors: newErrors,
+    errorSchema: newErrorSchema
+  };
+}
+/**
+ * Recursively prefixes all $ref's in a schema with `ROOT_SCHEMA_PREFIX`
+ * This is used in isValid to make references to the rootSchema
+ */
+
+
+function withIdRefPrefix(schemaNode) {
+  var obj = schemaNode;
+
+  if (schemaNode.constructor === Object) {
+    obj = _objectSpread({}, schemaNode);
+
+    for (var key in obj) {
+      var value = obj[key];
+
+      if (key === "$ref" && typeof value === "string" && value.startsWith("#")) {
+        obj[key] = ROOT_SCHEMA_PREFIX + value;
+      } else {
+        obj[key] = withIdRefPrefix(value);
+      }
+    }
+  } else if (Array.isArray(schemaNode)) {
+    obj = _toConsumableArray(schemaNode);
+
+    for (var i = 0; i < obj.length; i++) {
+      obj[i] = withIdRefPrefix(obj[i]);
+    }
+  }
+
+  return obj;
+}
+/**
+ * Validates data against a schema, returning true if the data is valid, or
+ * false otherwise. If the schema is invalid, then this function will return
+ * false.
+ */
+
+
+function isValid(schema, data, rootSchema) {
+  try {
+    // add the rootSchema ROOT_SCHEMA_PREFIX as id.
+    // then rewrite the schema ref's to point to the rootSchema
+    // this accounts for the case where schema have references to models
+    // that lives in the rootSchema but not in the schema in question.
+    return ajv.addSchema(rootSchema, ROOT_SCHEMA_PREFIX).validate(withIdRefPrefix(schema), data);
+  } catch (e) {
+    return false;
+  } finally {
+    // make sure we remove the rootSchema from the global ajv instance
+    ajv.removeSchema(ROOT_SCHEMA_PREFIX);
+  }
+}
+},{"lodash/toPath":"../node_modules/lodash/toPath.js","ajv":"../node_modules/ajv/lib/ajv.js","./utils":"../node_modules/@rjsf/core/dist/es/utils.js"}],"../node_modules/@rjsf/core/dist/es/utils.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ADDITIONAL_PROPERTY_FLAG = void 0;
+exports.allowAdditionalItems = allowAdditionalItems;
+exports.asNumber = asNumber;
+exports.canExpand = canExpand;
+exports.dataURItoBlob = dataURItoBlob;
+exports.deepEquals = deepEquals;
+exports.findSchemaDefinition = findSchemaDefinition;
+exports.getDefaultFormState = getDefaultFormState;
+exports.getDefaultRegistry = getDefaultRegistry;
+exports.getDisplayLabel = getDisplayLabel;
+exports.getMatchingOption = getMatchingOption;
+exports.getSchemaType = getSchemaType;
+exports.getSubmitButtonOptions = getSubmitButtonOptions;
+exports.getUiOptions = getUiOptions;
+exports.getWidget = getWidget;
+exports.guessType = void 0;
+exports.hasWidget = hasWidget;
+exports.isConstant = isConstant;
+exports.isCustomWidget = isCustomWidget;
+exports.isFilesArray = isFilesArray;
+exports.isFixedItems = isFixedItems;
+exports.isMultiSelect = isMultiSelect;
+exports.isObject = isObject;
+exports.isSelect = isSelect;
+exports.localToUTC = localToUTC;
+exports.mergeDefaultsWithFormData = mergeDefaultsWithFormData;
+exports.mergeObjects = mergeObjects;
+exports.mergeSchemas = mergeSchemas;
+exports.optionsList = optionsList;
+exports.orderProperties = orderProperties;
+exports.pad = pad;
+exports.parseDateString = parseDateString;
+exports.rangeSpec = rangeSpec;
+exports.resolveSchema = resolveSchema;
+exports.retrieveSchema = retrieveSchema;
+exports.schemaRequiresTrueValue = schemaRequiresTrueValue;
+exports.shouldRender = shouldRender;
+exports.stubExistingAdditionalProperties = stubExistingAdditionalProperties;
+exports.toConstant = toConstant;
+exports.toDateString = toDateString;
+exports.toIdSchema = toIdSchema;
+exports.toPathSchema = toPathSchema;
+exports.utcToLocal = utcToLocal;
+
+var _react = _interopRequireDefault(require("react"));
+
+var ReactIs = _interopRequireWildcard(require("react-is"));
+
+var _jsonSchemaMergeAllof = _interopRequireDefault(require("json-schema-merge-allof"));
+
+var _fill = _interopRequireDefault(require("core-js-pure/features/array/fill"));
+
+var _union = _interopRequireDefault(require("lodash/union"));
+
+var _jsonpointer = _interopRequireDefault(require("jsonpointer"));
+
+var _fields = _interopRequireDefault(require("./components/fields"));
+
+var _widgets = _interopRequireDefault(require("./components/widgets"));
+
+var _validate = _interopRequireWildcard(require("./validate"));
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof2(obj) { "@babel/helpers - typeof"; return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof2(obj); }
+
+function _toPropertyKey(arg) {
+  var key = _toPrimitive(arg, "string");
+
+  return _typeof(key) === "symbol" ? key : String(key);
+}
+
+function _toPrimitive(input, hint) {
+  if (_typeof(input) !== "object" || input === null) return input;
+  var prim = input[Symbol.toPrimitive];
+
+  if (prim !== undefined) {
+    var res = prim.call(input, hint || "default");
+    if (_typeof(res) !== "object") return res;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+
+  return (hint === "string" ? String : Number)(input);
+}
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance");
+}
+
+function _iterableToArray(iter) {
+  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
+      arr2[i] = arr[i];
+    }
+
+    return arr2;
+  }
+}
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+    var ownKeys = Object.keys(source);
+
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+      ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+      }));
+    }
+
+    ownKeys.forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    });
+  }
+
+  return target;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+var ADDITIONAL_PROPERTY_FLAG = "__additional_property";
+exports.ADDITIONAL_PROPERTY_FLAG = ADDITIONAL_PROPERTY_FLAG;
+var widgetMap = {
+  "boolean": {
+    checkbox: "CheckboxWidget",
+    radio: "RadioWidget",
+    select: "SelectWidget",
+    hidden: "HiddenWidget"
+  },
+  string: {
+    text: "TextWidget",
+    password: "PasswordWidget",
+    email: "EmailWidget",
+    hostname: "TextWidget",
+    ipv4: "TextWidget",
+    ipv6: "TextWidget",
+    uri: "URLWidget",
+    "data-url": "FileWidget",
+    radio: "RadioWidget",
+    select: "SelectWidget",
+    textarea: "TextareaWidget",
+    hidden: "HiddenWidget",
+    date: "DateWidget",
+    datetime: "DateTimeWidget",
+    "date-time": "DateTimeWidget",
+    "alt-date": "AltDateWidget",
+    "alt-datetime": "AltDateTimeWidget",
+    color: "ColorWidget",
+    file: "FileWidget"
+  },
+  number: {
+    text: "TextWidget",
+    select: "SelectWidget",
+    updown: "UpDownWidget",
+    range: "RangeWidget",
+    radio: "RadioWidget",
+    hidden: "HiddenWidget"
+  },
+  integer: {
+    text: "TextWidget",
+    select: "SelectWidget",
+    updown: "UpDownWidget",
+    range: "RangeWidget",
+    radio: "RadioWidget",
+    hidden: "HiddenWidget"
+  },
+  array: {
+    select: "SelectWidget",
+    checkboxes: "CheckboxesWidget",
+    files: "FileWidget",
+    hidden: "HiddenWidget"
+  }
+};
+
+function canExpand(schema, uiSchema, formData) {
+  if (!schema.additionalProperties) {
+    return false;
+  }
+
+  var _getUiOptions = getUiOptions(uiSchema),
+      expandable = _getUiOptions.expandable;
+
+  if (expandable === false) {
+    return expandable;
+  } // if ui:options.expandable was not explicitly set to false, we can add
+  // another property if we have not exceeded maxProperties yet
+
+
+  if (schema.maxProperties !== undefined) {
+    return Object.keys(formData).length < schema.maxProperties;
+  }
+
+  return true;
+}
+
+function getDefaultRegistry() {
+  return {
+    fields: _fields.default,
+    widgets: _widgets.default,
+    definitions: {},
+    rootSchema: {},
+    formContext: {}
+  };
+}
+/* Gets the type of a given schema. */
+
+
+function getSchemaType(schema) {
+  var type = schema.type;
+
+  if (!type && schema["const"]) {
+    return guessType(schema["const"]);
+  }
+
+  if (!type && schema["enum"]) {
+    return "string";
+  }
+
+  if (!type && (schema.properties || schema.additionalProperties)) {
+    return "object";
+  }
+
+  if (type instanceof Array && type.length === 2 && type.includes("null")) {
+    return type.find(function (type) {
+      return type !== "null";
+    });
+  }
+
+  return type;
+}
+
+function getWidget(schema, widget) {
+  var registeredWidgets = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  var type = getSchemaType(schema);
+
+  function mergeOptions(Widget) {
+    // cache return value as property of widget for proper react reconciliation
+    if (!Widget.MergedWidget) {
+      var defaultOptions = Widget.defaultProps && Widget.defaultProps.options || {};
+
+      Widget.MergedWidget = function (_ref) {
+        var _ref$options = _ref.options,
+            options = _ref$options === void 0 ? {} : _ref$options,
+            props = _objectWithoutProperties(_ref, ["options"]);
+
+        return _react.default.createElement(Widget, _extends({
+          options: _objectSpread({}, defaultOptions, options)
+        }, props));
+      };
+    }
+
+    return Widget.MergedWidget;
+  }
+
+  if (typeof widget === "function" || ReactIs.isForwardRef(_react.default.createElement(widget)) || ReactIs.isMemo(widget)) {
+    return mergeOptions(widget);
+  }
+
+  if (typeof widget !== "string") {
+    throw new Error("Unsupported widget definition: ".concat(_typeof(widget)));
+  }
+
+  if (registeredWidgets.hasOwnProperty(widget)) {
+    var registeredWidget = registeredWidgets[widget];
+    return getWidget(schema, registeredWidget, registeredWidgets);
+  }
+
+  if (!widgetMap.hasOwnProperty(type)) {
+    throw new Error("No widget for type \"".concat(type, "\""));
+  }
+
+  if (widgetMap[type].hasOwnProperty(widget)) {
+    var _registeredWidget = registeredWidgets[widgetMap[type][widget]];
+    return getWidget(schema, _registeredWidget, registeredWidgets);
+  }
+
+  throw new Error("No widget \"".concat(widget, "\" for type \"").concat(type, "\""));
+}
+
+function hasWidget(schema, widget) {
+  var registeredWidgets = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+  try {
+    getWidget(schema, widget, registeredWidgets);
+    return true;
+  } catch (e) {
+    if (e.message && (e.message.startsWith("No widget") || e.message.startsWith("Unsupported widget"))) {
+      return false;
+    }
+
+    throw e;
+  }
+}
+
+function computeDefaults(_schema, parentDefaults, rootSchema) {
+  var rawFormData = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+  var includeUndefinedValues = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+  var schema = isObject(_schema) ? _schema : {};
+  var formData = isObject(rawFormData) ? rawFormData : {}; // Compute the defaults recursively: give highest priority to deepest nodes.
+
+  var defaults = parentDefaults;
+
+  if (isObject(defaults) && isObject(schema["default"])) {
+    // For object defaults, only override parent defaults that are defined in
+    // schema.default.
+    defaults = mergeObjects(defaults, schema["default"]);
+  } else if ("default" in schema) {
+    // Use schema defaults for this node.
+    defaults = schema["default"];
+  } else if ("$ref" in schema) {
+    // Use referenced schema defaults for this node.
+    var refSchema = findSchemaDefinition(schema.$ref, rootSchema);
+    return computeDefaults(refSchema, defaults, rootSchema, formData, includeUndefinedValues);
+  } else if ("dependencies" in schema) {
+    var resolvedSchema = resolveDependencies(schema, rootSchema, formData);
+    return computeDefaults(resolvedSchema, defaults, rootSchema, formData, includeUndefinedValues);
+  } else if (isFixedItems(schema)) {
+    defaults = schema.items.map(function (itemSchema, idx) {
+      return computeDefaults(itemSchema, Array.isArray(parentDefaults) ? parentDefaults[idx] : undefined, rootSchema, formData, includeUndefinedValues);
+    });
+  } else if ("oneOf" in schema) {
+    schema = schema.oneOf[getMatchingOption(undefined, schema.oneOf, rootSchema)];
+  } else if ("anyOf" in schema) {
+    schema = schema.anyOf[getMatchingOption(undefined, schema.anyOf, rootSchema)];
+  } // Not defaults defined for this node, fallback to generic typed ones.
+
+
+  if (typeof defaults === "undefined") {
+    defaults = schema["default"];
+  }
+
+  switch (getSchemaType(schema)) {
+    // We need to recur for object schema inner default values.
+    case "object":
+      return Object.keys(schema.properties || {}).reduce(function (acc, key) {
+        // Compute the defaults for this node, with the parent defaults we might
+        // have from a previous run: defaults[key].
+        var computedDefault = computeDefaults(schema.properties[key], (defaults || {})[key], rootSchema, (formData || {})[key], includeUndefinedValues);
+
+        if (includeUndefinedValues || computedDefault !== undefined) {
+          acc[key] = computedDefault;
+        }
+
+        return acc;
+      }, {});
+
+    case "array":
+      // Inject defaults into existing array defaults
+      if (Array.isArray(defaults)) {
+        defaults = defaults.map(function (item, idx) {
+          return computeDefaults(schema.items[idx] || schema.additionalItems || {}, item, rootSchema);
+        });
+      } // Deeply inject defaults into already existing form data
+
+
+      if (Array.isArray(rawFormData)) {
+        defaults = rawFormData.map(function (item, idx) {
+          return computeDefaults(schema.items, (defaults || {})[idx], rootSchema, item);
+        });
+      }
+
+      if (schema.minItems) {
+        if (!isMultiSelect(schema, rootSchema)) {
+          var defaultsLength = defaults ? defaults.length : 0;
+
+          if (schema.minItems > defaultsLength) {
+            var defaultEntries = defaults || []; // populate the array with the defaults
+
+            var fillerSchema = Array.isArray(schema.items) ? schema.additionalItems : schema.items;
+            var fillerEntries = (0, _fill.default)(new Array(schema.minItems - defaultsLength), computeDefaults(fillerSchema, fillerSchema.defaults, rootSchema)); // then fill up the rest with either the item default or empty, up to minItems
+
+            return defaultEntries.concat(fillerEntries);
+          }
+        } else {
+          return defaults ? defaults : [];
+        }
+      }
+
+  }
+
+  return defaults;
+}
+
+function getDefaultFormState(_schema, formData) {
+  var rootSchema = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  var includeUndefinedValues = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
+  if (!isObject(_schema)) {
+    throw new Error("Invalid schema: " + _schema);
+  }
+
+  var schema = retrieveSchema(_schema, rootSchema, formData);
+  var defaults = computeDefaults(schema, _schema["default"], rootSchema, formData, includeUndefinedValues);
+
+  if (typeof formData === "undefined") {
+    // No form data? Use schema defaults.
+    return defaults;
+  }
+
+  if (isObject(formData) || Array.isArray(formData)) {
+    return mergeDefaultsWithFormData(defaults, formData);
+  }
+
+  if (formData === 0 || formData === false || formData === "") {
+    return formData;
+  }
+
+  return formData || defaults;
+}
+/**
+ * When merging defaults and form data, we want to merge in this specific way:
+ * - objects are deeply merged
+ * - arrays are merged in such a way that:
+ *   - when the array is set in form data, only array entries set in form data
+ *     are deeply merged; additional entries from the defaults are ignored
+ *   - when the array is not set in form data, the default is copied over
+ * - scalars are overwritten/set by form data
+ */
+
+
+function mergeDefaultsWithFormData(defaults, formData) {
+  if (Array.isArray(formData)) {
+    if (!Array.isArray(defaults)) {
+      defaults = [];
+    }
+
+    return formData.map(function (value, idx) {
+      if (defaults[idx]) {
+        return mergeDefaultsWithFormData(defaults[idx], value);
+      }
+
+      return value;
+    });
+  } else if (isObject(formData)) {
+    var acc = Object.assign({}, defaults); // Prevent mutation of source object.
+
+    return Object.keys(formData).reduce(function (acc, key) {
+      acc[key] = mergeDefaultsWithFormData(defaults ? defaults[key] : {}, formData[key]);
+      return acc;
+    }, acc);
+  } else {
+    return formData;
+  }
+}
+
+function getUiOptions(uiSchema) {
+  // get all passed options from ui:widget, ui:options, and ui:<optionName>
+  return Object.keys(uiSchema).filter(function (key) {
+    return key.indexOf("ui:") === 0;
+  }).reduce(function (options, key) {
+    var value = uiSchema[key];
+
+    if (key === "ui:widget" && isObject(value)) {
+      console.warn("Setting options via ui:widget object is deprecated, use ui:options instead");
+      return _objectSpread({}, options, value.options || {}, {
+        widget: value.component
+      });
+    }
+
+    if (key === "ui:options" && isObject(value)) {
+      return _objectSpread({}, options, value);
+    }
+
+    return _objectSpread({}, options, _defineProperty({}, key.substring(3), value));
+  }, {});
+}
+
+function getSubmitButtonOptions(uiSchema) {
+  var uiOptions = getUiOptions(uiSchema);
+  var defaultOptions = {
+    props: {
+      disabled: false
+    },
+    submitText: "Submit",
+    norender: false
+  };
+
+  if (uiOptions && uiOptions["submitButtonOptions"]) {
+    return Object.assign({}, defaultOptions, uiOptions["submitButtonOptions"]);
+  }
+
+  return defaultOptions;
+}
+
+function getDisplayLabel(schema, uiSchema, rootSchema) {
+  var uiOptions = getUiOptions(uiSchema);
+  var _uiOptions$label = uiOptions.label,
+      displayLabel = _uiOptions$label === void 0 ? true : _uiOptions$label;
+  var schemaType = getSchemaType(schema);
+
+  if (schemaType === "array") {
+    displayLabel = isMultiSelect(schema, rootSchema) || isFilesArray(schema, uiSchema, rootSchema) || isCustomWidget(uiSchema);
+  }
+
+  if (schemaType === "object") {
+    displayLabel = false;
+  }
+
+  if (schemaType === "boolean" && !uiSchema["ui:widget"]) {
+    displayLabel = false;
+  }
+
+  if (uiSchema["ui:field"]) {
+    displayLabel = false;
+  }
+
+  return displayLabel;
+}
+
+function isObject(thing) {
+  if (typeof File !== "undefined" && thing instanceof File) {
+    return false;
+  }
+
+  return _typeof(thing) === "object" && thing !== null && !Array.isArray(thing);
+}
+
+function mergeObjects(obj1, obj2) {
+  var concatArrays = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false; // Recursively merge deeply nested objects.
+
+  var acc = Object.assign({}, obj1); // Prevent mutation of source object.
+
+  return Object.keys(obj2).reduce(function (acc, key) {
+    var left = obj1 ? obj1[key] : {},
+        right = obj2[key];
+
+    if (obj1 && obj1.hasOwnProperty(key) && isObject(right)) {
+      acc[key] = mergeObjects(left, right, concatArrays);
+    } else if (concatArrays && Array.isArray(left) && Array.isArray(right)) {
+      acc[key] = left.concat(right);
+    } else {
+      acc[key] = right;
+    }
+
+    return acc;
+  }, acc);
+}
+
+function asNumber(value) {
+  if (value === "") {
+    return undefined;
+  }
+
+  if (value === null) {
+    return null;
+  }
+
+  if (/\.$/.test(value)) {
+    // "3." can't really be considered a number even if it parses in js. The
+    // user is most likely entering a float.
+    return value;
+  }
+
+  if (/\.0$/.test(value)) {
+    // we need to return this as a string here, to allow for input like 3.07
+    return value;
+  }
+
+  var n = Number(value);
+  var valid = typeof n === "number" && !Number.isNaN(n);
+
+  if (/\.\d*0$/.test(value)) {
+    // It's a number, that's cool - but we need it as a string so it doesn't screw
+    // with the user when entering dollar amounts or other values (such as those with
+    // specific precision or number of significant digits)
+    return value;
+  }
+
+  return valid ? n : value;
+}
+
+function orderProperties(properties, order) {
+  if (!Array.isArray(order)) {
+    return properties;
+  }
+
+  var arrayToHash = function arrayToHash(arr) {
+    return arr.reduce(function (prev, curr) {
+      prev[curr] = true;
+      return prev;
+    }, {});
+  };
+
+  var errorPropList = function errorPropList(arr) {
+    return arr.length > 1 ? "properties '".concat(arr.join("', '"), "'") : "property '".concat(arr[0], "'");
+  };
+
+  var propertyHash = arrayToHash(properties);
+  var orderFiltered = order.filter(function (prop) {
+    return prop === "*" || propertyHash[prop];
+  });
+  var orderHash = arrayToHash(orderFiltered);
+  var rest = properties.filter(function (prop) {
+    return !orderHash[prop];
+  });
+  var restIndex = orderFiltered.indexOf("*");
+
+  if (restIndex === -1) {
+    if (rest.length) {
+      throw new Error("uiSchema order list does not contain ".concat(errorPropList(rest)));
+    }
+
+    return orderFiltered;
+  }
+
+  if (restIndex !== orderFiltered.lastIndexOf("*")) {
+    throw new Error("uiSchema order list contains more than one wildcard item");
+  }
+
+  var complete = _toConsumableArray(orderFiltered);
+
+  complete.splice.apply(complete, [restIndex, 1].concat(_toConsumableArray(rest)));
+  return complete;
+}
+/**
+ * This function checks if the given schema matches a single
+ * constant value.
+ */
+
+
+function isConstant(schema) {
+  return Array.isArray(schema["enum"]) && schema["enum"].length === 1 || schema.hasOwnProperty("const");
+}
+
+function toConstant(schema) {
+  if (Array.isArray(schema["enum"]) && schema["enum"].length === 1) {
+    return schema["enum"][0];
+  } else if (schema.hasOwnProperty("const")) {
+    return schema["const"];
+  } else {
+    throw new Error("schema cannot be inferred as a constant");
+  }
+}
+
+function isSelect(_schema) {
+  var rootSchema = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var schema = retrieveSchema(_schema, rootSchema);
+  var altSchemas = schema.oneOf || schema.anyOf;
+
+  if (Array.isArray(schema["enum"])) {
+    return true;
+  } else if (Array.isArray(altSchemas)) {
+    return altSchemas.every(function (altSchemas) {
+      return isConstant(altSchemas);
+    });
+  }
+
+  return false;
+}
+
+function isMultiSelect(schema) {
+  var rootSchema = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  if (!schema.uniqueItems || !schema.items) {
+    return false;
+  }
+
+  return isSelect(schema.items, rootSchema);
+}
+
+function isFilesArray(schema, uiSchema) {
+  var rootSchema = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+  if (uiSchema["ui:widget"] === "files") {
+    return true;
+  } else if (schema.items) {
+    var itemsSchema = retrieveSchema(schema.items, rootSchema);
+    return itemsSchema.type === "string" && itemsSchema.format === "data-url";
+  }
+
+  return false;
+}
+
+function isFixedItems(schema) {
+  return Array.isArray(schema.items) && schema.items.length > 0 && schema.items.every(function (item) {
+    return isObject(item);
+  });
+}
+
+function isCustomWidget(uiSchema) {
+  return (// TODO: Remove the `&& uiSchema["ui:widget"] !== "hidden"` once we support hidden widgets for arrays.
+    // https://react-jsonschema-form.readthedocs.io/en/latest/usage/widgets/#hidden-widgets
+    "widget" in getUiOptions(uiSchema) && getUiOptions(uiSchema)["widget"] !== "hidden"
+  );
+}
+
+function allowAdditionalItems(schema) {
+  if (schema.additionalItems === true) {
+    console.warn("additionalItems=true is currently not supported");
+  }
+
+  return isObject(schema.additionalItems);
+}
+
+function optionsList(schema) {
+  if (schema["enum"]) {
+    return schema["enum"].map(function (value, i) {
+      var label = schema.enumNames && schema.enumNames[i] || String(value);
+      return {
+        label: label,
+        value: value
+      };
+    });
+  } else {
+    var altSchemas = schema.oneOf || schema.anyOf;
+    return altSchemas.map(function (schema) {
+      var value = toConstant(schema);
+      var label = schema.title || String(value);
+      return {
+        schema: schema,
+        label: label,
+        value: value
+      };
+    });
+  }
+}
+
+function findSchemaDefinition($ref) {
+  var rootSchema = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var origRef = $ref;
+
+  if ($ref.startsWith("#")) {
+    // Decode URI fragment representation.
+    $ref = decodeURIComponent($ref.substring(1));
+  } else {
+    throw new Error("Could not find a definition for ".concat(origRef, "."));
+  }
+
+  var current = _jsonpointer.default.get(rootSchema, $ref);
+
+  if (current === undefined) {
+    throw new Error("Could not find a definition for ".concat(origRef, "."));
+  }
+
+  if (current.hasOwnProperty("$ref")) {
+    return findSchemaDefinition(current.$ref, rootSchema);
+  }
+
+  return current;
+} // In the case where we have to implicitly create a schema, it is useful to know what type to use
+//  based on the data we are defining
+
+
+var guessType = function guessType(value) {
+  if (Array.isArray(value)) {
+    return "array";
+  } else if (typeof value === "string") {
+    return "string";
+  } else if (value == null) {
+    return "null";
+  } else if (typeof value === "boolean") {
+    return "boolean";
+  } else if (!isNaN(value)) {
+    return "number";
+  } else if (_typeof(value) === "object") {
+    return "object";
+  } // Default to string if we can't figure it out
+
+
+  return "string";
+}; // This function will create new "properties" items for each key in our formData
+
+
+exports.guessType = guessType;
+
+function stubExistingAdditionalProperties(schema) {
+  var rootSchema = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var formData = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {}; // Clone the schema so we don't ruin the consumer's original
+
+  schema = _objectSpread({}, schema, {
+    properties: _objectSpread({}, schema.properties)
+  }); // make sure formData is an object
+
+  formData = isObject(formData) ? formData : {};
+  Object.keys(formData).forEach(function (key) {
+    if (schema.properties.hasOwnProperty(key)) {
+      // No need to stub, our schema already has the property
+      return;
+    }
+
+    var additionalProperties;
+
+    if (schema.additionalProperties.hasOwnProperty("$ref")) {
+      additionalProperties = retrieveSchema({
+        $ref: schema.additionalProperties["$ref"]
+      }, rootSchema, formData);
+    } else if (schema.additionalProperties.hasOwnProperty("type")) {
+      additionalProperties = _objectSpread({}, schema.additionalProperties);
+    } else {
+      additionalProperties = {
+        type: guessType(formData[key])
+      };
+    } // The type of our new key should match the additionalProperties value;
+
+
+    schema.properties[key] = additionalProperties; // Set our additional property flag so we know it was dynamically added
+
+    schema.properties[key][ADDITIONAL_PROPERTY_FLAG] = true;
+  });
+  return schema;
+}
+/**
+ * Resolves a conditional block (if/else/then) by removing the condition and merging the appropriate conditional branch with the rest of the schema
+ */
+
+
+var resolveCondition = function resolveCondition(schema, rootSchema, formData) {
+  var expression = schema["if"],
+      then = schema.then,
+      otherwise = schema["else"],
+      resolvedSchemaLessConditional = _objectWithoutProperties(schema, ["if", "then", "else"]);
+
+  var conditionalSchema = (0, _validate.isValid)(expression, formData, rootSchema) ? then : otherwise;
+
+  if (conditionalSchema) {
+    return retrieveSchema(mergeSchemas(resolvedSchemaLessConditional, retrieveSchema(conditionalSchema, rootSchema, formData)), rootSchema, formData);
+  } else {
+    return retrieveSchema(resolvedSchemaLessConditional, rootSchema, formData);
+  }
+};
+/**
+ * Resolves references and dependencies within a schema and its 'allOf' children.
+ *
+ * Called internally by retrieveSchema.
+ */
+
+
+function resolveSchema(schema) {
+  var rootSchema = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var formData = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+  if (schema.hasOwnProperty("$ref")) {
+    return resolveReference(schema, rootSchema, formData);
+  } else if (schema.hasOwnProperty("dependencies")) {
+    var resolvedSchema = resolveDependencies(schema, rootSchema, formData);
+    return retrieveSchema(resolvedSchema, rootSchema, formData);
+  } else if (schema.hasOwnProperty("allOf")) {
+    return _objectSpread({}, schema, {
+      allOf: schema.allOf.map(function (allOfSubschema) {
+        return retrieveSchema(allOfSubschema, rootSchema, formData);
+      })
+    });
+  } else {
+    // No $ref or dependencies attribute found, returning the original schema.
+    return schema;
+  }
+}
+
+function resolveReference(schema, rootSchema, formData) {
+  // Retrieve the referenced schema definition.
+  var $refSchema = findSchemaDefinition(schema.$ref, rootSchema); // Drop the $ref property of the source schema.
+
+  var $ref = schema.$ref,
+      localSchema = _objectWithoutProperties(schema, ["$ref"]); // Update referenced schema definition with local schema properties.
+
+
+  return retrieveSchema(_objectSpread({}, $refSchema, localSchema), rootSchema, formData);
+}
+
+function retrieveSchema(schema) {
+  var rootSchema = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var formData = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+  if (!isObject(schema)) {
+    return {};
+  }
+
+  var resolvedSchema = resolveSchema(schema, rootSchema, formData);
+
+  if (schema.hasOwnProperty("if")) {
+    return resolveCondition(schema, rootSchema, formData);
+  } // For each level of the dependency, we need to recursively determine the appropriate resolved schema given the current state of formData.
+  // Otherwise, nested allOf subschemas will not be correctly displayed.
+
+
+  if (resolvedSchema.properties) {
+    var properties = {};
+    Object.entries(resolvedSchema.properties).forEach(function (entries) {
+      var propName = entries[0];
+      var propSchema = entries[1];
+      var rawPropData = formData && formData[propName];
+      var propData = isObject(rawPropData) ? rawPropData : {};
+      var resolvedPropSchema = retrieveSchema(propSchema, rootSchema, propData);
+      properties[propName] = resolvedPropSchema;
+
+      if (propSchema !== resolvedPropSchema && resolvedSchema.properties !== properties) {
+        resolvedSchema = _objectSpread({}, resolvedSchema, {
+          properties: properties
+        });
+      }
+    });
+  }
+
+  if ("allOf" in schema) {
+    try {
+      resolvedSchema = (0, _jsonSchemaMergeAllof.default)(_objectSpread({}, resolvedSchema, {
+        allOf: resolvedSchema.allOf
+      }));
+    } catch (e) {
+      console.warn("could not merge subschemas in allOf:\n" + e);
+
+      var _resolvedSchema = resolvedSchema,
+          allOf = _resolvedSchema.allOf,
+          resolvedSchemaWithoutAllOf = _objectWithoutProperties(_resolvedSchema, ["allOf"]);
+
+      return resolvedSchemaWithoutAllOf;
+    }
+  }
+
+  var hasAdditionalProperties = resolvedSchema.hasOwnProperty("additionalProperties") && resolvedSchema.additionalProperties !== false;
+
+  if (hasAdditionalProperties) {
+    return stubExistingAdditionalProperties(resolvedSchema, rootSchema, formData);
+  }
+
+  return resolvedSchema;
+}
+
+function resolveDependencies(schema, rootSchema, formData) {
+  // Drop the dependencies from the source schema.
+  var _schema$dependencies = schema.dependencies,
+      dependencies = _schema$dependencies === void 0 ? {} : _schema$dependencies,
+      resolvedSchema = _objectWithoutProperties(schema, ["dependencies"]);
+
+  if ("oneOf" in resolvedSchema) {
+    resolvedSchema = resolvedSchema.oneOf[getMatchingOption(formData, resolvedSchema.oneOf, rootSchema)];
+  } else if ("anyOf" in resolvedSchema) {
+    resolvedSchema = resolvedSchema.anyOf[getMatchingOption(formData, resolvedSchema.anyOf, rootSchema)];
+  }
+
+  return processDependencies(dependencies, resolvedSchema, rootSchema, formData);
+}
+
+function processDependencies(dependencies, resolvedSchema, rootSchema, formData) {
+  // Process dependencies updating the local schema properties as appropriate.
+  for (var dependencyKey in dependencies) {
+    // Skip this dependency if its trigger property is not present.
+    if (formData[dependencyKey] === undefined) {
+      continue;
+    } // Skip this dependency if it is not included in the schema (such as when dependencyKey is itself a hidden dependency.)
+
+
+    if (resolvedSchema.properties && !(dependencyKey in resolvedSchema.properties)) {
+      continue;
+    }
+
+    var dependencyValue = dependencies[dependencyKey],
+        remainingDependencies = _objectWithoutProperties(dependencies, [dependencyKey].map(_toPropertyKey));
+
+    if (Array.isArray(dependencyValue)) {
+      resolvedSchema = withDependentProperties(resolvedSchema, dependencyValue);
+    } else if (isObject(dependencyValue)) {
+      resolvedSchema = withDependentSchema(resolvedSchema, rootSchema, formData, dependencyKey, dependencyValue);
+    }
+
+    return processDependencies(remainingDependencies, resolvedSchema, rootSchema, formData);
+  }
+
+  return resolvedSchema;
+}
+
+function withDependentProperties(schema, additionallyRequired) {
+  if (!additionallyRequired) {
+    return schema;
+  }
+
+  var required = Array.isArray(schema.required) ? Array.from(new Set([].concat(_toConsumableArray(schema.required), _toConsumableArray(additionallyRequired)))) : additionallyRequired;
+  return _objectSpread({}, schema, {
+    required: required
+  });
+}
+
+function withDependentSchema(schema, rootSchema, formData, dependencyKey, dependencyValue) {
+  var _retrieveSchema = retrieveSchema(dependencyValue, rootSchema, formData),
+      oneOf = _retrieveSchema.oneOf,
+      dependentSchema = _objectWithoutProperties(_retrieveSchema, ["oneOf"]);
+
+  schema = mergeSchemas(schema, dependentSchema); // Since it does not contain oneOf, we return the original schema.
+
+  if (oneOf === undefined) {
+    return schema;
+  } else if (!Array.isArray(oneOf)) {
+    throw new Error("invalid: it is some ".concat(_typeof(oneOf), " instead of an array"));
+  } // Resolve $refs inside oneOf.
+
+
+  var resolvedOneOf = oneOf.map(function (subschema) {
+    return subschema.hasOwnProperty("$ref") ? resolveReference(subschema, rootSchema, formData) : subschema;
+  });
+  return withExactlyOneSubschema(schema, rootSchema, formData, dependencyKey, resolvedOneOf);
+}
+
+function withExactlyOneSubschema(schema, rootSchema, formData, dependencyKey, oneOf) {
+  var validSubschemas = oneOf.filter(function (subschema) {
+    if (!subschema.properties) {
+      return false;
+    }
+
+    var conditionPropertySchema = subschema.properties[dependencyKey];
+
+    if (conditionPropertySchema) {
+      var conditionSchema = {
+        type: "object",
+        properties: _defineProperty({}, dependencyKey, conditionPropertySchema)
+      };
+
+      var _validateFormData = (0, _validate.default)(formData, conditionSchema),
+          errors = _validateFormData.errors;
+
+      return errors.length === 0;
+    }
+  });
+
+  if (validSubschemas.length !== 1) {
+    console.warn("ignoring oneOf in dependencies because there isn't exactly one subschema that is valid");
+    return schema;
+  }
+
+  var subschema = validSubschemas[0];
+
+  var _subschema$properties = subschema.properties,
+      conditionPropertySchema = _subschema$properties[dependencyKey],
+      dependentSubschema = _objectWithoutProperties(_subschema$properties, [dependencyKey].map(_toPropertyKey));
+
+  var dependentSchema = _objectSpread({}, subschema, {
+    properties: dependentSubschema
+  });
+
+  return mergeSchemas(schema, retrieveSchema(dependentSchema, rootSchema, formData));
+} // Recursively merge deeply nested schemas.
+// The difference between mergeSchemas and mergeObjects
+// is that mergeSchemas only concats arrays for
+// values under the "required" keyword, and when it does,
+// it doesn't include duplicate values.
+
+
+function mergeSchemas(obj1, obj2) {
+  var acc = Object.assign({}, obj1); // Prevent mutation of source object.
+
+  return Object.keys(obj2).reduce(function (acc, key) {
+    var left = obj1 ? obj1[key] : {},
+        right = obj2[key];
+
+    if (obj1 && obj1.hasOwnProperty(key) && isObject(right)) {
+      acc[key] = mergeSchemas(left, right);
+    } else if (obj1 && obj2 && (getSchemaType(obj1) === "object" || getSchemaType(obj2) === "object") && key === "required" && Array.isArray(left) && Array.isArray(right)) {
+      // Don't include duplicate values when merging
+      // "required" fields.
+      acc[key] = (0, _union.default)(left, right);
+    } else {
+      acc[key] = right;
+    }
+
+    return acc;
+  }, acc);
+}
+
+function isArguments(object) {
+  return Object.prototype.toString.call(object) === "[object Arguments]";
+}
+
+function deepEquals(a, b) {
+  var ca = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  var cb = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : []; // Partially extracted from node-deeper and adapted to exclude comparison
+  // checks for functions.
+  // https://github.com/othiym23/node-deeper
+
+  if (a === b) {
+    return true;
+  } else if (typeof a === "function" || typeof b === "function") {
+    // Assume all functions are equivalent
+    // see https://github.com/rjsf-team/react-jsonschema-form/issues/255
+    return true;
+  } else if (_typeof(a) !== "object" || _typeof(b) !== "object") {
+    return false;
+  } else if (a === null || b === null) {
+    return false;
+  } else if (a instanceof Date && b instanceof Date) {
+    return a.getTime() === b.getTime();
+  } else if (a instanceof RegExp && b instanceof RegExp) {
+    return a.source === b.source && a.global === b.global && a.multiline === b.multiline && a.lastIndex === b.lastIndex && a.ignoreCase === b.ignoreCase;
+  } else if (isArguments(a) || isArguments(b)) {
+    if (!(isArguments(a) && isArguments(b))) {
+      return false;
+    }
+
+    var slice = Array.prototype.slice;
+    return deepEquals(slice.call(a), slice.call(b), ca, cb);
+  } else {
+    if (a.constructor !== b.constructor) {
+      return false;
+    }
+
+    var ka = Object.keys(a);
+    var kb = Object.keys(b); // don't bother with stack acrobatics if there's nothing there
+
+    if (ka.length === 0 && kb.length === 0) {
+      return true;
+    }
+
+    if (ka.length !== kb.length) {
+      return false;
+    }
+
+    var cal = ca.length;
+
+    while (cal--) {
+      if (ca[cal] === a) {
+        return cb[cal] === b;
+      }
+    }
+
+    ca.push(a);
+    cb.push(b);
+    ka.sort();
+    kb.sort();
+
+    for (var j = ka.length - 1; j >= 0; j--) {
+      if (ka[j] !== kb[j]) {
+        return false;
+      }
+    }
+
+    var _key;
+
+    for (var k = ka.length - 1; k >= 0; k--) {
+      _key = ka[k];
+
+      if (!deepEquals(a[_key], b[_key], ca, cb)) {
+        return false;
+      }
+    }
+
+    ca.pop();
+    cb.pop();
+    return true;
+  }
+}
+
+function shouldRender(comp, nextProps, nextState) {
+  var props = comp.props,
+      state = comp.state;
+  return !deepEquals(props, nextProps) || !deepEquals(state, nextState);
+}
+
+function toIdSchema(schema, id, rootSchema) {
+  var formData = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+  var idPrefix = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "root";
+  var idSeparator = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : "_";
+  var idSchema = {
+    $id: id || idPrefix
+  };
+
+  if ("$ref" in schema || "dependencies" in schema || "allOf" in schema) {
+    var _schema = retrieveSchema(schema, rootSchema, formData);
+
+    return toIdSchema(_schema, id, rootSchema, formData, idPrefix, idSeparator);
+  }
+
+  if ("items" in schema && !schema.items.$ref) {
+    return toIdSchema(schema.items, id, rootSchema, formData, idPrefix, idSeparator);
+  }
+
+  if (schema.type !== "object") {
+    return idSchema;
+  }
+
+  for (var name in schema.properties || {}) {
+    var field = schema.properties[name];
+    var fieldId = idSchema.$id + idSeparator + name;
+    idSchema[name] = toIdSchema(isObject(field) ? field : {}, fieldId, rootSchema, // It's possible that formData is not an object -- this can happen if an
+    // array item has just been added, but not populated with data yet
+    (formData || {})[name], idPrefix, idSeparator);
+  }
+
+  return idSchema;
+}
+
+function toPathSchema(schema) {
+  var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+  var rootSchema = arguments.length > 2 ? arguments[2] : undefined;
+  var formData = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+  var pathSchema = {
+    $name: name.replace(/^\./, "")
+  };
+
+  if ("$ref" in schema || "dependencies" in schema || "allOf" in schema) {
+    var _schema = retrieveSchema(schema, rootSchema, formData);
+
+    return toPathSchema(_schema, name, rootSchema, formData);
+  }
+
+  if (schema.hasOwnProperty("additionalProperties")) {
+    pathSchema.__rjsf_additionalProperties = true;
+  }
+
+  if (schema.hasOwnProperty("items") && Array.isArray(formData)) {
+    formData.forEach(function (element, i) {
+      pathSchema[i] = toPathSchema(schema.items, "".concat(name, ".").concat(i), rootSchema, element);
+    });
+  } else if (schema.hasOwnProperty("properties")) {
+    for (var property in schema.properties) {
+      pathSchema[property] = toPathSchema(schema.properties[property], "".concat(name, ".").concat(property), rootSchema, // It's possible that formData is not an object -- this can happen if an
+      // array item has just been added, but not populated with data yet
+      (formData || {})[property]);
+    }
+  }
+
+  return pathSchema;
+}
+
+function parseDateString(dateString) {
+  var includeTime = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+  if (!dateString) {
+    return {
+      year: -1,
+      month: -1,
+      day: -1,
+      hour: includeTime ? -1 : 0,
+      minute: includeTime ? -1 : 0,
+      second: includeTime ? -1 : 0
+    };
+  }
+
+  var date = new Date(dateString);
+
+  if (Number.isNaN(date.getTime())) {
+    throw new Error("Unable to parse date " + dateString);
+  }
+
+  return {
+    year: date.getUTCFullYear(),
+    month: date.getUTCMonth() + 1,
+    // oh you, javascript.
+    day: date.getUTCDate(),
+    hour: includeTime ? date.getUTCHours() : 0,
+    minute: includeTime ? date.getUTCMinutes() : 0,
+    second: includeTime ? date.getUTCSeconds() : 0
+  };
+}
+
+function toDateString(_ref2) {
+  var year = _ref2.year,
+      month = _ref2.month,
+      day = _ref2.day,
+      _ref2$hour = _ref2.hour,
+      hour = _ref2$hour === void 0 ? 0 : _ref2$hour,
+      _ref2$minute = _ref2.minute,
+      minute = _ref2$minute === void 0 ? 0 : _ref2$minute,
+      _ref2$second = _ref2.second,
+      second = _ref2$second === void 0 ? 0 : _ref2$second;
+  var time = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+  var utcTime = Date.UTC(year, month - 1, day, hour, minute, second);
+  var datetime = new Date(utcTime).toJSON();
+  return time ? datetime : datetime.slice(0, 10);
+}
+
+function utcToLocal(jsonDate) {
+  if (!jsonDate) {
+    return "";
+  } // required format of `"yyyy-MM-ddThh:mm" followed by optional ":ss" or ":ss.SSS"
+  // https://html.spec.whatwg.org/multipage/input.html#local-date-and-time-state-(type%3Ddatetime-local)
+  // > should be a _valid local date and time string_ (not GMT)
+  // Note - date constructor passed local ISO-8601 does not correctly
+  // change time to UTC in node pre-8
+
+
+  var date = new Date(jsonDate);
+  var yyyy = pad(date.getFullYear(), 4);
+  var MM = pad(date.getMonth() + 1, 2);
+  var dd = pad(date.getDate(), 2);
+  var hh = pad(date.getHours(), 2);
+  var mm = pad(date.getMinutes(), 2);
+  var ss = pad(date.getSeconds(), 2);
+  var SSS = pad(date.getMilliseconds(), 3);
+  return "".concat(yyyy, "-").concat(MM, "-").concat(dd, "T").concat(hh, ":").concat(mm, ":").concat(ss, ".").concat(SSS);
+}
+
+function localToUTC(dateString) {
+  if (dateString) {
+    return new Date(dateString).toJSON();
+  }
+}
+
+function pad(num, size) {
+  var s = String(num);
+
+  while (s.length < size) {
+    s = "0" + s;
+  }
+
+  return s;
+}
+
+function dataURItoBlob(dataURI) {
+  // Split metadata from data
+  var splitted = dataURI.split(","); // Split params
+
+  var params = splitted[0].split(";"); // Get mime-type from params
+
+  var type = params[0].replace("data:", ""); // Filter the name property from params
+
+  var properties = params.filter(function (param) {
+    return param.split("=")[0] === "name";
+  }); // Look for the name and use unknown if no name property.
+
+  var name;
+
+  if (properties.length !== 1) {
+    name = "unknown";
+  } else {
+    // Because we filtered out the other property,
+    // we only have the name case here.
+    name = properties[0].split("=")[1];
+  } // Built the Uint8Array Blob parameter from the base64 string.
+
+
+  var binary = atob(splitted[1]);
+  var array = [];
+
+  for (var _i = 0; _i < binary.length; _i++) {
+    array.push(binary.charCodeAt(_i));
+  } // Create the blob object
+
+
+  var blob = new window.Blob([new Uint8Array(array)], {
+    type: type
+  });
+  return {
+    blob: blob,
+    name: name
+  };
+}
+
+function rangeSpec(schema) {
+  var spec = {};
+
+  if (schema.multipleOf) {
+    spec.step = schema.multipleOf;
+  }
+
+  if (schema.minimum || schema.minimum === 0) {
+    spec.min = schema.minimum;
+  }
+
+  if (schema.maximum || schema.maximum === 0) {
+    spec.max = schema.maximum;
+  }
+
+  return spec;
+}
+
+function getMatchingOption(formData, options, rootSchema) {
+  // For performance, skip validating subschemas if formData is undefined. We just
+  // want to get the first option in that case.
+  if (formData === undefined) {
+    return 0;
+  }
+
+  for (var _i2 = 0; _i2 < options.length; _i2++) {
+    var option = options[_i2]; // If the schema describes an object then we need to add slightly more
+    // strict matching to the schema, because unless the schema uses the
+    // "requires" keyword, an object will match the schema as long as it
+    // doesn't have matching keys with a conflicting type. To do this we use an
+    // "anyOf" with an array of requires. This augmentation expresses that the
+    // schema should match if any of the keys in the schema are present on the
+    // object and pass validation.
+
+    if (option.properties) {
+      // Create an "anyOf" schema that requires at least one of the keys in the
+      // "properties" object
+      var requiresAnyOf = {
+        anyOf: Object.keys(option.properties).map(function (key) {
+          return {
+            required: [key]
+          };
+        })
+      };
+      var augmentedSchema = void 0; // If the "anyOf" keyword already exists, wrap the augmentation in an "allOf"
+
+      if (option.anyOf) {
+        // Create a shallow clone of the option
+        var shallowClone = _extends({}, option);
+
+        if (!shallowClone.allOf) {
+          shallowClone.allOf = [];
+        } else {
+          // If "allOf" already exists, shallow clone the array
+          shallowClone.allOf = shallowClone.allOf.slice();
+        }
+
+        shallowClone.allOf.push(requiresAnyOf);
+        augmentedSchema = shallowClone;
+      } else {
+        augmentedSchema = Object.assign({}, option, requiresAnyOf);
+      } // Remove the "required" field as it's likely that not all fields have
+      // been filled in yet, which will mean that the schema is not valid
+
+
+      delete augmentedSchema.required;
+
+      if ((0, _validate.isValid)(augmentedSchema, formData, rootSchema)) {
+        return _i2;
+      }
+    } else if ((0, _validate.isValid)(option, formData, rootSchema)) {
+      return _i2;
+    }
+  }
+
+  return 0;
+} // Check to see if a schema specifies that a value must be true
+
+
+function schemaRequiresTrueValue(schema) {
+  // Check if const is a truthy value
+  if (schema["const"]) {
+    return true;
+  } // Check if an enum has a single value of true
+
+
+  if (schema["enum"] && schema["enum"].length === 1 && schema["enum"][0] === true) {
+    return true;
+  } // If anyOf has a single value, evaluate the subschema
+
+
+  if (schema.anyOf && schema.anyOf.length === 1) {
+    return schemaRequiresTrueValue(schema.anyOf[0]);
+  } // If oneOf has a single value, evaluate the subschema
+
+
+  if (schema.oneOf && schema.oneOf.length === 1) {
+    return schemaRequiresTrueValue(schema.oneOf[0]);
+  } // Evaluate each subschema in allOf, to see if one of them requires a true
+  // value
+
+
+  if (schema.allOf) {
+    return schema.allOf.some(schemaRequiresTrueValue);
+  }
+
+  return false;
+}
+},{"react":"../node_modules/react/index.js","react-is":"../node_modules/react-is/index.js","json-schema-merge-allof":"../node_modules/json-schema-merge-allof/src/index.js","core-js-pure/features/array/fill":"../node_modules/core-js-pure/features/array/fill.js","lodash/union":"../node_modules/lodash/union.js","jsonpointer":"../node_modules/jsonpointer/jsonpointer.js","./components/fields":"../node_modules/@rjsf/core/dist/es/components/fields/index.js","./components/widgets":"../node_modules/@rjsf/core/dist/es/components/widgets/index.js","./validate":"../node_modules/@rjsf/core/dist/es/validate.js"}],"../node_modules/@rjsf/core/dist/es/components/Form.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _pick2 = _interopRequireDefault(require("lodash/pick"));
+
+var _get2 = _interopRequireDefault(require("lodash/get"));
+
+var _isEmpty2 = _interopRequireDefault(require("lodash/isEmpty"));
+
+var _ErrorList = _interopRequireDefault(require("./ErrorList"));
+
+var _utils = require("../utils");
+
+var _validate = _interopRequireWildcard(require("../validate"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _typeof2(obj) { "@babel/helpers - typeof"; return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof2(obj); }
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+    var ownKeys = Object.keys(source);
+
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+      ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+      }));
+    }
+
+    ownKeys.forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    });
+  }
+
+  return target;
+}
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return _assertThisInitialized(self);
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+var Form = /*#__PURE__*/function (_Component) {
+  _inherits(Form, _Component);
+
+  function Form(props) {
+    var _this;
+
+    _classCallCheck(this, Form);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Form).call(this, props));
+
+    _defineProperty(_assertThisInitialized(_this), "getUsedFormData", function (formData, fields) {
+      //for the case of a single input form
+      if (fields.length === 0 && _typeof(formData) !== "object") {
+        return formData;
+      }
+
+      var data = (0, _pick2.default)(formData, fields);
+
+      if (Array.isArray(formData)) {
+        return Object.keys(data).map(function (key) {
+          return data[key];
+        });
+      }
+
+      return data;
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "getFieldNames", function (pathSchema, formData) {
+      var getAllPaths = function getAllPaths(_obj) {
+        var acc = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+        var paths = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [""];
+        Object.keys(_obj).forEach(function (key) {
+          if (_typeof(_obj[key]) === "object") {
+            var newPaths = paths.map(function (path) {
+              return "".concat(path, ".").concat(key);
+            }); // If an object is marked with additionalProperties, all its keys are valid
+
+            if (_obj[key].__rjsf_additionalProperties && _obj[key].$name !== "") {
+              acc.push(_obj[key].$name);
+            } else {
+              getAllPaths(_obj[key], acc, newPaths);
+            }
+          } else if (key === "$name" && _obj[key] !== "") {
+            paths.forEach(function (path) {
+              path = path.replace(/^\./, "");
+              var formValue = (0, _get2.default)(formData, path); // adds path to fieldNames if it points to a value
+              // or an empty object/array
+
+              if (_typeof(formValue) !== "object" || (0, _isEmpty2.default)(formValue)) {
+                acc.push(path);
+              }
+            });
+          }
+        });
+        return acc;
+      };
+
+      return getAllPaths(pathSchema);
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onChange", function (formData, newErrorSchema) {
+      if ((0, _utils.isObject)(formData) || Array.isArray(formData)) {
+        var newState = _this.getStateFromProps(_this.props, formData);
+
+        formData = newState.formData;
+      }
+
+      var mustValidate = !_this.props.noValidate && _this.props.liveValidate;
+      var state = {
+        formData: formData
+      };
+      var newFormData = formData;
+
+      if (_this.props.omitExtraData === true && _this.props.liveOmit === true) {
+        var retrievedSchema = (0, _utils.retrieveSchema)(_this.state.schema, _this.state.schema, formData);
+        var pathSchema = (0, _utils.toPathSchema)(retrievedSchema, "", _this.state.schema, formData);
+
+        var fieldNames = _this.getFieldNames(pathSchema, formData);
+
+        newFormData = _this.getUsedFormData(formData, fieldNames);
+        state = {
+          formData: newFormData
+        };
+      }
+
+      if (mustValidate) {
+        var schemaValidation = _this.validate(newFormData);
+
+        var errors = schemaValidation.errors;
+        var errorSchema = schemaValidation.errorSchema;
+        var schemaValidationErrors = errors;
+        var schemaValidationErrorSchema = errorSchema;
+
+        if (_this.props.extraErrors) {
+          errorSchema = (0, _utils.mergeObjects)(errorSchema, _this.props.extraErrors, !!"concat arrays");
+          errors = (0, _validate.toErrorList)(errorSchema);
+        }
+
+        state = {
+          formData: newFormData,
+          errors: errors,
+          errorSchema: errorSchema,
+          schemaValidationErrors: schemaValidationErrors,
+          schemaValidationErrorSchema: schemaValidationErrorSchema
+        };
+      } else if (!_this.props.noValidate && newErrorSchema) {
+        var _errorSchema = _this.props.extraErrors ? (0, _utils.mergeObjects)(newErrorSchema, _this.props.extraErrors, !!"concat arrays") : newErrorSchema;
+
+        state = {
+          formData: newFormData,
+          errorSchema: _errorSchema,
+          errors: (0, _validate.toErrorList)(_errorSchema)
+        };
+      }
+
+      _this.setState(state, function () {
+        return _this.props.onChange && _this.props.onChange(_this.state);
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onBlur", function () {
+      if (_this.props.onBlur) {
+        var _this$props;
+
+        (_this$props = _this.props).onBlur.apply(_this$props, arguments);
+      }
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onFocus", function () {
+      if (_this.props.onFocus) {
+        var _this$props2;
+
+        (_this$props2 = _this.props).onFocus.apply(_this$props2, arguments);
+      }
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onSubmit", function (event) {
+      event.preventDefault();
+
+      if (event.target !== event.currentTarget) {
+        return;
+      }
+
+      event.persist();
+      var newFormData = _this.state.formData;
+
+      if (_this.props.omitExtraData === true) {
+        var retrievedSchema = (0, _utils.retrieveSchema)(_this.state.schema, _this.state.schema, newFormData);
+        var pathSchema = (0, _utils.toPathSchema)(retrievedSchema, "", _this.state.schema, newFormData);
+
+        var fieldNames = _this.getFieldNames(pathSchema, newFormData);
+
+        newFormData = _this.getUsedFormData(newFormData, fieldNames);
+      }
+
+      if (!_this.props.noValidate) {
+        var schemaValidation = _this.validate(newFormData);
+
+        var _errors = schemaValidation.errors;
+        var _errorSchema2 = schemaValidation.errorSchema;
+        var schemaValidationErrors = _errors;
+        var schemaValidationErrorSchema = _errorSchema2;
+
+        if (Object.keys(_errors).length > 0) {
+          if (_this.props.extraErrors) {
+            _errorSchema2 = (0, _utils.mergeObjects)(_errorSchema2, _this.props.extraErrors, !!"concat arrays");
+            _errors = (0, _validate.toErrorList)(_errorSchema2);
+          }
+
+          _this.setState({
+            errors: _errors,
+            errorSchema: _errorSchema2,
+            schemaValidationErrors: schemaValidationErrors,
+            schemaValidationErrorSchema: schemaValidationErrorSchema
+          }, function () {
+            if (_this.props.onError) {
+              _this.props.onError(_errors);
+            } else {
+              console.error("Form validation failed", _errors);
+            }
+          });
+
+          return;
+        }
+      } // There are no errors generated through schema validation.
+      // Check for user provided errors and update state accordingly.
+
+
+      var errorSchema;
+      var errors;
+
+      if (_this.props.extraErrors) {
+        errorSchema = _this.props.extraErrors;
+        errors = (0, _validate.toErrorList)(errorSchema);
+      } else {
+        errorSchema = {};
+        errors = [];
+      }
+
+      _this.setState({
+        formData: newFormData,
+        errors: errors,
+        errorSchema: errorSchema,
+        schemaValidationErrors: [],
+        schemaValidationErrorSchema: {}
+      }, function () {
+        if (_this.props.onSubmit) {
+          _this.props.onSubmit(_objectSpread({}, _this.state, {
+            formData: newFormData,
+            status: "submitted"
+          }), event);
+        }
+      });
+    });
+
+    _this.state = _this.getStateFromProps(props, props.formData);
+
+    if (_this.props.onChange && !(0, _utils.deepEquals)(_this.state.formData, _this.props.formData)) {
+      _this.props.onChange(_this.state);
+    }
+
+    _this.formElement = null;
+    return _this;
+  }
+
+  _createClass(Form, [{
+    key: "UNSAFE_componentWillReceiveProps",
+    value: function UNSAFE_componentWillReceiveProps(nextProps) {
+      var nextState = this.getStateFromProps(nextProps, nextProps.formData);
+
+      if (!(0, _utils.deepEquals)(nextState.formData, nextProps.formData) && !(0, _utils.deepEquals)(nextState.formData, this.state.formData) && this.props.onChange) {
+        this.props.onChange(nextState);
+      }
+
+      this.setState(nextState);
+    }
+  }, {
+    key: "getStateFromProps",
+    value: function getStateFromProps(props, inputFormData) {
+      var state = this.state || {};
+      var schema = "schema" in props ? props.schema : this.props.schema;
+      var uiSchema = "uiSchema" in props ? props.uiSchema : this.props.uiSchema;
+      var edit = typeof inputFormData !== "undefined";
+      var liveValidate = "liveValidate" in props ? props.liveValidate : this.props.liveValidate;
+      var mustValidate = edit && !props.noValidate && liveValidate;
+      var rootSchema = schema;
+      var formData = (0, _utils.getDefaultFormState)(schema, inputFormData, rootSchema);
+      var retrievedSchema = (0, _utils.retrieveSchema)(schema, rootSchema, formData);
+      var customFormats = props.customFormats;
+      var additionalMetaSchemas = props.additionalMetaSchemas;
+
+      var getCurrentErrors = function getCurrentErrors() {
+        if (props.noValidate) {
+          return {
+            errors: [],
+            errorSchema: {}
+          };
+        } else if (!props.liveValidate) {
+          return {
+            errors: state.schemaValidationErrors || [],
+            errorSchema: state.schemaValidationErrorSchema || {}
+          };
+        }
+
+        return {
+          errors: state.errors || [],
+          errorSchema: state.errorSchema || {}
+        };
+      };
+
+      var errors, errorSchema, schemaValidationErrors, schemaValidationErrorSchema;
+
+      if (mustValidate) {
+        var schemaValidation = this.validate(formData, schema, additionalMetaSchemas, customFormats);
+        errors = schemaValidation.errors;
+        errorSchema = schemaValidation.errorSchema;
+        schemaValidationErrors = errors;
+        schemaValidationErrorSchema = errorSchema;
+      } else {
+        var currentErrors = getCurrentErrors();
+        errors = currentErrors.errors;
+        errorSchema = currentErrors.errorSchema;
+        schemaValidationErrors = state.schemaValidationErrors;
+        schemaValidationErrorSchema = state.schemaValidationErrorSchema;
+      }
+
+      if (props.extraErrors) {
+        errorSchema = (0, _utils.mergeObjects)(errorSchema, props.extraErrors, !!"concat arrays");
+        errors = (0, _validate.toErrorList)(errorSchema);
+      }
+
+      var idSchema = (0, _utils.toIdSchema)(retrievedSchema, uiSchema["ui:rootFieldId"], rootSchema, formData, props.idPrefix, props.idSeparator);
+      var nextState = {
+        schema: schema,
+        uiSchema: uiSchema,
+        idSchema: idSchema,
+        formData: formData,
+        edit: edit,
+        errors: errors,
+        errorSchema: errorSchema,
+        additionalMetaSchemas: additionalMetaSchemas
+      };
+
+      if (schemaValidationErrors) {
+        nextState.schemaValidationErrors = schemaValidationErrors;
+        nextState.schemaValidationErrorSchema = schemaValidationErrorSchema;
+      }
+
+      return nextState;
+    }
+  }, {
+    key: "shouldComponentUpdate",
+    value: function shouldComponentUpdate(nextProps, nextState) {
+      return (0, _utils.shouldRender)(this, nextProps, nextState);
+    }
+  }, {
+    key: "validate",
+    value: function validate(formData) {
+      var schema = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.props.schema;
+      var additionalMetaSchemas = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this.props.additionalMetaSchemas;
+      var customFormats = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.props.customFormats;
+      var _this$props3 = this.props,
+          validate = _this$props3.validate,
+          transformErrors = _this$props3.transformErrors;
+
+      var _this$getRegistry = this.getRegistry(),
+          rootSchema = _this$getRegistry.rootSchema;
+
+      var resolvedSchema = (0, _utils.retrieveSchema)(schema, rootSchema, formData);
+      return (0, _validate.default)(formData, resolvedSchema, validate, transformErrors, additionalMetaSchemas, customFormats);
+    }
+  }, {
+    key: "renderErrors",
+    value: function renderErrors() {
+      var _this$state = this.state,
+          errors = _this$state.errors,
+          errorSchema = _this$state.errorSchema,
+          schema = _this$state.schema,
+          uiSchema = _this$state.uiSchema;
+      var _this$props4 = this.props,
+          ErrorList = _this$props4.ErrorList,
+          showErrorList = _this$props4.showErrorList,
+          formContext = _this$props4.formContext;
+
+      if (errors.length && showErrorList != false) {
+        return _react.default.createElement(ErrorList, {
+          errors: errors,
+          errorSchema: errorSchema,
+          schema: schema,
+          uiSchema: uiSchema,
+          formContext: formContext
+        });
+      }
+
+      return null;
+    }
+  }, {
+    key: "getRegistry",
+    value: function getRegistry() {
+      // For BC, accept passed SchemaField and TitleField props and pass them to
+      // the "fields" registry one.
+      var _getDefaultRegistry = (0, _utils.getDefaultRegistry)(),
+          fields = _getDefaultRegistry.fields,
+          widgets = _getDefaultRegistry.widgets;
+
+      return {
+        fields: _objectSpread({}, fields, this.props.fields),
+        widgets: _objectSpread({}, widgets, this.props.widgets),
+        ArrayFieldTemplate: this.props.ArrayFieldTemplate,
+        ObjectFieldTemplate: this.props.ObjectFieldTemplate,
+        FieldTemplate: this.props.FieldTemplate,
+        definitions: this.props.schema.definitions || {},
+        rootSchema: this.props.schema,
+        formContext: this.props.formContext || {}
+      };
+    }
+  }, {
+    key: "submit",
+    value: function submit() {
+      if (this.formElement) {
+        this.formElement.dispatchEvent(new CustomEvent("submit", {
+          cancelable: true
+        }));
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var _this$props5 = this.props,
+          children = _this$props5.children,
+          id = _this$props5.id,
+          idPrefix = _this$props5.idPrefix,
+          idSeparator = _this$props5.idSeparator,
+          className = _this$props5.className,
+          tagName = _this$props5.tagName,
+          name = _this$props5.name,
+          method = _this$props5.method,
+          target = _this$props5.target,
+          action = _this$props5.action,
+          deprecatedAutocomplete = _this$props5.autocomplete,
+          currentAutoComplete = _this$props5.autoComplete,
+          enctype = _this$props5.enctype,
+          acceptcharset = _this$props5.acceptcharset,
+          noHtml5Validate = _this$props5.noHtml5Validate,
+          disabled = _this$props5.disabled,
+          readonly = _this$props5.readonly,
+          formContext = _this$props5.formContext,
+          _internalFormWrapper = _this$props5._internalFormWrapper;
+      var _this$state2 = this.state,
+          schema = _this$state2.schema,
+          uiSchema = _this$state2.uiSchema,
+          formData = _this$state2.formData,
+          errorSchema = _this$state2.errorSchema,
+          idSchema = _this$state2.idSchema;
+      var registry = this.getRegistry();
+      var _SchemaField = registry.fields.SchemaField; // The `semantic-ui` and `material-ui` themes have `_internalFormWrapper`s that take an `as` prop that is the
+      // PropTypes.elementType to use for the inner tag so we'll need to pass `tagName` along if it is provided.
+      // NOTE, the `as` prop is native to `semantic-ui` and is emulated in the `material-ui` theme
+
+      var as = _internalFormWrapper ? tagName : undefined;
+      var FormTag = _internalFormWrapper || tagName || "form";
+      var SubmitButton = registry.widgets.SubmitButton;
+
+      if (deprecatedAutocomplete) {
+        console.warn("Using autocomplete property of Form is deprecated, use autoComplete instead.");
+      }
+
+      var autoComplete = currentAutoComplete ? currentAutoComplete : deprecatedAutocomplete;
+      return _react.default.createElement(FormTag, {
+        className: className ? className : "rjsf",
+        id: id,
+        name: name,
+        method: method,
+        target: target,
+        action: action,
+        autoComplete: autoComplete,
+        encType: enctype,
+        acceptCharset: acceptcharset,
+        noValidate: noHtml5Validate,
+        onSubmit: this.onSubmit,
+        as: as,
+        ref: function ref(form) {
+          _this2.formElement = form;
+        }
+      }, this.renderErrors(), _react.default.createElement(_SchemaField, {
+        schema: schema,
+        uiSchema: uiSchema,
+        errorSchema: errorSchema,
+        idSchema: idSchema,
+        idPrefix: idPrefix,
+        idSeparator: idSeparator,
+        formContext: formContext,
+        formData: formData,
+        onChange: this.onChange,
+        onBlur: this.onBlur,
+        onFocus: this.onFocus,
+        registry: registry,
+        disabled: disabled,
+        readonly: readonly
+      }), children ? children : _react.default.createElement(SubmitButton, {
+        uiSchema: uiSchema
+      }));
+    }
+  }]);
+
+  return Form;
+}(_react.Component);
+
+exports.default = Form;
+
+_defineProperty(Form, "defaultProps", {
+  uiSchema: {},
+  noValidate: false,
+  liveValidate: false,
+  disabled: false,
+  readonly: false,
+  noHtml5Validate: false,
+  ErrorList: _ErrorList.default,
+  omitExtraData: false
+});
+
+if ("development" !== "production") {
+  Form.propTypes = {
+    schema: _propTypes.default.object.isRequired,
+    uiSchema: _propTypes.default.object,
+    formData: _propTypes.default.any,
+    disabled: _propTypes.default.bool,
+    readonly: _propTypes.default.bool,
+    widgets: _propTypes.default.objectOf(_propTypes.default.oneOfType([_propTypes.default.func, _propTypes.default.object])),
+    fields: _propTypes.default.objectOf(_propTypes.default.elementType),
+    ArrayFieldTemplate: _propTypes.default.elementType,
+    ObjectFieldTemplate: _propTypes.default.elementType,
+    FieldTemplate: _propTypes.default.elementType,
+    ErrorList: _propTypes.default.func,
+    onChange: _propTypes.default.func,
+    onError: _propTypes.default.func,
+    showErrorList: _propTypes.default.bool,
+    onSubmit: _propTypes.default.func,
+    id: _propTypes.default.string,
+    className: _propTypes.default.string,
+    tagName: _propTypes.default.elementType,
+    _internalFormWrapper: _propTypes.default.elementType,
+    name: _propTypes.default.string,
+    method: _propTypes.default.string,
+    target: _propTypes.default.string,
+    action: _propTypes.default.string,
+    autocomplete: _propTypes.default.string,
+    autoComplete: _propTypes.default.string,
+    enctype: _propTypes.default.string,
+    acceptcharset: _propTypes.default.string,
+    noValidate: _propTypes.default.bool,
+    noHtml5Validate: _propTypes.default.bool,
+    liveValidate: _propTypes.default.bool,
+    validate: _propTypes.default.func,
+    transformErrors: _propTypes.default.func,
+    formContext: _propTypes.default.object,
+    customFormats: _propTypes.default.object,
+    additionalMetaSchemas: _propTypes.default.arrayOf(_propTypes.default.object),
+    omitExtraData: _propTypes.default.bool,
+    extraErrors: _propTypes.default.object
+  };
+}
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","lodash/pick":"../node_modules/lodash/pick.js","lodash/get":"../node_modules/lodash/get.js","lodash/isEmpty":"../node_modules/lodash/isEmpty.js","./ErrorList":"../node_modules/@rjsf/core/dist/es/components/ErrorList.js","../utils":"../node_modules/@rjsf/core/dist/es/utils.js","../validate":"../node_modules/@rjsf/core/dist/es/validate.js"}],"../node_modules/@rjsf/core/dist/es/withTheme.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _ = _interopRequireDefault(require("./"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+    var ownKeys = Object.keys(source);
+
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+      ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+      }));
+    }
+
+    ownKeys.forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    });
+  }
+
+  return target;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function withTheme(themeProps) {
+  return (0, _react.forwardRef)(function (_ref, ref) {
+    var fields = _ref.fields,
+        widgets = _ref.widgets,
+        directProps = _objectWithoutProperties(_ref, ["fields", "widgets"]);
+
+    fields = _objectSpread({}, themeProps.fields, fields);
+    widgets = _objectSpread({}, themeProps.widgets, widgets);
+    return _react.default.createElement(_.default, _extends({}, themeProps, directProps, {
+      fields: fields,
+      widgets: widgets,
+      ref: ref
+    }));
+  });
+}
+
+withTheme.propTypes = {
+  widgets: _propTypes.default.object,
+  fields: _propTypes.default.object
+};
+var _default = withTheme;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","./":"../node_modules/@rjsf/core/dist/es/index.js"}],"../node_modules/@rjsf/core/dist/es/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.utils = exports.default = void 0;
+Object.defineProperty(exports, "withTheme", {
+  enumerable: true,
+  get: function () {
+    return _withTheme.default;
+  }
+});
+
+var _Form = _interopRequireDefault(require("./components/Form"));
+
+var _withTheme = _interopRequireDefault(require("./withTheme"));
+
+var utils = _interopRequireWildcard(require("./utils"));
+
+exports.utils = utils;
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _default = _Form.default;
+exports.default = _default;
+},{"./components/Form":"../node_modules/@rjsf/core/dist/es/components/Form.js","./withTheme":"../node_modules/@rjsf/core/dist/es/withTheme.js","./utils":"../node_modules/@rjsf/core/dist/es/utils.js"}],"myform.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _core = _interopRequireDefault(require("@rjsf/core"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator.return && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, catch: function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function MyForm() {
+  var _React$useState = _react.default.useState({}),
+      _React$useState2 = _slicedToArray(_React$useState, 2),
+      schema = _React$useState2[0],
+      setSchema = _React$useState2[1];
+
+  _react.default.useEffect(function () {
+    var fetchData = /*#__PURE__*/function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        var res, json;
+        return _regeneratorRuntime().wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return fetch('https://localhost:7120/Admin/GetPrimitiveSchema');
+
+              case 2:
+                res = _context.sent;
+                _context.next = 5;
+                return res.json();
+
+              case 5:
+                json = _context.sent;
+                setSchema(json);
+
+              case 7:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }));
+
+      return function fetchData() {
+        return _ref.apply(this, arguments);
+      };
+    }();
+
+    fetchData();
+  });
+
+  var log = function log(type) {
+    return console.log.bind(console, type);
+  };
+
+  return /*#__PURE__*/_react.default.createElement(_core.default, {
+    schema: schema,
+    onChange: log("changed"),
+    onSubmit: log("submitted"),
+    onError: log("errors")
+  });
+}
+
+var _default = MyForm;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","@rjsf/core":"../node_modules/@rjsf/core/dist/es/index.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
 
-var _reactDom = _interopRequireDefault(require("react-dom"));
+var _client = _interopRequireDefault(require("react-dom/client"));
+
+var _myform = _interopRequireDefault(require("./myform"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_reactDom.default.render( /*#__PURE__*/_react.default.createElement("h1", null, "Hello world!!!"), document.getElementById("react"));
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+var root = _client.default.createRoot(document.getElementById("react"));
+
+root.render( /*#__PURE__*/_react.default.createElement(_myform.default, null));
+},{"react":"../node_modules/react/index.js","react-dom/client":"../node_modules/react-dom/client.js","./myform":"myform.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -33114,7 +58902,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54005" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50906" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
