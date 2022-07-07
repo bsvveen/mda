@@ -32,6 +32,12 @@ namespace MDA.User
             }
 
             return Ok(userService.List(request).Result);
-        }       
+        }
+
+        [HttpPost("Submit")]
+        public async Task<IActionResult> Submit([FromBody] string request)
+        { 
+            return Ok(request);
+        }
     }
 }

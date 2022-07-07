@@ -1,1 +1,19 @@
-{"Tables":[{"Name":"string","Columns":[{"Name":"string","Type":0,"NotNull":true},{"Name":"string2","Type":0,"NotNull":true}]}]}
+{
+  "Entities": [
+    {
+      "Name": "string",
+      "Properties": [
+        {
+          "Name": "string",
+          "Type": 0,
+          "NotNull": true
+        },
+        {
+          "Name": "string2",
+          "Type": 0,
+          "NotNull": true
+        }
+      ]
+    }
+  ]
+}

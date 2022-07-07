@@ -6,19 +6,26 @@ function MyForm() {
 
     React.useEffect(() => {
         const fetchData = async () => {
-            const res = await fetch('https://localhost:7120/Admin/GetPrimitiveSchema');
+            const res = await fetch('/User/GetModelSchema');
             const json = await res.json();
             setSchema(json);
         };
         fetchData();
-    });
+    }, []);
+
+    const onSubmit = async ({formData}, e) => {       
+        console.log("Data submitting: ",  formData);
+        const response = await fetch('/User/Submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) });
+        const json = await response.json();
+        console.log("Su8nmit Response: ",  json);             
+    }
 
     const log = (type) => console.log.bind(console, type);
 
 return (
     <Form schema={schema}
         onChange={log("changed")}
-        onSubmit={log("submitted")}
+        onSubmit={onSubmit}
         onError={log("errors")} />
 )}
 

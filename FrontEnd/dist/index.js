@@ -58819,7 +58819,7 @@ function MyForm() {
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return fetch('https://localhost:7120/Admin/GetPrimitiveSchema');
+                return fetch('/User/GetModelSchema');
 
               case 2:
                 res = _context.sent;
@@ -58844,7 +58844,47 @@ function MyForm() {
     }();
 
     fetchData();
-  });
+  }, []);
+
+  var onSubmit = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(_ref2, e) {
+      var formData, response, json;
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              formData = _ref2.formData;
+              console.log("Data submitting: ", formData);
+              _context2.next = 4;
+              return fetch('/User/Submit', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+              });
+
+            case 4:
+              response = _context2.sent;
+              _context2.next = 7;
+              return response.json();
+
+            case 7:
+              json = _context2.sent;
+              console.log("Su8nmit Response: ", json);
+
+            case 9:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+
+    return function onSubmit(_x, _x2) {
+      return _ref3.apply(this, arguments);
+    };
+  }();
 
   var log = function log(type) {
     return console.log.bind(console, type);
@@ -58853,7 +58893,7 @@ function MyForm() {
   return /*#__PURE__*/_react.default.createElement(_core.default, {
     schema: schema,
     onChange: log("changed"),
-    onSubmit: log("submitted"),
+    onSubmit: onSubmit,
     onError: log("errors")
   });
 }
@@ -58902,7 +58942,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50906" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62412" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
