@@ -7,8 +7,7 @@ namespace MDA.User
     [ApiController]
     [Route("[controller]")]
     public class UserController : ControllerBase
-    {       
-
+    {
         [HttpGet("GetModelSchema")]
         public IActionResult GetModelSchema()
         {
@@ -16,8 +15,20 @@ namespace MDA.User
 
             if (modelSchema == null)
                 return NotFound();
-            
+
             return Ok(modelSchema.ToString());
+        }
+
+
+        [HttpGet("GetModel")]
+        public IActionResult GetModel()
+        {
+            var model = new UserServices().Model;
+
+            if (model == null)
+                return NotFound();
+            
+            return Ok(model);
         }
 
         [HttpPost("GetList")]
@@ -35,7 +46,7 @@ namespace MDA.User
         }
 
         [HttpPost("Submit")]
-        public async Task<IActionResult> Submit([FromBody] string request)
+        public async Task<IActionResult> Submit([FromBody] dynamic request)
         { 
             return Ok(request);
         }

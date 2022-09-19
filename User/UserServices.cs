@@ -7,12 +7,20 @@ namespace MDA.User
 {
     public class UserServices
     {
-        private readonly AdminServices ph;     
-       
+        private readonly Primitive model;   
+
         public UserServices()
+        {         
+            model = new AdminServices().Model;
+        }
+
+        public Primitive Model
         {
-            ph = new AdminServices();
-        }       
+            get
+            {  
+                return model;
+            }
+        }
 
         public JSchema ModelJSchema
         {
@@ -20,8 +28,7 @@ namespace MDA.User
             {
                 JSchema RootjSchema = new JSchema();
                 RootjSchema.Type = JSchemaType.Object;
-
-                var model = ph.Model;
+                
                 model.Entities.ToList().ForEach(entity =>
                 {
                     JSchema jSchema = new JSchema();
@@ -40,19 +47,16 @@ namespace MDA.User
         }
 
         public bool validateRequest(ListRequest request)
-        {
-            var model = ph.Model;
-
+        {  
             var entity = model.Entities.SingleOrDefault(tbl => tbl.Name == request.Entity);
 
-            if (entity != null)
-            {
-                var AllPropertiesExists = request.Properties.All(a => entity.Properties.Any(b => b.Name.Equals(a)));
-                var FilterPropertiesExists = entity.Properties.Exists(prop => prop.Name.Equals(request.Filter.Property));
-
+            if (entity != null)  {
+                var AllPropertiesExists = (request.Properties != null) && request.Properties.All(regProp => entity.Properties.Any(entProp => entProp.Name.Equals(regProp.Name)));
+                var FilterPropertiesExists = (request.Filter != null) && entity.Properties.Exists(entProp => entProp.Name.Equals(request.Filter.Property));
+            
                 return AllPropertiesExists && FilterPropertiesExists;
-
-            } else { return false;  }    
+            
+            } else { return false;  }                
         }
 
         public async Task<string> List(ListRequest request)

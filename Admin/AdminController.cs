@@ -21,20 +21,20 @@ namespace MDA.Admin
         [HttpGet("GetModel")]
         public IActionResult GetModel()
         {
-            AdminServices mh = new AdminServices();
+            AdminServices adminservice = new AdminServices();
 
-            if (mh.Model == null)
+            if (adminservice.Model == null)
                 return NotFound();
 
-            return Ok(mh.Model);
+            return Ok(adminservice.Model);
         }
 
         [HttpPost("UpdateModel")]
         public IActionResult UpdateModel(Primitive newModel)
         {
-            AdminServices mh = new AdminServices();
+            AdminServices adminservice = new AdminServices();
 
-            var updatedPrimitive = mh.UpdateModel(newModel);
+            var updatedPrimitive = adminservice.UpdateModel(newModel);
 
             return Ok(updatedPrimitive);
         }

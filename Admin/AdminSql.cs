@@ -69,7 +69,7 @@ namespace MDA.Admin
                 case PropertyDataType.DateTime:
                     datatype = "DATETIME";
                     break;
-                case PropertyDataType.Text:
+                case PropertyDataType.Number:
                     datatype = "INT(255)";
                     break;
                 case PropertyDataType.ID:

@@ -1,6 +1,17 @@
 import React from "react"
 import ReactDOM from "react-dom/client";
-import MyForm from "./myform"
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
 
-const root = ReactDOM.createRoot(document.getElementById("react"));
-root.render(<MyForm />);
+
+const root = ReactDOM.createRoot(
+    document.getElementById("react")
+);
+
+root.render(
+    <React.StrictMode>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </React.StrictMode>
+  );

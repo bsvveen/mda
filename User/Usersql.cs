@@ -10,7 +10,7 @@ namespace MDA.User
     {
         public async Task<string> List(ListRequest request)
         {            
-            var propsql = "'ID', quote(ID), " + string.Join(',', request.Properties.Select(x => $"'{x}', {x}"));
+            var propsql = "'ID', quote(ID), " + string.Join(',', request.Properties.Select(x => $"'{x.Name}', {x.Name}"));
             var sql = $"SELECT json_group_array(json_object({propsql})) AS json_result FROM(SELECT * FROM {request.Entity});";
 
             return await ExecuteReader(sql);
@@ -19,7 +19,7 @@ namespace MDA.User
         private async Task<string> ExecuteReader(string sqlCommand)
         {
             var connectionStringBuilder = new SqliteConnectionStringBuilder();
-            connectionStringBuilder.DataSource = "../Model/Database.db";
+            connectionStringBuilder.DataSource = "Model/Database.db";
 
             using var connection = new SqliteConnection(connectionStringBuilder.ConnectionString);
             connection.Open();
