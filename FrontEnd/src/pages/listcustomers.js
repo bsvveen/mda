@@ -1,11 +1,11 @@
 import React from 'react';
+import List from '../components/restform/list'
 
-function ListCustomers() {   
+export default  function ListCustomers(model) {   
     return (
         <div>
-            <List Entity="Customers" Properties={["Name"]} />
+            <List entity="Customers" properties={["Name"]} constrains={
+              { name: { "equals" : "Mirjam" }}} />
         </div>
     );
-}
-
-export default MyList;
+};

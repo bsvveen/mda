@@ -9,7 +9,7 @@ namespace MDA.Infrastructure
         [Required]
         public string? Entity { get; set; }
        
-        public List<Property>? Properties { get; set; }
+        public List<string>? Properties { get; set; }
 
         public Filter? Filter { get; set; }
 

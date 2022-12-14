@@ -51,10 +51,10 @@ namespace MDA.User
             var entity = model.Entities.SingleOrDefault(tbl => tbl.Name == request.Entity);
 
             if (entity != null)  {
-                var AllPropertiesExists = (request.Properties != null) && request.Properties.All(regProp => entity.Properties.Any(entProp => entProp.Name.Equals(regProp.Name)));
-                var FilterPropertiesExists = (request.Filter != null) && entity.Properties.Exists(entProp => entProp.Name.Equals(request.Filter.Property));
-            
-                return AllPropertiesExists && FilterPropertiesExists;
+                var AllPropertiesExists = (request.Properties != null) && request.Properties.All(regProp => entity.Properties.Any(entProp => entProp.Name.Equals(regProp)));
+                //var FilterPropertiesExists = (request.Filter != null) && entity.Properties.Exists(entProp => entProp.Name.Equals(request.Filter.Property));
+
+                return AllPropertiesExists; // && FilterPropertiesExists;
             
             } else { return false;  }                
         }

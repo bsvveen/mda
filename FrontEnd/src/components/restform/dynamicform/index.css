@@ -1,0 +1,45 @@
+.dynamic-form {   
+    margin-bottom: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin: 10px 2px;
+    max-width: 100%;
+}
+
+.dynamic-form > div {
+    padding: .5em;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-between;
+    vertical-align: top;
+}
+
+
+
+.dynamic-form > div .group  {
+   display: flex;      
+}
+
+.dynamic-form > div .group > *  {
+    flex: 0 1 50px;      
+ }
+
+ .dynamic-form  input[type="radio"] {
+     width: 25px;
+     height: 25px;
+ }
+
+ .dynamic-form  input[type="checkbox"] {
+    width: 25px;
+    height: 25px;
+}
+
+.dynamic-form  .disabled {
+    font-size: x-small;
+    font-style: italic;
+}
+
+.dynamic-form .actions {
+    display: flex;
+}

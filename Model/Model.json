@@ -1,1 +1,1 @@
-{"Entities":[{"Name":"customers","Properties":[{"Name":"Name","Type":0,"NotNull":true}]}]}
+{"Entities":[{"Name":"Customers","Properties":[{"Name":"Name","Type":0,"NotNull":true}]}]}

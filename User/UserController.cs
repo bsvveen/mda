@@ -1,6 +1,8 @@
 
 using MDA.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System.Text;
 
 namespace MDA.User
 {
@@ -42,7 +44,9 @@ namespace MDA.User
                 return BadRequest("GetRequest is not valid, probably an entityname or propertyname does not exists in the model");
             }
 
-            return Ok(userService.List(request).Result);
+            var stringResponse = await userService.List(request);
+            Response.StatusCode = 200;
+            return Content(stringResponse, "application/json");
         }
 
         [HttpPost("Submit")]
