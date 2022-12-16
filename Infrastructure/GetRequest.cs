@@ -1,6 +1,5 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
-using static MDA.Admin.Primitive;
 
 namespace MDA.Infrastructure
 {
@@ -11,30 +10,27 @@ namespace MDA.Infrastructure
        
         public List<string>? Properties { get; set; }
 
-        public Filter? Filter { get; set; }
-
+        public List<Constrains>? Constrains { get; set; }
     }
 
-    public class Filter
+    public class Constrains
     {
+        public ConstrainOperator AndOr { get; set; }
+
         public string? Property { get; set; }
 
-        public EOperator Operator { get; set; }
+        public PropertyOperator? Operator { get; set; }
 
         public object? Value { get; set; }
     }
 
-    public enum EOperator 
+    public enum PropertyOperator 
     {
         EqualTo, NotEquealTo
     }
 
-    public class ViewRequest
+    public enum ConstrainOperator
     {
-        [Required]
-        public string? Query { get; set; }
-
-        [Required]
-        public string[] Properties { get; set; }
+        And, Or
     }
 }

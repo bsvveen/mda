@@ -27,22 +27,10 @@ class List extends Component {
     this._isMounted = false;
   }
 
-  rowRender = (item) => {   
-    return (
-      <tr key={item.id}> 
-        {
-          Object.keys(item)
-          .filter((key) => { return (key !== "id" && !key.includes("_id"))})
-          .map((key) => { return <td key={key}>{item[key]}</td>})
-        }                    
-      </tr>);
-  }
-
   getList = () => {  
     this.setState({ isLoading: true });  
-
-    let constrains = this.getConstrainsFromProps(this.props);    
-    this.repository.List(this.props.properties, constrains).then(response => {
+     
+    this.repository.List(this.props.properties, this.props.constrains).then(response => {
       if (this._isMounted) {
       this.setState({ items: response }, () => {
         this.setState({ isLoading: false });
@@ -53,8 +41,7 @@ class List extends Component {
   getConstrainsFromProps = (props) => {
     let filter = []
     if (props.constrains) {
-      filter = Object.keys(props.constrains)
-        .filter(key => props.constrains[key].equals)
+      filter = Object.keys(props.constrains)        
         .reduce((obj, key) => {
           obj.push({ "field": key, "value": props.constrains[key].equals });
           return obj;
@@ -75,7 +62,7 @@ class List extends Component {
 
     return (
       <div className="list">
-        <DynamicList items={this.state.items} rowRender={this.rowRender} onSelect={this.onListSelect}  />
+        <DynamicList items={this.state.items} onSelect={this.onListSelect}  />
       </div>
     );
   }

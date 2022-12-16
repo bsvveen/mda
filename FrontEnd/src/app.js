@@ -3,23 +3,23 @@ import { Routes, Route } from "react-router-dom";
 
 import ListCustomers from "./pages/listcustomers";
 
-function App() {
-    const [model, setModel] = React.useState({});
+function App() {    
 
     React.useEffect(() => {
-        const fetchData = async () => {
-            const res = await fetch('/User/GetModelSchema');
-            const json = await res.json();
-            setModel(json);
+        const fetchModel = async () => {
+          fetch('/User/GetModel')
+          .then((res) => res.json())
+          .then(json => JSON.stringify(json))
+          .then((data) => sessionStorage.setItem("model", data));                  
         };
-        fetchData();
+        fetchModel();
     }, []);   
 
     return (
         <div className="App">
           <h1>Welcome to React Router!</h1>
           <Routes>
-               <Route path="/" exact element={<ListCustomers model={model} />} />                
+               <Route path="/" exact element={<ListCustomers />} />                
           </Routes>
         </div>
       );

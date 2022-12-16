@@ -13,11 +13,13 @@ export default class ListAndNew extends Component {
   }
 
   PropTypes = {    
-    controller: PropTypes.string.isRequired,
+    entity: PropTypes.string.isRequired,
+    properties: PropTypes.array,
+    rowRender: PropTypes.func,
     constrains: PropTypes.object,
   }
 
-  componentDidMount() { this.repository = new Repository(this.props.controller); }    
+  componentDidMount() {  this.repository = new Repository(this.props.entity); }    
 
   onFormSubmit = () => { this.setState({ current: undefined, refresh: !this.state.refresh })}
 
@@ -30,8 +32,8 @@ export default class ListAndNew extends Component {
   }   
 
   render() {      
-      return (<div className="listform">       
-        <List key={this.state.refresh} controller={this.props.controller} onSelect={this.onListSelect} constrains={this.props.constrains} />         
+      return (<div className="listform">   
+        <List {...this.props} onSelect={this.onListSelect} key={this.state.refresh} />       
         <hr />
         <h2 className="title">{(this.state.current) ? "Aanpassen" : "Nieuw" }</h2>
         <div>          
@@ -39,7 +41,7 @@ export default class ListAndNew extends Component {
             key = { (this.state.current) ? this.state.current.id : undefined }
             data = { this.state.current }
             constrains = {this.props.constrains}
-            controller = {this.props.controller}            
+            entity = {this.props.entity}            
             onSubmit =  {this.onFormSubmit}
             onDelete = {this.onFormDelete}                   
           />

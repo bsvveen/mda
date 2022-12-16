@@ -19,12 +19,12 @@ export default class DynamicForm extends React.Component {
 
     PropTypes = {
         initial: PropTypes.object.isRequired,       
-        contract: PropTypes.object.isRequired,
+        model: PropTypes.object.isRequired,
+        constrains: PropTypes.object,
         onCancel: PropTypes.func.isRequired,
         onSubmit: PropTypes.func.isRequired,
         onDelete: PropTypes.func.isRequired,
-        repository: PropTypes.func.isRequired,
-        constrains: PropTypes.object
+        repository: PropTypes.func.isRequired       
     }
 
     onDelete = (e) => {
@@ -76,10 +76,10 @@ export default class DynamicForm extends React.Component {
     }
 
     renderForm = () => {
-        let contract = this.props.contract;
+        let model = this.props.model;
 
-        if (contract) {
-            let formUI = contract.map((m) => {
+        if (model) {
+            let formUI = model.map((m) => {
 
                 let defaultValue = this.props.initial[m.key] || "";
                 let value = this.state.modified[m.key] || defaultValue;
@@ -89,7 +89,7 @@ export default class DynamicForm extends React.Component {
                 let errors = this.state.errors;
                 let input = "";    
                 
-                if (isHidden || isReadonly || m.props.disabled)
+                if (isHidden || isReadonly) // || m.props.disabled)
                     return null;
 
                 if (type === "text")
@@ -120,14 +120,14 @@ export default class DynamicForm extends React.Component {
                     repository = {this.props.repository} 
                     constrains = {this.props.constrains} />                    
 
-                if (m.props.disabled)
-                    input = <div>{value}</div>;    
+                //if (m.props.disabled)
+                //    input = <div>{value}</div>;    
 
                 return (
                     <div key={'g' + m.key} className={type}>
                         <label key={"l" + m.key} htmlFor={m.key}>
-                            {m.label.replace("_id","")}
-                            {m.props.required ? "*" : null}
+                            {m.label ? m.label.replace("_id","") : m.key}
+                            {m.NotNull ? "*" : null}
                         </label>
                         {input}                        
                         <span className="error">{errors[m.key] ? errors[m.key] : ""}</span>                        

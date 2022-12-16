@@ -7,13 +7,12 @@ import DynamicForm from './dynamicform';
 export default class Form extends React.Component {
     _isMounted = false;
 
-    state = { contract: undefined, initial: undefined };
+    state = { model: undefined, initial: undefined };
 
     PropTypes = {
         data: PropTypes.object,
+        entity: PropTypes.string.isRequired,
         constrains: PropTypes.object,
-        contract: PropTypes.object,
-        controller: PropTypes.string.isRequired,
         onCancel: PropTypes.func,
         onSubmit: PropTypes.func.isRequired,
         onDelete: PropTypes.func.isRequired         
@@ -22,12 +21,10 @@ export default class Form extends React.Component {
     componentDidMount() {  
         this._isMounted = true; 
 
-        this.repository = new Repository(this.props.controller);    
-        this.repository.RequestContract("Insert").then(response => { 
-            if (this._isMounted) {
-                this.setState({ contract: response, initial: this.getInitialFromProps() });
-            }
-        })
+        this.repository = new Repository(this.props.entity);    
+        this.setState({model: this.getDerivedModel()});   
+        this.setState({initial: this.getInitialFromProps()});  
+        
     }
 
     componentWillUnmount() {
@@ -41,9 +38,14 @@ export default class Form extends React.Component {
     onDelete = (id) => {    
         return this.repository.Delete(id).then(this.props.onDelete);  
     } 
+
+    getDerivedModel = () => {
+        const model = JSON.parse(sessionStorage.getItem("model"));
+        return model.Entities.find(e => e.Name == this.props.entity).Properties;
+    } 
     
     getInitialFromProps = () => {
-        if (this.props.data && this.props.data.id)
+        if (this.props.data && this.props.data.ID)
             return this.props.data
        
         let Initial = {};
@@ -58,11 +60,11 @@ export default class Form extends React.Component {
     } 
 
     render() {      
-        if (!this.state.contract || !this.state.initial)
+        if (!this.state.model || !this.state.initial)
             return <div>Loading</div>
 
-        const resultingContract = this.state.contract.map(i => {
-            let j = this.props.contract.find(c => c.key === i.key);
+        /*const resultingModel = this.state.model.map(i => {
+            let j = this.props.model.find(c => c.key === i.key);
             if (j) {
                 return Object.keys(i).reduce((a, c) => {
                     a[c] = (j[c]) ? j[c] : i[c];
@@ -70,12 +72,12 @@ export default class Form extends React.Component {
                 }, {});   
             } 
             return i;    
-        });        
+        });*/        
 
         return <DynamicForm 
             initial = { this.state.initial }  
             constrains = { this.props.constrains }
-            contract =  { resultingContract }
+            model =  { this.state.model }
             onCancel =  { this.props.onCancel }
             onSubmit =  { this.onSubmit }
             onDelete =  { this.onDelete }           
