@@ -8,7 +8,7 @@ namespace MDA.Admin
 {
     public class AdminSql 
     {
-        public async Task<Primitive> GetModel()
+        public async Task<Primitive> GetModelFromDb()
         {
             Primitive Model = new Primitive();
 

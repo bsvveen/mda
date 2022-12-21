@@ -56276,21 +56276,27 @@ var DynamicForm = /*#__PURE__*/function (_React$Component) {
 
       if (model) {
         var formUI = model.map(function (m) {
-          var defaultValue = _this.props.initial[m.key] || "";
-          var value = _this.state.modified[m.key] || defaultValue;
-          var isReadonly = _this.props.constrains && _this.props.constrains[m.key] && _this.props.constrains[m.key].equals !== undefined;
-          var isHidden = isReadonly && m.key.includes("_id");
-          var type = m.type || "text";
+          if (!m.Key || !m.Name) throw console.error("model record is missing required property", m);
+          var defaultValue = _this.props.initial[m.Key] || "";
+          var value = _this.state.modified[m.Key] || defaultValue;
+
+          var isReadonly = _this.props.constrains && _this.props.constrains.some(function (c) {
+            return c.property == m.Key;
+          });
+
+          var isHidden = isReadonly && m.Key.includes("_id");
+          var type = m.Type || "Text";
           var errors = _this.state.errors;
           var input = "";
-          if (isHidden || isReadonly) // || m.props.disabled)
+          if (isHidden) // || m.props.disabled)
             return null;
-          if (type === "text") input = /*#__PURE__*/_react.default.createElement(_textinput.default, {
+          if (isReadonly) return /*#__PURE__*/_react.default.createElement("div", null, value);
+          if (type === "Text") input = /*#__PURE__*/_react.default.createElement(_textinput.default, {
             contract: m,
             value: value,
             onChange: _this.onChange
           });
-          if (type === "number") input = /*#__PURE__*/_react.default.createElement(_numberinput.default, {
+          if (type === "Number") input = /*#__PURE__*/_react.default.createElement(_numberinput.default, {
             contract: m,
             value: value,
             onChange: _this.onChange
@@ -56300,7 +56306,7 @@ var DynamicForm = /*#__PURE__*/function (_React$Component) {
             value: value,
             onChange: _this.onChange
           });
-          if (type === "date") input = /*#__PURE__*/_react.default.createElement(_date.default, {
+          if (type === "DateTime") input = /*#__PURE__*/_react.default.createElement(_date.default, {
             contract: m,
             value: value,
             onChange: _this.onChange
@@ -56328,18 +56334,16 @@ var DynamicForm = /*#__PURE__*/function (_React$Component) {
             onChange: _this.onChange,
             repository: _this.props.repository,
             constrains: _this.props.constrains
-          }); //if (m.props.disabled)
-          //    input = <div>{value}</div>;    
-
+          });
           return /*#__PURE__*/_react.default.createElement("div", {
-            key: 'g' + m.key,
+            key: 'g' + m.Key,
             className: type
           }, /*#__PURE__*/_react.default.createElement("label", {
-            key: "l" + m.key,
-            htmlFor: m.key
-          }, m.label ? m.label.replace("_id", "") : m.key, m.NotNull ? "*" : null), input, /*#__PURE__*/_react.default.createElement("span", {
+            key: "l" + m.Key,
+            htmlFor: m.Key
+          }, m.Name ? m.Name.replace("_id", "") : m.Key, m.NotNull ? "*" : null), input, /*#__PURE__*/_react.default.createElement("span", {
             className: "error"
-          }, errors[m.key] ? errors[m.key] : ""));
+          }, errors[m.Key] ? errors[m.Key] : ""));
         });
         return formUI;
       }
@@ -56816,7 +56820,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57241" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65191" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

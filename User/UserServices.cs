@@ -20,31 +20,7 @@ namespace MDA.User
             {  
                 return model;
             }
-        }
-
-        public JSchema ModelJSchema
-        {
-            get
-            {
-                JSchema RootjSchema = new JSchema();
-                RootjSchema.Type = JSchemaType.Object;
-                
-                model.Entities.ToList().ForEach(entity =>
-                {
-                    JSchema jSchema = new JSchema();
-                    jSchema.Type = JSchemaType.Object;
-
-                    entity.Properties.ToList().ForEach(prop =>
-                    {                       
-                        jSchema.Properties.Add(prop.Name, new JSchema { Type = prop.Type.ToJSchemaType() });                   
-                    });
-
-                    RootjSchema.Properties.Add(entity.Name, jSchema);
-                });
-
-                return RootjSchema;
-            }
-        }
+        }        
 
         public bool validateRequest(ListRequest request)
         {  

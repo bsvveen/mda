@@ -71,7 +71,7 @@ export default class DynamicForm extends React.Component {
         if (value === "null")
             value = null;
 
-        var modified = Object.assign({}, this.state.modified, { [key]: value });
+        const modified = Object.assign({}, this.state.modified, { [key]: value });
         this.setState({ modified: modified });
     }
 
@@ -81,27 +81,33 @@ export default class DynamicForm extends React.Component {
         if (model) {
             let formUI = model.map((m) => {
 
-                let defaultValue = this.props.initial[m.key] || "";
-                let value = this.state.modified[m.key] || defaultValue;
-                let isReadonly = this.props.constrains && this.props.constrains[m.key] && this.props.constrains[m.key].equals !== undefined;
-                let isHidden = isReadonly && m.key.includes("_id");
-                let type = m.type || "text";
+                if (!m.Key || !m.Name)
+                    throw console.error("model record is missing required property", m);
+
+                let defaultValue = this.props.initial[m.Key] || "";
+                let value = this.state.modified[m.Key] || defaultValue;
+                let isReadonly = this.props.constrains && this.props.constrains.some(c => c.property == m.Key);
+                let isHidden = isReadonly && m.Key.includes("_id");
+                let type = m.Type || "Text";
                 let errors = this.state.errors;
-                let input = "";    
+                let input = "";                   
                 
-                if (isHidden || isReadonly) // || m.props.disabled)
+                if (isHidden) // || m.props.disabled)
                     return null;
 
-                if (type === "text")
+                if (isReadonly)
+                    return (<div>{value}</div>);    
+
+                if (type === "Text")
                     input = <TextInput contract={m} value={value} onChange={this.onChange} />
 
-                if (type === "number")
+                if (type === "Number")
                     input = <NumberInput contract={m} value={value} onChange={this.onChange} />
 
                 if (type === "textarea")
                     input = <TextArea contract={m} value={value} onChange={this.onChange} />
 
-                if (type === "date")
+                if (type === "DateTime")
                     input = <DateInput contract={m} value={value} onChange={this.onChange} />               
 
                 if (type === "select")
@@ -118,22 +124,20 @@ export default class DynamicForm extends React.Component {
                 if (type === "FKLookup")
                     input = <FKLookup contract={m} value={value} onChange={this.onChange} 
                     repository = {this.props.repository} 
-                    constrains = {this.props.constrains} />                    
-
-                //if (m.props.disabled)
-                //    input = <div>{value}</div>;    
+                    constrains = {this.props.constrains} /> 
 
                 return (
-                    <div key={'g' + m.key} className={type}>
-                        <label key={"l" + m.key} htmlFor={m.key}>
-                            {m.label ? m.label.replace("_id","") : m.key}
+                    <div key={'g' + m.Key} className={type}>
+                        <label key={"l" + m.Key} htmlFor={m.Key}>
+                            {m.Name ? m.Name.replace("_id","") : m.Key}
                             {m.NotNull ? "*" : null}
                         </label>
                         {input}                        
-                        <span className="error">{errors[m.key] ? errors[m.key] : ""}</span>                        
+                        <span className="error">{errors[m.Key] ? errors[m.Key] : ""}</span>                        
                     </div>
                 );
             });
+
             return formUI;
         }
     }

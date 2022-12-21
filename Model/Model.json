@@ -1,1 +1,33 @@
-{"Entities":[{"Name":"Customers","Properties":[{"Name":"Name","Type":0,"NotNull":true}]}]}
+{
+  "Entities": [
+    {
+      "Name": "Customers",
+      "Properties": [
+        {
+          "Key": "Name",
+          "Name": "Name",
+          "Type": "Text",
+          "NotNull": true
+        },
+        {
+          "Key": "BirthDate",
+          "Name": "BirthDate",
+          "Type": "DateTime",
+          "NotNull": true
+        },
+        {
+          "Key": "Order",
+          "Name": "Order",
+          "NotNull": false,
+          "Type": "Number"
+        },
+        {
+          "Key": "Comment",
+          "Name": "Comment",
+          "Type": "Text",
+          "NotNull": false
+        }
+      ]
+    }
+  ]
+}

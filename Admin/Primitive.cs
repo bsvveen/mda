@@ -7,16 +7,7 @@ using System.Text.Json.Serialization;
 namespace MDA.Admin
 {
     public class Primitive
-    {  
-        public static JSchema AsJSchema
-        {
-            get
-            {
-                JSchemaGenerator generator = new JSchemaGenerator();
-                return generator.Generate(typeof(Primitive));
-            }
-        }
-
+    { 
         [JsonPropertyName("Entities")]
         [Required]
         public List<Entity> Entities { get; set; }
@@ -39,6 +30,10 @@ namespace MDA.Admin
 
         public class Property
         {
+            [JsonPropertyName("Key")]
+            [Required]
+            public string Key { get; set; }
+
             [JsonPropertyName("Name")]
             [Required]
             public string Name { get; set; }

@@ -1,6 +1,7 @@
 ﻿
 using System.Data;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace MDA.Admin
 {
@@ -13,10 +14,7 @@ namespace MDA.Admin
         public Primitive Model
         {
             get {
-                if (model == null) {
-                    model = GetModelFromFile();
-                }
-                
+                model ??= GetModelFromFile();                
                 return model; 
             }            
         } 
@@ -33,9 +31,10 @@ namespace MDA.Admin
 
         private Primitive GetModelFromFile()
         {
-            using FileStream openStream = File.OpenRead(path);         
+            using FileStream openStream = File.OpenRead(path);
 
-            Primitive? model = JsonSerializer.Deserialize<Primitive>(openStream);           
+            JsonSerializerOptions options = new() { Converters = { new JsonStringEnumConverter() }};           
+            Primitive? model = JsonSerializer.Deserialize<Primitive>(openStream, options);           
 
             if (model == null || model.Entities == null)
                 throw new NullReferenceException("Model could not be loaded from file");
@@ -54,7 +53,7 @@ namespace MDA.Admin
         { 
             var Sql = new AdminSql();
             
-            Primitive dbPrimitive = await Sql.GetModel();
+            Primitive dbPrimitive = await Sql.GetModelFromDb();
 
             // Drop tables from database NOT in Primitive
             dbPrimitive.Entities.Where(dbt => !Model.Entities.Exists(mt => mt.Name == dbt.Name)).ToList().ForEach(async dbt =>

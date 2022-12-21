@@ -9,19 +9,7 @@ namespace MDA.User
     [ApiController]
     [Route("[controller]")]
     public class UserController : ControllerBase
-    {
-        [HttpGet("GetModelSchema")]
-        public IActionResult GetModelSchema()
-        {
-            var modelSchema = new UserServices().ModelJSchema;
-
-            if (modelSchema == null)
-                return NotFound();
-
-            return Ok(modelSchema.ToString());
-        }
-
-
+    {  
         [HttpGet("GetModel")]
         public IActionResult GetModel()
         {
