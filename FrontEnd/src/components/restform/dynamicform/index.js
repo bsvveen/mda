@@ -99,30 +99,30 @@ export default class DynamicForm extends React.Component {
                     return (<div>{value}</div>);    
 
                 if (type === "Text")
-                    input = <TextInput contract={m} value={value} onChange={this.onChange} />
+                    input = <TextInput model={m} value={value} onChange={this.onChange} />
 
                 if (type === "Number")
-                    input = <NumberInput contract={m} value={value} onChange={this.onChange} />
+                    input = <NumberInput model={m} value={value} onChange={this.onChange} />
 
                 if (type === "textarea")
-                    input = <TextArea contract={m} value={value} onChange={this.onChange} />
+                    input = <TextArea model={m} value={value} onChange={this.onChange} />
 
                 if (type === "DateTime")
-                    input = <DateInput contract={m} value={value} onChange={this.onChange} />               
+                    input = <DateInput model={m} value={value} onChange={this.onChange} />               
 
                 if (type === "select")
-                    input = <SingleSelect contract={m} value={value} onChange={this.onChange} />
+                    input = <SingleSelect model={m} value={value} onChange={this.onChange} />
 
                 if (type === "checkbox")
-                    input = <CheckBox contract={m} value={value} onChange={this.onChange} />
+                    input = <CheckBox model={m} value={value} onChange={this.onChange} />
 
                 if (type === "foreignkey")
-                    input = <Foreignkey contract={m} value={value} onChange={this.onChange} 
+                    input = <Foreignkey model={m} value={value} onChange={this.onChange} 
                     repository = {this.props.repository} 
                     constrains = {this.props.constrains} />
 
                 if (type === "FKLookup")
-                    input = <FKLookup contract={m} value={value} onChange={this.onChange} 
+                    input = <FKLookup model={m} value={value} onChange={this.onChange} 
                     repository = {this.props.repository} 
                     constrains = {this.props.constrains} /> 
 

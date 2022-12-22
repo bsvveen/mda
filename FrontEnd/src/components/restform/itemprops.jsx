@@ -9,10 +9,11 @@ class ItemProps extends Component {
     created: PropTypes.string,
     createdby: PropTypes.string,   
   }  
+
   formatDate(d) {  
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };       
     return new Date(d).toUTCString();
-}
+  }
 
   render() { 
     if (!this.props.created)

@@ -11,11 +11,11 @@ export default class DateInput extends React.Component {
 
     onChange(value) {
         let e = { "target" : {"value" : value.toISOString() }}
-        this.props.onChange(e, this.props.contract.key)
+        this.props.onChange(e, this.props.model.Key)
     }
 
     render() {
-        var { contract, value } = this.props; 
-        return <DatePicker className="input" key={contract.key} selected={this.formatValue(value)} onChange={(value) => { this.onChange(value) }} {...contract.props} />       
+        var { model, value } = this.props; 
+        return <DatePicker className="input" key={model.Key} selected={this.formatValue(value)} onChange={(value) => { this.onChange(value) }} />       
     }
 }

@@ -4,23 +4,22 @@ import PropTypes from 'prop-types';
 export default class NumberInput extends React.Component {
 
     PropTypes = {
-        contract: PropTypes.object.isRequired,
+        model: PropTypes.object.isRequired,
         value: PropTypes.string.isRequired,
-        filter: PropTypes.string,
-        props: PropTypes.object,
+        filter: PropTypes.string,        
         onChange: PropTypes.func.isRequired,
     }   
 
     render() {
-        var { contract, value, onChange, props } = this.props;
+        var { model, value, onChange } = this.props;
 
-        return (<input {...contract.props}
+        return (<input 
             className="input"
-            type={contract.type}            
-            key={contract.key}
-            name={contract.name}
+            type={model.Type}            
+            key={model.Key}
+            name={model.Name}
             value={value}
-            onChange={(e) => { onChange(e, contract.key) }}
+            onChange={(e) => { onChange(e, model.Key) }}
         />);
     }
 }

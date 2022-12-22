@@ -37267,8 +37267,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
-function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -37308,9 +37306,8 @@ var TextInput = /*#__PURE__*/function (_React$Component) {
     _this = _super.call.apply(_super, [this].concat(args));
 
     _defineProperty(_assertThisInitialized(_this), "PropTypes", {
-      contract: _propTypes.default.object.isRequired,
+      model: _propTypes.default.object.isRequired,
       value: _propTypes.default.string.isRequired,
-      props: _propTypes.default.object,
       onChange: _propTypes.default.func.isRequired
     });
 
@@ -37321,19 +37318,19 @@ var TextInput = /*#__PURE__*/function (_React$Component) {
     key: "render",
     value: function render() {
       var _this$props = this.props,
-          contract = _this$props.contract,
+          model = _this$props.model,
           value = _this$props.value,
           _onChange = _this$props.onChange;
-      return /*#__PURE__*/_react.default.createElement("input", _extends({}, contract.props, {
+      return /*#__PURE__*/_react.default.createElement("input", {
         className: "input",
-        type: contract.type,
-        key: contract.key,
-        name: contract.name,
+        type: model.Type,
+        key: model.Key,
+        name: model.Name,
         value: value,
         onChange: function onChange(e) {
-          _onChange(e, contract.key);
+          _onChange(e, model.Key);
         }
-      }));
+      });
     }
   }]);
 
@@ -55628,8 +55625,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
-function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -55674,7 +55669,7 @@ var DateInput = /*#__PURE__*/function (_React$Component) {
           "value": value.toISOString()
         }
       };
-      this.props.onChange(e, this.props.contract.key);
+      this.props.onChange(e, this.props.model.Key);
     }
   }, {
     key: "render",
@@ -55682,16 +55677,16 @@ var DateInput = /*#__PURE__*/function (_React$Component) {
       var _this = this;
 
       var _this$props = this.props,
-          contract = _this$props.contract,
+          model = _this$props.model,
           value = _this$props.value;
-      return /*#__PURE__*/_react.default.createElement(_reactDatepicker.default, _extends({
+      return /*#__PURE__*/_react.default.createElement(_reactDatepicker.default, {
         className: "input",
-        key: contract.key,
+        key: model.Key,
         selected: this.formatValue(value),
         onChange: function onChange(value) {
           _this.onChange(value);
         }
-      }, contract.props));
+      });
     }
   }]);
 
@@ -55959,8 +55954,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
-function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -56000,10 +55993,9 @@ var NumberInput = /*#__PURE__*/function (_React$Component) {
     _this = _super.call.apply(_super, [this].concat(args));
 
     _defineProperty(_assertThisInitialized(_this), "PropTypes", {
-      contract: _propTypes.default.object.isRequired,
+      model: _propTypes.default.object.isRequired,
       value: _propTypes.default.string.isRequired,
       filter: _propTypes.default.string,
-      props: _propTypes.default.object,
       onChange: _propTypes.default.func.isRequired
     });
 
@@ -56014,20 +56006,19 @@ var NumberInput = /*#__PURE__*/function (_React$Component) {
     key: "render",
     value: function render() {
       var _this$props = this.props,
-          contract = _this$props.contract,
+          model = _this$props.model,
           value = _this$props.value,
-          _onChange = _this$props.onChange,
-          props = _this$props.props;
-      return /*#__PURE__*/_react.default.createElement("input", _extends({}, contract.props, {
+          _onChange = _this$props.onChange;
+      return /*#__PURE__*/_react.default.createElement("input", {
         className: "input",
-        type: contract.type,
-        key: contract.key,
-        name: contract.name,
+        type: model.Type,
+        key: model.Key,
+        name: model.Name,
         value: value,
         onChange: function onChange(e) {
-          _onChange(e, contract.key);
+          _onChange(e, model.Key);
         }
-      }));
+      });
     }
   }]);
 
@@ -56292,44 +56283,44 @@ var DynamicForm = /*#__PURE__*/function (_React$Component) {
             return null;
           if (isReadonly) return /*#__PURE__*/_react.default.createElement("div", null, value);
           if (type === "Text") input = /*#__PURE__*/_react.default.createElement(_textinput.default, {
-            contract: m,
+            model: m,
             value: value,
             onChange: _this.onChange
           });
           if (type === "Number") input = /*#__PURE__*/_react.default.createElement(_numberinput.default, {
-            contract: m,
+            model: m,
             value: value,
             onChange: _this.onChange
           });
           if (type === "textarea") input = /*#__PURE__*/_react.default.createElement(_textarea.default, {
-            contract: m,
+            model: m,
             value: value,
             onChange: _this.onChange
           });
           if (type === "DateTime") input = /*#__PURE__*/_react.default.createElement(_date.default, {
-            contract: m,
+            model: m,
             value: value,
             onChange: _this.onChange
           });
           if (type === "select") input = /*#__PURE__*/_react.default.createElement(_singleselect.default, {
-            contract: m,
+            model: m,
             value: value,
             onChange: _this.onChange
           });
           if (type === "checkbox") input = /*#__PURE__*/_react.default.createElement(_checkbox.default, {
-            contract: m,
+            model: m,
             value: value,
             onChange: _this.onChange
           });
           if (type === "foreignkey") input = /*#__PURE__*/_react.default.createElement(_foreignkey.default, {
-            contract: m,
+            model: m,
             value: value,
             onChange: _this.onChange,
             repository: _this.props.repository,
             constrains: _this.props.constrains
           });
           if (type === "FKLookup") input = /*#__PURE__*/_react.default.createElement(_fklookup.default, {
-            contract: m,
+            model: m,
             value: value,
             onChange: _this.onChange,
             repository: _this.props.repository,
@@ -56820,7 +56811,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65191" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50795" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -56997,4 +56988,4 @@ function hmrAcceptRun(bundle, id) {
   }
 }
 },{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","index.js"], null)
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=/index.js.map
