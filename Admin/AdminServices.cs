@@ -60,9 +60,9 @@ namespace MDA.Admin
                await Sql.DropTable(dbt.Name));
 
             // Update Tables in Primitives AND in Database
-            Model.Entities.Where(mt => dbPrimitive.Entities.Exists(dbt => dbt.Name == mt.Name)).ToList().ForEach(async mt =>
+            Model.Entities.Where(mt => dbPrimitive.Entities.Exists(dbt => dbt.Name == mt.Name)).ToList().ForEach(mt =>
             {
-                var dbt = dbPrimitive.Entities.Single(dbt => dbt.Name == mt.Name);
+                var dbt =  dbPrimitive.Entities.Single(dbt => dbt.Name == mt.Name);
 
                 // Drop columns (except ID) from database NOT in Primitive
                 dbt.Properties.Where(dbc => !mt.Properties.Exists(c => c.Name == dbc.Name) && dbc.Name != "ID").ToList().ForEach(async dbc =>

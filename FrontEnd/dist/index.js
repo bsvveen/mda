@@ -36691,11 +36691,7 @@ var Repository = /*#__PURE__*/_createClass(function Repository(entity) {
   _classCallCheck(this, Repository);
 
   _defineProperty(this, "Submit", function (data) {
-    if (data.id) {
-      return privateMethods.Fetch.call(_this, "/" + _this.controller + "/" + data.id + '/Update', 'PUT', data);
-    } else {
-      return privateMethods.Fetch.call(_this, "/" + _this.controller + '/Insert', 'POST', data);
-    }
+    return privateMethods.Fetch.call(_this, '/User/Submit/', 'POST', data);
   });
 
   _defineProperty(this, "Get", function (Id) {
@@ -36713,10 +36709,6 @@ var Repository = /*#__PURE__*/_createClass(function Repository(entity) {
       "Constrains": constrains
     };
     return privateMethods.Fetch.call(_this, '/User/GetList/', 'POST', data);
-  });
-
-  _defineProperty(this, "RequestContract", function (endpoint) {
-    return privateMethods.Fetch.call(_this, "/" + _this.controller + "/" + endpoint, 'POST', {}, true);
   });
 
   _defineProperty(this, "ForeignKey", function (endpoint, constrain, filter) {
@@ -37323,12 +37315,12 @@ var TextInput = /*#__PURE__*/function (_React$Component) {
           _onChange = _this$props.onChange;
       return /*#__PURE__*/_react.default.createElement("input", {
         className: "input",
-        type: model.Type,
-        key: model.Key,
-        name: model.Name,
+        type: model.type,
+        key: model.key,
+        name: model.name,
         value: value,
         onChange: function onChange(e) {
-          _onChange(e, model.Key);
+          _onChange(e, model.key);
         }
       });
     }
@@ -55669,7 +55661,7 @@ var DateInput = /*#__PURE__*/function (_React$Component) {
           "value": value.toISOString()
         }
       };
-      this.props.onChange(e, this.props.model.Key);
+      this.props.onChange(e, this.props.model.key);
     }
   }, {
     key: "render",
@@ -55681,7 +55673,7 @@ var DateInput = /*#__PURE__*/function (_React$Component) {
           value = _this$props.value;
       return /*#__PURE__*/_react.default.createElement(_reactDatepicker.default, {
         className: "input",
-        key: model.Key,
+        key: model.key,
         selected: this.formatValue(value),
         onChange: function onChange(value) {
           _this.onChange(value);
@@ -56011,12 +56003,12 @@ var NumberInput = /*#__PURE__*/function (_React$Component) {
           _onChange = _this$props.onChange;
       return /*#__PURE__*/_react.default.createElement("input", {
         className: "input",
-        type: model.Type,
-        key: model.Key,
-        name: model.Name,
+        type: model.type,
+        key: model.key,
+        name: model.name,
         value: value,
         onChange: function onChange(e) {
-          _onChange(e, model.Key);
+          _onChange(e, model.key);
         }
       });
     }
@@ -56206,8 +56198,8 @@ var DynamicForm = /*#__PURE__*/function (_React$Component) {
 
     _defineProperty(_assertThisInitialized(_this), "PropTypes", {
       initial: _propTypes.default.object.isRequired,
-      model: _propTypes.default.object.isRequired,
-      constrains: _propTypes.default.object,
+      properties: _propTypes.default.array.isRequired,
+      constrains: _propTypes.default.array,
       onCancel: _propTypes.default.func.isRequired,
       onSubmit: _propTypes.default.func.isRequired,
       onDelete: _propTypes.default.func.isRequired,
@@ -56263,81 +56255,78 @@ var DynamicForm = /*#__PURE__*/function (_React$Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this), "renderForm", function () {
-      var model = _this.props.model;
+      var formUI = _this.props.properties.map(function (prop) {
+        if (!prop.key || !prop.name) throw console.error("model record is missing required property", prop);
+        var defaultValue = _this.props.initial[prop.key] || "";
+        var value = _this.state.modified[prop.key] || defaultValue;
 
-      if (model) {
-        var formUI = model.map(function (m) {
-          if (!m.Key || !m.Name) throw console.error("model record is missing required property", m);
-          var defaultValue = _this.props.initial[m.Key] || "";
-          var value = _this.state.modified[m.Key] || defaultValue;
-
-          var isReadonly = _this.props.constrains && _this.props.constrains.some(function (c) {
-            return c.property == m.Key;
-          });
-
-          var isHidden = isReadonly && m.Key.includes("_id");
-          var type = m.Type || "Text";
-          var errors = _this.state.errors;
-          var input = "";
-          if (isHidden) // || m.props.disabled)
-            return null;
-          if (isReadonly) return /*#__PURE__*/_react.default.createElement("div", null, value);
-          if (type === "Text") input = /*#__PURE__*/_react.default.createElement(_textinput.default, {
-            model: m,
-            value: value,
-            onChange: _this.onChange
-          });
-          if (type === "Number") input = /*#__PURE__*/_react.default.createElement(_numberinput.default, {
-            model: m,
-            value: value,
-            onChange: _this.onChange
-          });
-          if (type === "textarea") input = /*#__PURE__*/_react.default.createElement(_textarea.default, {
-            model: m,
-            value: value,
-            onChange: _this.onChange
-          });
-          if (type === "DateTime") input = /*#__PURE__*/_react.default.createElement(_date.default, {
-            model: m,
-            value: value,
-            onChange: _this.onChange
-          });
-          if (type === "select") input = /*#__PURE__*/_react.default.createElement(_singleselect.default, {
-            model: m,
-            value: value,
-            onChange: _this.onChange
-          });
-          if (type === "checkbox") input = /*#__PURE__*/_react.default.createElement(_checkbox.default, {
-            model: m,
-            value: value,
-            onChange: _this.onChange
-          });
-          if (type === "foreignkey") input = /*#__PURE__*/_react.default.createElement(_foreignkey.default, {
-            model: m,
-            value: value,
-            onChange: _this.onChange,
-            repository: _this.props.repository,
-            constrains: _this.props.constrains
-          });
-          if (type === "FKLookup") input = /*#__PURE__*/_react.default.createElement(_fklookup.default, {
-            model: m,
-            value: value,
-            onChange: _this.onChange,
-            repository: _this.props.repository,
-            constrains: _this.props.constrains
-          });
-          return /*#__PURE__*/_react.default.createElement("div", {
-            key: 'g' + m.Key,
-            className: type
-          }, /*#__PURE__*/_react.default.createElement("label", {
-            key: "l" + m.Key,
-            htmlFor: m.Key
-          }, m.Name ? m.Name.replace("_id", "") : m.Key, m.NotNull ? "*" : null), input, /*#__PURE__*/_react.default.createElement("span", {
-            className: "error"
-          }, errors[m.Key] ? errors[m.Key] : ""));
+        var isReadonly = _this.props.constrains && _this.props.constrains.some(function (c) {
+          return c.property == prop.key;
         });
-        return formUI;
-      }
+
+        var isHidden = isReadonly && prop.key.includes("_id");
+        var type = prop.type || "text";
+        var errors = _this.state.errors;
+        var input = "";
+        if (isHidden) // || m.props.disabled)
+          return null;
+        if (isReadonly) return /*#__PURE__*/_react.default.createElement("div", null, value);
+        if (type === "text") input = /*#__PURE__*/_react.default.createElement(_textinput.default, {
+          model: prop,
+          value: value,
+          onChange: _this.onChange
+        });
+        if (type === "number") input = /*#__PURE__*/_react.default.createElement(_numberinput.default, {
+          model: prop,
+          value: value,
+          onChange: _this.onChange
+        });
+        if (type === "textarea") input = /*#__PURE__*/_react.default.createElement(_textarea.default, {
+          model: prop,
+          value: value,
+          onChange: _this.onChange
+        });
+        if (type === "datetime") input = /*#__PURE__*/_react.default.createElement(_date.default, {
+          model: prop,
+          value: value,
+          onChange: _this.onChange
+        });
+        if (type === "select") input = /*#__PURE__*/_react.default.createElement(_singleselect.default, {
+          model: prop,
+          value: value,
+          onChange: _this.onChange
+        });
+        if (type === "checkbox") input = /*#__PURE__*/_react.default.createElement(_checkbox.default, {
+          model: prop,
+          value: value,
+          onChange: _this.onChange
+        });
+        if (type === "foreignkey") input = /*#__PURE__*/_react.default.createElement(_foreignkey.default, {
+          model: prop,
+          value: value,
+          onChange: _this.onChange,
+          repository: _this.props.repository,
+          constrains: _this.props.constrains
+        });
+        if (type === "FKLookup") input = /*#__PURE__*/_react.default.createElement(_fklookup.default, {
+          model: prop,
+          value: value,
+          onChange: _this.onChange,
+          repository: _this.props.repository,
+          constrains: _this.props.constrains
+        });
+        return /*#__PURE__*/_react.default.createElement("div", {
+          key: 'g' + prop.key,
+          className: type
+        }, /*#__PURE__*/_react.default.createElement("label", {
+          key: "l" + prop.Key,
+          htmlFor: prop.key
+        }, prop.name ? prop.name.replace("_id", "") : prop.key, prop.notnull ? "*" : null), input, /*#__PURE__*/_react.default.createElement("span", {
+          className: "error"
+        }, errors[prop.key] ? errors[prop.key] : ""));
+      });
+
+      return formUI;
     });
 
     return _this;
@@ -56366,7 +56355,7 @@ var DynamicForm = /*#__PURE__*/function (_React$Component) {
       }), /*#__PURE__*/_react.default.createElement("button", {
         type: "submit",
         title: "Opslaan"
-      })), /*#__PURE__*/_react.default.createElement(_itemprops.default, this.props.initial));
+      }, "Opslaan")), /*#__PURE__*/_react.default.createElement(_itemprops.default, this.props.initial));
     }
   }]);
 
@@ -56435,48 +56424,57 @@ var Form = /*#__PURE__*/function (_React$Component) {
     _defineProperty(_assertThisInitialized(_this), "_isMounted", false);
 
     _defineProperty(_assertThisInitialized(_this), "state", {
-      model: undefined,
+      entity: undefined,
       initial: undefined
     });
 
     _defineProperty(_assertThisInitialized(_this), "PropTypes", {
       data: _propTypes.default.object,
       entity: _propTypes.default.string.isRequired,
+      id: _propTypes.default.string,
       constrains: _propTypes.default.object,
       onCancel: _propTypes.default.func,
       onSubmit: _propTypes.default.func.isRequired,
       onDelete: _propTypes.default.func.isRequired
     });
 
-    _defineProperty(_assertThisInitialized(_this), "onSubmit", function (data) {
-      return _this.repository.Submit(data, data.id).then(_this.props.onSubmit);
+    _defineProperty(_assertThisInitialized(_this), "onSubmit", function (properties) {
+      var dataToSubmit = Object.assign({}, {
+        "name": _this.props.entity,
+        "id": _this.props.id
+      }, {
+        "properties": properties
+      });
+      return _this.repository.Submit(dataToSubmit).then(_this.props.onSubmit);
     });
 
     _defineProperty(_assertThisInitialized(_this), "onDelete", function (id) {
       return _this.repository.Delete(id).then(_this.props.onDelete);
     });
 
-    _defineProperty(_assertThisInitialized(_this), "getDerivedModel", function () {
+    _defineProperty(_assertThisInitialized(_this), "getRequestedEntity", function () {
       var model = JSON.parse(sessionStorage.getItem("model"));
-      return model.Entities.find(function (e) {
-        return e.Name == _this.props.entity;
-      }).Properties;
+      var entity = model.entities.find(function (e) {
+        return e.name == _this.props.entity;
+      });
+      if (!entity) throw console.error("requested entity not found in model", _this.props.entity);
+      return entity;
     });
 
     _defineProperty(_assertThisInitialized(_this), "getInitialFromProps", function () {
-      if (_this.props.data && _this.props.data.ID) return _this.props.data;
-      var Initial = {};
+      if (_this.props.id) return _this.props.data;
+      var initial = {};
 
       if (_this.props.constrains) {
-        Initial = Object.keys(_this.props.constrains).filter(function (key) {
-          return _this.props.constrains[key].equals;
+        initial = Object.keys(_this.props.constrains).filter(function (constrain) {
+          return constrain.Operator == 0;
         }).reduce(function (obj, key) {
-          obj[key] = _this.props.constrains[key].equals;
+          obj[key] = _this.props.constrains[key].value;
           return obj;
         }, {});
       }
 
-      return Initial;
+      return initial;
     });
 
     return _this;
@@ -56488,7 +56486,7 @@ var Form = /*#__PURE__*/function (_React$Component) {
       this._isMounted = true;
       this.repository = new _repository.default(this.props.entity);
       this.setState({
-        model: this.getDerivedModel()
+        entity: this.getRequestedEntity()
       });
       this.setState({
         initial: this.getInitialFromProps()
@@ -56502,22 +56500,11 @@ var Form = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      if (!this.state.model || !this.state.initial) return /*#__PURE__*/_react.default.createElement("div", null, "Loading");
-      /*const resultingModel = this.state.model.map(i => {
-          let j = this.props.model.find(c => c.key === i.key);
-          if (j) {
-              return Object.keys(i).reduce((a, c) => {
-                  a[c] = (j[c]) ? j[c] : i[c];
-                  return a;
-              }, {});   
-          } 
-          return i;    
-      });*/
-
+      if (!this.state.entity || !this.state.initial) return /*#__PURE__*/_react.default.createElement("div", null, "Loading");
       return /*#__PURE__*/_react.default.createElement(_dynamicform.default, {
         initial: this.state.initial,
         constrains: this.props.constrains,
-        model: this.state.model,
+        properties: this.state.entity.properties,
         onCancel: this.props.onCancel,
         onSubmit: this.onSubmit,
         onDelete: this.onDelete,
@@ -56650,6 +56637,7 @@ var ListAndNew = /*#__PURE__*/function (_Component) {
         className: "title"
       }, this.state.current ? "Aanpassen" : "Nieuw"), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_form.default, {
         key: this.state.current ? this.state.current.id : undefined,
+        id: this.state.current ? this.state.current.id : undefined,
         data: this.state.current,
         constrains: this.props.constrains,
         entity: this.props.entity,
@@ -56811,7 +56799,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50795" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52919" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

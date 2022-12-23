@@ -5,6 +5,6 @@ namespace MDA.Infrastructure
 {   
     public enum PropertyDataType
     {
-        Text, Number, DateTime, ID
+        text, number, datetime, id
     }   
 }

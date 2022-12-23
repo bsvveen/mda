@@ -1,31 +1,31 @@
 {
-  "Entities": [
+  "entities": [
     {
-      "Name": "Customers",
-      "Properties": [
+      "name": "Customers",
+      "properties": [
         {
-          "Key": "Name",
-          "Name": "Name",
-          "Type": "Text",
-          "NotNull": true
+          "key": "Name",
+          "name": "Name",
+          "type": "text",
+          "notnull": true
         },
         {
-          "Key": "BirthDate",
-          "Name": "BirthDate",
-          "Type": "DateTime",
-          "NotNull": true
+          "key": "BirthDate",
+          "name": "BirthDate",
+          "type": "datetime",
+          "notnull": true
         },
         {
-          "Key": "Order",
-          "Name": "Order",
-          "NotNull": false,
-          "Type": "Number"
+          "key": "Order",
+          "name": "Order",
+          "notnull": false,
+          "type": "number"
         },
         {
-          "Key": "Comment",
-          "Name": "Comment",
-          "Type": "Text",
-          "NotNull": false
+          "key": "Comment",
+          "name": "Comment",
+          "type": "text",
+          "notnull": false
         }
       ]
     }

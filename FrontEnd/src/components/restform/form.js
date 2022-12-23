@@ -7,11 +7,12 @@ import DynamicForm from './dynamicform';
 export default class Form extends React.Component {
     _isMounted = false;
 
-    state = { model: undefined, initial: undefined };
+    state = { entity: undefined, initial: undefined };
 
     PropTypes = {
         data: PropTypes.object,
         entity: PropTypes.string.isRequired,
+        id: PropTypes.string,
         constrains: PropTypes.object,
         onCancel: PropTypes.func,
         onSubmit: PropTypes.func.isRequired,
@@ -22,62 +23,56 @@ export default class Form extends React.Component {
         this._isMounted = true; 
 
         this.repository = new Repository(this.props.entity);    
-        this.setState({model: this.getDerivedModel()});   
+        this.setState({entity: this.getRequestedEntity()});   
         this.setState({initial: this.getInitialFromProps()});  
-        
     }
 
     componentWillUnmount() {
         this._isMounted = false;
     }   
 
-    onSubmit = (data) => {    
-        return this.repository.Submit(data, data.id).then(this.props.onSubmit);  
+    onSubmit = (properties) => {    
+        const dataToSubmit = Object.assign({}, { "name": this.props.entity, "id": this.props.id }, { "properties": properties });
+        return this.repository.Submit(dataToSubmit).then(this.props.onSubmit);  
     }
     
     onDelete = (id) => {    
         return this.repository.Delete(id).then(this.props.onDelete);  
     } 
 
-    getDerivedModel = () => {
+    getRequestedEntity = () => {
         const model = JSON.parse(sessionStorage.getItem("model"));
-        return model.Entities.find(e => e.Name == this.props.entity).Properties;
+        const entity = model.entities.find(e => e.name == this.props.entity);
+
+        if (!entity)
+            throw console.error("requested entity not found in model", this.props.entity);
+
+        return entity;
     } 
     
     getInitialFromProps = () => {
-        if (this.props.data && this.props.data.ID)
+        if (this.props.id)
             return this.props.data
        
-        let Initial = {};
+        let initial = {};
         if (this.props.constrains) {
-            Initial = Object.keys(this.props.constrains).filter(key => this.props.constrains[key].equals).reduce((obj, key) => {
-                obj[key] = this.props.constrains[key].equals;
+            initial = Object.keys(this.props.constrains).filter(constrain => constrain.Operator == 0).reduce((obj, key) => {
+                obj[key] = this.props.constrains[key].value;
                 return obj;
             }, {});
         }
 
-        return Initial;
+        return initial;
     } 
 
     render() {      
-        if (!this.state.model || !this.state.initial)
+        if (!this.state.entity || !this.state.initial)
             return <div>Loading</div>
-
-        /*const resultingModel = this.state.model.map(i => {
-            let j = this.props.model.find(c => c.key === i.key);
-            if (j) {
-                return Object.keys(i).reduce((a, c) => {
-                    a[c] = (j[c]) ? j[c] : i[c];
-                    return a;
-                }, {});   
-            } 
-            return i;    
-        });*/        
 
         return <DynamicForm 
             initial = { this.state.initial }  
             constrains = { this.props.constrains }
-            model =  { this.state.model }
+            properties =  { this.state.entity.properties }
             onCancel =  { this.props.onCancel }
             onSubmit =  { this.onSubmit }
             onDelete =  { this.onDelete }           

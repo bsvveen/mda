@@ -39,6 +39,7 @@ export default class ListAndNew extends Component {
         <div>          
           <Form 
             key = { (this.state.current) ? this.state.current.id : undefined }
+            id = { (this.state.current) ? this.state.current.id : undefined }
             data = { this.state.current }
             constrains = {this.props.constrains}
             entity = {this.props.entity}            

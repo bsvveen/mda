@@ -28,16 +28,16 @@ namespace MDA.Admin
                     switch (dr2["type"])
                     {
                         case "CHAR(255)":
-                            property.Type = PropertyDataType.Text;
+                            property.Type = PropertyDataType.text;
                             break;
                         case "DateTime":
-                            property.Type = PropertyDataType.DateTime;
+                            property.Type = PropertyDataType.datetime;
                             break;
                         case "INT(255)":
-                            property.Type = PropertyDataType.Number;
+                            property.Type = PropertyDataType.number;
                             break;
                         case "UNIQUEIDENTIFIER":
-                            property.Type = PropertyDataType.ID;
+                            property.Type = PropertyDataType.id;
                             break;
                     }
                     property.NotNull = (long)dr2["notnull"] != 0;
@@ -66,13 +66,13 @@ namespace MDA.Admin
             string? datatype;
             switch (eDataType)
             {
-                case PropertyDataType.DateTime:
+                case PropertyDataType.datetime:
                     datatype = "DATETIME";
                     break;
-                case PropertyDataType.Number:
+                case PropertyDataType.number:
                     datatype = "INT(255)";
                     break;
-                case PropertyDataType.ID:
+                case PropertyDataType.id:
                     datatype = "uniqueidentifier";
                     break;
                 default:

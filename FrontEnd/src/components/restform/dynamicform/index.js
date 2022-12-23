@@ -19,8 +19,8 @@ export default class DynamicForm extends React.Component {
 
     PropTypes = {
         initial: PropTypes.object.isRequired,       
-        model: PropTypes.object.isRequired,
-        constrains: PropTypes.object,
+        properties: PropTypes.array.isRequired,
+        constrains: PropTypes.array,
         onCancel: PropTypes.func.isRequired,
         onSubmit: PropTypes.func.isRequired,
         onDelete: PropTypes.func.isRequired,
@@ -75,71 +75,67 @@ export default class DynamicForm extends React.Component {
         this.setState({ modified: modified });
     }
 
-    renderForm = () => {
-        let model = this.props.model;
+    renderForm = () => { 
+        let formUI = this.props.properties.map((prop) => {
 
-        if (model) {
-            let formUI = model.map((m) => {
+            if (!prop.key || !prop.name)
+                throw console.error("model record is missing required property", prop);
 
-                if (!m.Key || !m.Name)
-                    throw console.error("model record is missing required property", m);
+            let defaultValue = this.props.initial[prop.key] || "";
+            let value = this.state.modified[prop.key] || defaultValue;
+            let isReadonly = this.props.constrains && this.props.constrains.some(c => c.property == prop.key);
+            let isHidden = isReadonly && prop.key.includes("_id");
+            let type = prop.type || "text";
+            let errors = this.state.errors;
+            let input = "";                   
+            
+            if (isHidden) // || m.props.disabled)
+                return null;
 
-                let defaultValue = this.props.initial[m.Key] || "";
-                let value = this.state.modified[m.Key] || defaultValue;
-                let isReadonly = this.props.constrains && this.props.constrains.some(c => c.property == m.Key);
-                let isHidden = isReadonly && m.Key.includes("_id");
-                let type = m.Type || "Text";
-                let errors = this.state.errors;
-                let input = "";                   
-                
-                if (isHidden) // || m.props.disabled)
-                    return null;
+            if (isReadonly)
+                return (<div>{value}</div>);    
 
-                if (isReadonly)
-                    return (<div>{value}</div>);    
+            if (type === "text")
+                input = <TextInput model={prop} value={value} onChange={this.onChange} />
 
-                if (type === "Text")
-                    input = <TextInput model={m} value={value} onChange={this.onChange} />
+            if (type === "number")
+                input = <NumberInput model={prop} value={value} onChange={this.onChange} />
 
-                if (type === "Number")
-                    input = <NumberInput model={m} value={value} onChange={this.onChange} />
+            if (type === "textarea")
+                input = <TextArea model={prop} value={value} onChange={this.onChange} />
 
-                if (type === "textarea")
-                    input = <TextArea model={m} value={value} onChange={this.onChange} />
+            if (type === "datetime")
+                input = <DateInput model={prop} value={value} onChange={this.onChange} />               
 
-                if (type === "DateTime")
-                    input = <DateInput model={m} value={value} onChange={this.onChange} />               
+            if (type === "select")
+                input = <SingleSelect model={prop} value={value} onChange={this.onChange} />
 
-                if (type === "select")
-                    input = <SingleSelect model={m} value={value} onChange={this.onChange} />
+            if (type === "checkbox")
+                input = <CheckBox model={prop} value={value} onChange={this.onChange} />
 
-                if (type === "checkbox")
-                    input = <CheckBox model={m} value={value} onChange={this.onChange} />
+            if (type === "foreignkey")
+                input = <Foreignkey model={prop} value={value} onChange={this.onChange} 
+                repository = {this.props.repository} 
+                constrains = {this.props.constrains} />
 
-                if (type === "foreignkey")
-                    input = <Foreignkey model={m} value={value} onChange={this.onChange} 
-                    repository = {this.props.repository} 
-                    constrains = {this.props.constrains} />
+            if (type === "FKLookup")
+                input = <FKLookup model={prop} value={value} onChange={this.onChange} 
+                repository = {this.props.repository} 
+                constrains = {this.props.constrains} /> 
 
-                if (type === "FKLookup")
-                    input = <FKLookup model={m} value={value} onChange={this.onChange} 
-                    repository = {this.props.repository} 
-                    constrains = {this.props.constrains} /> 
+            return (
+                <div key={'g' + prop.key} className={type}>
+                    <label key={"l" + prop.Key} htmlFor={prop.key}>
+                        {prop.name ? prop.name.replace("_id","") : prop.key}
+                        {prop.notnull ? "*" : null}
+                    </label>
+                    {input}                        
+                    <span className="error">{errors[prop.key] ? errors[prop.key] : ""}</span>                        
+                </div>
+            );
+        });
 
-                return (
-                    <div key={'g' + m.Key} className={type}>
-                        <label key={"l" + m.Key} htmlFor={m.Key}>
-                            {m.Name ? m.Name.replace("_id","") : m.Key}
-                            {m.NotNull ? "*" : null}
-                        </label>
-                        {input}                        
-                        <span className="error">{errors[m.Key] ? errors[m.Key] : ""}</span>                        
-                    </div>
-                );
-            });
-
-            return formUI;
-        }
+        return formUI;      
     }
 
     render() {
@@ -149,7 +145,7 @@ export default class DynamicForm extends React.Component {
                 <div className="actions">
                     {(this.props.initial.id) && <button type="delete" title="Verwijderen" onClick={this.onDelete} ></button>}
                     {(this.props.onCancel) && <button type="cancel" title="Cancel" onClick={this.onCancel}></button>}                    
-                    <button type="submit" title="Opslaan"></button>
+                    <button type="submit" title="Opslaan">Opslaan</button>
                 </div>
                 <ItemProps {...this.props.initial} />
             </form>

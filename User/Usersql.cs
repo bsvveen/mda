@@ -70,6 +70,9 @@ namespace MDA.User
 
             connection.Close();
 
+            if (retValue == null)
+                throw new Exception($"{sqlCommand} did not return any result from the database");
+
             return retValue;
         }
     }

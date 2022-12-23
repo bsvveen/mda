@@ -14,11 +14,11 @@ export default class TextInput extends React.Component {
 
         return (<input 
             className="input"
-            type={model.Type}
-            key={model.Key}
-            name={model.Name}
+            type={model.type}
+            key={model.key}
+            name={model.name}
             value={value}
-            onChange={(e) => { onChange(e, model.Key) }}
+            onChange={(e) => { onChange(e, model.key) }}
         />);
     }
 }
