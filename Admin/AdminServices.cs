@@ -49,7 +49,7 @@ namespace MDA.Admin
             createStream.Dispose();
         }
 
-        private async Task SyncWithDatabase()
+        public async Task SyncWithDatabase()
         { 
             var Sql = new AdminSql();
             

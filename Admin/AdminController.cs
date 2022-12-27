@@ -29,5 +29,15 @@ namespace MDA.Admin
 
             return Ok(updatedPrimitive);
         }
+
+        [HttpPost("SyncDatabase")]
+        public IActionResult SyncDatabase()
+        {
+            AdminServices adminservice = new();
+
+            var syncSuccess = adminservice.SyncWithDatabase();
+
+            return Ok(syncSuccess);
+        }
     }
 }

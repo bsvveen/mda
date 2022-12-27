@@ -29,7 +29,7 @@ namespace MDA.User
             var requestIsValid = userService.validateRequest(request);
             if (!requestIsValid)
             {
-                return BadRequest("GetRequest is not valid, probably an entityname or propertyname does not exists in the model");
+                return BadRequest("ListRequest is not valid, probably an entityname or propertyname does not exists in the model");
             }
 
             var stringResponse = await userService.List(request);
@@ -38,9 +38,19 @@ namespace MDA.User
         }
 
         [HttpPost("Submit")]
-        public async Task<IActionResult> Submit([FromBody] dynamic request)
-        { 
-            return Ok(request);
+        public async Task<IActionResult> Submit([FromBody] SubmitRequest request)
+        {
+            var userService = new UserServices();
+
+            var requestIsValid = userService.validateRequest(request);
+            if (!requestIsValid)
+            {
+                return BadRequest("SubmitRequest is not valid, probably an entityname or propertyname does not exists in the model");
+            }
+
+            var intResponse = await userService.Submit(request);
+            Response.StatusCode = 200;
+            return Content(intResponse.ToString(), "application/json");
         }
     }
 }

@@ -33,7 +33,7 @@ namespace MDA.Admin
                         case "DateTime":
                             property.Type = PropertyDataType.datetime;
                             break;
-                        case "INT(255)":
+                        case "INTEGER":
                             property.Type = PropertyDataType.number;
                             break;
                         case "UNIQUEIDENTIFIER":
@@ -70,7 +70,7 @@ namespace MDA.Admin
                     datatype = "DATETIME";
                     break;
                 case PropertyDataType.number:
-                    datatype = "INT(255)";
+                    datatype = "INTEGER";
                     break;
                 case PropertyDataType.id:
                     datatype = "uniqueidentifier";
@@ -80,7 +80,9 @@ namespace MDA.Admin
                     break;
             }
 
-            await ExecuteSql($"ALTER TABLE {TableName} ADD {ColumnName} {datatype}");
+            var not_null = (notnull) ? "NOT NULL" : "";
+
+            await ExecuteSql($"ALTER TABLE {TableName} ADD {ColumnName} {datatype} {not_null}");
         }
 
         public async Task DropColumn(string TableName, string ColumnName)

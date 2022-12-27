@@ -16,8 +16,8 @@
           "notnull": true
         },
         {
-          "key": "Order",
-          "name": "Order",
+          "key": "Number",
+          "name": "Number",
           "notnull": false,
           "type": "number"
         },

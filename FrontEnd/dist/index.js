@@ -56440,7 +56440,7 @@ var Form = /*#__PURE__*/function (_React$Component) {
 
     _defineProperty(_assertThisInitialized(_this), "onSubmit", function (properties) {
       var dataToSubmit = Object.assign({}, {
-        "name": _this.props.entity,
+        "entity": _this.props.entity,
         "id": _this.props.id
       }, {
         "properties": properties
@@ -56678,12 +56678,7 @@ function ListCustomers(model) {
     }]
   }), /*#__PURE__*/_react.default.createElement(_listandnew.default, {
     entity: "Customers",
-    properties: ["Name"],
-    constrains: [{
-      Property: "Name",
-      Operator: 0,
-      Value: "Mirjam"
-    }]
+    properties: ["Name"]
   }));
 }
 
@@ -56799,7 +56794,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52919" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60471" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

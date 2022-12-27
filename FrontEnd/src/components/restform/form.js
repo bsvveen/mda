@@ -32,7 +32,7 @@ export default class Form extends React.Component {
     }   
 
     onSubmit = (properties) => {    
-        const dataToSubmit = Object.assign({}, { "name": this.props.entity, "id": this.props.id }, { "properties": properties });
+        const dataToSubmit = Object.assign({}, { "entity": this.props.entity, "id": this.props.id }, { "properties": properties });
         return this.repository.Submit(dataToSubmit).then(this.props.onSubmit);  
     }
     

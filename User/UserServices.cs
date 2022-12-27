@@ -35,9 +35,27 @@ namespace MDA.User
             } else { return false;  }                
         }
 
+        public bool validateRequest(SubmitRequest request)
+        {
+            var entity = model.Entities.SingleOrDefault(tbl => tbl.Name == request.Entity);
+
+            if (entity != null)
+            {
+                var AllPropertiesExists = (request.Properties != null) && request.Properties.All(reqProp => entity.Properties.Any(entProp => entProp.Name.Equals(reqProp.Key)));   
+                return AllPropertiesExists; 
+
+            }
+            else { return false; }
+        }
+
         public async Task<string> List(ListRequest request)
         {
             return await new UserSql().List(request);           
-        }       
+        }
+
+        public async Task<int> Submit(SubmitRequest request)
+        {
+            return await new UserSql().Submit(request);
+        }
     }    
 }
