@@ -1,4 +1,5 @@
 
+using MDA.Admin;
 using MDA.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -13,7 +14,7 @@ namespace MDA.User
         [HttpGet("GetModel")]
         public IActionResult GetModel()
         {
-            var model = new UserServices().Model;
+            var model = new AdminServices().Model;
 
             if (model == null)
                 return NotFound();
@@ -21,18 +22,30 @@ namespace MDA.User
             return Ok(model);
         }
 
-        [HttpPost("GetList")]
-        public async Task<IActionResult> GetList([FromBody] ListRequest request)
+        [HttpPost("List")]
+        public async Task<IActionResult> List([FromBody] ListRequest request)
         {
-            var userService = new UserServices();
-
-            var requestIsValid = userService.validateRequest(request);
-            if (!requestIsValid)
+            if (!request.IsValid)
             {
                 return BadRequest("ListRequest is not valid, probably an entityname or propertyname does not exists in the model");
             }
 
+            var userService = new UserServices(request.Entity);
             var stringResponse = await userService.List(request);
+            Response.StatusCode = 200;
+            return Content(stringResponse, "application/json");
+        }
+
+        [HttpPost("GetById")]
+        public async Task<IActionResult> GetById([FromBody] GetByIdRequest request)
+        {    
+            if (!request.IsValid)
+            {
+                return BadRequest("GetByIdRequest is not valid, probably an entityname or ID does not exists in the model");
+            }
+
+            var userService = new UserServices(request.Entity);
+            var stringResponse = await userService.GetById(request);
             Response.StatusCode = 200;
             return Content(stringResponse, "application/json");
         }
@@ -40,14 +53,12 @@ namespace MDA.User
         [HttpPost("Submit")]
         public async Task<IActionResult> Submit([FromBody] SubmitRequest request)
         {
-            var userService = new UserServices();
-
-            var requestIsValid = userService.validateRequest(request);
-            if (!requestIsValid)
+            if (!request.IsValid)
             {
                 return BadRequest("SubmitRequest is not valid, probably an entityname or propertyname does not exists in the model");
             }
 
+            var userService = new UserServices(request.Entity);
             var intResponse = await userService.Submit(request);
             Response.StatusCode = 200;
             return Content(intResponse.ToString(), "application/json");

@@ -2,55 +2,36 @@
 using Newtonsoft.Json.Schema;
 using MDA.Infrastructure;
 using MDA.Admin;
+using static MDA.Infrastructure.Primitive;
+using MediatR;
 
 namespace MDA.User
 {
     public class UserServices
     {
-        private readonly Primitive model;   
+        private readonly Primitive model;
+        private readonly Entity entity;
 
-        public UserServices()
+        public UserServices(string Entity)
         {         
             model = new AdminServices().Model;
-        }
-
-        public Primitive Model
-        {
-            get
-            {  
-                return model;
-            }
+            entity = model.Entities.Single(tbl => tbl.Name == Entity);
         }        
-
-        public bool validateRequest(ListRequest request)
-        {  
-            var entity = model.Entities.SingleOrDefault(tbl => tbl.Name == request.Entity);
-
-            if (entity != null)  {
-                var AllPropertiesExists = (request.Properties != null) && request.Properties.All(regProp => entity.Properties.Any(entProp => entProp.Name.Equals(regProp)));
-                //var FilterPropertiesExists = (request.Filter != null) && entity.Properties.Exists(entProp => entProp.Name.Equals(request.Filter.Property));
-
-                return AllPropertiesExists; // && FilterPropertiesExists;
-            
-            } else { return false;  }                
-        }
-
-        public bool validateRequest(SubmitRequest request)
-        {
-            var entity = model.Entities.SingleOrDefault(tbl => tbl.Name == request.Entity);
-
-            if (entity != null)
-            {
-                var AllPropertiesExists = (request.Properties != null) && request.Properties.All(reqProp => entity.Properties.Any(entProp => entProp.Name.Equals(reqProp.Key)));   
-                return AllPropertiesExists; 
-
-            }
-            else { return false; }
-        }
 
         public async Task<string> List(ListRequest request)
         {
-            return await new UserSql().List(request);           
+            if (request.Properties.Count == 0)                            
+                entity.Properties.ForEach(p => request.Properties.Add(p.Key));            
+
+            return await new UserSql().List(request);     
+        }
+
+        public async Task<string> GetById(GetByIdRequest request)
+        {
+            if (request.Properties.Count == 0)
+                entity.Properties.ForEach(p => request.Properties.Add(p.Key));
+
+            return await new UserSql().GetById(request);
         }
 
         public async Task<int> Submit(SubmitRequest request)

@@ -1,18 +1,18 @@
 ﻿
 using MDA.Admin;
-using MediatR;
 using System.ComponentModel.DataAnnotations;
 
 namespace MDA.Infrastructure
 {
-    public class SubmitRequest
+    public class GetByIdRequest
     {
         [Required]
         public string? Entity { get; set; }
 
+        [Required]
         public Guid? Id { get; set; }
 
-        public Dictionary<string,string>? Properties { get; set; }
+        public List<string>? Properties { get; set; }
 
         public bool IsValid
         {
@@ -22,13 +22,10 @@ namespace MDA.Infrastructure
                 var entity = model.Entities.SingleOrDefault(tbl => tbl.Name == Entity);
 
                 if (entity != null)
-                {
-                    var AllPropertiesExists = (Properties != null) && Properties.All(reqProp => entity.Properties.Any(entProp => entProp.Name.Equals(reqProp.Key)));
-                    return AllPropertiesExists;
-                }
+                    return true;
 
                 return false;
-            }
-        }       
-    }  
+            }            
+        }
+    }    
 }

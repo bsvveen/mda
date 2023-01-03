@@ -55,23 +55,24 @@ export class Repository {
         this.entity = entity;
         this.instance = this;
     } 
-    
-    Submit = (data) => {
-        return privateMethods.Fetch.call(this, '/User/Submit/', 'POST', data);       
-    }   
 
-    Get = (Id) => {
-        return privateMethods.Fetch.call(this, "/" + this.controller + "/" + Id + '/Get', 'GET');
-    }
-
-    Delete = (Id) => {
-        return privateMethods.Fetch.call(this, "/" + this.controller + "/" + Id + '/Delete', 'DELETE');
+    GetById = (Id) => {
+        let data = { "Id" : Id, "Entity" : this.entity}
+        return privateMethods.Fetch.call(this, '/User/GetById/', 'POST', data);
     }
 
     List = (properties, constrains) => {
         let data = { "Properties" : properties, "Entity" : this.entity, "Constrains" : constrains}
-        return privateMethods.Fetch.call(this, '/User/GetList/', 'POST', data);
-    }  
+        return privateMethods.Fetch.call(this, '/User/List/', 'POST', data);
+    } 
+    
+    Submit = (data) => {
+        return privateMethods.Fetch.call(this, '/User/Submit/', 'POST', data);       
+    } 
+
+    Delete = (Id) => {
+        return privateMethods.Fetch.call(this, "/" + this.controller + "/" + Id + '/Delete', 'DELETE');
+    }
 
     ForeignKey = (endpoint, constrain, filter) => { 
         if (constrain) { 

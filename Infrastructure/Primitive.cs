@@ -1,11 +1,10 @@
-﻿using MDA.Infrastructure;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace MDA.Admin
+namespace MDA.Infrastructure
 {
     public class Primitive
-    { 
+    {
         public Primitive()
         {
             Entities = new List<Entity>();
@@ -23,7 +22,7 @@ namespace MDA.Admin
                 Name = string.Empty;
             }
 
-            [JsonPropertyName("name")]          
+            [JsonPropertyName("name")]
             [Required]
             public string Name { get; set; }
 

@@ -2,8 +2,6 @@
 
 using MDA.Infrastructure;
 using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using System.Collections.Generic;
 using System.Data;
 
 namespace MDA.User
@@ -32,6 +30,15 @@ namespace MDA.User
             var sql = $"SELECT json_group_array(json_object({json_object_props})) AS json_result FROM(SELECT {query_props} FROM {request.Entity} {query_where});";
             return await ExecuteReader(sql);
         }
+
+        public async Task<string> GetById(GetByIdRequest request)
+        {  
+            var json_object_props = "'ID', ID, " + string.Join(',', request.Properties.Select(x => $"'{x}', {x}"));
+            var query_props = "ID, " + string.Join(',', request.Properties.Select(x => $"{x}"));
+
+            var sql = $"SELECT json_group_array(json_object({json_object_props})) AS json_result FROM(SELECT {query_props} FROM {request.Entity} WHERE ID = '{request.Id})';";
+            return await ExecuteReader(sql);
+        }        
 
         public async Task<int> Submit(SubmitRequest request)
         {
