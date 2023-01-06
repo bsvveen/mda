@@ -13,8 +13,8 @@ namespace MDA.User
             if (request.Properties == null || request.Properties.Count == 0)
                 throw new ArgumentException("ListRequest does not contain a properties collection.");
             
-            var json_object_props = "'ID', ID, " + string.Join(',', request.Properties.Select(x => $"'{x}', {x}"));
-            var query_props = "ID, " + string.Join(',', request.Properties.Select(x => $"{x}"));
+            var json_object_props = "'Id', Id, " + string.Join(',', request.Properties.Select(x => $"'{x}', {x}"));
+            var query_props = "Id, " + string.Join(',', request.Properties.Select(x => $"{x}"));
 
             var query_where = "";
             if (request.Constrains != null)
@@ -33,10 +33,10 @@ namespace MDA.User
 
         public async Task<string> GetById(GetByIdRequest request)
         {  
-            var json_object_props = "'ID', ID, " + string.Join(',', request.Properties.Select(x => $"'{x}', {x}"));
-            var query_props = "ID, " + string.Join(',', request.Properties.Select(x => $"{x}"));
+            var json_object_props = "'Id', Id, " + string.Join(',', request.Properties.Select(x => $"'{x}', {x}"));
+            var query_props = "Id, " + string.Join(',', request.Properties.Select(x => $"{x}"));
 
-            var sql = $"SELECT json_group_array(json_object({json_object_props})) AS json_result FROM(SELECT {query_props} FROM {request.Entity} WHERE ID = '{request.Id})';";
+            var sql = $"SELECT json_object({json_object_props}) AS json_result FROM(SELECT {query_props} FROM {request.Entity} WHERE ID = '{request.Id}');";
             return await ExecuteReader(sql);
         }        
 

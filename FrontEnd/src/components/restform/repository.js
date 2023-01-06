@@ -86,5 +86,4 @@ export class Repository {
     }
 }
 
-//export let repository = new Repository();
 export default Repository;

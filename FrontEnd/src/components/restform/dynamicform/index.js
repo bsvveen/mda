@@ -15,11 +15,11 @@ import './index.css';
 
 export default class DynamicForm extends React.Component {
 
-    state = { errors: [], modified: {} };
+    state = { errors: [], modifiedData: {} };
 
     PropTypes = {
-        initial: PropTypes.object.isRequired,       
-        properties: PropTypes.array.isRequired,
+        initialData: PropTypes.object.isRequired, 
+        entityModel: PropTypes.object.isRequired, 
         constrains: PropTypes.array,
         onCancel: PropTypes.func.isRequired,
         onSubmit: PropTypes.func.isRequired,
@@ -45,7 +45,7 @@ export default class DynamicForm extends React.Component {
         e.preventDefault();
 
         if (this.props.onSubmit) {
-            let valuesToSubmit = Object.assign({}, this.props.initial, this.state.modified);
+            let valuesToSubmit = Object.assign({}, this.props.initialData, this.state.modifiedData);
             this.props.onSubmit(valuesToSubmit)
             .then(() => this.setState({ "modified" : {} }))
             .catch((response) => {
@@ -59,7 +59,7 @@ export default class DynamicForm extends React.Component {
         if (type === "single") {
             value = e.target.value;
         } else {
-            value = this.state.modified[key] || [];
+            value = this.state.modifiedData[key] || [];
 
             if (e.target.checked)
                 value.push(e.target.value);
@@ -71,18 +71,18 @@ export default class DynamicForm extends React.Component {
         if (value === "null")
             value = null;
 
-        const modified = Object.assign({}, this.state.modified, { [key]: value });
-        this.setState({ modified: modified });
+        const modified = Object.assign({}, this.state.modifiedData, { [key]: value });
+        this.setState({ modifiedData: modified });
     }
 
     renderForm = () => { 
-        let formUI = this.props.properties.map((prop) => {
+        let formUI = this.props.entityModel.properties.map((prop) => {
 
             if (!prop.key || !prop.name)
                 throw console.error("model record is missing required property", prop);
 
-            let defaultValue = this.props.initial[prop.key] || "";
-            let value = this.state.modified[prop.key] || defaultValue;
+            let defaultValue = this.props.initialData[prop.key] || "";
+            let value = this.state.modifiedData[prop.key] || defaultValue;
             let isReadonly = this.props.constrains && this.props.constrains.some(c => c.property == prop.key);
             let isHidden = isReadonly && prop.key.includes("_id");
             let type = prop.type || "text";
@@ -143,11 +143,11 @@ export default class DynamicForm extends React.Component {
             <form className="dynamic-form" onSubmit={(e) => { this.onSubmit(e) }}>
                 {this.renderForm()}
                 <div className="actions">
-                    {(this.props.initial.id) && <button type="delete" title="Verwijderen" onClick={this.onDelete} ></button>}
+                    {(this.props.initialData.id) && <button type="delete" title="Verwijderen" onClick={this.onDelete} ></button>}
                     {(this.props.onCancel) && <button type="cancel" title="Cancel" onClick={this.onCancel}></button>}                    
                     <button type="submit" title="Opslaan">Opslaan</button>
                 </div>
-                <ItemProps {...this.props.initial} />
+                <ItemProps {...this.props.initialinitialData} />
             </form>
         )
     }

@@ -28,7 +28,7 @@ namespace MDA.User
 
         public async Task<string> GetById(GetByIdRequest request)
         {
-            if (request.Properties.Count == 0)
+            if (request.Properties ==  null || request.Properties.Count == 0)
                 entity.Properties.ForEach(p => request.Properties.Add(p.Key));
 
             return await new UserSql().GetById(request);

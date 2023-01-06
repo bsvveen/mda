@@ -36690,16 +36690,12 @@ var Repository = /*#__PURE__*/_createClass(function Repository(entity) {
 
   _classCallCheck(this, Repository);
 
-  _defineProperty(this, "Submit", function (data) {
-    return privateMethods.Fetch.call(_this, '/User/Submit/', 'POST', data);
-  });
-
-  _defineProperty(this, "Get", function (Id) {
-    return privateMethods.Fetch.call(_this, "/" + _this.controller + "/" + Id + '/Get', 'GET');
-  });
-
-  _defineProperty(this, "Delete", function (Id) {
-    return privateMethods.Fetch.call(_this, "/" + _this.controller + "/" + Id + '/Delete', 'DELETE');
+  _defineProperty(this, "GetById", function (Id) {
+    var data = {
+      "Id": Id,
+      "Entity": _this.entity
+    };
+    return privateMethods.Fetch.call(_this, '/User/GetById/', 'POST', data);
   });
 
   _defineProperty(this, "List", function (properties, constrains) {
@@ -36708,7 +36704,15 @@ var Repository = /*#__PURE__*/_createClass(function Repository(entity) {
       "Entity": _this.entity,
       "Constrains": constrains
     };
-    return privateMethods.Fetch.call(_this, '/User/GetList/', 'POST', data);
+    return privateMethods.Fetch.call(_this, '/User/List/', 'POST', data);
+  });
+
+  _defineProperty(this, "Submit", function (data) {
+    return privateMethods.Fetch.call(_this, '/User/Submit/', 'POST', data);
+  });
+
+  _defineProperty(this, "Delete", function (Id) {
+    return privateMethods.Fetch.call(_this, "/" + _this.controller + "/" + Id + '/Delete', 'DELETE');
   });
 
   _defineProperty(this, "ForeignKey", function (endpoint, constrain, filter) {
@@ -36733,8 +36737,7 @@ var Repository = /*#__PURE__*/_createClass(function Repository(entity) {
 
   this.entity = entity;
   this.instance = this;
-}); //export let repository = new Repository();
-
+});
 
 exports.Repository = Repository;
 
@@ -36965,7 +36968,7 @@ var DynamicList = /*#__PURE__*/function (_Component) {
       var isSelected = _this.state.selectedItem && _this.state.selectedItem.id === item.id;
       if (_this.props.rowRender) return _this.props.rowRender(item, isSelected);
       return /*#__PURE__*/_react.default.createElement("tr", {
-        key: item.ID,
+        key: item.Id,
         onClick: function onClick() {
           return _this.onSelect(item);
         },
@@ -56193,12 +56196,12 @@ var DynamicForm = /*#__PURE__*/function (_React$Component) {
 
     _defineProperty(_assertThisInitialized(_this), "state", {
       errors: [],
-      modified: {}
+      modifiedData: {}
     });
 
     _defineProperty(_assertThisInitialized(_this), "PropTypes", {
-      initial: _propTypes.default.object.isRequired,
-      properties: _propTypes.default.array.isRequired,
+      initialData: _propTypes.default.object.isRequired,
+      entityModel: _propTypes.default.object.isRequired,
       constrains: _propTypes.default.array,
       onCancel: _propTypes.default.func.isRequired,
       onSubmit: _propTypes.default.func.isRequired,
@@ -56220,7 +56223,7 @@ var DynamicForm = /*#__PURE__*/function (_React$Component) {
       e.preventDefault();
 
       if (_this.props.onSubmit) {
-        var valuesToSubmit = Object.assign({}, _this.props.initial, _this.state.modified);
+        var valuesToSubmit = Object.assign({}, _this.props.initialData, _this.state.modifiedData);
 
         _this.props.onSubmit(valuesToSubmit).then(function () {
           return _this.setState({
@@ -56241,24 +56244,24 @@ var DynamicForm = /*#__PURE__*/function (_React$Component) {
       if (type === "single") {
         value = e.target.value;
       } else {
-        value = _this.state.modified[key] || [];
+        value = _this.state.modifiedData[key] || [];
         if (e.target.checked) value.push(e.target.value);
         if (!e.target.checked) value.splice(value.indexOf(e.target.value), 1);
       }
 
       if (value === "null") value = null;
-      var modified = Object.assign({}, _this.state.modified, _defineProperty({}, key, value));
+      var modified = Object.assign({}, _this.state.modifiedData, _defineProperty({}, key, value));
 
       _this.setState({
-        modified: modified
+        modifiedData: modified
       });
     });
 
     _defineProperty(_assertThisInitialized(_this), "renderForm", function () {
-      var formUI = _this.props.properties.map(function (prop) {
+      var formUI = _this.props.entityModel.properties.map(function (prop) {
         if (!prop.key || !prop.name) throw console.error("model record is missing required property", prop);
-        var defaultValue = _this.props.initial[prop.key] || "";
-        var value = _this.state.modified[prop.key] || defaultValue;
+        var defaultValue = _this.props.initialData[prop.key] || "";
+        var value = _this.state.modifiedData[prop.key] || defaultValue;
 
         var isReadonly = _this.props.constrains && _this.props.constrains.some(function (c) {
           return c.property == prop.key;
@@ -56344,7 +56347,7 @@ var DynamicForm = /*#__PURE__*/function (_React$Component) {
         }
       }, this.renderForm(), /*#__PURE__*/_react.default.createElement("div", {
         className: "actions"
-      }, this.props.initial.id && /*#__PURE__*/_react.default.createElement("button", {
+      }, this.props.initialData.id && /*#__PURE__*/_react.default.createElement("button", {
         type: "delete",
         title: "Verwijderen",
         onClick: this.onDelete
@@ -56355,7 +56358,7 @@ var DynamicForm = /*#__PURE__*/function (_React$Component) {
       }), /*#__PURE__*/_react.default.createElement("button", {
         type: "submit",
         title: "Opslaan"
-      }, "Opslaan")), /*#__PURE__*/_react.default.createElement(_itemprops.default, this.props.initial));
+      }, "Opslaan")), /*#__PURE__*/_react.default.createElement(_itemprops.default, this.props.initialinitialData));
     }
   }]);
 
@@ -56424,14 +56427,13 @@ var Form = /*#__PURE__*/function (_React$Component) {
     _defineProperty(_assertThisInitialized(_this), "_isMounted", false);
 
     _defineProperty(_assertThisInitialized(_this), "state", {
-      entity: undefined,
-      initial: undefined
+      entityModel: undefined,
+      initialData: undefined
     });
 
     _defineProperty(_assertThisInitialized(_this), "PropTypes", {
+      entityName: _propTypes.default.string.isRequired,
       data: _propTypes.default.object,
-      entity: _propTypes.default.string.isRequired,
-      id: _propTypes.default.string,
       constrains: _propTypes.default.object,
       onCancel: _propTypes.default.func,
       onSubmit: _propTypes.default.func.isRequired,
@@ -56452,7 +56454,7 @@ var Form = /*#__PURE__*/function (_React$Component) {
       return _this.repository.Delete(id).then(_this.props.onDelete);
     });
 
-    _defineProperty(_assertThisInitialized(_this), "getRequestedEntity", function () {
+    _defineProperty(_assertThisInitialized(_this), "getEntityModel", function () {
       var model = JSON.parse(sessionStorage.getItem("model"));
       var entity = model.entities.find(function (e) {
         return e.name == _this.props.entity;
@@ -56462,7 +56464,8 @@ var Form = /*#__PURE__*/function (_React$Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this), "getInitialFromProps", function () {
-      if (_this.props.id) return _this.props.data;
+      console.log(_this.props.data, _this.props.data && _this.props.data.Id);
+      if (_this.props.data && _this.props.data.Id) return _this.props.data;
       var initial = {};
 
       if (_this.props.constrains) {
@@ -56486,10 +56489,10 @@ var Form = /*#__PURE__*/function (_React$Component) {
       this._isMounted = true;
       this.repository = new _repository.default(this.props.entity);
       this.setState({
-        entity: this.getRequestedEntity()
+        entityModel: this.getEntityModel()
       });
       this.setState({
-        initial: this.getInitialFromProps()
+        initialData: this.getInitialFromProps()
       });
     }
   }, {
@@ -56500,11 +56503,11 @@ var Form = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      if (!this.state.entity || !this.state.initial) return /*#__PURE__*/_react.default.createElement("div", null, "Loading");
+      if (!this.state.entityModel || !this.state.initialData) return /*#__PURE__*/_react.default.createElement("div", null, "Loading");
       return /*#__PURE__*/_react.default.createElement(_dynamicform.default, {
-        initial: this.state.initial,
+        entityModel: this.state.entityModel,
+        initialData: this.state.initialData,
         constrains: this.props.constrains,
-        properties: this.state.entity.properties,
         onCancel: this.props.onCancel,
         onSubmit: this.onSubmit,
         onDelete: this.onDelete,
@@ -56610,7 +56613,7 @@ var ListAndNew = /*#__PURE__*/function (_Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this), "onListSelect", function (data) {
-      _this.repository.Get(data.id).then(function (response) {
+      _this.repository.GetById(data.Id).then(function (response) {
         _this.setState({
           current: response
         });
@@ -56636,8 +56639,7 @@ var ListAndNew = /*#__PURE__*/function (_Component) {
       })), /*#__PURE__*/_react.default.createElement("hr", null), /*#__PURE__*/_react.default.createElement("h2", {
         className: "title"
       }, this.state.current ? "Aanpassen" : "Nieuw"), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_form.default, {
-        key: this.state.current ? this.state.current.id : undefined,
-        id: this.state.current ? this.state.current.id : undefined,
+        key: this.state.current ? this.state.current.Id : undefined,
         data: this.state.current,
         constrains: this.props.constrains,
         entity: this.props.entity,
@@ -56794,7 +56796,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62558" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59235" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

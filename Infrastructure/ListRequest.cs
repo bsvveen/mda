@@ -7,6 +7,11 @@ namespace MDA.Infrastructure
 {
     public class ListRequest
     {
+        public ListRequest()
+        {
+            Properties = new List<string>();
+        }
+
         [Required]
         public string? Entity { get; set; }
        

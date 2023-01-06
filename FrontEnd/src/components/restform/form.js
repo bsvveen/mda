@@ -7,12 +7,11 @@ import DynamicForm from './dynamicform';
 export default class Form extends React.Component {
     _isMounted = false;
 
-    state = { entity: undefined, initial: undefined };
+    state = { entityModel: undefined, initialData: undefined };
 
-    PropTypes = {
-        data: PropTypes.object,
-        entity: PropTypes.string.isRequired,
-        id: PropTypes.string,
+    PropTypes = {        
+        entityName: PropTypes.string.isRequired,
+        data: PropTypes.object,        
         constrains: PropTypes.object,
         onCancel: PropTypes.func,
         onSubmit: PropTypes.func.isRequired,
@@ -23,8 +22,8 @@ export default class Form extends React.Component {
         this._isMounted = true; 
 
         this.repository = new Repository(this.props.entity);    
-        this.setState({entity: this.getRequestedEntity()});   
-        this.setState({initial: this.getInitialFromProps()});  
+        this.setState({entityModel: this.getEntityModel()});   
+        this.setState({initialData: this.getInitialFromProps()});  
     }
 
     componentWillUnmount() {
@@ -40,7 +39,7 @@ export default class Form extends React.Component {
         return this.repository.Delete(id).then(this.props.onDelete);  
     } 
 
-    getRequestedEntity = () => {
+    getEntityModel = () => {
         const model = JSON.parse(sessionStorage.getItem("model"));
         const entity = model.entities.find(e => e.name == this.props.entity);
 
@@ -51,8 +50,10 @@ export default class Form extends React.Component {
     } 
     
     getInitialFromProps = () => {
-        if (this.props.id)
-            return this.props.data
+        console.log(this.props.data, this.props.data && this.props.data.Id);
+
+        if (this.props.data && this.props.data.Id) 
+            return this.props.data       
        
         let initial = {};
         if (this.props.constrains) {
@@ -66,13 +67,13 @@ export default class Form extends React.Component {
     } 
 
     render() {      
-        if (!this.state.entity || !this.state.initial)
+        if (!this.state.entityModel || !this.state.initialData)
             return <div>Loading</div>
 
         return <DynamicForm 
-            initial = { this.state.initial }  
-            constrains = { this.props.constrains }
-            properties =  { this.state.entity.properties }
+            entityModel =  { this.state.entityModel }  
+            initialData = { this.state.initialData }  
+            constrains = { this.props.constrains }           
             onCancel =  { this.props.onCancel }
             onSubmit =  { this.onSubmit }
             onDelete =  { this.onDelete }           

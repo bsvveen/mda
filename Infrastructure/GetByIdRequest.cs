@@ -6,6 +6,10 @@ namespace MDA.Infrastructure
 {
     public class GetByIdRequest
     {
+        public GetByIdRequest() {
+            Properties = new List<string>();
+        }
+
         [Required]
         public string? Entity { get; set; }
 

@@ -68,7 +68,7 @@ export default class DynamicList extends Component {
       return this.props.rowRender(item, isSelected);
 
     return (
-      <tr key={item.ID} onClick={() => this.onSelect(item)} className={(isSelected) ? "selected" : null}>
+      <tr key={item.Id} onClick={() => this.onSelect(item)} className={(isSelected) ? "selected" : null}>
         {Object.keys(item)
           .filter((key) => { return (key !== "ID" && !key.includes("_ID")) })
           .map((key) => {

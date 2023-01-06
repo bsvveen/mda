@@ -7,10 +7,7 @@ import List from './list';
 
 export default class ListAndNew extends Component {
 
-  state = {    
-    current: undefined,
-    refresh: true
-  }
+  state = { current: undefined, refresh: true }
 
   PropTypes = {    
     entity: PropTypes.string.isRequired,
@@ -26,7 +23,7 @@ export default class ListAndNew extends Component {
   onFormDelete = () => { this.setState({ current: undefined, refresh: !this.state.refresh })}
 
   onListSelect = (data) => {   
-    this.repository.Get(data.id).then(response => {      
+    this.repository.GetById(data.Id).then(response => {      
       this.setState({ current: response })
     });  
   }   
@@ -38,8 +35,7 @@ export default class ListAndNew extends Component {
         <h2 className="title">{(this.state.current) ? "Aanpassen" : "Nieuw" }</h2>
         <div>          
           <Form 
-            key = { (this.state.current) ? this.state.current.id : undefined }
-            id = { (this.state.current) ? this.state.current.id : undefined }
+            key = { (this.state.current) ? this.state.current.Id : undefined }            
             data = { this.state.current }
             constrains = {this.props.constrains}
             entity = {this.props.entity}            
