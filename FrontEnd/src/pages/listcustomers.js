@@ -7,7 +7,7 @@ export default  function ListCustomers(model) {
         <div>
             <List entity="Customers" properties={["Name"]} constrains={
               [{Property : "Name", Operator: 0, Value: "Mirjam"}]} />
-            <ListAndNew entity="Customers" properties={["Name"]} />
+            <ListAndNew entity="Customers" properties={["Name,Number"]} />
         </div>
     );
 };

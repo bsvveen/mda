@@ -70,7 +70,7 @@ export default class DynamicList extends Component {
     return (
       <tr key={item.Id} onClick={() => this.onSelect(item)} className={(isSelected) ? "selected" : null}>
         {Object.keys(item)
-          .filter((key) => { return (key !== "ID" && !key.includes("_ID")) })
+          .filter((key) => { return (key !== "Id" && !key.includes("_Id")) })
           .map((key) => {
             return <td key={key}>{item[key]}</td>
           })}

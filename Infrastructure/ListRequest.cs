@@ -10,6 +10,7 @@ namespace MDA.Infrastructure
         public ListRequest()
         {
             Properties = new List<string>();
+            Errors = new List<string>();
         }
 
         [Required]
@@ -19,6 +20,8 @@ namespace MDA.Infrastructure
 
         public List<Constrains>? Constrains { get; set; }
 
+        public List<string>? Errors { get; set; }
+
         public bool IsValid
         {
             get
@@ -26,15 +29,20 @@ namespace MDA.Infrastructure
                 var model = new AdminServices().Model;
                 var entity = model.Entities.SingleOrDefault(tbl => tbl.Name == Entity);
 
-                if (entity != null)
+                if (entity == null)
                 {
-                    var AllPropertiesExists = (Properties != null) && Properties.All(regProp => entity.Properties.Any(entProp => entProp.Name.Equals(regProp)));
-                    return AllPropertiesExists;
+                    Errors.Add($"Entity {Entity} does not exists in de model");
+                    return false;
                 }
 
+                var missing = entity.Properties.Select(p => p.Key).Except(Properties.Select(p => p));
+                if (!missing.Any())
+                    return true;
+
+                missing.ToList().ForEach(i => Errors.Add($"Property {i} does not exists on Entity {Entity} "));
                 return false;
             }
-        }       
+        }
     }
 
     public class Constrains

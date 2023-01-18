@@ -27,7 +27,7 @@ namespace MDA.User
         {
             if (!request.IsValid)
             {
-                return BadRequest("ListRequest is not valid, probably an entityname or propertyname does not exists in the model");
+                return BadRequest(request.Errors);
             }
 
             var userService = new UserServices(request.Entity);
@@ -55,7 +55,7 @@ namespace MDA.User
         {
             if (!request.IsValid)
             {
-                return BadRequest("SubmitRequest is not valid, probably an entityname or propertyname does not exists in the model");
+                return BadRequest(request.Errors);
             }
 
             var userService = new UserServices(request.Entity);

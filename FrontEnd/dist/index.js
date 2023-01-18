@@ -36974,7 +36974,7 @@ var DynamicList = /*#__PURE__*/function (_Component) {
         },
         className: isSelected ? "selected" : null
       }, Object.keys(item).filter(function (key) {
-        return key !== "ID" && !key.includes("_ID");
+        return key !== "Id" && !key.includes("_Id");
       }).map(function (key) {
         return /*#__PURE__*/_react.default.createElement("td", {
           key: key
@@ -56680,7 +56680,7 @@ function ListCustomers(model) {
     }]
   }), /*#__PURE__*/_react.default.createElement(_listandnew.default, {
     entity: "Customers",
-    properties: ["Name"]
+    properties: ["Name,Number"]
   }));
 }
 
@@ -56796,7 +56796,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59235" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61751" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
