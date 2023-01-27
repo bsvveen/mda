@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const HeaderRow = (props) => {
   return Object.keys(props.sampleRecord).map((key) => {
-    if (key !== "id" && !key.includes("_id"))
+    if (key !== "Id" && !key.includes("_Id"))
       return <th className="cell" key={key}><span onClick={() => props.onColumnClick(key)}>{key}</span></th>;
     return null;
   });

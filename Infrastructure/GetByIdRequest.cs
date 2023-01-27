@@ -16,7 +16,7 @@ namespace MDA.Infrastructure
         [Required]
         public Guid? Id { get; set; }
 
-        public List<string>? Properties { get; set; }
+        public List<string> Properties { get; set; }
 
         public bool IsValid
         {

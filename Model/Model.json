@@ -27,7 +27,8 @@
           "type": "text",
           "notnull": false
         }
-      ]
+      ],
+      "constrains": {}
     }
   ]
 }

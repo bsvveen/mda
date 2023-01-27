@@ -1,3 +1,5 @@
+using MDA.Infrastructure;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.FileProviders;
 using System.Text.Json.Serialization;
@@ -11,7 +13,19 @@ builder.Services.AddSwaggerGen(o => { o.CustomSchemaIds(x => x.FullName); });
 builder.Services.Configure<JsonOptions>(o => { o.SerializerOptions.Converters.Add(new JsonStringEnumConverter());});
 builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(o => { o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());});
 
+builder.Services.AddSingleton(provider => new ApplicationInstance());
+
+builder.Services.AddAuthentication().AddGoogle(googleOptions =>
+{
+    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+});
+
+
 var app = builder.Build();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {

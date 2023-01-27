@@ -36712,7 +36712,7 @@ var Repository = /*#__PURE__*/_createClass(function Repository(entity) {
   });
 
   _defineProperty(this, "Delete", function (Id) {
-    return privateMethods.Fetch.call(_this, "/" + _this.controller + "/" + Id + '/Delete', 'DELETE');
+    return privateMethods.Fetch.call(_this, '/User/Delete/', 'POST', data);
   });
 
   _defineProperty(this, "ForeignKey", function (endpoint, constrain, filter) {
@@ -36721,11 +36721,11 @@ var Repository = /*#__PURE__*/_createClass(function Repository(entity) {
     }
 
     if (filter) {
-      var data = {
+      var _data = {
         "fields": [],
         "filter": filter
       };
-      return privateMethods.Fetch.call(_this, "/" + _this.controller + "/" + endpoint, 'POST', data);
+      return privateMethods.Fetch.call(_this, "/" + _this.controller + "/" + endpoint, 'POST', _data);
     } else {
       return privateMethods.Fetch.call(_this, "/" + _this.controller + "/" + endpoint, 'POST');
     }
@@ -36789,7 +36789,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var HeaderRow = function HeaderRow(props) {
   return Object.keys(props.sampleRecord).map(function (key) {
-    if (key !== "id" && !key.includes("_id")) return /*#__PURE__*/_react.default.createElement("th", {
+    if (key !== "Id" && !key.includes("_Id")) return /*#__PURE__*/_react.default.createElement("th", {
       className: "cell",
       key: key
     }, /*#__PURE__*/_react.default.createElement("span", {
@@ -56670,17 +56670,9 @@ var _listandnew = _interopRequireDefault(require("../components/restform/listand
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function ListCustomers(model) {
-  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_list.default, {
+  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_listandnew.default, {
     entity: "Customers",
-    properties: ["Name"],
-    constrains: [{
-      Property: "Name",
-      Operator: 0,
-      Value: "Mirjam"
-    }]
-  }), /*#__PURE__*/_react.default.createElement(_listandnew.default, {
-    entity: "Customers",
-    properties: ["Name,Number"]
+    properties: ["Name", "Number", "BirthDate", "Comment"]
   }));
 }
 
@@ -56796,7 +56788,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61751" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52691" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

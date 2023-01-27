@@ -54,6 +54,35 @@ namespace MDA.Infrastructure
             [JsonPropertyName("notnull")]
             [Required]
             public bool NotNull { get; set; }
+        }         
+
+        public ValidationResult CheckExistence(string Entity, List<string> Properties)
+        {
+            var validationResult = new ValidationResult(); 
+
+            var entity = Entities.SingleOrDefault(e => e.Name == Entity);
+            if (entity == null) {
+                validationResult.Errors.Add($"Entity '{Entity}' does not exists in de model");
+            } else  {
+                var missing = Properties.Select(p => p).Except(entity.Properties.Select(p => p.Key));
+                if (missing.Any()) {
+                    missing.ToList().ForEach(i => validationResult.Errors.Add($"Property '{i}' does not exists on Entity '{Entity}' "));                
+                }
+            }   
+
+            return validationResult;
+        }
+
+        public ValidationResult CheckValuesValidity(string Entity, List<string> Properties)
+        {
+            var validationResult = new ValidationResult();     
+            return validationResult;
+        }
+
+        public ValidationResult CheckAuthorization(string Entity, List<string> Properties)
+        {
+            var validationResult = new ValidationResult();
+            return validationResult;
         }
     }
 }

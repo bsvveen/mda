@@ -5,9 +5,8 @@ import ListAndNew from '../components/restform/listandnew';
 export default  function ListCustomers(model) {   
     return (
         <div>
-            <List entity="Customers" properties={["Name"]} constrains={
-              [{Property : "Name", Operator: 0, Value: "Mirjam"}]} />
-            <ListAndNew entity="Customers" properties={["Name,Number"]} />
+            {/*  <List entity="Customers" properties={["Name"]} constrains={[{Property : "Name", Operator: 0, Value: "Mirjam"}]} /> */}
+            <ListAndNew entity="Customers" properties={["Name","Number", "BirthDate", "Comment"]} />
         </div>
     );
 };

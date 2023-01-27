@@ -71,7 +71,7 @@ export class Repository {
     } 
 
     Delete = (Id) => {
-        return privateMethods.Fetch.call(this, "/" + this.controller + "/" + Id + '/Delete', 'DELETE');
+        return privateMethods.Fetch.call(this, '/User/Delete/', 'POST', data);
     }
 
     ForeignKey = (endpoint, constrain, filter) => { 

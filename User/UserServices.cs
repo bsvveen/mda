@@ -4,34 +4,40 @@ using MDA.Infrastructure;
 using MDA.Admin;
 using static MDA.Infrastructure.Primitive;
 using MediatR;
+using System.Text.Json;
 
 namespace MDA.User
 {
     public class UserServices
     {
-        private readonly Primitive model;
-        private readonly Entity entity;
+        private readonly Primitive _model;        
 
-        public UserServices(string Entity)
+        public UserServices(Primitive model)
         {         
-            model = new AdminServices().Model;
-            entity = model.Entities.Single(tbl => tbl.Name == Entity);
+            _model = model;            
         }        
 
-        public async Task<string> List(ListRequest request)
+        public async Task<object> List(ListRequest request)
         {
-            if (request.Properties.Count == 0)                            
-                entity.Properties.ForEach(p => request.Properties.Add(p.Key));            
+            if (request.Properties.Count == 0)
+            {
+                Entity entity = _model.Entities.Single(e => e.Name == request.Entity);
+                entity.Properties.ForEach(p => request.Properties.Add(p.Key));
+            }             
 
-            return await new UserSql().List(request);     
+            string stringResponse = await new UserSql().List(request);
+            return JsonSerializer.Deserialize<object>(stringResponse);
         }
 
-        public async Task<string> GetById(GetByIdRequest request)
+        public async Task<object> GetById(GetByIdRequest request)
         {
-            if (request.Properties ==  null || request.Properties.Count == 0)
+            if (request.Properties.Count == 0) {
+                Entity entity = _model.Entities.Single(e => e.Name == request.Entity);
                 entity.Properties.ForEach(p => request.Properties.Add(p.Key));
+            }
 
-            return await new UserSql().GetById(request);
+            string stringResponse = await new UserSql().GetById(request);
+            return JsonSerializer.Deserialize<object>(stringResponse);
         }
 
         public async Task<int> Submit(SubmitRequest request)
