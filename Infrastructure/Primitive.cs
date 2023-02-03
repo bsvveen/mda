@@ -73,7 +73,7 @@ namespace MDA.Infrastructure
             return validationResult;
         }
 
-        public ValidationResult CheckValuesValidity(string Entity, List<string> Properties)
+        public ValidationResult CheckValuesValidity(string Entity, Dictionary<string, object> Properties)
         {
             var validationResult = new ValidationResult();     
             return validationResult;

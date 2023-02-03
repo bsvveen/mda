@@ -1,6 +1,7 @@
 
 using MDA.Admin;
 using MDA.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
@@ -10,7 +11,7 @@ namespace MDA.User
 {
     [ApiController]
     [Route("[controller]")]
-    [Produces("application/json")]
+    [Produces("application/json")]   
     public class UserController : ControllerBase
     {
         private readonly Primitive _model;
@@ -33,13 +34,9 @@ namespace MDA.User
             if (!requestFormatValidation.IsValid)            
                 return BadRequest("Fout in ListRequest: " + string.Join(",", requestFormatValidation.Errors));
 
-            var requestValueValidation = _model.CheckValuesValidity(request.Entity, request.Properties);
-            if (!requestValueValidation.IsValid)
-                return Conflict(requestFormatValidation.ValidationErrors);
-
             var requestAccessValidation = _model.CheckAuthorization(request.Entity, request.Properties);
             if (!requestAccessValidation.IsValid)
-                return Forbid("Access Denied");
+                return Forbid("Access Denied");      
 
             var userService = new UserServices(_model);            
             return Ok(await userService.List(request));           
@@ -47,21 +44,33 @@ namespace MDA.User
 
         [HttpPost("GetById")]
         public async Task<IActionResult> GetById([FromBody] GetByIdRequest request)
-        {    
-            if (!request.IsValid)            
-                return BadRequest("GetByIdRequest is not valid, probably an entityname or ID does not exists in the model");
-           
+        {
+            var requestFormatValidation = _model.CheckExistence(request.Entity, request.Properties);
+            if (!requestFormatValidation.IsValid)
+                return BadRequest("Fout in ListRequest: " + string.Join(",", requestFormatValidation.Errors));
+
+            var requestAccessValidation = _model.CheckAuthorization(request.Entity, request.Properties);
+            if (!requestAccessValidation.IsValid)
+                return Forbid("Access Denied");                   
+
             var userService = new UserServices(_model);
             return (IActionResult)Results.Json(await userService.GetById(request));           
         }
 
         [HttpPost("Submit")]
         public async Task<IActionResult> Submit([FromBody] SubmitRequest request)
-        {  
-            if (!request.IsValid())
-            {                
-                return BadRequest("Fout in SubmitRequest: " + string.Join(",", request.Errors));
-            }
+        {
+            var requestFormatValidation = _model.CheckExistence(request.Entity, request.Properties.Select(p => p.Key).ToList());
+            if (!requestFormatValidation.IsValid)
+                return BadRequest("Fout in ListRequest: " + string.Join(",", requestFormatValidation.Errors));
+
+            var requestAccessValidation = _model.CheckAuthorization(request.Entity, request.Properties.Select(p => p.Key).ToList());
+            if (!requestAccessValidation.IsValid)
+                return Forbid("Access Denied");
+
+            var requestValueValidation = _model.CheckValuesValidity(request.Entity, request.Properties);
+            if (!requestValueValidation.IsValid)
+                return Conflict(requestFormatValidation.ValidationErrors);            
 
             var userService = new UserServices(_model);
             var intResponse = await userService.Submit(request);

@@ -5,7 +5,6 @@ using System.ComponentModel;
 
 namespace MDA.Infrastructure
 {
-
     public class ApplicationInstance
     {
         public ApplicationInstance()
