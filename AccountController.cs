@@ -37,9 +37,7 @@ namespace MDA.Controllers
             await HttpContext.SignInAsync(
                 "Application",
                 new ClaimsPrincipal(claimsIdentity),
-                new AuthenticationProperties { IsPersistent = true }); // IsPersistent will set a cookie that lasts for two weeks (by default).
-
-            var user = HttpContext.User;
+                new AuthenticationProperties { IsPersistent = true }); // IsPersistent will set a cookie that lasts for two weeks (by default).            
 
             return LocalRedirect(returnUrl);
         }

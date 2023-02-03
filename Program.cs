@@ -46,7 +46,7 @@ app.UseHttpsRedirection();
 
 app.Use(async (context, next) => {
     context.Response.Headers.Add("Content-Security-Policy", "script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src * data:;");
-    if (!context.User.Identity.IsAuthenticated && context.Request.Path != "/signin-microsoft" && context.Request.Path != "/Account/Login" & context.Request.Path != "/Account/LoginCallBack")
+    if (!context.User.Identity.IsAuthenticated && context.Request.Path != "/signin-google" && context.Request.Path != "/Account/Login" & context.Request.Path != "/Account/LoginCallBack")
     {
         await context.ChallengeAsync("External");
     }

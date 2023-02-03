@@ -54,7 +54,7 @@ namespace MDA.User
                 return Forbid("Access Denied");                   
 
             var userService = new UserServices(_model);
-            return (IActionResult)Results.Json(await userService.GetById(request));           
+            return Ok(await userService.GetById(request));                  
         }
 
         [HttpPost("Submit")]
@@ -62,7 +62,7 @@ namespace MDA.User
         {
             var requestFormatValidation = _model.CheckExistence(request.Entity, request.Properties.Select(p => p.Key).ToList());
             if (!requestFormatValidation.IsValid)
-                return BadRequest("Fout in ListRequest: " + string.Join(",", requestFormatValidation.Errors));
+                return BadRequest("Fout in SubmitRequest: " + string.Join(",", requestFormatValidation.Errors));
 
             var requestAccessValidation = _model.CheckAuthorization(request.Entity, request.Properties.Select(p => p.Key).ToList());
             if (!requestAccessValidation.IsValid)

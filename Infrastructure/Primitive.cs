@@ -64,7 +64,7 @@ namespace MDA.Infrastructure
             if (entity == null) {
                 validationResult.Errors.Add($"Entity '{Entity}' does not exists in de model");
             } else  {
-                var missing = Properties.Select(p => p).Except(entity.Properties.Select(p => p.Key));
+                var missing = Properties.Where(i => i != "Id").Select(p => p).Except(entity.Properties.Select(p => p.Key));
                 if (missing.Any()) {
                     missing.ToList().ForEach(i => validationResult.Errors.Add($"Property '{i}' does not exists on Entity '{Entity}' "));                
                 }
