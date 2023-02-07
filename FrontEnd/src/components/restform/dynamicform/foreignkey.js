@@ -1,42 +1,50 @@
-import React from 'react';
+import React, { Component } from "react";
 import PropTypes from 'prop-types';
+import Repository from '../repository';
 
 export default class ForeignKey extends React.Component {
 
     PropTypes = {
-        contract : PropTypes.object.isRequired,
-        value : PropTypes.string.isRequired,
-        repository : PropTypes.object.isRequired,
-        constrains : PropTypes.object,
+        model: PropTypes.object.isRequired,
+        value: PropTypes.string.isRequired,       
+        onChange: PropTypes.func.isRequired,
     }
 
     state = {
         isLoading: true,
-        list: []
-    }  
-    
-    constrainValue = () => {
+        items: []
+    }   
+      
+    /*constrainValue = () => {
         if (!this.props.constrains || !this.props.contract.relation.constrain || !this.props.constrains[this.props.contract.relation.constrain])
             return undefined;
 
         return this.props.constrains[this.props.contract.relation.constrain].equals;
-    }
+    }*/
 
-    componentDidMount() {          
-        this.props.repository.ForeignKey(this.props.contract.key, this.constrainValue()).then(listResponse => {
-            this.setState({ list: listResponse }, () => {
-                this.setState({ isLoading: false });
-            });
-        })
+    componentDidMount() {      
+        this._isMounted = true;
+        const fk = this.props.model.foreignkey;      
+        const repository = new Repository(fk.related);  
+        repository.List(["Id", fk.lookup], null).then(response => {
+            if (this._isMounted) {
+            this.setState({ items: response }, () => {
+              this.setState({ isLoading: false });
+            })};
+          })
     }    
 
+    componentWillUnmount() {
+        this._isMounted = false;
+      }
+
     render() {
-        if (this.state.list.length === 0)
+        if (this.state.items.length === 0)
             return null;
 
-        var { contract, value, onChange } = this.props;
+        var { model, value, onChange } = this.props;
 
-        var input = this.state.list.map((l) => {
+        var input = this.state.items.map((l) => {
             return (
                 <option 
                     className="input"
@@ -48,8 +56,8 @@ export default class ForeignKey extends React.Component {
         });
 
         return (
-            <select value={value} className="input" onChange={(e) => { onChange(e, contract.key) }} {...contract.props}>
-                <option value='null'>Selecteer een {this.props.contract.label.replace("_id","")}</option>
+            <select value={value} className="input" onChange={(e) => { onChange(e, model.key) }}>
+                <option value='null'>Selecteer een {model.key}</option>
                 {input}
             </select>
         );

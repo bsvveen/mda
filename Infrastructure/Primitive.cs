@@ -49,11 +49,27 @@ namespace MDA.Infrastructure
 
             [JsonPropertyName("type")]
             [Required]
-            public PropertyDataType Type { get; set; }
+            public PropertyDataType Type { get; set; }          
 
             [JsonPropertyName("notnull")]
             [Required]
             public bool NotNull { get; set; }
+
+            [JsonPropertyName("foreignkey")]
+            public ForeignKey ForeignKey { get; set; }
+        }
+
+        public class ForeignKey
+        {           
+
+            [JsonPropertyName("related")]
+            public string relatedentity { get; set; }
+
+            [JsonPropertyName("lookup")]
+            public string lookup { get; set; }
+
+            [JsonPropertyName("constrains")]
+            public string constrains { get; set; }
         }         
 
         public ValidationResult CheckExistence(string Entity, List<string> Properties)

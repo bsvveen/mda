@@ -2,6 +2,7 @@
   "entities": [
     {
       "name": "Customers",
+      "key": "Customers",
       "properties": [
         {
           "key": "Name",
@@ -26,9 +27,43 @@
           "name": "Comment",
           "type": "text",
           "notnull": false
+        },
+        {
+          "key": "Product",
+          "name": "product",
+          "type": "foreignkey",
+          "foreignkey": {
+            "related": "Products",
+            "lookup": "Name",
+            "constrains": ""
+          },
+          "notnull": false
         }
-      ],
-      "constrains": {}
+      ]
+    },
+    {
+      "name": "Products",
+      "key": "Products",
+      "properties": [
+        {
+          "key": "Name",
+          "name": "Name",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "key": "Number",
+          "name": "Number",
+          "notnull": false,
+          "type": "number"
+        },
+        {
+          "key": "Comment",
+          "name": "Comment",
+          "type": "text",
+          "notnull": false
+        }
+      ]
     }
   ]
 }

@@ -55697,15 +55697,19 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
+var _repository = _interopRequireDefault(require("../repository"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
-function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -55746,20 +55750,14 @@ var ForeignKey = /*#__PURE__*/function (_React$Component) {
     _this = _super.call.apply(_super, [this].concat(args));
 
     _defineProperty(_assertThisInitialized(_this), "PropTypes", {
-      contract: _propTypes.default.object.isRequired,
+      model: _propTypes.default.object.isRequired,
       value: _propTypes.default.string.isRequired,
-      repository: _propTypes.default.object.isRequired,
-      constrains: _propTypes.default.object
+      onChange: _propTypes.default.func.isRequired
     });
 
     _defineProperty(_assertThisInitialized(_this), "state", {
       isLoading: true,
-      list: []
-    });
-
-    _defineProperty(_assertThisInitialized(_this), "constrainValue", function () {
-      if (!_this.props.constrains || !_this.props.contract.relation.constrain || !_this.props.constrains[_this.props.contract.relation.constrain]) return undefined;
-      return _this.props.constrains[_this.props.contract.relation.constrain].equals;
+      items: []
     });
 
     return _this;
@@ -55767,28 +55765,46 @@ var ForeignKey = /*#__PURE__*/function (_React$Component) {
 
   _createClass(ForeignKey, [{
     key: "componentDidMount",
-    value: function componentDidMount() {
+    value:
+    /*constrainValue = () => {
+        if (!this.props.constrains || !this.props.contract.relation.constrain || !this.props.constrains[this.props.contract.relation.constrain])
+            return undefined;
+          return this.props.constrains[this.props.contract.relation.constrain].equals;
+    }*/
+    function componentDidMount() {
       var _this2 = this;
 
-      this.props.repository.ForeignKey(this.props.contract.key, this.constrainValue()).then(function (listResponse) {
-        _this2.setState({
-          list: listResponse
-        }, function () {
+      this._isMounted = true;
+      var fk = this.props.model.foreignkey;
+      var repository = new _repository.default(fk.related);
+      repository.List(["Id", fk.lookup], null).then(function (response) {
+        if (_this2._isMounted) {
           _this2.setState({
-            isLoading: false
+            items: response
+          }, function () {
+            _this2.setState({
+              isLoading: false
+            });
           });
-        });
+        }
+
+        ;
       });
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      this._isMounted = false;
     }
   }, {
     key: "render",
     value: function render() {
-      if (this.state.list.length === 0) return null;
+      if (this.state.items.length === 0) return null;
       var _this$props = this.props,
-          contract = _this$props.contract,
+          model = _this$props.model,
           value = _this$props.value,
           _onChange = _this$props.onChange;
-      var input = this.state.list.map(function (l) {
+      var input = this.state.items.map(function (l) {
         return /*#__PURE__*/_react.default.createElement("option", {
           className: "input",
           key: l.id,
@@ -55796,15 +55812,15 @@ var ForeignKey = /*#__PURE__*/function (_React$Component) {
           checked: l.id === value
         }, Object.values(l)[1]);
       });
-      return /*#__PURE__*/_react.default.createElement("select", _extends({
+      return /*#__PURE__*/_react.default.createElement("select", {
         value: value,
         className: "input",
         onChange: function onChange(e) {
-          _onChange(e, contract.key);
+          _onChange(e, model.key);
         }
-      }, contract.props), /*#__PURE__*/_react.default.createElement("option", {
+      }, /*#__PURE__*/_react.default.createElement("option", {
         value: "null"
-      }, "Selecteer een ", this.props.contract.label.replace("_id", "")), input);
+      }, "Selecteer een ", model.key), input);
     }
   }]);
 
@@ -55812,7 +55828,7 @@ var ForeignKey = /*#__PURE__*/function (_React$Component) {
 }(_react.default.Component);
 
 exports.default = ForeignKey;
-},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js"}],"components/restform/dynamicform/fklookup.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","../repository":"components/restform/repository.js"}],"components/restform/dynamicform/fklookup.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -56673,6 +56689,9 @@ function ListCustomers(model) {
   return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_listandnew.default, {
     entity: "Customers",
     properties: ["Name", "Number", "BirthDate", "Comment"]
+  }), /*#__PURE__*/_react.default.createElement(_listandnew.default, {
+    entity: "Products",
+    properties: ["Name", "Number"]
   }));
 }
 
@@ -56788,7 +56807,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52691" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52991" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
