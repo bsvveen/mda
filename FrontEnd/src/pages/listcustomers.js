@@ -1,13 +1,18 @@
 import React from 'react';
-import List from '../components/restform/list';
+import { DashBoard, Tile } from '../components/dashboard';
 import ListAndNew from '../components/restform/listandnew';
 
+ {/*  <List entity="Customers" properties={["Name"]} constrains={[{Property : "Name", Operator: 0, Value: "Mirjam"}]} /> */}
+
 export default  function ListCustomers(model) {   
-    return (
-        <div>
-            {/*  <List entity="Customers" properties={["Name"]} constrains={[{Property : "Name", Operator: 0, Value: "Mirjam"}]} /> */}
-            <ListAndNew entity="Customers" properties={["Name","Number", "BirthDate", "Comment"]} />
-            <ListAndNew entity="Products" properties={["Name","Number"]} />
-        </div>
+    return (       
+        <DashBoard>
+            <Tile id="1" pane="left" title="Customers" >
+                <ListAndNew entity="Customers" properties={["Name","Number", "BirthDate", "Comment"]} />           
+            </Tile> 
+            <Tile id="2" pane="right" title="Products" >           
+                <ListAndNew entity="Products" properties={["Name","Number"]} />
+            </Tile>      
+        </DashBoard> 
     );
 };

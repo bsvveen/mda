@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from 'prop-types';
 import Repository from '../repository';
 
@@ -42,22 +42,22 @@ export default class ForeignKey extends React.Component {
         if (this.state.items.length === 0)
             return null;
 
-        var { model, value, onChange } = this.props;
+        const { model, value, onChange } = this.props;
 
-        var input = this.state.items.map((l) => {
+        const input = this.state.items.map((l) => {
             return (
                 <option 
                     className="input"
-                    key={l.id}
-                    value={l.id}
-                    checked={l.id === value}
+                    key={l.Id}
+                    value={l.Id}
+                    checked={l.Id === value}
                 >{Object.values(l)[1]}</option>
             );
         });
 
         return (
             <select value={value} className="input" onChange={(e) => { onChange(e, model.key) }}>
-                <option value='null'>Selecteer een {model.key}</option>
+                <option value='null' key='0'>Selecteer een {model.key}</option>
                 {input}
             </select>
         );
