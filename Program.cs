@@ -60,6 +60,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseStaticFiles();
 
     app.UseStaticFiles(new StaticFileOptions
     {
@@ -72,11 +73,10 @@ if (app.Environment.IsDevelopment())
 
 //app.UseCors(policy => policy.SetIsOriginAllowed(origin => origin == "https://login.microsoftonline.com//"));
 
-app.UseFileServer(new FileServerOptions
+app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Model")),
-    RequestPath = "/Model",
-    EnableDirectoryBrowsing = true
+    RequestPath = "/Model"
 });
 
 app.MapRazorPages();

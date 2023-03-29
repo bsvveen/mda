@@ -1,7 +1,7 @@
 import React from 'react';
-import { Routes, Route } from "react-router-dom";
-
+import { BrowserRouter, Routes, Route} from "react-router-dom";
 import ListCustomers from "./pages/listcustomers";
+
 
 function App() {    
 
@@ -16,13 +16,16 @@ function App() {
     }, []);   
 
     return (
-        <div className="App">
-          <h1>Welcome to React Router!</h1>
-          <Routes>
-               <Route path="/" exact element={<ListCustomers />} />                
-          </Routes>
-        </div>
-      );
+      <div id="app">
+        <BrowserRouter> 
+          <div id="wrapper">   
+              <Routes>
+                <Route path="/" exact element={<ListCustomers />} />
+              </Routes>                                   
+          </div>             
+        </BrowserRouter>
+      </div>        
+    );
 }
-
+ 
 export default App;

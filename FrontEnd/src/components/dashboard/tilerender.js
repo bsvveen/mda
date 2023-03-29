@@ -36,10 +36,10 @@ export default class TileRender extends React.PureComponent {
     return (
       <div className={'tile ' + mode}><div>
         <div className='actions'>
-          <i onClick={this.refreshTile} className="fas fa-redo"></i>   
-          { mode !== "maximized" && <i onClick={() => this.setTileMode('maximized')} className="far fa-window-maximize"></i> }
-          { mode !== "normal" && <i onClick={() => this.setTileMode('normal')} className="far fa-window-restore"></i> }
-          { mode !== "minimized" && <i onClick={() => this.setTileMode('minimized')} className="far fa-window-minimize"></i> }                
+          <i onClick={this.refreshTile} className="fa-regular fa-rotate"></i>            
+          { mode !== "maximized" && <i onClick={() => this.setTileMode('maximized')} className="fa-regular fa-window-maximize"></i> }
+          { mode !== "normal" && <i onClick={() => this.setTileMode('normal')} className="fa-regular fa-window-restore"></i> }
+          { mode !== "minimized" && <i onClick={() => this.setTileMode('minimized')} className="fa-regular fa-window-minimize"></i> }                
         </div>
         <h3 className='title' draggable="true" onDragStart={(e) => this.dragstart(e)}>{component.props.title} </h3>
         <div className="tileBody">
