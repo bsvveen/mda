@@ -9,7 +9,7 @@
         }
     },{
         "titel" : "SecondView",
-        "component" : "second",
+        "component" : "first",
         "key" : "v2",       
         "props" : {
             "prop1" : "some string 1",
@@ -17,7 +17,7 @@
         }
     },{
         "titel" : "ThirdView",
-        "component" : "third",
+        "component" : "first",
         "key" : "v3",        
         "props" : {
             "prop1" : "some string 1",
@@ -25,7 +25,7 @@
         }
     },{
         "titel" : "ThirdView",
-        "component" : "third",
+        "component" : "first",
         "key" : "v4",       
         "props" : {
             "prop1" : "some string 1",

@@ -7,11 +7,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MDA</title>
-    <link href="FrontEnd/dist/index.css" rel="stylesheet">
-    <link href="~/theme.css" rel="stylesheet">
-    <link href="~/css/fontawesome.css" rel="stylesheet">
-    <link href="~/css/brands.css" rel="stylesheet">
-    <link href="~/css/solid.css" rel="stylesheet">    
+    <link href="FrontEnd/dist/index.css" rel="stylesheet">  
+    <link href="~/css/icons.css" rel="stylesheet">    
 </head>
 <body>   
 
@@ -28,10 +25,10 @@
     </div>    
 
     <environment names="Development">
-        <script type="text/javascript" src="FrontEnd/dist/index.js"></script>
+        <script type="module" src="FrontEnd/dist/index.js"></script>        
     </environment>
     <environment names="Staging,Production">
-        <script type="text/javascript" src="js/index.js" asp-append-version="true"></script>
+        <script type="module" src="FrontEnd/dist/index.js" asp-append-version="true"></script>
     </environment>
 
     </body>

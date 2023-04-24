@@ -19,22 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\theme.css" />
-    <None Include="wwwroot\webfonts\fa-brands-400.eot" />
-    <None Include="wwwroot\webfonts\fa-brands-400.svg" />
-    <None Include="wwwroot\webfonts\fa-brands-400.ttf" />
-    <None Include="wwwroot\webfonts\fa-brands-400.woff" />
-    <None Include="wwwroot\webfonts\fa-brands-400.woff2" />
-    <None Include="wwwroot\webfonts\fa-regular-400.eot" />
-    <None Include="wwwroot\webfonts\fa-regular-400.svg" />
-    <None Include="wwwroot\webfonts\fa-regular-400.ttf" />
-    <None Include="wwwroot\webfonts\fa-regular-400.woff" />
-    <None Include="wwwroot\webfonts\fa-regular-400.woff2" />
-    <None Include="wwwroot\webfonts\fa-solid-900.eot" />
-    <None Include="wwwroot\webfonts\fa-solid-900.svg" />
-    <None Include="wwwroot\webfonts\fa-solid-900.ttf" />
-    <None Include="wwwroot\webfonts\fa-solid-900.woff" />
-    <None Include="wwwroot\webfonts\fa-solid-900.woff2" />
+    <None Include="wwwroot\css\fonts\icomoon.eot" />
+    <None Include="wwwroot\css\fonts\icomoon.svg" />
+    <None Include="wwwroot\css\fonts\icomoon.ttf" />
+    <None Include="wwwroot\css\fonts\icomoon.woff" />
+    <None Include="wwwroot\css\icons.css" />
   </ItemGroup>
 
 </Project>

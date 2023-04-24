@@ -1,5 +1,4 @@
 import React from 'react';
-import { DashBoard, Tile } from '../components/dashboard';
 import ListAndNew from '../components/restform/listandnew';
 
  {/*  <List entity="Customers" properties={["Name"]} constrains={[{Property : "Name", Operator: 0, Value: "Mirjam"}]} /> */}

@@ -1,6 +1,7 @@
 import React from 'react';
-import Dashboard from './components/dashboard/';
+import Dashboard from './components/dashboard';
 
+import importedViews from './views.json';
 import ListCustomers from "./pages/listcustomers";
 
 const componentFactory = {
@@ -14,7 +15,7 @@ const gridProperties = {
 }
 
 function App() {    
-    const [views, setViews] = useState([]);
+    const [views, setViews] = React.useState([]);
 
     React.useEffect(() => {
       const fetchModel = async () => {

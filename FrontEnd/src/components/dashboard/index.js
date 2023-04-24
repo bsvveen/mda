@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Responsive, WidthProvider } from "react-grid-layout";
-import Layout from './views/layout';
+import Layout from './layout';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
