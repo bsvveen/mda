@@ -1,0 +1,35 @@
+{"views": [
+    {
+        "titel" : "FirstView",
+        "component" : "first",
+        "key" : "v1",       
+        "props" : {
+            "prop1" : "some string 1",
+            "prop2" : "some string 2"
+        }
+    },{
+        "titel" : "SecondView",
+        "component" : "second",
+        "key" : "v2",       
+        "props" : {
+            "prop1" : "some string 1",
+            "prop2" : "some string 2"
+        }
+    },{
+        "titel" : "ThirdView",
+        "component" : "third",
+        "key" : "v3",        
+        "props" : {
+            "prop1" : "some string 1",
+            "prop2" : "some string 2"
+        }
+    },{
+        "titel" : "ThirdView",
+        "component" : "third",
+        "key" : "v4",       
+        "props" : {
+            "prop1" : "some string 1",
+            "prop2" : "some string 2"
+        }
+    }
+]}

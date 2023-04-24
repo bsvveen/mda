@@ -1,31 +1,36 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route} from "react-router-dom";
+import Dashboard from './components/dashboard/';
+
 import ListCustomers from "./pages/listcustomers";
 
+const componentFactory = {
+	first: ListCustomers	
+};
+
+const gridProperties = { 
+    breakpoints:{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 },
+    cols:{ lg: 5, md: 4, sm: 3, xs: 2, xxs: 1 },
+    rowHeight:300, width:1000
+}
 
 function App() {    
+    const [views, setViews] = useState([]);
 
     React.useEffect(() => {
-        const fetchModel = async () => {
-          fetch('/User/GetModel')
-          .then((res) => res.json())
-          .then(json => JSON.stringify(json))
-          .then((data) => sessionStorage.setItem("model", data));                  
-        };
-        fetchModel();
+      const fetchModel = async () => {
+        fetch('/User/GetModel')
+        .then((res) => res.json())
+        .then(json => JSON.stringify(json))
+        .then((data) => sessionStorage.setItem("model", data));                  
+      };
+
+      fetchModel();
+      setViews(importedViews.views);
     }, []);   
 
-    return (
-      <div id="app">
-        <BrowserRouter> 
-          <div id="wrapper">   
-              <Routes>
-                <Route path="/" exact element={<ListCustomers />} />
-              </Routes>                                   
-          </div>             
-        </BrowserRouter>
-      </div>        
-    );
+    if (views.length == 0) { return <div>Loading ...</div> } 
+  
+    return (<Dashboard views={views} componentFactory={componentFactory} gridProperties={gridProperties} />);
 }
  
 export default App;
