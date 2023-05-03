@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\css\dashboard.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.4.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection.Libraries" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.13" />
@@ -19,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\css\dashboard.css" />
     <None Include="wwwroot\css\fonts\icomoon.eot" />
     <None Include="wwwroot\css\fonts\icomoon.svg" />
     <None Include="wwwroot\css\fonts\icomoon.ttf" />

@@ -2,10 +2,10 @@ import React from 'react';
 import Dashboard from './components/dashboard';
 
 import importedViews from './views.json';
-import ListCustomers from "./pages/listcustomers";
+import ListAndNew from './components/restform/listandnew';
 
 const componentFactory = {
-	first: ListCustomers	
+	listAndNew: ListAndNew	
 };
 
 const gridProperties = { 

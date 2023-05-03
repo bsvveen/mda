@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { Responsive, WidthProvider } from "react-grid-layout";
 import Layout from './layout';
 
+import './dashboard.css'
+
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const DashBoard = ({views, componentFactory, gridProperties}) => {    

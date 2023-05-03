@@ -1,0 +1,154 @@
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  * {
+    margin: 0;
+  }
+
+  html, body {
+    height: 100%;
+  }
+  
+  
+  body {
+    margin: 0;
+    font-family: "Lato", sans-serif;
+    box-sizing: border-box;
+    background: #0010271d;
+  }
+  
+  .sidebar {   
+    padding: 0;
+    width: 200px;    
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+    margin: 10px;
+  }
+  
+  .sidebar a {
+    display: block;
+    color: black;
+    padding: 16px;
+    text-decoration: none;
+  }
+   
+  .sidebar a.active {
+    background-color: #04AA6D;
+    color: white;
+  }
+  
+  .sidebar a:hover:not(.active) {
+    background-color: #555;
+    color: white;
+  }
+  
+  div.content {
+    margin-left: 200px;
+    padding: 1px 16px;
+    height: 1000px;
+  }
+  .sidebar .icon {
+    display: none;
+  }
+
+  .sidebar .menuItem {
+    background-color: cornflowerblue;
+    font-weight: bold;
+  }
+  
+  @media screen and (max-width: 800px) {
+    .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+    }
+    .sidebar a {float: left;}
+    div.content {margin-left: 0;}
+  }
+  
+  @media screen and (max-width: 400px) {
+    .sidebar a:not(:first-child) {display: none;}
+    .sidebar a.icon {
+      float: right;
+      display: block;
+    }
+  }
+  
+  @media screen and (max-width: 400px) {
+    .sidebar.responsive {position: relative;}
+    .sidebar.responsive .icon {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+    .sidebar.responsive a {
+      float: none;
+      display: block;
+      text-align: left;
+    }
+  }
+
+
+.react-grid-item:not(.react-grid-placeholder) {   
+}
+
+.tile {  
+  border-radius: 5px;
+  border: cornflowerblue solid 2px;   
+  height: 100%;
+  box-shadow: 2px 2px 2px rgb(121, 121, 121);
+  background: #d3d2d7;
+}
+
+.griditem_1 {  
+  height: 50px !important;
+  width: 250px !important;  
+}
+
+.griditem_1 .body {  
+  display:none;
+  z-index: 5;
+}
+
+.griditem_2 {
+  z-index: 5;
+}
+
+.griditem_3 { 
+  transform: inherit !important;
+  height: 100% !important;
+  width: 100% !important;  
+  position: fixed !important;  
+  z-index: 10;
+  left: 0;
+}
+
+.tile .header {  
+  background-color: cornflowerblue;  
+  width: 100%;  
+  padding: 10px; 
+}
+
+.tile .actions {    
+  position:relative;
+  width: 100px; 
+  text-align: right;  
+  float:right;
+}
+
+.tile .actions>i {
+  margin: 5px; 
+}
+
+.tile > .header > .title {  
+  display:inline-block;
+  font-weight: bold;
+}
+
+.tile > .body {   
+  height: calc(100% - 50px);
+  position: relative;  
+  padding: 10px; 
+}

@@ -1,35 +1,21 @@
 {"views": [
     {
-        "titel" : "FirstView",
-        "component" : "first",
+        "titel" : "Customers",
+        "component" : "listAndNew",
         "key" : "v1",       
         "props" : {
-            "prop1" : "some string 1",
-            "prop2" : "some string 2"
+            "entity" : "Customers",
+            "properties" : ["Name","Number", "BirthDate", "Comment"],
+            "constrains": [{"Property" : "Name", "Operator": 0, "Value": "Mirjam"}]
         }
     },{
         "titel" : "SecondView",
-        "component" : "first",
+        "component" : "listAndNew",
         "key" : "v2",       
         "props" : {
-            "prop1" : "some string 1",
-            "prop2" : "some string 2"
-        }
-    },{
-        "titel" : "ThirdView",
-        "component" : "first",
-        "key" : "v3",        
-        "props" : {
-            "prop1" : "some string 1",
-            "prop2" : "some string 2"
-        }
-    },{
-        "titel" : "ThirdView",
-        "component" : "first",
-        "key" : "v4",       
-        "props" : {
-            "prop1" : "some string 1",
-            "prop2" : "some string 2"
+            "entity" : "Customers",
+            "properties" : ["Name","Number", "BirthDate", "Comment"],
+            "constrains": [{"Property" : "Name", "Operator": 0, "Value": "Boudewijn"}]
         }
     }
 ]}
