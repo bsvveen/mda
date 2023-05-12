@@ -3,12 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { Responsive, WidthProvider } from "react-grid-layout";
 import Layout from './layout';
 
-import './dashboard.css'
-
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const DashBoard = ({views, componentFactory, gridProperties}) => {    
-  const [isResponsive, setResponsive] = useState(0);    
+  const [isSideBarExpanded, setSideBarExpanded] = useState(0);    
   const [tiles, setTiles] = useState([]);   
 
   useEffect(() => { 
@@ -42,8 +40,8 @@ const DashBoard = ({views, componentFactory, gridProperties}) => {
     )
   }   
 
-  const toggleIsResponsive = () => {
-      setResponsive(1 - isResponsive);
+  const toggleSideBar = () => {
+      setSideBarExpanded(1 - isSideBarExpanded);
   }
     
   const refreshTile = (tile) => { 
@@ -66,13 +64,13 @@ const DashBoard = ({views, componentFactory, gridProperties}) => {
   
   return (   
     <div>
-      <div className={`tile sidebar ${(isResponsive)?"responsive":""}`} id="sidebar">
+      <div className={`${(isSideBarExpanded)?"expanded":""}`} id="sidebar">
         { passiveTiles.map(tile => { 
           return (<a className="menuItem" key={tile.view.key} onClick={() => changeTileMode(tile.view.key, 2)}>{tile.view.titel}</a>)
         })}        
-        <a href="javascript:void(0);" className="icon" onClick={() => toggleIsResponsive()}>=</a>
+        <a href="javascript:void(0);" className="icon" onClick={() => toggleSideBar()}>=</a>
       </div>
-      <div className="content">
+      <div className={`${(isSideBarExpanded)?"expanded":""}`} id="content">
         <ResponsiveGridLayout layouts={{lg: gridLayout}} {...gridProperties}> 
           { usedTiles.map(tile => { return renderTile(tile); }) }   
         </ResponsiveGridLayout>   
