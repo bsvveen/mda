@@ -1,7 +1,7 @@
 {"views": [
     {
         "titel" : "Customers",
-        "component" : "listAndNew",
+        "component" : "advancedList",
         "key" : "v1",       
         "props" : {
             "entity" : "Customers",
@@ -10,7 +10,7 @@
         }
     },{
         "titel" : "SecondView",
-        "component" : "listAndNew",
+        "component" : "advancedList",
         "key" : "v2",       
         "props" : {
             "entity" : "Customers",

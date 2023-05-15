@@ -1,30 +1,27 @@
 import React, { Component } from "react";
 import PropTypes from 'prop-types';
 import Repository from './repository';
-import './view.css';
+import './detail.css';
 
-class View extends Component { 
+class Detail extends Component { 
 
   _isMounted = false;
 
   PropTypes = {   
     id: PropTypes.string.isRequired,
-    controller: PropTypes.string.isRequired
+    entity: PropTypes.string.isRequired
   }
 
   state = { isLoading: true, current: {} };   
 
   componentDidMount() {   
     this._isMounted = true;
-
     this.setState({ isLoading: true });  
-
-    this.repository = new Repository(this.props.controller); 
-       
-    let filter = [{ "field" : "id", "value" : this.props.id }];   
-    this.repository.List(filter).then(response => {
+    this.repository = new Repository(this.props.entity);        
+    
+    this.repository.GetById(this.props.id).then(response => {
       if (this._isMounted) {
-      this.setState({ current: response[0] }, () => {
+      this.setState({ current: response }, () => {
         this.setState({ isLoading: false });
       })};
     })
@@ -49,4 +46,4 @@ class View extends Component {
   render() { return <div className="grid"> {this.Recursive(this.state.current)} </div> }
 }
 
-export default View;
+export default Detail;

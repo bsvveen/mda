@@ -2,16 +2,17 @@ import React from 'react';
 import Dashboard from './components/dashboard';
 
 import importedViews from './views.json';
-import ListAndNew from './components/restform/listandnew';
+import AdvancedList from './components/restform/advancedList';
 
 const componentFactory = {
-	listAndNew: ListAndNew	
+	advancedList: AdvancedList	
 };
 
 const gridProperties = { 
     breakpoints:{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 },
     cols:{ lg: 5, md: 4, sm: 3, xs: 2, xxs: 1 },
-    rowHeight:300, width:1000
+    rowHeight:300, width:1000,
+    draggableHandle: ".drag-handle"
 }
 
 function App() {    

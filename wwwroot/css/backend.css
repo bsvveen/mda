@@ -145,6 +145,10 @@ body {
     font-weight: bold;
 }
 
+.drag-handle {
+    cursor : move;
+}
+
 .tile > .body {
     height: calc(100% - 50px);
     position: relative;

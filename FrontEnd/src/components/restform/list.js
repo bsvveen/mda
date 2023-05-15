@@ -36,20 +36,7 @@ class List extends Component {
         this.setState({ isLoading: false });
       })};
     })
-  }  
-
-  getConstrainsFromProps = (props) => {
-    let filter = []
-    if (props.constrains) {
-      filter = Object.keys(props.constrains)        
-        .reduce((obj, key) => {
-          obj.push({ "field": key, "value": props.constrains[key].equals });
-          return obj;
-          }, []
-        );   
-    }
-    return filter;
-  }  
+  }    
 
   onListSelect = (item) => {
     if (this.props.onSelect)
@@ -62,7 +49,7 @@ class List extends Component {
 
     return (
       <div className="list">
-        <DynamicList items={this.state.items} onSelect={this.onListSelect}  />
+        <DynamicList items={this.state.items} onSelect={this.onListSelect} rowRender={this.props.rowRender}  />
       </div>
     );
   }

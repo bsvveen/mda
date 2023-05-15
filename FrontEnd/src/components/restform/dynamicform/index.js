@@ -9,7 +9,6 @@ import DateInput from './date';
 import Foreignkey from './foreignkey';
 import FKLookup from './fklookup';
 import NumberInput from './numberinput';
-import ItemProps from '../itemprops'
 
 import './index.css';
 
@@ -146,8 +145,7 @@ export default class DynamicForm extends React.Component {
                     {(this.props.initialData.id) && <button type="delete" title="Verwijderen" onClick={this.onDelete} ></button>}
                     {(this.props.onCancel) && <button type="cancel" title="Cancel" onClick={this.onCancel}></button>}                    
                     <button type="submit" title="Opslaan">Opslaan</button>
-                </div>
-                <ItemProps {...this.props.initialinitialData} />
+                </div>                
             </form>
         )
     }
