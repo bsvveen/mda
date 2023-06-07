@@ -1,6 +1,5 @@
 import React from 'react';
 import useApi from './useApi';
-import './detail.css';
 
 const Detail = ({entityName, id, onAction}) => {
   const {response, error, loading, fetchById} = useApi();     

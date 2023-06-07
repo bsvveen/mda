@@ -24,13 +24,13 @@ export default class ForeignKey extends React.Component {
     componentDidMount() {      
         this._isMounted = true;
         const fk = this.props.model.foreignkey;      
-        const repository = new Repository(fk.related);  
+        /*const repository = new Repository(fk.related);  
         repository.List(["Id", fk.lookup], null).then(response => {
             if (this._isMounted) {
             this.setState({ items: response }, () => {
               this.setState({ isLoading: false });
             })};
-          })
+          })*/
     }    
 
     componentWillUnmount() {

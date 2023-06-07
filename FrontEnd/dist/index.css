@@ -687,6 +687,20 @@
   display: flex;
 }
 
+.restform button {
+  width: 120px;
+  color: #fff;
+  text-align: center;
+  background-color: #64889f;
+  border: 0;
+  border-radius: 4px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  margin-left: 5px;
+  font-size: 1.3em;
+  line-height: 1.5em;
+}
+
 .view .object {
   padding: 5px;
 }

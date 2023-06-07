@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-const useApi = () => {
-    const [response, setResponse] = useState(null);
+const useApi = (initialResponse) => {
+    const [response, setResponse] = useState(initialResponse);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -46,9 +46,9 @@ const useApi = () => {
 
     const fetchList = (entity, properties, constrains) => { return apiFetch("/User/List/", { "Entity" : entity, "Properties" : properties, "Constrains" : constrains}); }
 
-    const submit = (entity, data) => apiFetch('/User/GetById/', { "Entity" : entity, "Data" : data});  
+    const update = (entity, data) => apiFetch('/User/Update/', { "Entity" : entity, "Data" : data});  
 
-    return { response, error, loading, fetchById, fetchList, submit };
+    return { response, error, loading, fetchById, fetchList, update };
 }
 
 export default useApi

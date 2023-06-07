@@ -1,7 +1,8 @@
 import React from 'react';
 import List from "./list";
-import Form from "./form"
-import Detail from "./detail"
+import Form from "./form";
+import Detail from "./detail";
+import "./index.css";
 
 const FullList = ({entityName, properties, constrains}) => { 
   const [current, setCurrent] = React.useState();
@@ -36,7 +37,7 @@ const FullList = ({entityName, properties, constrains}) => {
                     onCancel = {onReset} />
 
 return (
-  <div>    
+  <div className="restForm">    
     <List entityName={entityName} constrains={constrains} properties={properties} onSelect={onSelect} />
     <div className="actions"><button type="new" onClick={onNew} value="Nieuw" /></div>
   </div>

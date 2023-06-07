@@ -14,13 +14,14 @@ const List = ({entityName, properties, constrains, onSelect}) => {
 
   const rowRender = (item, isSelected) => {   
     return (
-      <tr onClick={() => onSelect(item.Id, "detail")} key={item.Id} className={(isSelected) ? "selected" : null}> 
+      <tr className={(isSelected) ? "selected" : null}> 
         {
           Object.keys(item)
           .filter((key) => { return (key !== "Id" && !key.includes("_Id"))})
           .map((key) => { return <td key={key}>{item[key]}</td>})
         } 
-        <td className="small"><button onClick={() => onSelect(item.Id, "form")} type="edit" title="Aanpassen" /></td>               
+        <td className="small"><button onClick={() => onSelect(item.Id, "detail")} type="view" title="View">View</button></td>
+        <td className="small"><button onClick={() => onSelect(item.Id, "form")} type="edit" title="Edit">Edit</button></td>               
       </tr>);
   }
 

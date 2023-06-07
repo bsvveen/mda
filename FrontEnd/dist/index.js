@@ -35015,6 +35015,7 @@ var _form = require("./form");
 var _formDefault = parcelHelpers.interopDefault(_form);
 var _detail = require("./detail");
 var _detailDefault = parcelHelpers.interopDefault(_detail);
+var _indexCss = require("./index.css");
 var _s = $RefreshSig$();
 const FullList = ({ entityName , properties , constrains  })=>{
     _s();
@@ -35041,7 +35042,7 @@ const FullList = ({ entityName , properties , constrains  })=>{
         onDelete: onReset
     }, void 0, false, {
         fileName: "src/components/restform/fullList.js",
-        lineNumber: 27,
+        lineNumber: 28,
         columnNumber: 12
     }, undefined);
     if (current && mode == "detail") return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _detailDefault.default), {
@@ -35050,10 +35051,11 @@ const FullList = ({ entityName , properties , constrains  })=>{
         onCancel: onReset
     }, void 0, false, {
         fileName: "src/components/restform/fullList.js",
-        lineNumber: 34,
+        lineNumber: 35,
         columnNumber: 12
     }, undefined);
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+        className: "restForm",
         children: [
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _listDefault.default), {
                 entityName: entityName,
@@ -35062,7 +35064,7 @@ const FullList = ({ entityName , properties , constrains  })=>{
                 onSelect: onSelect
             }, void 0, false, {
                 fileName: "src/components/restform/fullList.js",
-                lineNumber: 40,
+                lineNumber: 41,
                 columnNumber: 5
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -35073,18 +35075,18 @@ const FullList = ({ entityName , properties , constrains  })=>{
                     value: "Nieuw"
                 }, void 0, false, {
                     fileName: "src/components/restform/fullList.js",
-                    lineNumber: 41,
+                    lineNumber: 42,
                     columnNumber: 30
                 }, undefined)
             }, void 0, false, {
                 fileName: "src/components/restform/fullList.js",
-                lineNumber: 41,
+                lineNumber: 42,
                 columnNumber: 5
             }, undefined)
         ]
     }, void 0, true, {
         fileName: "src/components/restform/fullList.js",
-        lineNumber: 39,
+        lineNumber: 40,
         columnNumber: 3
     }, undefined);
 };
@@ -35099,7 +35101,7 @@ $RefreshReg$(_c, "FullList");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./list":"b0TAh","./form":"cj7Fs","./detail":"aJkgF","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"b0TAh":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./list":"b0TAh","./form":"cj7Fs","./detail":"aJkgF","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru","./index.css":"dVAdh"}],"b0TAh":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$18c2 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -35138,7 +35140,6 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
     }, undefined);
     const rowRender = (item, isSelected)=>{
         return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("tr", {
-            onClick: ()=>onSelect(item.Id, "detail"),
             className: isSelected ? "selected" : null,
             children: [
                 Object.keys(item).filter((key)=>{
@@ -35155,9 +35156,10 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("td", {
                     className: "small",
                     children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
-                        onClick: ()=>onSelect(item.Id, "form"),
-                        type: "edit",
-                        title: "Aanpassen"
+                        onClick: ()=>onSelect(item.Id, "detail"),
+                        type: "view",
+                        title: "View",
+                        children: "View"
                     }, void 0, false, {
                         fileName: "src/components/restform/list.js",
                         lineNumber: 23,
@@ -35167,9 +35169,26 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
                     fileName: "src/components/restform/list.js",
                     lineNumber: 23,
                     columnNumber: 9
+                }, undefined),
+                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("td", {
+                    className: "small",
+                    children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                        onClick: ()=>onSelect(item.Id, "form"),
+                        type: "edit",
+                        title: "Edit",
+                        children: "Edit"
+                    }, void 0, false, {
+                        fileName: "src/components/restform/list.js",
+                        lineNumber: 24,
+                        columnNumber: 31
+                    }, undefined)
+                }, void 0, false, {
+                    fileName: "src/components/restform/list.js",
+                    lineNumber: 24,
+                    columnNumber: 9
                 }, undefined)
             ]
-        }, item.Id, true, {
+        }, void 0, true, {
             fileName: "src/components/restform/list.js",
             lineNumber: 17,
             columnNumber: 7
@@ -35182,12 +35201,12 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
             rowRender: rowRender
         }, void 0, false, {
             fileName: "src/components/restform/list.js",
-            lineNumber: 29,
+            lineNumber: 30,
             columnNumber: 7
         }, undefined)
     }, void 0, false, {
         fileName: "src/components/restform/list.js",
-        lineNumber: 28,
+        lineNumber: 29,
         columnNumber: 5
     }, undefined);
 };
@@ -35217,9 +35236,9 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _react = require("react");
 var _s = $RefreshSig$();
-const useApi = ()=>{
+const useApi = (initialResponse)=>{
     _s();
-    const [response, setResponse] = (0, _react.useState)(null);
+    const [response, setResponse] = (0, _react.useState)(initialResponse);
     const [error, setError] = (0, _react.useState)(null);
     const [loading, setLoading] = (0, _react.useState)(false);
     const parseJSON = (response)=>{
@@ -35260,7 +35279,7 @@ const useApi = ()=>{
             "Constrains": constrains
         });
     };
-    const submit = (entity, data)=>apiFetch("/User/GetById/", {
+    const update = (entity, data)=>apiFetch("/User/Update/", {
             "Entity": entity,
             "Data": data
         });
@@ -35270,10 +35289,10 @@ const useApi = ()=>{
         loading,
         fetchById,
         fetchList,
-        submit
+        update
     };
 };
-_s(useApi, "GVvNryvyM4J8hydsI4ptkbTkag8=");
+_s(useApi, "oVDp+RYn9H7kxeAuxHioZmKXsPE=");
 exports.default = useApi;
 
   $parcel$ReactRefreshHelpers$3112.postlude(module);
@@ -35496,29 +35515,38 @@ var _dynamicformDefault = parcelHelpers.interopDefault(_dynamicform);
 var _s = $RefreshSig$();
 const Form = ({ entityName , id , onAction  })=>{
     _s();
-    const { data , error , loading , fetchById , update , deleteMe  } = (0, _useApiDefault.default)();
-    const [entityModel, setEntityModel] = useState(undefined);
+    const { data , error , loading , fetchById , fetchList , update  } = (0, _useApiDefault.default)({});
+    const [entityModel, setEntityModel] = (0, _reactDefault.default).useState(undefined);
     (0, _reactDefault.default).useEffect(()=>{
-        const getEntityModel = ()=>{
-            const model = JSON.parse(sessionStorage.getItem("model"));
-            const entity1 = model.entities.find((e)=>e.name == entityName);
-            setEntityModel(entity1);
-        };
-        getEntityModel();
+        getEntityModel(entityName);
         fetchById(entityName, id);
     }, []);
-    if (loading) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+    const getEntityModel = (name)=>{
+        const model = JSON.parse(sessionStorage.getItem("model"));
+        const entity1 = model.entities.find((e)=>e.name == name);
+        entity1.properties.filter((prop)=>prop.type == "foreignkey").map((prop)=>{
+            const func = fetchList(prop.related, [
+                prop.lookup
+            ], prop.constrains);
+            return {
+                ...prop,
+                "func": func
+            };
+        });
+        setEntityModel(entity1);
+    };
+    if (loading || !entityModel) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: "Loading..."
     }, void 0, false, {
         fileName: "src/components/restform/form.js",
-        lineNumber: 20,
-        columnNumber: 23
+        lineNumber: 26,
+        columnNumber: 39
     }, undefined);
     if (error) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: error.message
     }, void 0, false, {
         fileName: "src/components/restform/form.js",
-        lineNumber: 21,
+        lineNumber: 27,
         columnNumber: 21
     }, undefined);
     const onSubmit = (properties)=>{
@@ -35534,21 +35562,21 @@ const Form = ({ entityName , id , onAction  })=>{
         children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _dynamicformDefault.default), {
             entityModel: entityModel,
             initialData: data,
-            onCancel: props.onAction(),
+            onCancel: onAction,
             onSubmit: onSubmit,
             onDelete: onDelete
         }, void 0, false, {
             fileName: "src/components/restform/form.js",
-            lineNumber: 35,
+            lineNumber: 41,
             columnNumber: 7
         }, undefined)
     }, void 0, false, {
         fileName: "src/components/restform/form.js",
-        lineNumber: 34,
+        lineNumber: 40,
         columnNumber: 5
     }, undefined);
 };
-_s(Form, "nymdkOW/M70QTXddXwMb+T2k+gw=", false, function() {
+_s(Form, "wj5+ERUf6Snl4S29cwDzMViD6uM=", false, function() {
     return [
         (0, _useApiDefault.default)
     ];
@@ -35598,15 +35626,6 @@ class DynamicForm extends (0, _reactDefault.default).Component {
     state = {
         errors: [],
         modifiedData: {}
-    };
-    PropTypes = {
-        initialData: (0, _propTypesDefault.default).object.isRequired,
-        entityModel: (0, _propTypesDefault.default).object.isRequired,
-        constrains: (0, _propTypesDefault.default).array,
-        onCancel: (0, _propTypesDefault.default).func.isRequired,
-        onSubmit: (0, _propTypesDefault.default).func.isRequired,
-        onDelete: (0, _propTypesDefault.default).func.isRequired,
-        repository: (0, _propTypesDefault.default).func.isRequired
     };
     onDelete = (e)=>{
         e.preventDefault();
@@ -35660,7 +35679,7 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                 children: value
             }, void 0, false, {
                 fileName: "src/components/restform/dynamicform/index.js",
-                lineNumber: 95,
+                lineNumber: 84,
                 columnNumber: 25
             }, this);
             if (type === "text") input = /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _textinputDefault.default), {
@@ -35669,7 +35688,7 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                 onChange: this.onChange
             }, void 0, false, {
                 fileName: "src/components/restform/dynamicform/index.js",
-                lineNumber: 98,
+                lineNumber: 87,
                 columnNumber: 25
             }, this);
             if (type === "number") input = /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _numberinputDefault.default), {
@@ -35678,7 +35697,7 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                 onChange: this.onChange
             }, void 0, false, {
                 fileName: "src/components/restform/dynamicform/index.js",
-                lineNumber: 101,
+                lineNumber: 90,
                 columnNumber: 25
             }, this);
             if (type === "textarea") input = /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _textareaDefault.default), {
@@ -35687,7 +35706,7 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                 onChange: this.onChange
             }, void 0, false, {
                 fileName: "src/components/restform/dynamicform/index.js",
-                lineNumber: 104,
+                lineNumber: 93,
                 columnNumber: 25
             }, this);
             if (type === "datetime") input = /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _dateDefault.default), {
@@ -35696,7 +35715,7 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                 onChange: this.onChange
             }, void 0, false, {
                 fileName: "src/components/restform/dynamicform/index.js",
-                lineNumber: 107,
+                lineNumber: 96,
                 columnNumber: 25
             }, this);
             if (type === "select") input = /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _singleselectDefault.default), {
@@ -35705,7 +35724,7 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                 onChange: this.onChange
             }, void 0, false, {
                 fileName: "src/components/restform/dynamicform/index.js",
-                lineNumber: 110,
+                lineNumber: 99,
                 columnNumber: 25
             }, this);
             if (type === "checkbox") input = /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _checkboxDefault.default), {
@@ -35714,7 +35733,7 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                 onChange: this.onChange
             }, void 0, false, {
                 fileName: "src/components/restform/dynamicform/index.js",
-                lineNumber: 113,
+                lineNumber: 102,
                 columnNumber: 25
             }, this);
             if (type === "foreignkey") input = /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _foreignkeyDefault.default), {
@@ -35725,7 +35744,7 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                 constrains: this.props.constrains
             }, void 0, false, {
                 fileName: "src/components/restform/dynamicform/index.js",
-                lineNumber: 116,
+                lineNumber: 105,
                 columnNumber: 25
             }, this);
             if (type === "FKLookup") input = /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _fklookupDefault.default), {
@@ -35736,7 +35755,7 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                 constrains: this.props.constrains
             }, void 0, false, {
                 fileName: "src/components/restform/dynamicform/index.js",
-                lineNumber: 121,
+                lineNumber: 110,
                 columnNumber: 25
             }, this);
             return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -35750,7 +35769,7 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                         ]
                     }, "l" + prop.Key, true, {
                         fileName: "src/components/restform/dynamicform/index.js",
-                        lineNumber: 127,
+                        lineNumber: 116,
                         columnNumber: 21
                     }, this),
                     input,
@@ -35759,13 +35778,13 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                         children: errors[prop.key] ? errors[prop.key] : ""
                     }, void 0, false, {
                         fileName: "src/components/restform/dynamicform/index.js",
-                        lineNumber: 132,
+                        lineNumber: 121,
                         columnNumber: 21
                     }, this)
                 ]
             }, "g" + prop.key, true, {
                 fileName: "src/components/restform/dynamicform/index.js",
-                lineNumber: 126,
+                lineNumber: 115,
                 columnNumber: 17
             }, this);
         });
@@ -35782,13 +35801,13 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                     className: "actions",
                     children: [
-                        this.props.initialData.id && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                        this.props.initialData.Id && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
                             type: "delete",
                             title: "Verwijderen",
                             onClick: this.onDelete
                         }, void 0, false, {
                             fileName: "src/components/restform/dynamicform/index.js",
-                            lineNumber: 145,
+                            lineNumber: 134,
                             columnNumber: 53
                         }, this),
                         this.props.onCancel && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -35797,7 +35816,7 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                             onClick: this.onCancel
                         }, void 0, false, {
                             fileName: "src/components/restform/dynamicform/index.js",
-                            lineNumber: 146,
+                            lineNumber: 135,
                             columnNumber: 47
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -35806,24 +35825,37 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                             children: "Opslaan"
                         }, void 0, false, {
                             fileName: "src/components/restform/dynamicform/index.js",
-                            lineNumber: 147,
+                            lineNumber: 136,
                             columnNumber: 21
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "src/components/restform/dynamicform/index.js",
-                    lineNumber: 144,
+                    lineNumber: 133,
                     columnNumber: 17
                 }, this)
             ]
         }, void 0, true, {
             fileName: "src/components/restform/dynamicform/index.js",
-            lineNumber: 142,
+            lineNumber: 131,
             columnNumber: 13
         }, this);
     }
 }
 exports.default = DynamicForm;
+DynamicForm.propTypes = {
+    initialData: (0, _propTypesDefault.default).object.isRequired,
+    entityModel: (0, _propTypesDefault.default).object.isRequired,
+    constrains: (0, _propTypesDefault.default).array,
+    onCancel: (0, _propTypesDefault.default).func.isRequired,
+    onSubmit: (0, _propTypesDefault.default).func.isRequired,
+    onDelete: (0, _propTypesDefault.default).func.isRequired
+};
+DynamicForm.defaultProps = {
+    initialData: {},
+    entityModel: {},
+    constrains: []
+};
 
   $parcel$ReactRefreshHelpers$c976.postlude(module);
 } finally {
@@ -51114,20 +51146,13 @@ class ForeignKey extends (0, _reactDefault.default).Component {
     }*/ componentDidMount() {
         this._isMounted = true;
         const fk = this.props.model.foreignkey;
-        const repository = new Repository(fk.related);
-        repository.List([
-            "Id",
-            fk.lookup
-        ], null).then((response)=>{
-            if (this._isMounted) this.setState({
-                items: response
-            }, ()=>{
-                this.setState({
-                    isLoading: false
-                });
-            });
-        });
-    }
+    /*const repository = new Repository(fk.related);  
+        repository.List(["Id", fk.lookup], null).then(response => {
+            if (this._isMounted) {
+            this.setState({ items: response }, () => {
+              this.setState({ isLoading: false });
+            })};
+          })*/ }
     componentWillUnmount() {
         this._isMounted = false;
     }
@@ -51333,7 +51358,6 @@ var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
 var _useApi = require("./useApi");
 var _useApiDefault = parcelHelpers.interopDefault(_useApi);
-var _detailCss = require("./detail.css");
 var _s = $RefreshSig$();
 const Detail = ({ entityName , id , onAction  })=>{
     _s();
@@ -51345,14 +51369,14 @@ const Detail = ({ entityName , id , onAction  })=>{
         children: "Loading..."
     }, void 0, false, {
         fileName: "src/components/restform/detail.js",
-        lineNumber: 12,
+        lineNumber: 11,
         columnNumber: 23
     }, undefined);
     if (error) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: JSON.stringify(error)
     }, void 0, false, {
         fileName: "src/components/restform/detail.js",
-        lineNumber: 13,
+        lineNumber: 12,
         columnNumber: 21
     }, undefined);
     const onSubmit = (properties)=>{
@@ -51377,7 +51401,7 @@ const Detail = ({ entityName , id , onAction  })=>{
                     ]
                 }, void 0, true, {
                     fileName: "src/components/restform/detail.js",
-                    lineNumber: 29,
+                    lineNumber: 28,
                     columnNumber: 60
                 }, undefined),
                 " ",
@@ -51390,14 +51414,14 @@ const Detail = ({ entityName , id , onAction  })=>{
                     ]
                 }, void 0, true, {
                     fileName: "src/components/restform/detail.js",
-                    lineNumber: 29,
+                    lineNumber: 28,
                     columnNumber: 98
                 }, undefined),
                 " "
             ]
         }, key, true, {
             fileName: "src/components/restform/detail.js",
-            lineNumber: 29,
+            lineNumber: 28,
             columnNumber: 23
         }, undefined)) : obj[key] && key !== "Id" && !key.includes("_Id") ? result.push(/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
             className: "row",
@@ -51410,7 +51434,7 @@ const Detail = ({ entityName , id , onAction  })=>{
                     ]
                 }, void 0, true, {
                     fileName: "src/components/restform/detail.js",
-                    lineNumber: 31,
+                    lineNumber: 30,
                     columnNumber: 56
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -51421,13 +51445,13 @@ const Detail = ({ entityName , id , onAction  })=>{
                     ]
                 }, void 0, true, {
                     fileName: "src/components/restform/detail.js",
-                    lineNumber: 31,
+                    lineNumber: 30,
                     columnNumber: 76
                 }, undefined)
             ]
         }, key, true, {
             fileName: "src/components/restform/detail.js",
-            lineNumber: 31,
+            lineNumber: 30,
             columnNumber: 25
         }, undefined)) : result.push();
         return result;
@@ -51441,7 +51465,7 @@ const Detail = ({ entityName , id , onAction  })=>{
         ]
     }, void 0, true, {
         fileName: "src/components/restform/detail.js",
-        lineNumber: 37,
+        lineNumber: 36,
         columnNumber: 11
     }, undefined);
 };
@@ -51460,6 +51484,6 @@ $RefreshReg$(_c, "Detail");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./detail.css":"ggmGq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru","./useApi":"jltGU"}],"ggmGq":[function() {},{}]},["1xC6H","jC2qd","8lqZg"], "8lqZg", "parcelRequire10c2")
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru","./useApi":"jltGU"}],"dVAdh":[function() {},{}]},["1xC6H","jC2qd","8lqZg"], "8lqZg", "parcelRequire10c2")
 
 //# sourceMappingURL=index.js.map

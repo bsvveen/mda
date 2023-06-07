@@ -53,7 +53,7 @@ namespace MDA.User
 
             var requestFormatValidation = _model.CheckExistence(request.Entity, request.Properties);
             if (!requestFormatValidation.IsValid)
-                return Conflict("Fout in ListRequest: " + string.Join(",", requestFormatValidation.Errors));
+                return Conflict("Fout in GetByIdRequest: " + string.Join(",", requestFormatValidation.Errors));
 
             var requestAccessValidation = _model.CheckAuthorization(request.Entity, request.Properties);
             if (!requestAccessValidation.IsValid)
@@ -63,8 +63,8 @@ namespace MDA.User
             return Ok(await userService.GetById(request));                  
         }
 
-        [HttpPost("Submit")]
-        public async Task<IActionResult> Submit([FromBody] SubmitRequest request)
+        [HttpPost("Update")]
+        public async Task<IActionResult> Update([FromBody] SubmitRequest request)
         {
             var requestFormatValidation = _model.CheckExistence(request.Entity, request.Properties.Select(p => p.Key).ToList());
             if (!requestFormatValidation.IsValid)

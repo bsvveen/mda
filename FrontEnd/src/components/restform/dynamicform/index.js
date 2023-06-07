@@ -13,18 +13,7 @@ import NumberInput from './numberinput';
 import './index.css';
 
 export default class DynamicForm extends React.Component {
-
-    state = { errors: [], modifiedData: {} };
-
-    PropTypes = {
-        initialData: PropTypes.object.isRequired, 
-        entityModel: PropTypes.object.isRequired, 
-        constrains: PropTypes.array,
-        onCancel: PropTypes.func.isRequired,
-        onSubmit: PropTypes.func.isRequired,
-        onDelete: PropTypes.func.isRequired,
-        repository: PropTypes.func.isRequired       
-    }
+    state = { errors: [], modifiedData: {} };    
 
     onDelete = (e) => {
         e.preventDefault();
@@ -142,7 +131,7 @@ export default class DynamicForm extends React.Component {
             <form className="dynamic-form" onSubmit={(e) => { this.onSubmit(e) }}>
                 {this.renderForm()}
                 <div className="actions">
-                    {(this.props.initialData.id) && <button type="delete" title="Verwijderen" onClick={this.onDelete} ></button>}
+                    {(this.props.initialData.Id) && <button type="delete" title="Verwijderen" onClick={this.onDelete} ></button>}
                     {(this.props.onCancel) && <button type="cancel" title="Cancel" onClick={this.onCancel}></button>}                    
                     <button type="submit" title="Opslaan">Opslaan</button>
                 </div>                
@@ -150,3 +139,18 @@ export default class DynamicForm extends React.Component {
         )
     }
 }
+
+DynamicForm.propTypes = {
+    initialData: PropTypes.object.isRequired, 
+    entityModel: PropTypes.object.isRequired, 
+    constrains: PropTypes.array,
+    onCancel: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired     
+};
+
+DynamicForm.defaultProps = {
+    initialData: {},
+    entityModel: {},
+    constrains: []
+};
