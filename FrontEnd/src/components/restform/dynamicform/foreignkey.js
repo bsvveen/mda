@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import Repository from '../repository';
 
 export default class ForeignKey extends React.Component {
 

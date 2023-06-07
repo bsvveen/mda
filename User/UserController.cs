@@ -30,9 +30,12 @@ namespace MDA.User
         [HttpPost("List")]
         public async Task<IActionResult> List([FromBody] ListRequest request)
         {
+            if (!ModelState.IsValid)
+                return Conflict(ModelState);
+
             var requestFormatValidation = _model.CheckExistence(request.Entity, request.Properties);
             if (!requestFormatValidation.IsValid)            
-                return BadRequest("Fout in ListRequest: " + string.Join(",", requestFormatValidation.Errors));
+                return Conflict("Fout in ListRequest: " + string.Join(",", requestFormatValidation.Errors));
 
             var requestAccessValidation = _model.CheckAuthorization(request.Entity, request.Properties);
             if (!requestAccessValidation.IsValid)
@@ -45,9 +48,12 @@ namespace MDA.User
         [HttpPost("GetById")]
         public async Task<IActionResult> GetById([FromBody] GetByIdRequest request)
         {
+            if (!ModelState.IsValid)
+                return Conflict(ModelState);
+
             var requestFormatValidation = _model.CheckExistence(request.Entity, request.Properties);
             if (!requestFormatValidation.IsValid)
-                return BadRequest("Fout in ListRequest: " + string.Join(",", requestFormatValidation.Errors));
+                return Conflict("Fout in ListRequest: " + string.Join(",", requestFormatValidation.Errors));
 
             var requestAccessValidation = _model.CheckAuthorization(request.Entity, request.Properties);
             if (!requestAccessValidation.IsValid)

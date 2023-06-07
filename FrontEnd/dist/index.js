@@ -27145,11 +27145,11 @@ var _dashboard = require("./components/dashboard");
 var _dashboardDefault = parcelHelpers.interopDefault(_dashboard);
 var _viewsJson = require("./views.json");
 var _viewsJsonDefault = parcelHelpers.interopDefault(_viewsJson);
-var _advancedList = require("./components/restform/advancedList");
-var _advancedListDefault = parcelHelpers.interopDefault(_advancedList);
+var _fullList = require("./components/restform/fullList");
+var _fullListDefault = parcelHelpers.interopDefault(_fullList);
 var _s = $RefreshSig$();
 const componentFactory = {
-    advancedList: (0, _advancedListDefault.default)
+    fullList: (0, _fullListDefault.default)
 };
 const gridProperties = {
     breakpoints: {
@@ -27208,7 +27208,7 @@ $RefreshReg$(_c, "App");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./components/dashboard":"7UtMk","./views.json":"aEqJ4","./components/restform/advancedList":"e3mgJ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"7UtMk":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./components/dashboard":"7UtMk","./views.json":"aEqJ4","./components/restform/fullList":"RUuD0","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"7UtMk":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$a6e0 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -34995,13 +34995,13 @@ function registerExportsForReactRefresh(module1) {
 }
 
 },{"2f6fa5e7ae242161":"786KC"}],"aEqJ4":[function(require,module,exports) {
-module.exports = JSON.parse('{"views":[{"titel":"Customers","component":"advancedList","key":"v1","props":{"entity":"Customers","properties":["Name","Number","BirthDate","Comment"],"constrains":[{"Property":"Name","Operator":0,"Value":"Mirjam"}]}},{"titel":"SecondView","component":"advancedList","key":"v2","props":{"entity":"Customers","properties":["Name","Number","BirthDate","Comment"],"constrains":[{"Property":"Name","Operator":0,"Value":"Boudewijn"}]}}]}');
+module.exports = JSON.parse('{"views":[{"titel":"Customers","component":"fullList","key":"v1","props":{"entityName":"Customers","properties":["Name","Number","BirthDate","Comment"],"constrains":[{"Property":"Name","Operator":0,"Value":"Mirjam"}]}},{"titel":"SecondView","component":"fullList","key":"v2","props":{"entityName":"Customers","properties":["Name","Number","BirthDate","Comment"],"constrains":[{"Property":"Name","Operator":0,"Value":"Boudewijn"}]}}]}');
 
-},{}],"e3mgJ":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$66a3 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+},{}],"RUuD0":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$5f8e = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$66a3.prelude(module);
+$parcel$ReactRefreshHelpers$5f8e.prelude(module);
 
 try {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -35009,229 +35009,97 @@ parcelHelpers.defineInteropFlag(exports);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
-var _propTypes = require("prop-types");
-var _propTypesDefault = parcelHelpers.interopDefault(_propTypes);
-var _repository = require("./repository");
-var _repositoryDefault = parcelHelpers.interopDefault(_repository);
 var _list = require("./list");
 var _listDefault = parcelHelpers.interopDefault(_list);
 var _form = require("./form");
 var _formDefault = parcelHelpers.interopDefault(_form);
 var _detail = require("./detail");
 var _detailDefault = parcelHelpers.interopDefault(_detail);
-class AdvancedList extends (0, _react.Component) {
-    PropTypes = {
-        entity: (0, _propTypesDefault.default).string.isRequired,
-        properties: (0, _propTypesDefault.default).array,
-        constrains: (0, _propTypesDefault.default).object
+var _s = $RefreshSig$();
+const FullList = ({ entityName , properties , constrains  })=>{
+    _s();
+    const [current, setCurrent] = (0, _reactDefault.default).useState();
+    const [mode, setMode] = (0, _reactDefault.default).useState("list");
+    const onSelect = (id, mode)=>{
+        console.info("onSelect", id, mode);
+        setMode(mode);
+        setCurrent(id);
     };
-    state = {
-        current: undefined,
-        mode: "list"
+    const onNew = ()=>{
+        setMode("form");
+        setCurrent(undefined);
     };
-    componentDidMount() {
-        this.repository = new (0, _repositoryDefault.default)(this.props.entity);
-    }
-    rowRender = (item, isSelected)=>{
-        return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("tr", {
-            onClick: ()=>this.onSelect(item, "detail"),
-            className: isSelected ? "selected" : null,
-            children: [
-                Object.keys(item).filter((key)=>{
-                    return key !== "id" && !key.includes("_id");
-                }).map((key)=>{
-                    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("td", {
-                        children: item[key]
-                    }, key, false, {
-                        fileName: "src/components/restform/advancedList.js",
-                        lineNumber: 29,
-                        columnNumber: 34
-                    }, this);
-                }),
-                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("td", {
-                    className: "small",
-                    children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
-                        onClick: ()=>this.onSelect(item, "form"),
-                        type: "edit",
-                        title: "Aanpassen"
-                    }, void 0, false, {
-                        fileName: "src/components/restform/advancedList.js",
-                        lineNumber: 31,
-                        columnNumber: 31
-                    }, this)
+    const onReset = ()=>{
+        setMode("list");
+        setCurrent(undefined);
+    };
+    if (current && mode == "form") return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _formDefault.default), {
+        entityName: entityName,
+        id: current,
+        onCancel: onReset,
+        onSubmit: onReset,
+        onDelete: onReset
+    }, void 0, false, {
+        fileName: "src/components/restform/fullList.js",
+        lineNumber: 27,
+        columnNumber: 12
+    }, undefined);
+    if (current && mode == "detail") return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _detailDefault.default), {
+        entityName: entityName,
+        id: current,
+        onCancel: onReset
+    }, void 0, false, {
+        fileName: "src/components/restform/fullList.js",
+        lineNumber: 34,
+        columnNumber: 12
+    }, undefined);
+    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+        children: [
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _listDefault.default), {
+                entityName: entityName,
+                constrains: constrains,
+                properties: properties,
+                onSelect: onSelect
+            }, void 0, false, {
+                fileName: "src/components/restform/fullList.js",
+                lineNumber: 40,
+                columnNumber: 5
+            }, undefined),
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                className: "actions",
+                children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                    type: "new",
+                    onClick: onNew,
+                    value: "Nieuw"
                 }, void 0, false, {
-                    fileName: "src/components/restform/advancedList.js",
-                    lineNumber: 31,
-                    columnNumber: 9
-                }, this)
-            ]
-        }, item.id, true, {
-            fileName: "src/components/restform/advancedList.js",
-            lineNumber: 25,
-            columnNumber: 7
-        }, this);
-    };
-    onSelect = (item, mode)=>{
-        this.repository.GetById(item.Id).then((response)=>{
-            this.setState({
-                current: response,
-                mode: mode
-            });
-        });
-    };
-    onNew = ()=>{
-        this.setState({
-            current: {}
-        });
-    };
-    onReset = ()=>{
-        this.setState({
-            current: undefined
-        });
-    };
-    render() {
-        if (this.state.current && this.state.mode == "form") return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _formDefault.default), {
-            entityName: this.props.entity,
-            data: this.state.current,
-            constrains: this.state.constrains,
-            onCancel: this.onReset,
-            onSubmit: this.onReset,
-            onDelete: this.onReset
-        }, void 0, false, {
-            fileName: "src/components/restform/advancedList.js",
-            lineNumber: 47,
-            columnNumber: 14
-        }, this);
-        if (this.state.current && this.state.mode == "detail") return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _detailDefault.default), {
-            entityName: this.props.entity,
-            data: this.state.current,
-            onCancel: this.onReset
-        }, void 0, false, {
-            fileName: "src/components/restform/advancedList.js",
-            lineNumber: 55,
-            columnNumber: 14
-        }, this);
-        return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-            children: [
-                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _listDefault.default), {
-                    entity: this.props.entity,
-                    rowRender: this.rowRender,
-                    constrains: this.props.constrains
-                }, void 0, false, {
-                    fileName: "src/components/restform/advancedList.js",
-                    lineNumber: 61,
-                    columnNumber: 9
-                }, this),
-                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                    className: "actions",
-                    children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
-                        type: "new",
-                        onClick: this.onNew,
-                        value: "Nieuw"
-                    }, void 0, false, {
-                        fileName: "src/components/restform/advancedList.js",
-                        lineNumber: 62,
-                        columnNumber: 34
-                    }, this)
-                }, void 0, false, {
-                    fileName: "src/components/restform/advancedList.js",
-                    lineNumber: 62,
-                    columnNumber: 9
-                }, this)
-            ]
-        }, void 0, true, {
-            fileName: "src/components/restform/advancedList.js",
-            lineNumber: 60,
-            columnNumber: 7
-        }, this);
-    }
-}
-exports.default = AdvancedList;
+                    fileName: "src/components/restform/fullList.js",
+                    lineNumber: 41,
+                    columnNumber: 30
+                }, undefined)
+            }, void 0, false, {
+                fileName: "src/components/restform/fullList.js",
+                lineNumber: 41,
+                columnNumber: 5
+            }, undefined)
+        ]
+    }, void 0, true, {
+        fileName: "src/components/restform/fullList.js",
+        lineNumber: 39,
+        columnNumber: 3
+    }, undefined);
+};
+_s(FullList, "PFtLAVI79z7M/t1681eMlPpsAmU=");
+_c = FullList;
+exports.default = FullList;
+var _c;
+$RefreshReg$(_c, "FullList");
 
-  $parcel$ReactRefreshHelpers$66a3.postlude(module);
+  $parcel$ReactRefreshHelpers$5f8e.postlude(module);
 } finally {
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","prop-types":"7wKI2","./repository":"j57zk","./list":"b0TAh","./form":"cj7Fs","./detail":"aJkgF","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"j57zk":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Repository", ()=>Repository);
-const privateMethods = {
-    Fetch (path, method, data1) {
-        return new Promise((resolve, reject)=>{
-            var url = path;
-            if (data1 !== undefined && method === "GET") url = url + "?" + data1;
-            return fetch(url, {
-                headers: new Headers({
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
-                    "Cache": "no-cache"
-                }),
-                method: method,
-                body: JSON.stringify(data1)
-            }).then(privateMethods.parseJSON).then((response)=>{
-                if (response.ok) return resolve(response.json);
-                if (response.status === 400) alert(response.json);
-                if (response.status === 401) alert("Toegang geweigerd: 401 (Unauthorized)");
-                return reject(response.json);
-            }).catch((err)=>{
-                alert("Kan de server niet bereiken, oorzaak: " + err);
-            });
-        });
-    },
-    parseJSON (response) {
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.indexOf("application/json") !== -1) return new Promise((resolve)=>response.json().then((json)=>resolve({
-                    status: response.status,
-                    ok: response.ok,
-                    json
-                })));
-        throw new Error("Geen informatie ontvangen van de server, " + response.status);
-    }
-};
-class Repository {
-    static instance;
-    constructor(entity){
-        if (this.instance) return this.instance;
-        this.entity = entity;
-        this.instance = this;
-    }
-    GetById = (Id)=>{
-        let data1 = {
-            "Id": Id,
-            "Entity": this.entity
-        };
-        return privateMethods.Fetch.call(this, "/User/GetById/", "POST", data1);
-    };
-    List = (properties, constrains)=>{
-        let data1 = {
-            "Properties": properties,
-            "Entity": this.entity,
-            "Constrains": constrains
-        };
-        return privateMethods.Fetch.call(this, "/User/List/", "POST", data1);
-    };
-    Submit = (data1)=>{
-        return privateMethods.Fetch.call(this, "/User/Submit/", "POST", data1);
-    };
-    Delete = (Id)=>{
-        return privateMethods.Fetch.call(this, "/User/Delete/", "POST", data);
-    };
-    ForeignKey = (endpoint, constrain, filter)=>{
-        if (constrain) return privateMethods.Fetch.call(this, "/" + this.controller + "/" + endpoint + "/" + constrain, "POST");
-        if (filter) {
-            let data1 = {
-                "fields": [],
-                "filter": filter
-            };
-            return privateMethods.Fetch.call(this, "/" + this.controller + "/" + endpoint, "POST", data1);
-        } else return privateMethods.Fetch.call(this, "/" + this.controller + "/" + endpoint, "POST");
-    };
-}
-exports.default = Repository;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"b0TAh":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./list":"b0TAh","./form":"cj7Fs","./detail":"aJkgF","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"b0TAh":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$18c2 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -35243,84 +35111,177 @@ parcelHelpers.defineInteropFlag(exports);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
-var _propTypes = require("prop-types");
-var _propTypesDefault = parcelHelpers.interopDefault(_propTypes);
-var _repository = require("./repository");
-var _repositoryDefault = parcelHelpers.interopDefault(_repository);
+var _useApi = require("./useApi");
+var _useApiDefault = parcelHelpers.interopDefault(_useApi);
 var _dynamicList = require("./dynamicList");
 var _dynamicListDefault = parcelHelpers.interopDefault(_dynamicList);
-class List extends (0, _react.Component) {
-    _isMounted = false;
-    PropTypes = {
-        entity: (0, _propTypesDefault.default).string.isRequired,
-        properties: (0, _propTypesDefault.default).array,
-        rowRender: (0, _propTypesDefault.default).func,
-        constrains: (0, _propTypesDefault.default).object,
-        onSelect: (0, _propTypesDefault.default).func
-    };
-    state = {
-        isLoading: true,
-        items: []
-    };
-    componentDidMount() {
-        this._isMounted = true;
-        this.repository = new (0, _repositoryDefault.default)(this.props.entity);
-        this.getList();
-    }
-    componentWillUnmount() {
-        this._isMounted = false;
-    }
-    getList = ()=>{
-        this.setState({
-            isLoading: true
-        });
-        this.repository.List(this.props.properties, this.props.constrains).then((response)=>{
-            if (this._isMounted) this.setState({
-                items: response
-            }, ()=>{
-                this.setState({
-                    isLoading: false
-                });
-            });
-        });
-    };
-    onListSelect = (item)=>{
-        if (this.props.onSelect) this.props.onSelect(item);
-    };
-    render() {
-        if (this.state.isLoading) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-            className: "loader"
-        }, void 0, false, {
+var _s = $RefreshSig$();
+const List = ({ entityName , properties , constrains , onSelect  })=>{
+    _s();
+    const { response , error , loading , fetchList  } = (0, _useApiDefault.default)();
+    (0, _reactDefault.default).useEffect(()=>{
+        fetchList(entityName, properties, constrains);
+    }, []);
+    if (loading) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+        children: "Loading..."
+    }, void 0, false, {
+        fileName: "src/components/restform/list.js",
+        lineNumber: 12,
+        columnNumber: 23
+    }, undefined);
+    if (error) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+        children: error.message
+    }, void 0, false, {
+        fileName: "src/components/restform/list.js",
+        lineNumber: 13,
+        columnNumber: 21
+    }, undefined);
+    const rowRender = (item, isSelected)=>{
+        return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("tr", {
+            onClick: ()=>onSelect(item.Id, "detail"),
+            className: isSelected ? "selected" : null,
+            children: [
+                Object.keys(item).filter((key)=>{
+                    return key !== "Id" && !key.includes("_Id");
+                }).map((key)=>{
+                    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("td", {
+                        children: item[key]
+                    }, key, false, {
+                        fileName: "src/components/restform/list.js",
+                        lineNumber: 21,
+                        columnNumber: 34
+                    }, undefined);
+                }),
+                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("td", {
+                    className: "small",
+                    children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                        onClick: ()=>onSelect(item.Id, "form"),
+                        type: "edit",
+                        title: "Aanpassen"
+                    }, void 0, false, {
+                        fileName: "src/components/restform/list.js",
+                        lineNumber: 23,
+                        columnNumber: 31
+                    }, undefined)
+                }, void 0, false, {
+                    fileName: "src/components/restform/list.js",
+                    lineNumber: 23,
+                    columnNumber: 9
+                }, undefined)
+            ]
+        }, item.Id, true, {
             fileName: "src/components/restform/list.js",
-            lineNumber: 48,
-            columnNumber: 14
-        }, this);
-        return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-            className: "list",
-            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _dynamicListDefault.default), {
-                items: this.state.items,
-                onSelect: this.onListSelect,
-                rowRender: this.props.rowRender
-            }, void 0, false, {
-                fileName: "src/components/restform/list.js",
-                lineNumber: 52,
-                columnNumber: 9
-            }, this)
-        }, void 0, false, {
-            fileName: "src/components/restform/list.js",
-            lineNumber: 51,
+            lineNumber: 17,
             columnNumber: 7
-        }, this);
-    }
-}
+        }, undefined);
+    };
+    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+        className: "list",
+        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _dynamicListDefault.default), {
+            items: response,
+            rowRender: rowRender
+        }, void 0, false, {
+            fileName: "src/components/restform/list.js",
+            lineNumber: 29,
+            columnNumber: 7
+        }, undefined)
+    }, void 0, false, {
+        fileName: "src/components/restform/list.js",
+        lineNumber: 28,
+        columnNumber: 5
+    }, undefined);
+};
+_s(List, "caVi5gBSvx3Mvs0b2eiLkOVF9HM=", false, function() {
+    return [
+        (0, _useApiDefault.default)
+    ];
+});
+_c = List;
 exports.default = List;
+var _c;
+$RefreshReg$(_c, "List");
 
   $parcel$ReactRefreshHelpers$18c2.postlude(module);
 } finally {
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","prop-types":"7wKI2","./repository":"j57zk","./dynamicList":"3bOjW","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"3bOjW":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./useApi":"jltGU","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru","./dynamicList":"3bOjW"}],"jltGU":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$3112 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$3112.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _react = require("react");
+var _s = $RefreshSig$();
+const useApi = ()=>{
+    _s();
+    const [response, setResponse] = (0, _react.useState)(null);
+    const [error, setError] = (0, _react.useState)(null);
+    const [loading, setLoading] = (0, _react.useState)(false);
+    const parseJSON = (response)=>{
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) return new Promise((resolve)=>response.json().then((json)=>resolve({
+                    status: response.status,
+                    ok: response.ok,
+                    json
+                })));
+        throw new Error("Geen informatie ontvangen van de server, " + response.status);
+    };
+    const apiFetch = (url, payLoad)=>{
+        setLoading(true);
+        fetch(url, {
+            headers: new Headers({
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Cache": "no-cache"
+            }),
+            method: "POST",
+            body: JSON.stringify(payLoad)
+        }).then(parseJSON).then((response)=>{
+            if (response.ok) setResponse(response.json);
+            if (!response.ok && response.status === 409) setError(response.json);
+            if (!response.ok && response.status != 409) throw new Error(JSON.stringify(response));
+        }).catch((error)=>{
+            alert(error);
+        }).finally(setLoading(false));
+    };
+    const fetchById = (entity, id)=>apiFetch("/User/GetById/", {
+            "Entity": entity,
+            "Id": id
+        });
+    const fetchList = (entity, properties, constrains)=>{
+        return apiFetch("/User/List/", {
+            "Entity": entity,
+            "Properties": properties,
+            "Constrains": constrains
+        });
+    };
+    const submit = (entity, data)=>apiFetch("/User/GetById/", {
+            "Entity": entity,
+            "Data": data
+        });
+    return {
+        response,
+        error,
+        loading,
+        fetchById,
+        fetchList,
+        submit
+    };
+};
+_s(useApi, "GVvNryvyM4J8hydsI4ptkbTkag8=");
+exports.default = useApi;
+
+  $parcel$ReactRefreshHelpers$3112.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"3bOjW":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$0bfd = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -35386,38 +35347,15 @@ class DynamicList extends (0, _react.Component) {
     };
     renderList = (items)=>{
         return items.filter(this.filterCallback(this.state.searchFor)).sort(this.sortCallback(this.state.sortOn, this.state.sortAsc)).map((item)=>{
-            return this.rowRender(item);
+            return this.props.rowRender(item);
         });
-    };
-    rowRender = (item)=>{
-        let isSelected = this.state.selectedItem && this.state.selectedItem.id === item.id;
-        if (this.props.rowRender) return this.props.rowRender(item, isSelected);
-        return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("tr", {
-            onClick: ()=>this.onSelect(item),
-            className: isSelected ? "selected" : null,
-            children: Object.keys(item).filter((key)=>{
-                return key !== "Id" && !key.includes("_Id");
-            }).map((key)=>{
-                return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("td", {
-                    children: item[key]
-                }, key, false, {
-                    fileName: "src/components/restform/dynamicList/index.js",
-                    lineNumber: 75,
-                    columnNumber: 20
-                }, this);
-            })
-        }, item.Id, false, {
-            fileName: "src/components/restform/dynamicList/index.js",
-            lineNumber: 71,
-            columnNumber: 7
-        }, this);
     };
     render() {
         if (!this.props.items || this.props.items.length === 0) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
             children: "Geen informatie"
         }, void 0, false, {
             fileName: "src/components/restform/dynamicList/index.js",
-            lineNumber: 82,
+            lineNumber: 66,
             columnNumber: 14
         }, this);
         return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -35429,7 +35367,7 @@ class DynamicList extends (0, _react.Component) {
                     placeholder: "zoeken binnen de lijst..."
                 }, void 0, false, {
                     fileName: "src/components/restform/dynamicList/index.js",
-                    lineNumber: 86,
+                    lineNumber: 70,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("table", {
@@ -35440,25 +35378,25 @@ class DynamicList extends (0, _react.Component) {
                                 onColumnClick: this.onSortClick
                             }, void 0, false, {
                                 fileName: "src/components/restform/dynamicList/index.js",
-                                lineNumber: 88,
+                                lineNumber: 72,
                                 columnNumber: 11
                             }, this),
                             this.renderList(this.props.items)
                         ]
                     }, void 0, true, {
                         fileName: "src/components/restform/dynamicList/index.js",
-                        lineNumber: 87,
+                        lineNumber: 71,
                         columnNumber: 16
                     }, this)
                 }, void 0, false, {
                     fileName: "src/components/restform/dynamicList/index.js",
-                    lineNumber: 87,
+                    lineNumber: 71,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "src/components/restform/dynamicList/index.js",
-            lineNumber: 85,
+            lineNumber: 69,
             columnNumber: 7
         }, this);
     }
@@ -35551,98 +35489,81 @@ parcelHelpers.defineInteropFlag(exports);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
-var _propTypes = require("prop-types");
-var _propTypesDefault = parcelHelpers.interopDefault(_propTypes);
-var _repository = require("./repository");
-var _repositoryDefault = parcelHelpers.interopDefault(_repository);
+var _useApi = require("./useApi");
+var _useApiDefault = parcelHelpers.interopDefault(_useApi);
 var _dynamicform = require("./dynamicform");
 var _dynamicformDefault = parcelHelpers.interopDefault(_dynamicform);
-class Form extends (0, _reactDefault.default).Component {
-    _isMounted = false;
-    state = {
-        entityModel: undefined,
-        initialData: undefined
+var _s = $RefreshSig$();
+const Form = ({ entityName , id , onAction  })=>{
+    _s();
+    const { data , error , loading , fetchById , update , deleteMe  } = (0, _useApiDefault.default)();
+    const [entityModel, setEntityModel] = useState(undefined);
+    (0, _reactDefault.default).useEffect(()=>{
+        const getEntityModel = ()=>{
+            const model = JSON.parse(sessionStorage.getItem("model"));
+            const entity1 = model.entities.find((e)=>e.name == entityName);
+            setEntityModel(entity1);
+        };
+        getEntityModel();
+        fetchById(entityName, id);
+    }, []);
+    if (loading) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+        children: "Loading..."
+    }, void 0, false, {
+        fileName: "src/components/restform/form.js",
+        lineNumber: 20,
+        columnNumber: 23
+    }, undefined);
+    if (error) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+        children: error.message
+    }, void 0, false, {
+        fileName: "src/components/restform/form.js",
+        lineNumber: 21,
+        columnNumber: 21
+    }, undefined);
+    const onSubmit = (properties)=>{
+        update(entity, id, properties);
+        onAction();
     };
-    PropTypes = {
-        entityName: (0, _propTypesDefault.default).string.isRequired,
-        data: (0, _propTypesDefault.default).object,
-        constrains: (0, _propTypesDefault.default).object,
-        onCancel: (0, _propTypesDefault.default).func,
-        onSubmit: (0, _propTypesDefault.default).func.isRequired,
-        onDelete: (0, _propTypesDefault.default).func.isRequired
+    const onDelete = (id)=>{
+        deleteMe(entity, id);
+        onAction();
     };
-    componentDidMount() {
-        this._isMounted = true;
-        this.repository = new (0, _repositoryDefault.default)(this.props.entity);
-        this.setState({
-            entityModel: this.getEntityModel()
-        });
-        this.setState({
-            initialData: this.getInitialFromProps()
-        });
-    }
-    componentWillUnmount() {
-        this._isMounted = false;
-    }
-    onSubmit = (properties)=>{
-        const dataToSubmit = Object.assign({}, {
-            "entity": this.props.entity,
-            "id": this.props.id
-        }, {
-            "properties": properties
-        });
-        return this.repository.Submit(dataToSubmit).then(this.props.onSubmit);
-    };
-    onDelete = (id)=>{
-        return this.repository.Delete(id).then(this.props.onDelete);
-    };
-    getEntityModel = ()=>{
-        const model = JSON.parse(sessionStorage.getItem("model"));
-        const entity = model.entities.find((e)=>e.name == this.props.entity);
-        if (!entity) throw console.error("requested entity not found in model", this.props.entity);
-        return entity;
-    };
-    getInitialFromProps = ()=>{
-        console.log(this.props.data, this.props.data && this.props.data.Id);
-        if (this.props.data && this.props.data.Id) return this.props.data;
-        let initial = {};
-        if (this.props.constrains) initial = Object.keys(this.props.constrains).filter((constrain)=>constrain.Operator == 0).reduce((obj, key)=>{
-            obj[key] = this.props.constrains[key].value;
-            return obj;
-        }, {});
-        return initial;
-    };
-    render() {
-        if (!this.state.entityModel || !this.state.initialData) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-            children: "Loading"
+    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+        className: "form",
+        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _dynamicformDefault.default), {
+            entityModel: entityModel,
+            initialData: data,
+            onCancel: props.onAction(),
+            onSubmit: onSubmit,
+            onDelete: onDelete
         }, void 0, false, {
             fileName: "src/components/restform/form.js",
-            lineNumber: 71,
-            columnNumber: 20
-        }, this);
-        return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _dynamicformDefault.default), {
-            entityModel: this.state.entityModel,
-            initialData: this.state.initialData,
-            constrains: this.props.constrains,
-            onCancel: this.props.onCancel,
-            onSubmit: this.onSubmit,
-            onDelete: this.onDelete,
-            repository: this.repository
-        }, void 0, false, {
-            fileName: "src/components/restform/form.js",
-            lineNumber: 73,
-            columnNumber: 16
-        }, this);
-    }
-}
+            lineNumber: 35,
+            columnNumber: 7
+        }, undefined)
+    }, void 0, false, {
+        fileName: "src/components/restform/form.js",
+        lineNumber: 34,
+        columnNumber: 5
+    }, undefined);
+};
+_s(Form, "nymdkOW/M70QTXddXwMb+T2k+gw=", false, function() {
+    return [
+        (0, _useApiDefault.default)
+    ];
+});
+_c = Form;
 exports.default = Form;
+var _c;
+$RefreshReg$(_c, "Form");
 
   $parcel$ReactRefreshHelpers$6bf1.postlude(module);
 } finally {
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","prop-types":"7wKI2","./repository":"j57zk","./dynamicform":"8sb2b","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"8sb2b":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./useApi":"jltGU","./dynamicform":"8sb2b","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"8sb2b":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$c976 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -51175,8 +51096,6 @@ var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
 var _propTypes = require("prop-types");
 var _propTypesDefault = parcelHelpers.interopDefault(_propTypes);
-var _repository = require("../repository");
-var _repositoryDefault = parcelHelpers.interopDefault(_repository);
 class ForeignKey extends (0, _reactDefault.default).Component {
     PropTypes = {
         model: (0, _propTypesDefault.default).object.isRequired,
@@ -51195,7 +51114,7 @@ class ForeignKey extends (0, _reactDefault.default).Component {
     }*/ componentDidMount() {
         this._isMounted = true;
         const fk = this.props.model.foreignkey;
-        const repository = new (0, _repositoryDefault.default)(fk.related);
+        const repository = new Repository(fk.related);
         repository.List([
             "Id",
             fk.lookup
@@ -51223,7 +51142,7 @@ class ForeignKey extends (0, _reactDefault.default).Component {
                 children: Object.values(l)[1]
             }, l.Id, false, {
                 fileName: "src/components/restform/dynamicform/foreignkey.js",
-                lineNumber: 49,
+                lineNumber: 48,
                 columnNumber: 17
             }, this);
         });
@@ -51242,14 +51161,14 @@ class ForeignKey extends (0, _reactDefault.default).Component {
                     ]
                 }, "0", true, {
                     fileName: "src/components/restform/dynamicform/foreignkey.js",
-                    lineNumber: 60,
+                    lineNumber: 59,
                     columnNumber: 17
                 }, this),
                 input
             ]
         }, void 0, true, {
             fileName: "src/components/restform/dynamicform/foreignkey.js",
-            lineNumber: 59,
+            lineNumber: 58,
             columnNumber: 13
         }, this);
     }
@@ -51261,7 +51180,7 @@ exports.default = ForeignKey;
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","prop-types":"7wKI2","../repository":"j57zk","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"dq5HT":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","prop-types":"7wKI2","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"dq5HT":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$2b4e = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -51412,41 +51331,39 @@ parcelHelpers.defineInteropFlag(exports);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
-var _propTypes = require("prop-types");
-var _propTypesDefault = parcelHelpers.interopDefault(_propTypes);
-var _repository = require("./repository");
-var _repositoryDefault = parcelHelpers.interopDefault(_repository);
+var _useApi = require("./useApi");
+var _useApiDefault = parcelHelpers.interopDefault(_useApi);
 var _detailCss = require("./detail.css");
-class Detail extends (0, _react.Component) {
-    _isMounted = false;
-    PropTypes = {
-        id: (0, _propTypesDefault.default).string.isRequired,
-        entity: (0, _propTypesDefault.default).string.isRequired
+var _s = $RefreshSig$();
+const Detail = ({ entityName , id , onAction  })=>{
+    _s();
+    const { response , error , loading , fetchById  } = (0, _useApiDefault.default)();
+    (0, _reactDefault.default).useEffect(()=>{
+        fetchById(entityName, id);
+    }, []);
+    if (loading) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+        children: "Loading..."
+    }, void 0, false, {
+        fileName: "src/components/restform/detail.js",
+        lineNumber: 12,
+        columnNumber: 23
+    }, undefined);
+    if (error) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+        children: JSON.stringify(error)
+    }, void 0, false, {
+        fileName: "src/components/restform/detail.js",
+        lineNumber: 13,
+        columnNumber: 21
+    }, undefined);
+    const onSubmit = (properties)=>{
+        update(entity, id, properties);
+        onAction();
     };
-    state = {
-        isLoading: true,
-        current: {}
+    const onDelete = (id)=>{
+        deleteMe(entity, id);
+        onAction();
     };
-    componentDidMount() {
-        this._isMounted = true;
-        this.setState({
-            isLoading: true
-        });
-        this.repository = new (0, _repositoryDefault.default)(this.props.entity);
-        this.repository.GetById(this.props.id).then((response)=>{
-            if (this._isMounted) this.setState({
-                current: response
-            }, ()=>{
-                this.setState({
-                    isLoading: false
-                });
-            });
-        });
-    }
-    componentWillUnmount() {
-        this._isMounted = false;
-    }
-    Recursive = (obj)=>{
+    const Recursive = (obj)=>{
         let result = [];
         for(let key in obj)typeof obj[key] === "object" ? result.push(/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
             className: "container",
@@ -51460,29 +51377,29 @@ class Detail extends (0, _react.Component) {
                     ]
                 }, void 0, true, {
                     fileName: "src/components/restform/detail.js",
-                    lineNumber: 38,
+                    lineNumber: 29,
                     columnNumber: 60
-                }, this),
+                }, undefined),
                 " ",
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                     className: "cell",
                     children: [
                         " ",
-                        this.Recursive(obj[key]),
+                        Recursive(obj[key]),
                         " "
                     ]
                 }, void 0, true, {
                     fileName: "src/components/restform/detail.js",
-                    lineNumber: 38,
+                    lineNumber: 29,
                     columnNumber: 98
-                }, this),
+                }, undefined),
                 " "
             ]
         }, key, true, {
             fileName: "src/components/restform/detail.js",
-            lineNumber: 38,
+            lineNumber: 29,
             columnNumber: 23
-        }, this)) : obj[key] && key !== "id" && !key.includes("_id") ? result.push(/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+        }, undefined)) : obj[key] && key !== "Id" && !key.includes("_Id") ? result.push(/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
             className: "row",
             children: [
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -51493,9 +51410,9 @@ class Detail extends (0, _react.Component) {
                     ]
                 }, void 0, true, {
                     fileName: "src/components/restform/detail.js",
-                    lineNumber: 40,
+                    lineNumber: 31,
                     columnNumber: 56
-                }, this),
+                }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                     children: [
                         " ",
@@ -51504,39 +51421,45 @@ class Detail extends (0, _react.Component) {
                     ]
                 }, void 0, true, {
                     fileName: "src/components/restform/detail.js",
-                    lineNumber: 40,
+                    lineNumber: 31,
                     columnNumber: 76
-                }, this)
+                }, undefined)
             ]
         }, key, true, {
             fileName: "src/components/restform/detail.js",
-            lineNumber: 40,
+            lineNumber: 31,
             columnNumber: 25
-        }, this)) : result.push();
+        }, undefined)) : result.push();
         return result;
     };
-    render() {
-        return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-            className: "grid",
-            children: [
-                " ",
-                this.Recursive(this.state.current),
-                " "
-            ]
-        }, void 0, true, {
-            fileName: "src/components/restform/detail.js",
-            lineNumber: 46,
-            columnNumber: 21
-        }, this);
-    }
-}
+    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+        className: "detail",
+        children: [
+            " ",
+            Recursive(response),
+            " "
+        ]
+    }, void 0, true, {
+        fileName: "src/components/restform/detail.js",
+        lineNumber: 37,
+        columnNumber: 11
+    }, undefined);
+};
+_s(Detail, "10cHK4PsYx98MZHelTpMBEW0yRw=", false, function() {
+    return [
+        (0, _useApiDefault.default)
+    ];
+});
+_c = Detail;
 exports.default = Detail;
+var _c;
+$RefreshReg$(_c, "Detail");
 
   $parcel$ReactRefreshHelpers$8126.postlude(module);
 } finally {
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","prop-types":"7wKI2","./repository":"j57zk","./detail.css":"ggmGq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"ggmGq":[function() {},{}]},["1xC6H","jC2qd","8lqZg"], "8lqZg", "parcelRequire10c2")
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./detail.css":"ggmGq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru","./useApi":"jltGU"}],"ggmGq":[function() {},{}]},["1xC6H","jC2qd","8lqZg"], "8lqZg", "parcelRequire10c2")
 
 //# sourceMappingURL=index.js.map

@@ -1,49 +1,40 @@
-import React, { Component } from "react";
-import PropTypes from 'prop-types';
-import Repository from './repository';
+import React from 'react';
+import useApi from './useApi';
 import './detail.css';
 
-class Detail extends Component { 
+const Detail = ({entityName, id, onAction}) => {
+  const {response, error, loading, fetchById} = useApi();     
 
-  _isMounted = false;
+  React.useEffect(() => {   
+    fetchById(entityName, id);
+  }, []); 
 
-  PropTypes = {   
-    id: PropTypes.string.isRequired,
-    entity: PropTypes.string.isRequired
-  }
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{JSON.stringify(error)}</p>;  
 
-  state = { isLoading: true, current: {} };   
+  const onSubmit = (properties) => {   
+    update(entity, id, properties);
+    onAction();
+  }  
 
-  componentDidMount() {   
-    this._isMounted = true;
-    this.setState({ isLoading: true });  
-    this.repository = new Repository(this.props.entity);        
-    
-    this.repository.GetById(this.props.id).then(response => {
-      if (this._isMounted) {
-      this.setState({ current: response }, () => {
-        this.setState({ isLoading: false });
-      })};
-    })
-  }    
-  
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
+  const onDelete = (id) => {    
+    deleteMe(entity, id);
+    onAction();
+  }  
 
-  Recursive = (obj) => {
+  const Recursive = (obj) => {
     let result = [];
     for (let key in obj) {
       (typeof obj[key] === 'object') ?          
-          result.push(<div className="container" key={key}><div className="cell"> { key } </div> <div className="cell"> { this.Recursive(obj[key]) } </div> </div>) :  
-          (obj[key] && key !== "id" && !key.includes("_id")) ?
+          result.push(<div className="container" key={key}><div className="cell"> { key } </div> <div className="cell"> { Recursive(obj[key]) } </div> </div>) :  
+          (obj[key] && key !== "Id" && !key.includes("_Id")) ?
             result.push(<div className="row" key={key}><div> { key } </div><div> { obj[key].toString() } </div></div>) :
             result.push()
     }     
     return result;
   }
 
-  render() { return <div className="grid"> {this.Recursive(this.state.current)} </div> }
+  return (<div className="detail"> {Recursive(response)} </div>)
 }
 
 export default Detail;
