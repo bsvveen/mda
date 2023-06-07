@@ -1,19 +1,19 @@
 {"views": [
     {
         "titel" : "Customers",
-        "component" : "advancedList",
+        "component" : "fullList",
         "key" : "v1",       
         "props" : {
-            "entity" : "Customers",
+            "entityName" : "Customers",
             "properties" : ["Name","Number", "BirthDate", "Comment"],
             "constrains": [{"Property" : "Name", "Operator": 0, "Value": "Mirjam"}]
         }
     },{
         "titel" : "SecondView",
-        "component" : "advancedList",
+        "component" : "fullList",
         "key" : "v2",       
         "props" : {
-            "entity" : "Customers",
+            "entityName" : "Customers",
             "properties" : ["Name","Number", "BirthDate", "Comment"],
             "constrains": [{"Property" : "Name", "Operator": 0, "Value": "Boudewijn"}]
         }

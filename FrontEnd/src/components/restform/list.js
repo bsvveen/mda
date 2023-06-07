@@ -1,58 +1,34 @@
-import React, { Component } from "react";
-import PropTypes from 'prop-types';
+import React from 'react';
+import useApi from './useApi';
+import DynamicList from './dynamicList';
 
-import Repository from './repository';
-import DynamicList from "./dynamicList"
+const List = ({entityName, properties, constrains, onSelect}) => {
+  const {response, error, loading, fetchList} = useApi();  
 
-class List extends Component {
-  _isMounted = false;
+  React.useEffect(() => {
+    fetchList(entityName, properties, constrains);
+  }, []); 
 
-  PropTypes = {
-    entity: PropTypes.string.isRequired,
-    properties: PropTypes.array,
-    rowRender: PropTypes.func,
-    constrains: PropTypes.object,
-    onSelect: PropTypes.func
-  }
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error.message}</p>;
 
-  state = { isLoading: true, items: [] };
-
-  componentDidMount() {  
-    this._isMounted = true;  
-    this.repository = new Repository(this.props.entity);       
-    this.getList();     
-  }  
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
-  getList = () => {  
-    this.setState({ isLoading: true });  
-     
-    this.repository.List(this.props.properties, this.props.constrains).then(response => {
-      if (this._isMounted) {
-      this.setState({ items: response }, () => {
-        this.setState({ isLoading: false });
-      })};
-    })
-  }    
-
-  onListSelect = (item) => {
-    if (this.props.onSelect)
-        this.props.onSelect(item);       
-  }
-
-  render() {
-    if (this.state.isLoading)
-      return <div className="loader"></div>;    
-
+  const rowRender = (item, isSelected) => {   
     return (
-      <div className="list">
-        <DynamicList items={this.state.items} onSelect={this.onListSelect} rowRender={this.props.rowRender}  />
-      </div>
-    );
+      <tr onClick={() => onSelect(item.Id, "detail")} key={item.Id} className={(isSelected) ? "selected" : null}> 
+        {
+          Object.keys(item)
+          .filter((key) => { return (key !== "Id" && !key.includes("_Id"))})
+          .map((key) => { return <td key={key}>{item[key]}</td>})
+        } 
+        <td className="small"><button onClick={() => onSelect(item.Id, "form")} type="edit" title="Aanpassen" /></td>               
+      </tr>);
   }
+
+  return (    
+    <div className="list">
+      <DynamicList items={response} rowRender={rowRender}  />
+    </div>
+  );     
 }
 
 export default List;

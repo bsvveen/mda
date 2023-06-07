@@ -57,25 +57,9 @@ export default class DynamicList extends Component {
     return (items
       .filter(this.filterCallback(this.state.searchFor))
       .sort(this.sortCallback(this.state.sortOn, this.state.sortAsc))
-      .map((item) => { return this.rowRender(item) })
+      .map((item) => { return this.props.rowRender(item) })
       )
-  }
-
-  rowRender = (item) => {
-    let isSelected = this.state.selectedItem && this.state.selectedItem.id === item.id;
-
-    if (this.props.rowRender)
-      return this.props.rowRender(item, isSelected);
-
-    return (
-      <tr key={item.Id} onClick={() => this.onSelect(item)} className={(isSelected) ? "selected" : null}>
-        {Object.keys(item)
-          .filter((key) => { return (key !== "Id" && !key.includes("_Id")) })
-          .map((key) => {
-            return <td key={key}>{item[key]}</td>
-          })}
-      </tr>)
-  }
+  }  
 
   render() {
     if (!this.props.items || this.props.items.length === 0)

@@ -17,12 +17,6 @@ function getUniqueId() {
     return 'id-' + Math.random().toString(36).substr(2, 16);
 };
 
-function getModelInstance(model) {
-    let ModelInstance = {};
-    model.map((m) => { return ModelInstance[m.key] = "" });
-    return ModelInstance;
-};
-
 function getQueryParameter(key) {
     var results = new RegExp('[\?&]' + key + '=([^&#]*)').exec(window.location.href);
     if (results==null)
@@ -33,4 +27,4 @@ function getQueryParameter(key) {
     }
 }  
 
-export default { toDate, toDateTime, getUniqueId, getQueryParameter, getModelInstance }
+export default { toDate, toDateTime, getUniqueId, getQueryParameter }

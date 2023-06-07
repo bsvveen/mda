@@ -2,10 +2,10 @@ import React from 'react';
 import Dashboard from './components/dashboard';
 
 import importedViews from './views.json';
-import AdvancedList from './components/restform/advancedList';
+import FullList from './components/restform/fullList';
 
 const componentFactory = {
-	advancedList: AdvancedList	
+	fullList: FullList	
 };
 
 const gridProperties = { 

@@ -12,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(o => { o.CustomSchemaIds(x => x.FullName); });
 builder.Services.Configure<JsonOptions>(o => { o.SerializerOptions.Converters.Add(new JsonStringEnumConverter());});
 builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(o => { o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());});
+builder.Services.Configure<Microsoft.AspNetCore.Mvc.ApiBehaviorOptions>(o => { o.SuppressModelStateInvalidFilter = true;});
 
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddSingleton(provider => new ApplicationInstance());
