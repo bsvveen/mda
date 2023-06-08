@@ -15,9 +15,13 @@ const Form = ({entityName, id, onAction}) => {
     const model = JSON.parse(sessionStorage.getItem("model"));
     const entity = model.entities.find(e => e.name == name);   
 
-    entity.properties.filter(prop => prop.type == "foreignkey").map((prop) => {
-      const func = fetchList(prop.related, [prop.lookup], prop.constrains);
-      return { ...prop, "func": func }      
+    entity.properties = entity.properties.map((prop) => {
+      if(prop.type == "foreignkey") {       
+        const func = fetchList.bind(null, prop.foreignkey.related, [prop.foreignkey.lookup], prop.foreignkey.constrains);
+        return { ...prop, "func": func }   
+      } else {
+        return { ...prop }
+      }   
     })
 
     setEntityModel(entity);
@@ -36,12 +40,17 @@ const Form = ({entityName, id, onAction}) => {
     onAction();
   }    
 
+  const onReset = () => {    
+    if (onAction)
+      onAction();
+  }  
+
   return (    
     <div className="form">
       <DynamicForm 
         entityModel = { entityModel }  
         initialData = { data }          
-        onCancel    = { onAction }
+        onCancel    = { onReset }
         onSubmit    = { onSubmit }
         onDelete    = { onDelete }   
       />

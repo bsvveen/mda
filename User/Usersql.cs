@@ -17,7 +17,7 @@ namespace MDA.User
             var query_props = "Id, " + string.Join(',', request.Properties.Select(x => $"{x}"));
 
             var query_where = "";
-            if (request.Constrains != null)
+            if (request.Constrains != null && request.Constrains.Count != 0)
             {
                 query_where = " WHERE ";
                 for (int index = 0; index < request.Constrains.Count; index++)

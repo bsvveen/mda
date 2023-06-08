@@ -102,9 +102,7 @@ export default class DynamicForm extends React.Component {
                 input = <CheckBox model={prop} value={value} onChange={this.onChange} />
 
             if (type === "foreignkey")
-                input = <Foreignkey model={prop} value={value} onChange={this.onChange} 
-                repository = {this.props.repository} 
-                constrains = {this.props.constrains} />
+                input = <Foreignkey model={prop} value={value} onChange={this.onChange} />
 
             if (type === "FKLookup")
                 input = <FKLookup model={prop} value={value} onChange={this.onChange} 

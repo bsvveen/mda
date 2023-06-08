@@ -14,7 +14,7 @@ const List = ({entityName, properties, constrains, onSelect}) => {
 
   const rowRender = (item, isSelected) => {   
     return (
-      <tr className={(isSelected) ? "selected" : null}> 
+      <tr className={(isSelected) ? "selected" : null} key={item.Id}> 
         {
           Object.keys(item)
           .filter((key) => { return (key !== "Id" && !key.includes("_Id"))})

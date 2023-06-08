@@ -35188,7 +35188,7 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
                     columnNumber: 9
                 }, undefined)
             ]
-        }, void 0, true, {
+        }, item.Id, true, {
             fileName: "src/components/restform/list.js",
             lineNumber: 17,
             columnNumber: 7
@@ -35524,13 +35524,17 @@ const Form = ({ entityName , id , onAction  })=>{
     const getEntityModel = (name)=>{
         const model = JSON.parse(sessionStorage.getItem("model"));
         const entity1 = model.entities.find((e)=>e.name == name);
-        entity1.properties.filter((prop)=>prop.type == "foreignkey").map((prop)=>{
-            const func = fetchList(prop.related, [
-                prop.lookup
-            ], prop.constrains);
-            return {
-                ...prop,
-                "func": func
+        entity1.properties = entity1.properties.map((prop)=>{
+            if (prop.type == "foreignkey") {
+                const func = fetchList.bind(null, prop.foreignkey.related, [
+                    prop.foreignkey.lookup
+                ], prop.foreignkey.constrains);
+                return {
+                    ...prop,
+                    "func": func
+                };
+            } else return {
+                ...prop
             };
         });
         setEntityModel(entity1);
@@ -35539,14 +35543,14 @@ const Form = ({ entityName , id , onAction  })=>{
         children: "Loading..."
     }, void 0, false, {
         fileName: "src/components/restform/form.js",
-        lineNumber: 26,
+        lineNumber: 30,
         columnNumber: 39
     }, undefined);
     if (error) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: error.message
     }, void 0, false, {
         fileName: "src/components/restform/form.js",
-        lineNumber: 27,
+        lineNumber: 31,
         columnNumber: 21
     }, undefined);
     const onSubmit = (properties)=>{
@@ -35557,22 +35561,25 @@ const Form = ({ entityName , id , onAction  })=>{
         deleteMe(entity, id);
         onAction();
     };
+    const onReset = ()=>{
+        if (onAction) onAction();
+    };
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         className: "form",
         children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _dynamicformDefault.default), {
             entityModel: entityModel,
             initialData: data,
-            onCancel: onAction,
+            onCancel: onReset,
             onSubmit: onSubmit,
             onDelete: onDelete
         }, void 0, false, {
             fileName: "src/components/restform/form.js",
-            lineNumber: 41,
+            lineNumber: 50,
             columnNumber: 7
         }, undefined)
     }, void 0, false, {
         fileName: "src/components/restform/form.js",
-        lineNumber: 40,
+        lineNumber: 49,
         columnNumber: 5
     }, undefined);
 };
@@ -35739,9 +35746,7 @@ class DynamicForm extends (0, _reactDefault.default).Component {
             if (type === "foreignkey") input = /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _foreignkeyDefault.default), {
                 model: prop,
                 value: value,
-                onChange: this.onChange,
-                repository: this.props.repository,
-                constrains: this.props.constrains
+                onChange: this.onChange
             }, void 0, false, {
                 fileName: "src/components/restform/dynamicform/index.js",
                 lineNumber: 105,
@@ -35755,7 +35760,7 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                 constrains: this.props.constrains
             }, void 0, false, {
                 fileName: "src/components/restform/dynamicform/index.js",
-                lineNumber: 110,
+                lineNumber: 108,
                 columnNumber: 25
             }, this);
             return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -35769,7 +35774,7 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                         ]
                     }, "l" + prop.Key, true, {
                         fileName: "src/components/restform/dynamicform/index.js",
-                        lineNumber: 116,
+                        lineNumber: 114,
                         columnNumber: 21
                     }, this),
                     input,
@@ -35778,13 +35783,13 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                         children: errors[prop.key] ? errors[prop.key] : ""
                     }, void 0, false, {
                         fileName: "src/components/restform/dynamicform/index.js",
-                        lineNumber: 121,
+                        lineNumber: 119,
                         columnNumber: 21
                     }, this)
                 ]
             }, "g" + prop.key, true, {
                 fileName: "src/components/restform/dynamicform/index.js",
-                lineNumber: 115,
+                lineNumber: 113,
                 columnNumber: 17
             }, this);
         });
@@ -35807,7 +35812,7 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                             onClick: this.onDelete
                         }, void 0, false, {
                             fileName: "src/components/restform/dynamicform/index.js",
-                            lineNumber: 134,
+                            lineNumber: 132,
                             columnNumber: 53
                         }, this),
                         this.props.onCancel && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -35816,7 +35821,7 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                             onClick: this.onCancel
                         }, void 0, false, {
                             fileName: "src/components/restform/dynamicform/index.js",
-                            lineNumber: 135,
+                            lineNumber: 133,
                             columnNumber: 47
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -35825,19 +35830,19 @@ class DynamicForm extends (0, _reactDefault.default).Component {
                             children: "Opslaan"
                         }, void 0, false, {
                             fileName: "src/components/restform/dynamicform/index.js",
-                            lineNumber: 136,
+                            lineNumber: 134,
                             columnNumber: 21
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "src/components/restform/dynamicform/index.js",
-                    lineNumber: 133,
+                    lineNumber: 131,
                     columnNumber: 17
                 }, this)
             ]
         }, void 0, true, {
             fileName: "src/components/restform/dynamicform/index.js",
-            lineNumber: 131,
+            lineNumber: 129,
             columnNumber: 13
         }, this);
     }
@@ -51126,86 +51131,94 @@ parcelHelpers.defineInteropFlag(exports);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
-var _propTypes = require("prop-types");
-var _propTypesDefault = parcelHelpers.interopDefault(_propTypes);
-class ForeignKey extends (0, _reactDefault.default).Component {
-    PropTypes = {
-        model: (0, _propTypesDefault.default).object.isRequired,
-        value: (0, _propTypesDefault.default).string.isRequired,
-        onChange: (0, _propTypesDefault.default).func.isRequired
-    };
-    state = {
-        isLoading: true,
-        items: []
-    };
-    /*constrainValue = () => {
-        if (!this.props.constrains || !this.props.contract.relation.constrain || !this.props.constrains[this.props.contract.relation.constrain])
-            return undefined;
-
-        return this.props.constrains[this.props.contract.relation.constrain].equals;
-    }*/ componentDidMount() {
-        this._isMounted = true;
-        const fk = this.props.model.foreignkey;
-    /*const repository = new Repository(fk.related);  
-        repository.List(["Id", fk.lookup], null).then(response => {
-            if (this._isMounted) {
-            this.setState({ items: response }, () => {
-              this.setState({ isLoading: false });
-            })};
-          })*/ }
-    componentWillUnmount() {
-        this._isMounted = false;
-    }
-    render() {
-        if (this.state.items.length === 0) return null;
-        const { model , value , onChange  } = this.props;
-        const input = this.state.items.map((l)=>{
-            return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("option", {
-                className: "input",
-                value: l.Id,
-                checked: l.Id === value,
-                children: Object.values(l)[1]
-            }, l.Id, false, {
-                fileName: "src/components/restform/dynamicform/foreignkey.js",
-                lineNumber: 48,
-                columnNumber: 17
-            }, this);
-        });
-        return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("select", {
-            value: value,
+var _useApi = require("../useApi");
+var _useApiDefault = parcelHelpers.interopDefault(_useApi);
+var _s = $RefreshSig$();
+const ForeignKey = ({ model , value , onChange  })=>{
+    _s();
+    const { response , error , loading , fetchList  } = (0, _useApiDefault.default)([]);
+    (0, _reactDefault.default).useEffect(()=>{
+        const FK = model.foreignkey;
+        if (FK == undefined) throw Error("entityModel.foreignkey is undefined");
+        fetchList(FK.related, [
+            FK.lookup
+        ], FK.constrains);
+    }, []);
+    if (loading) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+        children: "Loading..."
+    }, void 0, false, {
+        fileName: "src/components/restform/dynamicform/foreignkey.js",
+        lineNumber: 15,
+        columnNumber: 25
+    }, undefined);
+    if (error) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+        children: error.message
+    }, void 0, false, {
+        fileName: "src/components/restform/dynamicform/foreignkey.js",
+        lineNumber: 16,
+        columnNumber: 23
+    }, undefined);
+    if (response.length === 0) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+        children: "Empty..."
+    }, void 0, false, {
+        fileName: "src/components/restform/dynamicform/foreignkey.js",
+        lineNumber: 17,
+        columnNumber: 39
+    }, undefined);
+    const input = response.map((l)=>{
+        return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("option", {
             className: "input",
-            onChange: (e)=>{
-                onChange(e, model.key);
-            },
-            children: [
-                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("option", {
-                    value: "null",
-                    children: [
-                        "Selecteer een ",
-                        model.key
-                    ]
-                }, "0", true, {
-                    fileName: "src/components/restform/dynamicform/foreignkey.js",
-                    lineNumber: 59,
-                    columnNumber: 17
-                }, this),
-                input
-            ]
-        }, void 0, true, {
+            value: l.Id,
+            checked: l.Id === value,
+            children: Object.values(l)[1]
+        }, l.Id, false, {
             fileName: "src/components/restform/dynamicform/foreignkey.js",
-            lineNumber: 58,
+            lineNumber: 21,
             columnNumber: 13
-        }, this);
-    }
-}
+        }, undefined);
+    });
+    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("select", {
+        value: value,
+        className: "input",
+        onChange: (e)=>{
+            onChange(e, model.key);
+        },
+        children: [
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("option", {
+                value: "null",
+                children: [
+                    "Selecteer een ",
+                    model.key
+                ]
+            }, "0", true, {
+                fileName: "src/components/restform/dynamicform/foreignkey.js",
+                lineNumber: 32,
+                columnNumber: 13
+            }, undefined),
+            input
+        ]
+    }, void 0, true, {
+        fileName: "src/components/restform/dynamicform/foreignkey.js",
+        lineNumber: 31,
+        columnNumber: 9
+    }, undefined);
+};
+_s(ForeignKey, "caVi5gBSvx3Mvs0b2eiLkOVF9HM=", false, function() {
+    return [
+        (0, _useApiDefault.default)
+    ];
+});
+_c = ForeignKey;
 exports.default = ForeignKey;
+var _c;
+$RefreshReg$(_c, "ForeignKey");
 
   $parcel$ReactRefreshHelpers$f7dd.postlude(module);
 } finally {
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","prop-types":"7wKI2","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"dq5HT":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru","../useApi":"jltGU"}],"dq5HT":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$2b4e = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;

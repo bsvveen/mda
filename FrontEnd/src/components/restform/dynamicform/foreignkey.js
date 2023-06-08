@@ -1,64 +1,38 @@
-import React from "react";
-import PropTypes from 'prop-types';
+import React from 'react';
+import useApi from '../useApi';
 
-export default class ForeignKey extends React.Component {
+const ForeignKey = ({model, value, onChange}) => {
+    const {response, error, loading, fetchList} = useApi([]);  
 
-    PropTypes = {
-        model: PropTypes.object.isRequired,
-        value: PropTypes.string.isRequired,       
-        onChange: PropTypes.func.isRequired,
-    }
+    React.useEffect(() => {
+        const FK = model.foreignkey;
+        if (FK == undefined)
+            throw Error("entityModel.foreignkey is undefined");
 
-    state = {
-        isLoading: true,
-        items: []
-    }   
-      
-    /*constrainValue = () => {
-        if (!this.props.constrains || !this.props.contract.relation.constrain || !this.props.constrains[this.props.contract.relation.constrain])
-            return undefined;
+        fetchList(FK.related, [FK.lookup], FK.constrains);    
+    }, []); 
 
-        return this.props.constrains[this.props.contract.relation.constrain].equals;
-    }*/
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>{error.message}</p>;
+    if (response.length === 0) return <p>Empty...</p>
 
-    componentDidMount() {      
-        this._isMounted = true;
-        const fk = this.props.model.foreignkey;      
-        /*const repository = new Repository(fk.related);  
-        repository.List(["Id", fk.lookup], null).then(response => {
-            if (this._isMounted) {
-            this.setState({ items: response }, () => {
-              this.setState({ isLoading: false });
-            })};
-          })*/
-    }    
-
-    componentWillUnmount() {
-        this._isMounted = false;
-      }
-
-    render() {
-        if (this.state.items.length === 0)
-            return null;
-
-        const { model, value, onChange } = this.props;
-
-        const input = this.state.items.map((l) => {
-            return (
-                <option 
-                    className="input"
-                    key={l.Id}
-                    value={l.Id}
-                    checked={l.Id === value}
-                >{Object.values(l)[1]}</option>
-            );
-        });
-
+    const input = response.map((l) => {
         return (
-            <select value={value} className="input" onChange={(e) => { onChange(e, model.key) }}>
-                <option value='null' key='0'>Selecteer een {model.key}</option>
-                {input}
-            </select>
+            <option 
+                className="input"
+                key={l.Id}
+                value={l.Id}
+                checked={l.Id === value}
+            >{Object.values(l)[1]}</option>
         );
-    }
+    });
+
+    return (  
+        <select value={value} className="input" onChange={(e) => { onChange(e, model.key) }}>
+            <option value='null' key='0'>Selecteer een {model.key}</option>
+            {input}
+        </select>      
+    );     
 }
+
+export default ForeignKey

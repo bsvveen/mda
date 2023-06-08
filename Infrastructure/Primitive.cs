@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Text.Json.Serialization;
 
 namespace MDA.Infrastructure
@@ -61,16 +62,20 @@ namespace MDA.Infrastructure
 
         public class ForeignKey
         {           
+            public ForeignKey()
+            {
+                Constrains = new List<Constrain>();
+            }
 
             [JsonPropertyName("related")]
-            public string relatedentity { get; set; }
+            public string Relatedentity { get; set; }
 
             [JsonPropertyName("lookup")]
-            public string lookup { get; set; }
+            public string Lookup { get; set; }
 
             [JsonPropertyName("constrains")]
-            public string constrains { get; set; }
-        }         
+            public List<Constrain> Constrains { get; set; }
+        }        
 
         public ValidationResult CheckExistence(string Entity, List<string> Properties)
         {
