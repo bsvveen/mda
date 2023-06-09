@@ -2,6 +2,7 @@
 using MDA.Admin;
 using MediatR;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace MDA.Infrastructure
 {
@@ -14,7 +15,7 @@ namespace MDA.Infrastructure
         }
 
         [Required]
-        public string? Entity { get; set; }
+        public string? EntityName { get; set; }
 
         public Guid? Id { get; set; }
 
@@ -24,21 +25,24 @@ namespace MDA.Infrastructure
 
         public bool IsValid()
         {            
-            var model = new AdminServices().Model;
-            var entity = model.Entities.SingleOrDefault(tbl => tbl.Name == Entity);
+            var model = new ModelServices().Model;
+            var entityModel = model.Entities.SingleOrDefault(tbl => tbl.Name == EntityName);
 
-            if (entity == null)
+            if (entityModel == null)
             {
-                Errors.Add($"Entity '{Entity}' does not exists in de model");
+                Errors.Add($"Entity '{EntityName}' does not exists in de model");
                 return false;
             }
 
-            var missing = entity.Properties.Select(p => p.Key).Except(Properties.Select(p => p.Key));
-            if (!missing.Any())
-                return true;
+            var notInModel = Properties.Select(p => p.Key).Except(entityModel.Properties.Select(p => p.Key));
+            if (notInModel.Any())
+                notInModel.ToList().ForEach(i => Errors.Add($"Property '{i}' does not exists on Entity '{EntityName}' "));           
+            
+            if (Properties.Any(p => p.Key == "Id"))
+                Errors.Add($"The submit request properties collection should not contain an Id");
 
-            missing.ToList().ForEach(i => Errors.Add($"Property '{i}' does not exists on Entity '{Entity}' "));
-            return false;           
+            return !Errors.Any();
+
         }       
     }  
 }

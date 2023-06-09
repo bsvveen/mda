@@ -7,8 +7,8 @@ namespace MDA.Infrastructure
     {
         public ApplicationInstance()
         {
-            AdminServices adminservice = new();
-            Model = adminservice.Model;
+            ModelServices modelservice = new();
+            Model = modelservice.Model;
         }
 
         public Primitive Model { get; } = new Primitive();

@@ -34,11 +34,7 @@ export default class DynamicForm extends React.Component {
 
         if (this.props.onSubmit) {
             let valuesToSubmit = Object.assign({}, this.props.initialData, this.state.modifiedData);
-            this.props.onSubmit(valuesToSubmit)
-            .then(() => this.setState({ "modified" : {} }))
-            .catch((response) => {
-                if (response.Errors) this.setState({ "errors": response.Errors });                
-            });
+            this.props.onSubmit(valuesToSubmit);
         }
     }
 
@@ -129,8 +125,8 @@ export default class DynamicForm extends React.Component {
             <form className="dynamic-form" onSubmit={(e) => { this.onSubmit(e) }}>
                 {this.renderForm()}
                 <div className="actions">
-                    {(this.props.initialData.Id) && <button type="delete" title="Verwijderen" onClick={this.onDelete} ></button>}
-                    {(this.props.onCancel) && <button type="cancel" title="Cancel" onClick={this.onCancel}></button>}                    
+                    {(this.props.initialData.Id) && <button type="delete" title="Verwijderen" onClick={this.onDelete} >Delete</button>}
+                    {(this.props.onCancel) && <button type="cancel" title="Cancel" onClick={this.onCancel}>Cancel</button>}                    
                     <button type="submit" title="Opslaan">Opslaan</button>
                 </div>                
             </form>

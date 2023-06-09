@@ -6,13 +6,13 @@ using System.Data;
 
 namespace MDA.User
 {
-    public class UserSql
+    public class SqlLiteUserSql : IUserSql
     {
         public async Task<string> List(ListRequest request)
         {
             if (request.Properties == null || request.Properties.Count == 0)
                 throw new ArgumentException("ListRequest does not contain a properties collection.");
-            
+
             var json_object_props = "'Id', Id, " + string.Join(',', request.Properties.Select(x => $"'{x}', {x}"));
             var query_props = "Id, " + string.Join(',', request.Properties.Select(x => $"{x}"));
 
@@ -27,47 +27,47 @@ namespace MDA.User
                 }
             }
 
-            var sql = $"SELECT json_group_array(json_object({json_object_props})) AS json_result FROM(SELECT {query_props} FROM {request.Entity} {query_where});";
+            var sql = $"SELECT json_group_array(json_object({json_object_props})) AS json_result FROM(SELECT {query_props} FROM {request.EntityName} {query_where});";
             return await ExecuteReader(sql);
         }
 
         public async Task<string> GetById(GetByIdRequest request)
-        {  
-            var json_object_props = "'Id', Id, " + string.Join(',', request.Properties.Select(x => $"'{x}', {x}"));
-            var query_props = "Id, " + string.Join(',', request.Properties.Select(x => $"{x}"));
+        {
+            var json_object_props = string.Join(',', request.Properties.Select(x => $"'{x}', {x}"));
+            var query_props = string.Join(',', request.Properties.Select(x => $"{x}"));
 
-            var sql = $"SELECT json_object({json_object_props}) AS json_result FROM(SELECT {query_props} FROM {request.Entity} WHERE ID = '{request.Id}');";
+            var sql = $"SELECT json_object({json_object_props}) AS json_result FROM(SELECT {query_props} FROM {request.EntityName} WHERE ID = '{request.Id}');";
             return await ExecuteReader(sql);
-        }        
+        }
 
-        public async Task<int> Submit(SubmitRequest request)
+        public async Task Submit(SubmitRequest request)
         {
             if (request.Properties == null || request.Properties.Count == 0)
                 throw new ArgumentException("SubmitRequest does not contain a properties collection.");
 
             if (request.Id == null)
-                return await Insert(request);
+                await Insert(request);
 
-            return await Update(request);
+            await Update(request);
         }
 
-        private async Task<int> Update(SubmitRequest request)
+        private async Task Update(SubmitRequest request)
         {
-            var keyscollection = string.Join(',', request.Properties.Select(x => $"'{x.Key}' = '{x.Value}'"));           
+            var keyscollection = string.Join(',', request.Properties.Select(x => $"'{x.Key}' = '{x.Value}'"));
 
-            var sql = $"UPDATE {request.Entity} SET {keyscollection} WHERE 'ID' = '{request.Id}';";
-            return await ExecuteNonQuery(sql);
+            var sql = $"UPDATE {request.EntityName} SET {keyscollection} WHERE 'ID' = '{request.Id}';";
+            await ExecuteNonQuery(sql);
         }
 
-        private async Task<int> Insert(SubmitRequest request)
-        {           
+        private async Task Insert(SubmitRequest request)
+        {
             var keyscollection = string.Join(',', request.Properties.Select(x => $"'{x.Key}'"));
             var valuescollection = string.Join(',', request.Properties.Select(x => $"'{x.Value}'"));
 
             var ID = Guid.NewGuid();
 
-            var sql = $"INSERT INTO {request.Entity} ('ID', {keyscollection}) VALUES('{ID}', {valuescollection});";
-            return await ExecuteNonQuery(sql);
+            var sql = $"INSERT INTO {request.EntityName} ('ID', {keyscollection}) VALUES('{ID}', {valuescollection});";
+            await ExecuteNonQuery(sql);
         }
 
         private string TranslatePO(PropertyOperator? @operator)
@@ -78,7 +78,7 @@ namespace MDA.User
                     return " <> ";
                 default: return " = ";
             }
-        }       
+        }
 
         private string TranslateCO(ConstrainOperator @operator)
         {
@@ -115,7 +115,7 @@ namespace MDA.User
             return retValue;
         }
 
-        private async Task<int> ExecuteNonQuery(string sqlCommand)
+        private async Task ExecuteNonQuery(string sqlCommand)
         {
             var connectionStringBuilder = new SqliteConnectionStringBuilder();
             connectionStringBuilder.DataSource = "Model/Database.db";
@@ -126,14 +126,14 @@ namespace MDA.User
             var Command = connection.CreateCommand();
             Command.CommandText = sqlCommand;
 
-            int updated  = await Command.ExecuteNonQueryAsync();     
-
-            connection.Close();
-
-            if (updated != 1)
-                throw new Exception($"{sqlCommand} did not return any result from the database");
-
-            return updated;
+            try
+            {
+                await Command.ExecuteNonQueryAsync();
+            }
+            catch (SqliteException ex)
+            {
+                throw new Exception($"Error executing: '{sqlCommand}, Message:{ex.Message},{ex.StackTrace}");
+            }
         }
     }
 }

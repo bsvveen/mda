@@ -6,7 +6,7 @@ using System.Data;
 
 namespace MDA.Admin
 {
-    public class AdminSql 
+    public class SqlLiteAdminSql : IAdminSql
     {
         public async Task<Primitive> GetModelFromDb()
         {
@@ -75,13 +75,15 @@ namespace MDA.Admin
                 case PropertyDataType.id:
                     datatype = "uniqueidentifier";
                     break;
+                case PropertyDataType.foreignkey:
+                    datatype = "uniqueidentifier";
+                    break;
                 default:
                     datatype = "CHAR(255)";
                     break;
             }
 
             var not_null = (notnull) ? "NOT NULL" : "";
-
             await ExecuteSql($"ALTER TABLE {TableName} ADD {ColumnName} {datatype} {not_null}");
         }
 

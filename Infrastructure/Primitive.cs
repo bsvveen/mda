@@ -77,7 +77,7 @@ namespace MDA.Infrastructure
             public List<Constrain> Constrains { get; set; }
         }        
 
-        public ValidationResult CheckExistence(string Entity, List<string> Properties)
+        public ValidationResult CheckExistance(string Entity, List<string> Properties)
         {
             var validationResult = new ValidationResult(); 
 
@@ -88,7 +88,7 @@ namespace MDA.Infrastructure
                 var missing = Properties.Where(i => i != "Id").Select(p => p).Except(entity.Properties.Select(p => p.Key));
                 if (missing.Any()) {
                     missing.ToList().ForEach(i => validationResult.Errors.Add($"Property '{i}' does not exists on Entity '{Entity}' "));                
-                }
+                }                
             }   
 
             return validationResult;

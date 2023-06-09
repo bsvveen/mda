@@ -27,9 +27,7 @@ const FullList = ({entityName, properties, constrains}) => {
   if (current && mode == "form")
     return <Form  entityName = {entityName}
                   id = {current} 
-                  onCancel = {onReset}
-                  onSubmit = {onReset}
-                  onDelete = {onReset} />
+                  onClose = {onReset} />
 
   if (current && mode == "detail")
     return <Detail  entityName = {entityName}

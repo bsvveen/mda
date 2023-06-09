@@ -7,13 +7,19 @@ namespace MDA.Admin
     [ApiController]
     [Route("[controller]")]
     public class AdminController : ControllerBase
-    {  
+    {
+        private readonly IAdminSql _adminSql;
+
+        public AdminController(IAdminSql adminSql)
+        {
+            _adminSql = adminSql;
+        }
+
+
         [HttpGet("GetModel")]
         public IActionResult GetModel()
         {
-            AdminServices adminservice = new();
-
-            var model = adminservice.Model;
+            var model = new ModelServices().Model;
 
             if (model == null)
                 return NotFound();
@@ -23,10 +29,8 @@ namespace MDA.Admin
 
         [HttpPost("UpdateModel")]
         public IActionResult UpdateModel(Primitive newModel)
-        {
-            AdminServices adminservice = new();
-
-            var updatedPrimitive = adminservice.UpdateModel(newModel);
+        {  
+            var updatedPrimitive = new ModelServices().UpdateModel(newModel);
 
             return Ok(updatedPrimitive);
         }
@@ -34,7 +38,7 @@ namespace MDA.Admin
         [HttpPost("SyncDatabase")]
         public IActionResult SyncDatabase()
         {
-            AdminServices adminservice = new();
+            AdminServices adminservice = new(_adminSql);
 
             var syncSuccess = adminservice.SyncWithDatabase();
 

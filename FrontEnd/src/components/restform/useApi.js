@@ -42,11 +42,11 @@ const useApi = (initialResponse) => {
             .finally(setLoading(false));
     };     
 
-    const fetchById = (entity, id) => apiFetch('/User/GetById/', { "Entity": entity, "Id" : id});  
+    const fetchById = (entityName, id) => { return apiFetch('/User/GetById/', { "EntityName": entityName, "Id" : id}); }  
 
-    const fetchList = (entity, properties, constrains) => { return apiFetch("/User/List/", { "Entity" : entity, "Properties" : properties, "Constrains" : constrains}); }
+    const fetchList = (entityName, properties, constrains) => { return apiFetch("/User/List/", { "EntityName" : entityName, "Properties" : properties, "Constrains" : constrains}); }
 
-    const update = (entity, data) => apiFetch('/User/Update/', { "Entity" : entity, "Data" : data});  
+    const update = (entityName, id, properties) => { return apiFetch('/User/Update/', { "EntityName" : entityName, "Id" : id, "Properties" : properties}); }
 
     return { response, error, loading, fetchById, fetchList, update };
 }
