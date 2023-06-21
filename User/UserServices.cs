@@ -1,9 +1,6 @@
 ﻿
-using Newtonsoft.Json.Schema;
 using MDA.Infrastructure;
-using MDA.Admin;
 using static MDA.Infrastructure.Primitive;
-using MediatR;
 using System.Text.Json;
 
 namespace MDA.User
@@ -11,12 +8,12 @@ namespace MDA.User
     public class UserServices
     {
         private readonly Primitive _model;
-        private readonly IUserSql _userSql;
+        UserSql _db;
 
-        public UserServices(Primitive model, IUserSql userSql)
+        public UserServices(Primitive model)
         {         
             _model = model;
-            _userSql = userSql;
+            _db = new UserSql();
         }        
 
         public async Task<object> List(ListRequest request)
@@ -27,7 +24,10 @@ namespace MDA.User
                 entity.Properties.ForEach(p => request.Properties.Add(p.Key));
             }             
 
-            string stringResponse = await _userSql.List(request);
+            string stringResponse = await _db.List(request);
+
+            if (stringResponse == null || stringResponse == string.Empty) { stringResponse = "[]"; }
+
             return JsonSerializer.Deserialize<object>(stringResponse);
         }
 
@@ -38,13 +38,16 @@ namespace MDA.User
                 entity.Properties.ForEach(p => request.Properties.Add(p.Key));
             }
 
-            string stringResponse = await _userSql.GetById(request);
+            string stringResponse = await _db.GetById(request);
+
+            if (stringResponse == null || stringResponse == string.Empty) { stringResponse = "{}"; }
+
             return JsonSerializer.Deserialize<object>(stringResponse);
         }
 
         public async Task Submit(SubmitRequest request)
         {
-            await _userSql.Submit(request);
+            await _db.Submit(request);
         }
     }    
 }

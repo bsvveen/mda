@@ -37,7 +37,7 @@ const FullList = ({entityName, properties, constrains}) => {
 return (
   <div className="restForm">    
     <List entityName={entityName} constrains={constrains} properties={properties} onSelect={onSelect} />
-    <div className="actions"><button type="new" onClick={onNew} value="Nieuw" /></div>
+    <div className="actions"><button type="new" onClick={onNew} value="Nieuw">Nieuw</button></div>
   </div>
   )     
 }

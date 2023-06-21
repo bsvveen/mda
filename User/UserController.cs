@@ -14,13 +14,11 @@ namespace MDA.User
     [Produces("application/json")]   
     public class UserController : ControllerBase
     {
-        private readonly Primitive _model;
-        private readonly IUserSql _userSql;       
+        private readonly Primitive _model;           
 
-        public UserController(ApplicationInstance application, IUserSql userSql)
+        public UserController(ApplicationInstance application)
         {
-            _model = application.Model;
-            _userSql = userSql;
+            _model = application.Model;           
         }
 
         [HttpGet("GetModel")]
@@ -42,7 +40,7 @@ namespace MDA.User
             if (!requestAccessValidation.IsValid)
                 return Forbid("Access Denied");      
 
-            var userService = new UserServices(_model, _userSql);            
+            var userService = new UserServices(_model);            
             return Ok(await userService.List(request));           
         }
 
@@ -59,7 +57,7 @@ namespace MDA.User
             if (!requestAccessValidation.IsValid)
                 return Forbid("Access Denied");                   
 
-            var userService = new UserServices(_model, _userSql);
+            var userService = new UserServices(_model);
             return Ok(await userService.GetById(request));                  
         }
 
@@ -80,9 +78,10 @@ namespace MDA.User
             if (!requestValueValidation.IsValid)
                 return Conflict(requestValueValidation.ValidationErrors);            
 
-            var userService = new UserServices(_model, _userSql);
+            var userService = new UserServices(_model);
             await userService.Submit(request);
             Response.StatusCode = 200;
+
             return Ok("Update Succeeded");
         }
     }

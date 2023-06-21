@@ -1,9 +1,8 @@
-using MDA.Admin;
+
 using MDA.Infrastructure;
 using MDA.User;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.Json;
-using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.FileProviders;
 using System.Text.Json.Serialization;
 
@@ -16,9 +15,6 @@ builder.Services.AddSwaggerGen(o => { o.CustomSchemaIds(x => x.FullName); });
 builder.Services.Configure<JsonOptions>(o => { o.SerializerOptions.Converters.Add(new JsonStringEnumConverter());});
 builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(o => { o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());});
 builder.Services.Configure<Microsoft.AspNetCore.Mvc.ApiBehaviorOptions>(o => { o.SuppressModelStateInvalidFilter = true;});
-
-builder.Services.AddScoped<IAdminSql, SqlLiteAdminSql>();
-builder.Services.AddScoped<IUserSql, SqlLiteUserSql>();
 
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddSingleton(provider => new ApplicationInstance());

@@ -8,14 +8,6 @@ namespace MDA.Admin
     [Route("[controller]")]
     public class AdminController : ControllerBase
     {
-        private readonly IAdminSql _adminSql;
-
-        public AdminController(IAdminSql adminSql)
-        {
-            _adminSql = adminSql;
-        }
-
-
         [HttpGet("GetModel")]
         public IActionResult GetModel()
         {
@@ -38,11 +30,11 @@ namespace MDA.Admin
         [HttpPost("SyncDatabase")]
         public IActionResult SyncDatabase()
         {
-            AdminServices adminservice = new(_adminSql);
+            AdminServices adminservice = new();
 
             var syncSuccess = adminservice.SyncWithDatabase();
 
-            return Ok(syncSuccess);
+            return Ok("No error so sync succeeded");
         }
     }
 }

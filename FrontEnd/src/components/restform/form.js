@@ -8,7 +8,8 @@ const Form = ({entityName, id, onClose}) => {
 
   React.useEffect(() => { 
     getEntityModel(entityName);
-    fetchById(entityName, id);
+    if (id)
+      fetchById(entityName, id);
   }, []); 
 
   const getEntityModel = (name) => {

@@ -1,8 +1,6 @@
 ﻿
 using MDA.Admin;
-using MediatR;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace MDA.Infrastructure
 {

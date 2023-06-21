@@ -1,9 +1,6 @@
 ﻿
 using MDA.Admin;
-using MediatR;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using static MDA.Infrastructure.Primitive;
 
 namespace MDA.Infrastructure
 {
@@ -26,6 +23,8 @@ namespace MDA.Infrastructure
 
         public bool IsValid()
         {
+            Errors = new List<string>();
+
             var model = new ModelServices().Model;
             var entityModel = model.Entities.SingleOrDefault(tbl => tbl.Name == EntityName);
 
