@@ -19,7 +19,7 @@ export default class DynamicForm extends React.Component {
         e.preventDefault();
 
         if (this.props.onDelete)
-            this.props.onDelete(this.props.initial.id);       
+            this.props.onDelete(this.props.id);       
     }
 
     onCancel = (e) => {
@@ -33,7 +33,7 @@ export default class DynamicForm extends React.Component {
         e.preventDefault();
 
         if (this.props.onSubmit) {
-            let valuesToSubmit = Object.assign({}, this.props.initialData, this.state.modifiedData);
+            let valuesToSubmit = Object.assign({}, this.props.properties, this.state.modifiedData);
             this.props.onSubmit(valuesToSubmit);
         }
     }
@@ -65,10 +65,10 @@ export default class DynamicForm extends React.Component {
             if (!prop.key || !prop.name)
                 throw console.error("model record is missing required property", prop);
 
-            let defaultValue = this.props.initialData[prop.key] || "";
+            let defaultValue = this.props.properties[prop.key] || "";
             let value = this.state.modifiedData[prop.key] || defaultValue;
-            let isReadonly = this.props.constrains && this.props.constrains.some(c => c.property == prop.key);
-            let isHidden = isReadonly && prop.key.includes("_id");
+            let isReadonly = this.props.constrains.some(c => c.property == prop.key);
+            let isHidden = prop.key.includes("_id");
             let type = prop.type || "text";
             let errors = this.state.errors;
             let input = "";                   
@@ -125,7 +125,7 @@ export default class DynamicForm extends React.Component {
             <form className="dynamic-form" onSubmit={(e) => { this.onSubmit(e) }}>
                 {this.renderForm()}
                 <div className="actions">
-                    {(this.props.initialData.Id) && <button type="delete" title="Verwijderen" onClick={this.onDelete} >Delete</button>}
+                    {(this.props.id) && <button type="delete" title="Verwijderen" onClick={this.onDelete} >Delete</button>}
                     {(this.props.onCancel) && <button type="cancel" title="Cancel" onClick={this.onCancel}>Cancel</button>}                    
                     <button type="submit" title="Opslaan">Opslaan</button>
                 </div>                
@@ -135,16 +135,17 @@ export default class DynamicForm extends React.Component {
 }
 
 DynamicForm.propTypes = {
-    initialData: PropTypes.object.isRequired, 
-    entityModel: PropTypes.object.isRequired, 
+    id: PropTypes.string,
+    properties: PropTypes.object,      
     constrains: PropTypes.array,
+    entityModel: PropTypes.object.isRequired,
     onCancel: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired     
 };
 
 DynamicForm.defaultProps = {
-    initialData: {},
+    properties: {},
     entityModel: {},
     constrains: []
 };

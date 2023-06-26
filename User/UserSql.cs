@@ -1,6 +1,7 @@
 ﻿// https://www.developersoapbox.com/connecting-to-a-sqlite-database-using-net-core/
 
 using MDA.Infrastructure;
+using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
@@ -17,7 +18,7 @@ namespace MDA.User
 
         public async Task<string> List(ListRequest request)
         {
-            var select_statement = "'Id' As Id, " + string.Join(',', request.Properties.Select(x => $"'{x}' AS {x}"));            
+            var select_statement = "Id As Id, " + string.Join(',', request.Properties.Select(p => $"'{p}' As {p}"));            
 
             var query_where = "";
             if (request.Constrains != null && request.Constrains.Count != 0)
@@ -37,10 +38,10 @@ namespace MDA.User
 
         public async Task<string> GetById(GetByIdRequest request)
         {
-            var select_statement = "'Id', " + string.Join(',', request.Properties.Select(x => $"'{x}'"));
+            var select_statement = string.Join(',', request.Properties.Select(p => $"{p} As {p}"));
 
-            var sql = $"SELECT {select_statement} FROM {request.EntityName} WHERE ID = '{request.Id}') FOR JSON AUTO;";
-
+            var sql = $"SELECT {select_statement} FROM {request.EntityName} WHERE Id = '{request.Id}' FOR JSON AUTO, WITHOUT_ARRAY_WRAPPER; ;";
+             
             return await ExecuteReader(sql);
         }
 
@@ -103,16 +104,18 @@ namespace MDA.User
             {
                 await connection.OpenAsync();
                 using var reader = await command.ExecuteReaderAsync();
-                reader.Read();
 
-                var retValue = reader["json_result"].ToString();
-               
-                await reader.CloseAsync();               
+                string retValue = null;
+                if (reader.Read())
+                    retValue = reader.GetString(0);
 
-                if (retValue == null)
-                    throw new Exception($"{sqlCommand} did not return any result from the database");
+                await reader.CloseAsync();     
 
                 return retValue;
+            }
+            catch (SqlException sqlEx)
+            {
+                throw new Exception($"Error executing: '{sqlCommand}, Message:{sqlEx.Message},{sqlEx.StackTrace}");
             }
             catch (Exception ex)
             {

@@ -46,8 +46,9 @@ const Form = ({entityName, id, onClose}) => {
   return (    
     <div className="form">
       <DynamicForm 
+        id = { id }
         entityModel = { entityModel }  
-        initialData = { response }          
+        properties = { response }          
         onCancel    = { onCancel }
         onSubmit    = { onSubmit }
         onDelete    = { onDelete }   

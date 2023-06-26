@@ -24,7 +24,7 @@ namespace MDA.Admin
             property.Name = (string)DataReader["COLUMN_NAME"];
             switch (DataReader["DATA_TYPE"])
             {
-                case "CHAR(255)":
+                case "VARCHAR(255)":
                     property.Type = PropertyDataType.text;
                     break;
                 case "DateTime":
@@ -91,7 +91,7 @@ namespace MDA.Admin
                     datatype = "uniqueidentifier";
                     break;
                 default:
-                    datatype = "CHAR(255)";
+                    datatype = "VARCHAR(255)";
                     break;
             }
 
