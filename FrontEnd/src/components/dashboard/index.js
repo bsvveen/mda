@@ -13,7 +13,7 @@ const DashBoard = ({views, componentFactory, gridProperties}) => {
     async function loadTiles() {
       const generateTiles = () => {
         return views.map( view => {      
-          return { view: view, mode: -1, key: view.key };
+          return { view: view, mode: -1, key: view.key, seed: 0 };
       })}
 
       setTiles(generateTiles());           
@@ -33,7 +33,7 @@ const DashBoard = ({views, componentFactory, gridProperties}) => {
     const Component = componentFactory[view.component];  
     return (
       <div key={tile.key} className={'griditem_' + tile.mode}>
-        <Layout mode={tile.mode} title={view.titel} onRefresh={() => refreshTile(tile.key)} onChangeSize={(e) => changeTileSize(e, tile.key)} onClose={() => changeTileMode(tile.key, -1)} >
+        <Layout mode={tile.mode} key={tile.seed} title={view.titel} onRefresh={() => refreshTile(tile.key)} onChangeSize={(e) => changeTileSize(e, tile.key)} onClose={() => changeTileMode(tile.key, -1)} >
           <Component key={`${tile.key}_component`} {...view.props}/>
         </Layout>  
       </div>  
@@ -44,8 +44,11 @@ const DashBoard = ({views, componentFactory, gridProperties}) => {
       setSideBarExpanded(1 - isSideBarExpanded);
   }
     
-  const refreshTile = (tile) => { 
-      alert("refreshView");
+  const refreshTile = (key) => {        
+    setTiles(
+      tiles.map((tile) => tile.key === key ? 
+        Object.assign({}, tile, {"seed" : Math.random()}) : tile )
+    )
   }     
     
   const changeTileSize = (direction, key) => {    

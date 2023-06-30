@@ -18,7 +18,7 @@ namespace MDA.User
 
         public async Task<string> List(ListRequest request)
         {
-            var select_statement = "Id As Id, " + string.Join(',', request.Properties.Select(p => $"'{p}' As {p}"));            
+            var select_statement = "Id As Id, " + string.Join(',', request.Properties.Select(p => $"{p} As '{p}'"));            
 
             var query_where = "";
             if (request.Constrains != null && request.Constrains.Count != 0)
@@ -58,20 +58,20 @@ namespace MDA.User
 
         private async Task Update(SubmitRequest request)
         {
-            var keyscollection = string.Join(',', request.Properties.Select(x => $"'{x.Key}' = '{x.Value}'"));
+            var keyscollection = string.Join(',', request.Properties.Select(x => $"{x.Key} = '{x.Value}'"));
 
-            var sql = $"UPDATE {request.EntityName} SET {keyscollection} WHERE 'ID' = '{request.Id}';";
+            var sql = $"UPDATE {request.EntityName} SET {keyscollection} WHERE Id = '{request.Id}';";
             await ExecuteNonQuery(sql);
         }
 
         private async Task Insert(SubmitRequest request)
         {
-            var keyscollection = string.Join(',', request.Properties.Select(x => $"'{x.Key}'"));
+            var keyscollection = string.Join(',', request.Properties.Select(x => $"{x.Key}"));
             var valuescollection = string.Join(',', request.Properties.Select(x => $"'{x.Value}'"));
 
             var ID = Guid.NewGuid();
 
-            var sql = $"INSERT INTO {request.EntityName} ('ID', {keyscollection}) VALUES('{ID}', {valuescollection});";
+            var sql = $"INSERT INTO {request.EntityName} (Id, {keyscollection}) VALUES('{ID}', {valuescollection});";
             await ExecuteNonQuery(sql);
         }
 

@@ -3,7 +3,7 @@ import { useState } from "react";
 const useApi = (initialResponse) => {
     const [response, setResponse] = useState(initialResponse);
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const parseJSON = (response) => {
         const contentType = response.headers.get("content-type");
@@ -21,7 +21,9 @@ const useApi = (initialResponse) => {
     }
 
     const apiFetch = (url, payLoad) => {
-        setLoading(true);
+        alert("apiFetch.Loading: ", isLoading);
+        setIsLoading(true);
+        alert("apiFetch.Loading: ", isLoading);
         fetch(url, { 
                 headers: new Headers({                   
                     "Accept" : "application/json",
@@ -39,7 +41,7 @@ const useApi = (initialResponse) => {
                     throw new Error(JSON.stringify(response));  
                 })           
             .catch(error => {alert(error)})
-            .finally(setLoading(false));
+            .finally(setIsLoading(false));
     };     
 
     const fetchById = (entityName, id) => { return apiFetch('/User/GetById/', { "EntityName": entityName, "Id" : id}); }  
@@ -48,7 +50,7 @@ const useApi = (initialResponse) => {
 
     const update = (entityName, id, properties) => { return apiFetch('/User/Update/', { "EntityName" : entityName, "Id" : id, "Properties" : properties}); }
 
-    return { response, error, loading, fetchById, fetchList, update };
+    return { response, error, isLoading, fetchById, fetchList, update };
 }
 
 export default useApi

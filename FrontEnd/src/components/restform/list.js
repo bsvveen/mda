@@ -9,8 +9,10 @@ const List = ({entityName, properties, constrains, onSelect}) => {
     fetchList(entityName, properties, constrains);
   }, []); 
 
+  console.info("loading", loading);
+
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error.message}</p>;
+  if (error) return <p>{error.message}</p>;  
 
   const rowRender = (item, isSelected) => {   
     return (
@@ -26,7 +28,7 @@ const List = ({entityName, properties, constrains, onSelect}) => {
   }
 
   return (    
-    <div className="list">
+    <div className="list">    
       <DynamicList items={response} rowRender={rowRender}  />
     </div>
   );     

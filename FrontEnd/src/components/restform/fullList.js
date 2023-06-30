@@ -6,7 +6,8 @@ import "./index.css";
 
 const FullList = ({entityName, properties, constrains}) => { 
   const [current, setCurrent] = React.useState();
-  const [mode, setMode] = React.useState("list");   
+  const [mode, setMode] = React.useState("list");    
+  const [seed, setSeed] = React.useState(1);      
   
   const onSelect = (id, mode) => {
     console.info("onSelect", id, mode);
@@ -22,6 +23,7 @@ const FullList = ({entityName, properties, constrains}) => {
   const onReset = () => { 
     setMode("list");
     setCurrent(undefined); 
+    setSeed(Math.random());
   }  
 
   if (mode == "form")
@@ -36,7 +38,7 @@ const FullList = ({entityName, properties, constrains}) => {
 
 return (
   <div className="restForm">    
-    <List entityName={entityName} constrains={constrains} properties={properties} onSelect={onSelect} />
+    <List key={seed} entityName={entityName} constrains={constrains} properties={properties} onSelect={onSelect} />
     <div className="actions"><button type="new" onClick={onNew} value="Nieuw">Nieuw</button></div>
   </div>
   )     
