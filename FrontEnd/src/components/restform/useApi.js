@@ -20,11 +20,9 @@ const useApi = (initialResponse) => {
         throw new Error("Geen informatie ontvangen van de server, " + response.status);
     }
 
-    const apiFetch = (url, payLoad) => {
-        alert("apiFetch.Loading: ", isLoading);
-        setIsLoading(true);
-        alert("apiFetch.Loading: ", isLoading);
-        fetch(url, { 
+    const apiFetch = async (url, payLoad) => {       
+        setIsLoading(true);        
+        await fetch(url, { 
                 headers: new Headers({                   
                     "Accept" : "application/json",
                     "Content-Type" : "application/json",

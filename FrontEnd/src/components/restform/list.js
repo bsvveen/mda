@@ -1,18 +1,13 @@
 import React from 'react';
-import useApi from './useApi';
+import { useFetchList } from './useDataApi';
 import DynamicList from './dynamicList';
 
-const List = ({entityName, properties, constrains, onSelect}) => {
-  const {response, error, loading, fetchList} = useApi();  
+const List = ({entityName, properties, constrains, onSelect}) => {  
+  const response = useFetchList(entityName, properties, constrains); 
 
-  React.useEffect(() => {
-    fetchList(entityName, properties, constrains);
-  }, []); 
-
-  console.info("loading", loading);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error.message}</p>;  
+  if (response.isLoading) return <p>Loading...</p>;
+  if (response.modelstate) return <p>{response.modelstate}</p>;  
+  if (response.error) return <p>{response.error}</p>;  
 
   const rowRender = (item, isSelected) => {   
     return (
@@ -29,7 +24,7 @@ const List = ({entityName, properties, constrains, onSelect}) => {
 
   return (    
     <div className="list">    
-      <DynamicList items={response} rowRender={rowRender}  />
+      <DynamicList items={response.data} rowRender={rowRender}  />
     </div>
   );     
 }
