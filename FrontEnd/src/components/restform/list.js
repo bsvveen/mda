@@ -5,8 +5,7 @@ import DynamicList from './dynamicList';
 const List = ({entityName, properties, constrains, onSelect}) => {  
   const response = useFetchList(entityName, properties, constrains); 
 
-  if (response.isLoading) return <p>Loading...</p>;
-  if (response.modelstate) return <p>{response.modelstate}</p>;  
+  if (response.isLoading) return <p>Loading...</p>; 
   if (response.error) return <p>{response.error}</p>;  
 
   const rowRender = (item, isSelected) => {   

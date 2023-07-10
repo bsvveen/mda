@@ -1,25 +1,11 @@
 import React from 'react';
-import useApi from './useApi';
+import { useFetchById } from './useDataApi';
+ 
+const Detail = ({entityName, Id, onClose}) => {  
+  const response = useFetchById(entityName, Id); 
 
-const Detail = ({entityName, id, onAction}) => {
-  const {response, error, loading, fetchById} = useApi();     
-
-  React.useEffect(() => {   
-    fetchById(entityName, id);
-  }, []); 
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{JSON.stringify(error)}</p>;  
-
-  const onSubmit = (properties) => {   
-    update(entity, id, properties);
-    onAction();
-  }  
-
-  const onDelete = (id) => {    
-    deleteMe(entity, id);
-    onAction();
-  }  
+  if (response.isLoading) return <p>Loading...</p>;  
+  if (response.error) return <p>{response.error}</p>;    
 
   const Recursive = (obj) => {
     let result = [];
@@ -33,7 +19,12 @@ const Detail = ({entityName, id, onAction}) => {
     return result;
   }
 
-  return (<div className="detail"> {Recursive(response)} </div>)
+  return (    
+    <div className="detail">    
+      <div><button onClick={() => onClose()} type="close" title="Close">Close</button></div>
+      {Recursive(response)}
+    </div>
+  );     
 }
 
 export default Detail;

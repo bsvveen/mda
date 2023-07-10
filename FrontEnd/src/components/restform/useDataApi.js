@@ -2,6 +2,11 @@ import React from 'react';
 
 const dataFetchReducer = (state, action) => {
     switch (action.type) {
+        case 'NO_FETCH':
+            return {
+                ...state,
+                isLoading: false
+            };
         case 'FETCH_INIT':
             return {
                 ...state,
@@ -39,8 +44,8 @@ const parseJSON = (response) => {
               status: response.status,
               ok: response.ok,
               data: json
-          })))
-          .catch((error) => reject("parseJSON error", error));
+          }))
+          .catch((error) => reject("parseJSON error", error)));
   }  
 }
 
@@ -59,7 +64,8 @@ const apiFetch = async (url, payLoad) => {
   })
 }
 
-const useDataApi = (initialData, request) => {    
+const useDataApi = (initialData, initialRequest) => {    
+    const [request, setRequest] = React.useState(initialRequest??{});
 
     const [response, dispatch] = React.useReducer(dataFetchReducer, {
       isLoading: false,
@@ -78,26 +84,60 @@ const useDataApi = (initialData, request) => {
               dispatch({ type: 'VALIDATION_FAILURE', payload: JSON.stringify(response.data) });
 
             dispatch({ type: 'FETCH_SUCCESS', payload: response.data });
-          }) 
+        }) 
+        .catch((error) => dispatch({ type: 'FETCH_FAILURE', payload: error.message + error.stack }))  
+      }     
+
+      if (request == {})
+        dispatch({ type: 'NO_FETCH', payload: response.data });
+
+      fetchData();
+    }, [request]);
+
+    return [response, setRequest];
+  };
+
+const useFetchList = (entityName, properties, constrains) => {
+    const listRequest = {url: '/User/List/', payload: { "EntityName" : entityName, "Properties" : properties, "Constrains" : constrains}}
+    return useDataApi([], listRequest);
+}
+
+  const useFetchById = (entityName, id) => {
+    return useDataApi({}, {url: '/User/GetById/', payload: { "EntityName": entityName, "Id" : id }});     
+  }  
+
+  const useUpdate2 = (initialValue, initialRequest) => {
+    const [response, setRequest] = useDataApi(initialValue, initialRequest) 
+  
+    const setListRequest = (entityName, properties, constrains) => {
+      setRequest({url: '/User/List/', payload: { "EntityName" : entityName, "Properties" : properties, "Constrains" : constrains}})
+    }
+  
+    return [response, setListRequest]
+}
+
+  const useUpdate = () => {
+    
+    const doUpdate =  useDataApi([], {url: '/User/Update/', payload: { "EntityName" : entityName, "Id" : id, "Properties" : properties }}); 
+
+    React.useEffect(() => {
+      const fetchData = async () => {
+        dispatch({ type: 'FETCH_INIT' });
+  
+        await apiFetch(request.url, request.payload)
+        .then((response) => {
+            if (response.status == "409")
+              dispatch({ type: 'VALIDATION_FAILURE', payload: JSON.stringify(response.data) });
+
+            dispatch({ type: 'FETCH_SUCCESS', payload: response.data });
+        }) 
         .catch((error) => dispatch({ type: 'FETCH_FAILURE', payload: error.message + error.stack }))  
       }     
 
       fetchData();
-    }, []);
-
-    return response;
-  };
-
-  const useFetchList = (entityName, properties, constrains) => {
-    return useDataApi([], {url: '/User/List/', payload: { "EntityName" : entityName, "Properties" : properties, "Constrains" : constrains} });     
-  }
-
-  const useFetchById = (entityName, id) => {
-    return useDataApi([], {url: '/User/GetById/', payload: { "EntityName": entityName, "Id" : id }});     
-  }
-
-  const useUpdate = (entityName, id, properties) => {
-    return useDataApi([], {url: '/User/Update/', payload: { "EntityName" : entityName, "Id" : id, "Properties" : properties }});     
+    }, [request]);
+    
+    return [updateResponse, setRequest];
   }
 
   export {useFetchById, useFetchList, useUpdate};

@@ -1,16 +1,17 @@
 import React from 'react';
-import useApi from './useApi';
 import DynamicForm from './dynamicform';
 
-const Form = ({entityName, id, onClose}) => {
-  const {response, error, loading, fetchById, update} = useApi({});   
+const Form = ({entityName, id, onClose}) => {  
+  const getResponse = useFetchById(entityName, id);
+  const [updateResponse, doUpdate] = useUpdate();      
   const [entityModel, setEntityModel] = React.useState(undefined);   
 
-  React.useEffect(() => { 
-    getEntityModel(entityName);
-    if (id)
-      fetchById(entityName, id);
-  }, []); 
+  React.useEffect(() => { getEntityModel(entityName); }, []); 
+
+  if (getResponse.loading || updateResponse.loading) return <p>Loading...</p>; 
+  if (getResponse.error) return <p>{getResponse.error}</p>; 
+  if (updateResponse.modelstate) return <p>{updateResponse.modelstate}</p>;  
+  if (updateResponse.error) return <p>{updateResponse.error}</p>; 
 
   const getEntityModel = (name) => {
     const model = JSON.parse(sessionStorage.getItem("model"));
@@ -24,13 +25,8 @@ const Form = ({entityName, id, onClose}) => {
     setEntityModel(entity);
   }   
 
-  if (loading || !entityModel) return <p>Loading...</p>;
-  if (error) return <p>{JSON.stringify(error)}</p>;  
-
-  console.info("response", response);
-
   const onSubmit = (properties) => {   
-    update(entityName, id, properties);
+    doUpdate(entityName, id, properties);
     onClose();
   }  
 
@@ -48,7 +44,7 @@ const Form = ({entityName, id, onClose}) => {
       <DynamicForm 
         id = { id }
         entityModel = { entityModel }  
-        properties = { response }          
+        properties  = { getResponse.data }          
         onCancel    = { onCancel }
         onSubmit    = { onSubmit }
         onDelete    = { onDelete }   
