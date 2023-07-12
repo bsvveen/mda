@@ -1,12 +1,7 @@
 import React from 'react';
 
 const dataFetchReducer = (state, action) => {
-    switch (action.type) {
-        case 'NO_FETCH':
-            return {
-                ...state,
-                isLoading: false
-            };
+    switch (action.type) {     
         case 'FETCH_INIT':
             return {
                 ...state,
@@ -79,34 +74,33 @@ const useDataApi = (initialData, initialRequest) => {
         dispatch({ type: 'FETCH_INIT' });
   
         await apiFetch(request.url, request.payload)
-        .then((response) => {
-            if (response.status == "409")
-              dispatch({ type: 'VALIDATION_FAILURE', payload: JSON.stringify(response.data) });
+        .then((res) => {
+            if (res.status == "409")
+              dispatch({ type: 'VALIDATION_FAILURE', payload: JSON.stringify(res.data) });
 
-            dispatch({ type: 'FETCH_SUCCESS', payload: response.data });
+            dispatch({ type: 'FETCH_SUCCESS', payload: res.data });
         }) 
         .catch((error) => dispatch({ type: 'FETCH_FAILURE', payload: error.message + error.stack }))  
-      }     
-
-      if (request == {})
-        dispatch({ type: 'NO_FETCH', payload: response.data });
+      }           
 
       fetchData();
     }, [request]);
+
+    console.info("useDataApi", response, request);
 
     return [response, setRequest];
   };
 
 const useFetchList = (entityName, properties, constrains) => {
     const listRequest = {url: '/User/List/', payload: { "EntityName" : entityName, "Properties" : properties, "Constrains" : constrains}}
-    return useDataApi([], listRequest);
+    return useDataApi([], listRequest);    
 }
 
-  const useFetchById = (entityName, id) => {
+const useFetchById = (entityName, id) => {
     return useDataApi({}, {url: '/User/GetById/', payload: { "EntityName": entityName, "Id" : id }});     
-  }  
+}  
 
-  const useUpdate2 = (initialValue, initialRequest) => {
+const useUpdate2 = (initialValue, initialRequest) => {
     const [response, setRequest] = useDataApi(initialValue, initialRequest) 
   
     const setListRequest = (entityName, properties, constrains) => {

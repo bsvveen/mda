@@ -35123,19 +35123,20 @@ var _dynamicListDefault = parcelHelpers.interopDefault(_dynamicList);
 var _s = $RefreshSig$();
 const List = ({ entityName , properties , constrains , onSelect  })=>{
     _s();
-    const response = (0, _useDataApi.useFetchList)(entityName, properties, constrains);
+    const [response, setRequest] = (0, _useDataApi.useFetchList)(entityName, properties, constrains);
+    console.info("List", response);
     if (response.isLoading) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: "Loading..."
     }, void 0, false, {
         fileName: "src/components/restform/list.js",
-        lineNumber: 8,
+        lineNumber: 10,
         columnNumber: 34
     }, undefined);
     if (response.error) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: response.error
     }, void 0, false, {
         fileName: "src/components/restform/list.js",
-        lineNumber: 9,
+        lineNumber: 11,
         columnNumber: 30
     }, undefined);
     const rowRender = (item, isSelected)=>{
@@ -35149,7 +35150,7 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
                         children: item[key]
                     }, key, false, {
                         fileName: "src/components/restform/list.js",
-                        lineNumber: 17,
+                        lineNumber: 19,
                         columnNumber: 34
                     }, undefined);
                 }),
@@ -35162,12 +35163,12 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
                         children: "View"
                     }, void 0, false, {
                         fileName: "src/components/restform/list.js",
-                        lineNumber: 19,
+                        lineNumber: 21,
                         columnNumber: 31
                     }, undefined)
                 }, void 0, false, {
                     fileName: "src/components/restform/list.js",
-                    lineNumber: 19,
+                    lineNumber: 21,
                     columnNumber: 9
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("td", {
@@ -35179,18 +35180,18 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
                         children: "Edit"
                     }, void 0, false, {
                         fileName: "src/components/restform/list.js",
-                        lineNumber: 20,
+                        lineNumber: 22,
                         columnNumber: 31
                     }, undefined)
                 }, void 0, false, {
                     fileName: "src/components/restform/list.js",
-                    lineNumber: 20,
+                    lineNumber: 22,
                     columnNumber: 9
                 }, undefined)
             ]
         }, item.Id, true, {
             fileName: "src/components/restform/list.js",
-            lineNumber: 13,
+            lineNumber: 15,
             columnNumber: 7
         }, undefined);
     };
@@ -35201,16 +35202,16 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
             rowRender: rowRender
         }, void 0, false, {
             fileName: "src/components/restform/list.js",
-            lineNumber: 26,
+            lineNumber: 28,
             columnNumber: 7
         }, undefined)
     }, void 0, false, {
         fileName: "src/components/restform/list.js",
-        lineNumber: 25,
+        lineNumber: 27,
         columnNumber: 5
     }, undefined);
 };
-_s(List, "l+v9QzWsVA5bKdtGcW0Nqw75ZNc=", false, function() {
+_s(List, "WjneeB9sX7DG/WW28z/9gRI2yVw=", false, function() {
     return [
         (0, _useDataApi.useFetchList)
     ];
@@ -35242,11 +35243,6 @@ var _reactDefault = parcelHelpers.interopDefault(_react);
 var _s = $RefreshSig$(), _s1 = $RefreshSig$(), _s2 = $RefreshSig$(), _s3 = $RefreshSig$(), _s4 = $RefreshSig$();
 const dataFetchReducer = (state, action)=>{
     switch(action.type){
-        case "NO_FETCH":
-            return {
-                ...state,
-                isLoading: false
-            };
         case "FETCH_INIT":
             return {
                 ...state,
@@ -35311,28 +35307,25 @@ const useDataApi = (initialData, initialRequest)=>{
             dispatch1({
                 type: "FETCH_INIT"
             });
-            await apiFetch(request1.url, request1.payload).then((response)=>{
-                if (response.status == "409") dispatch1({
+            await apiFetch(request1.url, request1.payload).then((res)=>{
+                if (res.status == "409") dispatch1({
                     type: "VALIDATION_FAILURE",
-                    payload: JSON.stringify(response.data)
+                    payload: JSON.stringify(res.data)
                 });
                 dispatch1({
                     type: "FETCH_SUCCESS",
-                    payload: response.data
+                    payload: res.data
                 });
             }).catch((error)=>dispatch1({
                     type: "FETCH_FAILURE",
                     payload: error.message + error.stack
                 }));
         };
-        if (request1 == {}) dispatch1({
-            type: "NO_FETCH",
-            payload: response.data
-        });
         fetchData();
     }, [
         request1
     ]);
+    console.info("useDataApi", response, request1);
     return [
         response,
         setRequest1
