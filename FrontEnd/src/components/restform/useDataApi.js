@@ -59,79 +59,54 @@ const apiFetch = async (url, payLoad) => {
   })
 }
 
-const useDataApi = (initialData, initialRequest) => {    
-    const [request, setRequest] = React.useState(initialRequest??{});
+const useDataApi = (initialData) => {  
+  const [response, dispatch] = React.useReducer(dataFetchReducer, {
+    isLoading: false,
+    error: null,
+    modelstate: null,
+    data: initialData,
+  });
 
-    const [response, dispatch] = React.useReducer(dataFetchReducer, {
-      isLoading: false,
-      error: null,
-      modelstate: null,
-      data: initialData,
-    });
-  
-    React.useEffect(() => {
-      const fetchData = async () => {
-        dispatch({ type: 'FETCH_INIT' });
-  
-        await apiFetch(request.url, request.payload)
-        .then((res) => {
-            if (res.status == "409")
-              dispatch({ type: 'VALIDATION_FAILURE', payload: JSON.stringify(res.data) });
-
-            dispatch({ type: 'FETCH_SUCCESS', payload: res.data });
-        }) 
-        .catch((error) => dispatch({ type: 'FETCH_FAILURE', payload: error.message + error.stack }))  
-      }           
-
-      fetchData();
-    }, [request]);
-
-    console.info("useDataApi", response, request);
-
-    return [response, setRequest];
+  const setRequest = async (request) => {
+    dispatch({ type: 'FETCH_INIT' });
+    
+      await apiFetch(request.url, request.payload)
+      .then((res) => {
+          if (res.status == "409")
+            dispatch({ type: 'VALIDATION_FAILURE', payload: JSON.stringify(res.data) });
+    
+          dispatch({ type: 'FETCH_SUCCESS', payload: res.data });
+      }) 
+      .catch((error) => dispatch({ type: 'FETCH_FAILURE', payload: error.message + error.stack }))  
   };
 
-const useFetchList = (entityName, properties, constrains) => {
-    const listRequest = {url: '/User/List/', payload: { "EntityName" : entityName, "Properties" : properties, "Constrains" : constrains}}
-    return useDataApi([], listRequest);    
+  console.info("useDataApi", response);
+
+  return [response, setRequest];
+};
+
+const useFetchList = () => {  
+  const [response, setRequest] = useDataApi([]) 
+
+  const setListRequest = (entityName, properties, constrains) => {
+    setRequest({url: '/User/List/', payload: { "EntityName" : entityName, "Properties" : properties, "Constrains" : constrains,}})
+  }
+
+  return [response, setListRequest]
 }
 
 const useFetchById = (entityName, id) => {
-    return useDataApi({}, {url: '/User/GetById/', payload: { "EntityName": entityName, "Id" : id }});     
+  return useDataApi({}, {url: '/User/GetById/', payload: { "EntityName": entityName, "Id" : id }});     
 }  
 
-const useUpdate2 = (initialValue, initialRequest) => {
-    const [response, setRequest] = useDataApi(initialValue, initialRequest) 
-  
-    const setListRequest = (entityName, properties, constrains) => {
-      setRequest({url: '/User/List/', payload: { "EntityName" : entityName, "Properties" : properties, "Constrains" : constrains}})
-    }
-  
-    return [response, setListRequest]
-}
+const useUpdate = (initialValue, initialRequest) => {
+  const [response, setRequest] = useDataApi(initialValue, initialRequest) 
 
-  const useUpdate = () => {
-    
-    const doUpdate =  useDataApi([], {url: '/User/Update/', payload: { "EntityName" : entityName, "Id" : id, "Properties" : properties }}); 
-
-    React.useEffect(() => {
-      const fetchData = async () => {
-        dispatch({ type: 'FETCH_INIT' });
-  
-        await apiFetch(request.url, request.payload)
-        .then((response) => {
-            if (response.status == "409")
-              dispatch({ type: 'VALIDATION_FAILURE', payload: JSON.stringify(response.data) });
-
-            dispatch({ type: 'FETCH_SUCCESS', payload: response.data });
-        }) 
-        .catch((error) => dispatch({ type: 'FETCH_FAILURE', payload: error.message + error.stack }))  
-      }     
-
-      fetchData();
-    }, [request]);
-    
-    return [updateResponse, setRequest];
+  const setUpdateRequest = (entityName, id, properties) => {
+    setRequest({url: '/User/Update/', payload: { "EntityName" : entityName, "Id" : id, "Properties" : properties }})
   }
 
-  export {useFetchById, useFetchList, useUpdate};
+  return [response, setUpdateRequest]
+}
+
+export {useFetchById, useFetchList, useUpdate};

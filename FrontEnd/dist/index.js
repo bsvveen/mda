@@ -35051,7 +35051,7 @@ const FullList = ({ entityName , properties , constrains  })=>{
     if (current && mode == "detail") return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _detailDefault.default), {
         entityName: entityName,
         id: current,
-        onCancel: onReset
+        onClose: ()=>onReset()
     }, void 0, false, {
         fileName: "src/components/restform/fullList.js",
         lineNumber: 35,
@@ -35123,20 +35123,30 @@ var _dynamicListDefault = parcelHelpers.interopDefault(_dynamicList);
 var _s = $RefreshSig$();
 const List = ({ entityName , properties , constrains , onSelect  })=>{
     _s();
-    const [response, setRequest] = (0, _useDataApi.useFetchList)(entityName, properties, constrains);
+    const [response, setRequest] = (0, _useDataApi.useFetchList)();
+    (0, _reactDefault.default).useEffect(()=>{
+        setRequest(entityName, properties, constrains);
+    }, []);
     console.info("List", response);
+    if (response.data.length == 0) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+        children: "Loading..."
+    }, void 0, false, {
+        fileName: "src/components/restform/list.js",
+        lineNumber: 14,
+        columnNumber: 41
+    }, undefined);
     if (response.isLoading) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: "Loading..."
     }, void 0, false, {
         fileName: "src/components/restform/list.js",
-        lineNumber: 10,
+        lineNumber: 15,
         columnNumber: 34
     }, undefined);
     if (response.error) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: response.error
     }, void 0, false, {
         fileName: "src/components/restform/list.js",
-        lineNumber: 11,
+        lineNumber: 16,
         columnNumber: 30
     }, undefined);
     const rowRender = (item, isSelected)=>{
@@ -35150,7 +35160,7 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
                         children: item[key]
                     }, key, false, {
                         fileName: "src/components/restform/list.js",
-                        lineNumber: 19,
+                        lineNumber: 24,
                         columnNumber: 34
                     }, undefined);
                 }),
@@ -35163,12 +35173,12 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
                         children: "View"
                     }, void 0, false, {
                         fileName: "src/components/restform/list.js",
-                        lineNumber: 21,
+                        lineNumber: 26,
                         columnNumber: 31
                     }, undefined)
                 }, void 0, false, {
                     fileName: "src/components/restform/list.js",
-                    lineNumber: 21,
+                    lineNumber: 26,
                     columnNumber: 9
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("td", {
@@ -35180,18 +35190,18 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
                         children: "Edit"
                     }, void 0, false, {
                         fileName: "src/components/restform/list.js",
-                        lineNumber: 22,
+                        lineNumber: 27,
                         columnNumber: 31
                     }, undefined)
                 }, void 0, false, {
                     fileName: "src/components/restform/list.js",
-                    lineNumber: 22,
+                    lineNumber: 27,
                     columnNumber: 9
                 }, undefined)
             ]
         }, item.Id, true, {
             fileName: "src/components/restform/list.js",
-            lineNumber: 15,
+            lineNumber: 20,
             columnNumber: 7
         }, undefined);
     };
@@ -35202,16 +35212,16 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
             rowRender: rowRender
         }, void 0, false, {
             fileName: "src/components/restform/list.js",
-            lineNumber: 28,
+            lineNumber: 33,
             columnNumber: 7
         }, undefined)
     }, void 0, false, {
         fileName: "src/components/restform/list.js",
-        lineNumber: 27,
+        lineNumber: 32,
         columnNumber: 5
     }, undefined);
 };
-_s(List, "WjneeB9sX7DG/WW28z/9gRI2yVw=", false, function() {
+_s(List, "qA/mj4GDYcE4pjSYAwYxsdohh1w=", false, function() {
     return [
         (0, _useDataApi.useFetchList)
     ];
@@ -35240,7 +35250,7 @@ parcelHelpers.export(exports, "useFetchList", ()=>useFetchList);
 parcelHelpers.export(exports, "useUpdate", ()=>useUpdate);
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
-var _s = $RefreshSig$(), _s1 = $RefreshSig$(), _s2 = $RefreshSig$(), _s3 = $RefreshSig$(), _s4 = $RefreshSig$();
+var _s = $RefreshSig$(), _s1 = $RefreshSig$(), _s2 = $RefreshSig$(), _s3 = $RefreshSig$();
 const dataFetchReducer = (state, action)=>{
     switch(action.type){
         case "FETCH_INIT":
@@ -35293,86 +35303,48 @@ const apiFetch = async (url, payLoad)=>{
         }).catch((error)=>reject(error));
     });
 };
-const useDataApi = (initialData, initialRequest)=>{
+const useDataApi = (initialData)=>{
     _s();
-    const [request1, setRequest1] = (0, _reactDefault.default).useState(initialRequest ?? {});
-    const [response, dispatch1] = (0, _reactDefault.default).useReducer(dataFetchReducer, {
+    const [response, dispatch] = (0, _reactDefault.default).useReducer(dataFetchReducer, {
         isLoading: false,
         error: null,
         modelstate: null,
         data: initialData
     });
-    (0, _reactDefault.default).useEffect(()=>{
-        const fetchData = async ()=>{
-            dispatch1({
-                type: "FETCH_INIT"
+    const setRequest = async (request)=>{
+        dispatch({
+            type: "FETCH_INIT"
+        });
+        await apiFetch(request.url, request.payload).then((res)=>{
+            if (res.status == "409") dispatch({
+                type: "VALIDATION_FAILURE",
+                payload: JSON.stringify(res.data)
             });
-            await apiFetch(request1.url, request1.payload).then((res)=>{
-                if (res.status == "409") dispatch1({
-                    type: "VALIDATION_FAILURE",
-                    payload: JSON.stringify(res.data)
-                });
-                dispatch1({
-                    type: "FETCH_SUCCESS",
-                    payload: res.data
-                });
-            }).catch((error)=>dispatch1({
-                    type: "FETCH_FAILURE",
-                    payload: error.message + error.stack
-                }));
-        };
-        fetchData();
-    }, [
-        request1
-    ]);
-    console.info("useDataApi", response, request1);
+            dispatch({
+                type: "FETCH_SUCCESS",
+                payload: res.data
+            });
+        }).catch((error)=>dispatch({
+                type: "FETCH_FAILURE",
+                payload: error.message + error.stack
+            }));
+    };
+    console.info("useDataApi", response);
     return [
         response,
-        setRequest1
+        setRequest
     ];
 };
-_s(useDataApi, "ME+1LhlyjzjXccAa/hXHrMleCtQ=");
-const useFetchList = (entityName1, properties1, constrains)=>{
+_s(useDataApi, "Di+mHjsO8pvyXK8wikn9A3bY9ng=");
+const useFetchList = ()=>{
     _s1();
-    const listRequest = {
-        url: "/User/List/",
-        payload: {
-            "EntityName": entityName1,
-            "Properties": properties1,
-            "Constrains": constrains
-        }
-    };
-    return useDataApi([], listRequest);
-};
-_s1(useFetchList, "68Sv5h4t3w8Ky+Q54gh56FO42Hg=", false, function() {
-    return [
-        useDataApi
-    ];
-});
-const useFetchById = (entityName1, id1)=>{
-    _s2();
-    return useDataApi({}, {
-        url: "/User/GetById/",
-        payload: {
-            "EntityName": entityName1,
-            "Id": id1
-        }
-    });
-};
-_s2(useFetchById, "68Sv5h4t3w8Ky+Q54gh56FO42Hg=", false, function() {
-    return [
-        useDataApi
-    ];
-});
-const useUpdate2 = (initialValue, initialRequest)=>{
-    _s3();
-    const [response, setRequest1] = useDataApi(initialValue, initialRequest);
-    const setListRequest = (entityName1, properties1, constrains)=>{
-        setRequest1({
+    const [response, setRequest] = useDataApi([]);
+    const setListRequest = (entityName, properties, constrains)=>{
+        setRequest({
             url: "/User/List/",
             payload: {
-                "EntityName": entityName1,
-                "Properties": properties1,
+                "EntityName": entityName,
+                "Properties": properties,
                 "Constrains": constrains
             }
         });
@@ -35382,50 +35354,45 @@ const useUpdate2 = (initialValue, initialRequest)=>{
         setListRequest
     ];
 };
-_s3(useUpdate2, "P+OS6EMBy6PJji2gl0MzMFPXRW4=", false, function() {
+_s1(useFetchList, "P+OS6EMBy6PJji2gl0MzMFPXRW4=", false, function() {
     return [
         useDataApi
     ];
 });
-const useUpdate = ()=>{
-    _s4();
-    const doUpdate = useDataApi([], {
-        url: "/User/Update/",
+const useFetchById = (entityName, id)=>{
+    _s2();
+    return useDataApi({}, {
+        url: "/User/GetById/",
         payload: {
             "EntityName": entityName,
-            "Id": id,
-            "Properties": properties
+            "Id": id
         }
     });
-    (0, _reactDefault.default).useEffect(()=>{
-        const fetchData = async ()=>{
-            dispatch({
-                type: "FETCH_INIT"
-            });
-            await apiFetch(request.url, request.payload).then((response)=>{
-                if (response.status == "409") dispatch({
-                    type: "VALIDATION_FAILURE",
-                    payload: JSON.stringify(response.data)
-                });
-                dispatch({
-                    type: "FETCH_SUCCESS",
-                    payload: response.data
-                });
-            }).catch((error)=>dispatch({
-                    type: "FETCH_FAILURE",
-                    payload: error.message + error.stack
-                }));
-        };
-        fetchData();
-    }, [
-        request
-    ]);
+};
+_s2(useFetchById, "68Sv5h4t3w8Ky+Q54gh56FO42Hg=", false, function() {
     return [
-        updateResponse,
-        setRequest
+        useDataApi
+    ];
+});
+const useUpdate = (initialValue, initialRequest)=>{
+    _s3();
+    const [response, setRequest] = useDataApi(initialValue, initialRequest);
+    const setUpdateRequest = (entityName, id, properties)=>{
+        setRequest({
+            url: "/User/Update/",
+            payload: {
+                "EntityName": entityName,
+                "Id": id,
+                "Properties": properties
+            }
+        });
+    };
+    return [
+        response,
+        setUpdateRequest
     ];
 };
-_s4(useUpdate, "4HGOfZBw8zNWlHCWm5wptPE8ccg=", false, function() {
+_s3(useUpdate, "P+OS6EMBy6PJji2gl0MzMFPXRW4=", false, function() {
     return [
         useDataApi
     ];
@@ -35646,52 +35613,117 @@ var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
 var _dynamicform = require("./dynamicform");
 var _dynamicformDefault = parcelHelpers.interopDefault(_dynamicform);
+var _useDataApi = require("./useDataApi");
 var _s = $RefreshSig$();
+const getEntityModel = (name)=>{
+    return new Promise((resolve, reject)=>{
+        const model = JSON.parse(sessionStorage.getItem("model"));
+        if (model == undefined) reject("Model not found in sessionStorage", entity);
+        const entity = model.entities.find((e)=>e.name == name);
+        if (entity == undefined) reject("Entity not found in Model", entity);
+        resolve(entity);
+    });
+};
+const formReducer = (state, action)=>{
+    switch(action.type){
+        case "FETCH_EntityModel_INIT":
+            return {
+                ...state
+            };
+        case "FETCH_EntityModel_SUCCES":
+            return {
+                ...state,
+                entityModel: action.payload
+            };
+        case "FETCH_EntityInstance":
+            return {
+                ...state,
+                fetchResponse: action.payload
+            };
+        case "UPDATE_EntityInstance":
+            return {
+                ...state,
+                updateResponse: action.payload
+            };
+        default:
+            throw new Error();
+    }
+};
 const Form = ({ entityName , id , onClose  })=>{
     _s();
-    const getResponse = useFetchById(entityName, id);
-    const [updateResponse, doUpdate] = useUpdate();
-    const [entityModel, setEntityModel] = (0, _reactDefault.default).useState(undefined);
+    const [getResponse, setGetRequest] = (0, _useDataApi.useFetchById)(entityName, id);
+    const [updateResponse, setUpdateRequest] = (0, _useDataApi.useUpdate)({}, undefined);
+    const [response, dispatch] = (0, _reactDefault.default).useReducer(formReducer, {
+        entityModel: null,
+        entityInstance: null,
+        modelState: null
+    });
     (0, _reactDefault.default).useEffect(()=>{
-        getEntityModel(entityName);
-    }, []);
+        const fetchData = async ()=>{
+            dispatch({
+                type: "FETCH_EntityModel_INIT"
+            });
+            await getEntityModel(entityName).then((entityModel1)=>{
+                dispatch({
+                    type: "FETCH_EntityModel_SUCCES",
+                    payload: entityModel1
+                });
+            }).then(()=>{}).catch((error)=>alert(error));
+            await apiFetch(request.url, request.payload).then((res)=>{
+                if (res.status == "409") dispatch({
+                    type: "VALIDATION_FAILURE",
+                    payload: JSON.stringify(res.data)
+                });
+                dispatch({
+                    type: "FETCH_SUCCESS",
+                    payload: res.data
+                });
+            }).catch((error)=>dispatch({
+                    type: "FETCH_FAILURE",
+                    payload: error.message + error.stack
+                }));
+        };
+        fetchData();
+    }, [
+        request
+    ]);
+    if (!entityModel) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+        children: "Loading..."
+    }, void 0, false, {
+        fileName: "src/components/restform/form.js",
+        lineNumber: 81,
+        columnNumber: 28
+    }, undefined);
     if (getResponse.loading || updateResponse.loading) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: "Loading..."
     }, void 0, false, {
         fileName: "src/components/restform/form.js",
-        lineNumber: 11,
+        lineNumber: 82,
         columnNumber: 61
     }, undefined);
     if (getResponse.error) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: getResponse.error
     }, void 0, false, {
         fileName: "src/components/restform/form.js",
-        lineNumber: 12,
+        lineNumber: 83,
         columnNumber: 33
     }, undefined);
     if (updateResponse.modelstate) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: updateResponse.modelstate
     }, void 0, false, {
         fileName: "src/components/restform/form.js",
-        lineNumber: 13,
+        lineNumber: 84,
         columnNumber: 41
     }, undefined);
     if (updateResponse.error) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: updateResponse.error
     }, void 0, false, {
         fileName: "src/components/restform/form.js",
-        lineNumber: 14,
+        lineNumber: 85,
         columnNumber: 36
     }, undefined);
-    const getEntityModel = (name)=>{
-        const model = JSON.parse(sessionStorage.getItem("model"));
-        if (model == undefined) throw Error("Model not found in sessionStorage", entity);
-        const entity = model.entities.find((e)=>e.name == name);
-        if (entity == undefined) throw Error("Entity not found in Model", entity);
-        setEntityModel(entity);
-    };
     const onSubmit = (properties)=>{
-        doUpdate(entityName, id, properties);
+        setUpdateRequest(entityName, id, properties);
         onClose();
     };
     const onDelete = (id)=>{
@@ -35712,16 +35744,21 @@ const Form = ({ entityName , id , onClose  })=>{
             onDelete: onDelete
         }, void 0, false, {
             fileName: "src/components/restform/form.js",
-            lineNumber: 44,
+            lineNumber: 103,
             columnNumber: 7
         }, undefined)
     }, void 0, false, {
         fileName: "src/components/restform/form.js",
-        lineNumber: 43,
+        lineNumber: 102,
         columnNumber: 5
     }, undefined);
 };
-_s(Form, "j6arYxGWO76+YyCU9uyMc04T+7A=", true);
+_s(Form, "/M/fKePJKEgLn34PcOJXV8VnUV0=", false, function() {
+    return [
+        (0, _useDataApi.useFetchById),
+        (0, _useDataApi.useUpdate)
+    ];
+});
 _c = Form;
 exports.default = Form;
 var _c;
@@ -35732,7 +35769,7 @@ $RefreshReg$(_c, "Form");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./dynamicform":"8sb2b","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"8sb2b":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./dynamicform":"8sb2b","./useDataApi":"fYMtK","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"8sb2b":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$c976 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -51582,9 +51619,9 @@ var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
 var _useDataApi = require("./useDataApi");
 var _s = $RefreshSig$();
-const Detail = ({ entityName , Id , onClose  })=>{
+const Detail = ({ entityName , id , onClose  })=>{
     _s();
-    const response = (0, _useDataApi.useFetchById)(entityName, Id);
+    const [response, setRequest] = (0, _useDataApi.useFetchById)(entityName, id);
     if (response.isLoading) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: "Loading..."
     }, void 0, false, {
@@ -51687,7 +51724,7 @@ const Detail = ({ entityName , Id , onClose  })=>{
                 lineNumber: 24,
                 columnNumber: 7
             }, undefined),
-            Recursive(response)
+            Recursive(response.data)
         ]
     }, void 0, true, {
         fileName: "src/components/restform/detail.js",
@@ -51695,7 +51732,7 @@ const Detail = ({ entityName , Id , onClose  })=>{
         columnNumber: 5
     }, undefined);
 };
-_s(Detail, "q7HqDNPcoeospzoAGujU0hZ6sBE=", false, function() {
+_s(Detail, "n6v8SwFfNsAAU8por+ejM2lrSZM=", false, function() {
     return [
         (0, _useDataApi.useFetchById)
     ];

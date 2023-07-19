@@ -1,8 +1,8 @@
 import React from 'react';
 import { useFetchById } from './useDataApi';
  
-const Detail = ({entityName, Id, onClose}) => {  
-  const response = useFetchById(entityName, Id); 
+const Detail = ({entityName, id, onClose}) => {    
+  const [response, setRequest] = useFetchById(entityName, id);
 
   if (response.isLoading) return <p>Loading...</p>;  
   if (response.error) return <p>{response.error}</p>;    
@@ -22,7 +22,7 @@ const Detail = ({entityName, Id, onClose}) => {
   return (    
     <div className="detail">    
       <div><button onClick={() => onClose()} type="close" title="Close">Close</button></div>
-      {Recursive(response)}
+      {Recursive(response.data)}
     </div>
   );     
 }

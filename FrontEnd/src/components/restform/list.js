@@ -3,10 +3,15 @@ import { useFetchList } from './useDataApi';
 import DynamicList from './dynamicList';
 
 const List = ({entityName, properties, constrains, onSelect}) => {  
-  const [response, setRequest] = useFetchList(entityName, properties, constrains); 
+  const [response, setRequest] = useFetchList(); 
+
+  React.useEffect(() => {  
+    setRequest(entityName, properties, constrains);
+  }, []); 
 
   console.info("List", response);
 
+  if (response.data.length == 0) return <p>Loading...</p>; 
   if (response.isLoading) return <p>Loading...</p>; 
   if (response.error) return <p>{response.error}</p>;  
 

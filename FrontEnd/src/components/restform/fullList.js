@@ -34,7 +34,7 @@ const FullList = ({entityName, properties, constrains}) => {
   if (current && mode == "detail")
     return <Detail  entityName = {entityName}
                     id = {current}  
-                    onCancel = {onReset} />
+                    onClose = {() => onReset()} />
 
 return (
   <div className="restForm">    
