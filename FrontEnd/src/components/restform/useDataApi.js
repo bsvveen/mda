@@ -95,12 +95,18 @@ const useFetchList = () => {
   return [response, setListRequest]
 }
 
-const useFetchById = (entityName, id) => {
-  return useDataApi({}, {url: '/User/GetById/', payload: { "EntityName": entityName, "Id" : id }});     
-}  
+const useFetchById = () => {  
+  const [response, setRequest] = useDataApi({}) 
 
-const useUpdate = (initialValue, initialRequest) => {
-  const [response, setRequest] = useDataApi(initialValue, initialRequest) 
+  const setFetchByIdRequest = (entityName, id) => {
+    setRequest({url: '/User/GetById/', payload: { "EntityName": entityName, "Id" : id }})
+  }
+
+  return [response, setFetchByIdRequest]
+}
+
+const useUpdate = (initialValue) => {
+  const [response, setRequest] = useDataApi(initialValue) 
 
   const setUpdateRequest = (entityName, id, properties) => {
     setRequest({url: '/User/Update/', payload: { "EntityName" : entityName, "Id" : id, "Properties" : properties }})

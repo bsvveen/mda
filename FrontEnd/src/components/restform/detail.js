@@ -2,10 +2,17 @@ import React from 'react';
 import { useFetchById } from './useDataApi';
  
 const Detail = ({entityName, id, onClose}) => {    
-  const [response, setRequest] = useFetchById(entityName, id);
+  const [response, setRequest] = useFetchById();   
 
-  if (response.isLoading) return <p>Loading...</p>;  
-  if (response.error) return <p>{response.error}</p>;    
+  React.useEffect(() => {  
+    setRequest(entityName, id);
+  }, []); 
+
+  console.info("Detail", response);
+
+  if (response.data == {}) return <p>Initializing...</p>; 
+  if (response.isLoading) return <p>Loading...</p>; 
+  if (response.error) return <p>{response.error}</p>;  
 
   const Recursive = (obj) => {
     let result = [];
