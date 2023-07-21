@@ -5,18 +5,21 @@ import useEntityModel from './useEntityModel';
 
 
 const Form = ({entityName, id, onClose}) => {  
-  const [response, setRequest] = useFetchById(); 
-  const [entityModel] = useEntityModel();
+  const [fetchByIdResponse, setFetchByIdRequest] = useFetchById(); 
+  const [updateResponse, setUpdateRequest] = useUpdate();
+  const [entityModel] = useEntityModel(entityName);
 
   React.useEffect(() => {  
-    setRequest(entityName, id);
+    setFetchByIdRequest(entityName, id);
   }, []); 
 
-  console.info("Form", response);
+  console.info("Form.fetchByIdResponse", fetchByIdResponse);
 
-  if (response.data == {}) return <p>Initializing...</p>; 
-  if (response.isLoading || entityModel == undefined) return <p>Loading...</p>; 
-  if (response.error) return <p>{response.error}</p>;  
+  if (fetchByIdResponse.data == {}) return <p>Initializing...</p>; 
+  if (fetchByIdResponse.isLoading || entityModel == undefined) return <p>Loading...</p>; 
+  if (fetchByIdResponse.error) return <p>{fetchByIdResponse.error}</p>;  
+  if (updateResponse.modelstate) return <p>{updateResponse.modelstate}</p>;  
+  if (updateResponse.error) return <p>{updateResponse.error}</p>;  
 
   const onSubmit = (properties) => {   
     setUpdateRequest(entityName, id, properties);
@@ -37,7 +40,7 @@ const Form = ({entityName, id, onClose}) => {
       <DynamicForm 
         id = { id }
         entityModel = { entityModel }  
-        properties  = { getResponse.data }          
+        properties  = { fetchByIdResponse.data }          
         onCancel    = { onCancel }
         onSubmit    = { onSubmit }
         onDelete    = { onDelete }   

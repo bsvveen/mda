@@ -4,7 +4,11 @@ const useEntityModel = (entityName) => {
 
     const getEntityModel = () => {
         return new Promise((resolve, reject) => {    
-            const model = JSON.parse(sessionStorage.getItem("model"));
+            if (entityName == undefined)
+                reject("entityName is undefined");
+
+            const modelJson = sessionStorage.getItem("model");
+            const model = JSON.parse(modelJson);
             if (model == undefined)
                 reject("Model not found in sessionStorage", entityName);
         
@@ -17,7 +21,10 @@ const useEntityModel = (entityName) => {
     };    
 
     const [entityModel, setEntityModel] = React.useState(() => {
-        getEntityModel().then((em) => setEntityModel(em)).catch((err) => alert("Could not load EntityModel from SessionStorage, ", err))
+        getEntityModel().then((em) => setEntityModel(em)).catch((err) => {
+            alert("Could not load EntityModel from SessionStorage, ", err.message);
+            console.error(err);
+        })
     });
 
     const setEntityModel2 = newModel => {
