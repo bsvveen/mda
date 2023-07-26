@@ -105,6 +105,16 @@ const useFetchById = () => {
   return [fetchByIdResponse, setFetchByIdRequest]
 }
 
+const useCreate= (initialValue) => {
+  const [createResponse, setRequest] = useDataApi(initialValue) 
+
+  const setCreateRequest = (entityName, properties) => {
+    setRequest({url: '/User/Create/', payload: { "EntityName" : entityName, "Properties" : properties }})
+  }
+
+   return [createResponse, setCreateRequest]
+}
+
 const useUpdate = (initialValue) => {
   const [updateResponse, setRequest] = useDataApi(initialValue) 
 
@@ -115,4 +125,4 @@ const useUpdate = (initialValue) => {
   return [updateResponse, setUpdateRequest]
 }
 
-export {useFetchById, useFetchList, useUpdate};
+export {useFetchById, useFetchList, useUpdate, useCreate};

@@ -43,20 +43,9 @@ namespace MDA.User
             var sql = $"SELECT {select_statement} FROM {request.EntityName} WHERE Id = '{request.Id}' FOR JSON AUTO, WITHOUT_ARRAY_WRAPPER; ;";
              
             return await ExecuteReader(sql);
-        }
+        }       
 
-        public async Task Submit(SubmitRequest request)
-        {
-            if (request.Properties == null || request.Properties.Count == 0)
-                throw new ArgumentException("SubmitRequest does not contain a properties collection.");
-
-            if (request.Id == null)
-                await Insert(request);
-
-            await Update(request);
-        }
-
-        private async Task Update(SubmitRequest request)
+        public async Task Update(UpdateRequest request)
         {
             var keyscollection = string.Join(',', request.Properties.Select(x => $"{x.Key} = '{x.Value}'"));
 
@@ -64,7 +53,7 @@ namespace MDA.User
             await ExecuteNonQuery(sql);
         }
 
-        private async Task Insert(SubmitRequest request)
+        public async Task Create(CreateRequest request)
         {
             var keyscollection = string.Join(',', request.Properties.Select(x => $"{x.Key}"));
             var valuescollection = string.Join(',', request.Properties.Select(x => $"'{x.Value}'"));

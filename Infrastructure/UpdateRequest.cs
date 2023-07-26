@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MDA.Infrastructure
 {
-    public class SubmitRequest
+    public class UpdateRequest
     {
-        public SubmitRequest()
+        public UpdateRequest()
         {
             Properties = new Dictionary<string, object>();
             Errors = new List<string>();
@@ -15,7 +15,8 @@ namespace MDA.Infrastructure
         [Required]
         public string? EntityName { get; set; }
 
-        public Guid? Id { get; set; }
+        [Required]
+        public Guid Id { get; set; }
 
         public Dictionary<string,object>? Properties { get; set; }
 

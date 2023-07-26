@@ -70,7 +70,7 @@ export default class DynamicForm extends React.Component {
             let isReadonly = this.props.constrains.some(c => c.property == prop.key);
             let isHidden = prop.key.includes("_id");
             let type = prop.type || "text";
-            let errors = this.state.errors;
+            let errors = this.props.errors;
             let input = "";                   
             
             if (isHidden) // || m.props.disabled)
@@ -139,6 +139,7 @@ DynamicForm.propTypes = {
     properties: PropTypes.object,      
     constrains: PropTypes.array,
     entityModel: PropTypes.object.isRequired,
+    errors: PropTypes.array,
     onCancel: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired     

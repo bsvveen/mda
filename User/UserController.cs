@@ -56,14 +56,40 @@ namespace MDA.User
             return Ok(await userService.GetById(request));                  
         }
 
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromBody] CreateRequest request)
+        { 
+            var validationResult = request.Validate();
+
+            if (validationResult.Errors.Count > 0)
+                return BadRequest(validationResult.Errors);
+
+            if (validationResult.ValidationErrors.Count > 0)
+                return Conflict(validationResult.ValidationErrors);
+
+            var requestAccessValidation = _model.CheckAuthorization(request.EntityName, request.Properties.Select(p => p.Key).ToList());
+            if (!requestAccessValidation.IsValid)
+                return Forbid("Access Denied");
+
+            var requestValueValidation = _model.CheckValuesValidity(request.EntityName, request.Properties);
+            if (!requestValueValidation.IsValid)
+                return Conflict(requestValueValidation.ValidationErrors);
+
+            var userService = new UserServices(_model);
+            await userService.Create(request);
+            Response.StatusCode = 200;
+
+            return Ok("Update Succeeded");
+        }
+
         [HttpPost("Update")]
-        public async Task<IActionResult> Update([FromBody] SubmitRequest request)
+        public async Task<IActionResult> Update([FromBody] UpdateRequest request)
         {
             if (!ModelState.IsValid)
                 return Conflict(ModelState);
             
             if (!request.IsValid())
-                return BadRequest("Fout in SubmitRequest: " + string.Join(",", request.Errors));
+                return BadRequest("Fout in UpdateRequest: " + string.Join(",", request.Errors));
 
             var requestAccessValidation = _model.CheckAuthorization(request.EntityName, request.Properties.Select(p => p.Key).ToList());
             if (!requestAccessValidation.IsValid)
@@ -74,7 +100,7 @@ namespace MDA.User
                 return Conflict(requestValueValidation.ValidationErrors);            
 
             var userService = new UserServices(_model);
-            await userService.Submit(request);
+            await userService.Update(request);
             Response.StatusCode = 200;
 
             return Ok("Update Succeeded");

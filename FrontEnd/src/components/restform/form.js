@@ -1,16 +1,17 @@
 import React from 'react';
 import DynamicForm from './dynamicform';
-import { useFetchById, useUpdate } from './useDataApi';
+import { useFetchById, useUpdate, useCreate } from './useDataApi';
 import useEntityModel from './useEntityModel';
-
 
 const Form = ({entityName, id, onClose}) => {  
   const [fetchByIdResponse, setFetchByIdRequest] = useFetchById(); 
-  const [updateResponse, setUpdateRequest] = useUpdate();
+  const [updateResponse, setUpdateRequest] = useUpdate(); 
+  const [createResponse, setCreateRequest] = useCreate();
   const [entityModel] = useEntityModel(entityName);
 
   React.useEffect(() => {  
-    setFetchByIdRequest(entityName, id);
+    if (id)
+      setFetchByIdRequest(entityName, id);
   }, []); 
 
   console.info("Form.fetchByIdResponse", fetchByIdResponse);
@@ -20,12 +21,19 @@ const Form = ({entityName, id, onClose}) => {
   if (fetchByIdResponse.error) return <p>{fetchByIdResponse.error}</p>;  
   if (updateResponse.modelstate) return <p>{updateResponse.modelstate}</p>;  
   if (updateResponse.error) return <p>{updateResponse.error}</p>;  
+  if (createResponse.modelstate) return <p>{createResponse.modelstate}</p>;  
+  if (createResponse.error) return <p>{createResponse.error}</p>;  
+
+  const validationErrors = updateResponse.modelstate || createResponse.modelstate || [];
 
   const onSubmit = (properties) => {   
-    setUpdateRequest(entityName, id, properties);
-    onClose();
+    if (id) {
+      setUpdateRequest(entityName, id, properties);
+    } else {
+      setCreateRequest(entityName, properties);
+    } 
   }  
-
+  
   const onDelete = (id) => {    
     deleteMe(entityName, id);
     onClose();
@@ -40,7 +48,8 @@ const Form = ({entityName, id, onClose}) => {
       <DynamicForm 
         id = { id }
         entityModel = { entityModel }  
-        properties  = { fetchByIdResponse.data }          
+        properties  = { fetchByIdResponse.data }
+        errors      = { validationErrors }          
         onCancel    = { onCancel }
         onSubmit    = { onSubmit }
         onDelete    = { onDelete }   
