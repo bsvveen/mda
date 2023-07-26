@@ -45,9 +45,14 @@ namespace MDA.User
             return JsonSerializer.Deserialize<object>(stringResponse);
         }
 
-        public async Task Submit(SubmitRequest request)
+        public async Task Create(CreateRequest request)
         {
-            await _db.Submit(request);
+            await _db.Create(request);
+        }
+
+        public async Task Update(UpdateRequest request)
+        {
+            await _db.Update(request);
         }
     }    
 }

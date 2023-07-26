@@ -1,6 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Extensions.Configuration;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Text.Json.Serialization;
+using static MDA.Infrastructure.Primitive;
 
 namespace MDA.Infrastructure
 {
@@ -58,6 +60,9 @@ namespace MDA.Infrastructure
 
             [JsonPropertyName("foreignkey")]
             public ForeignKey ForeignKey { get; set; }
+
+            [JsonPropertyName("validations")]
+            public Dictionary<string, object> Validations { get; set; }
         }
 
         public class ForeignKey
@@ -75,24 +80,16 @@ namespace MDA.Infrastructure
 
             [JsonPropertyName("constrains")]
             public List<Constrain> Constrains { get; set; }
-        }        
-
-        public ValidationResult CheckExistance(string Entity, List<string> Properties)
-        {
-            var validationResult = new ValidationResult(); 
-
-            var entity = Entities.SingleOrDefault(e => e.Name == Entity);
-            if (entity == null) {
-                validationResult.Errors.Add($"Entity '{Entity}' does not exists in de model");
-            } else  {
-                var missing = Properties.Where(i => i != "Id").Select(p => p).Except(entity.Properties.Select(p => p.Key));
-                if (missing.Any()) {
-                    missing.ToList().ForEach(i => validationResult.Errors.Add($"Property '{i}' does not exists on Entity '{Entity}' "));                
-                }                
-            }   
-
-            return validationResult;
         }
+
+        public abstract class Validation
+        {
+            public string configuration { get; set;  }
+
+            public abstract string message { get; }
+
+            public abstract bool isValid(object instance);
+        }      
 
         public ValidationResult CheckValuesValidity(string Entity, Dictionary<string, object> Properties)
         {
@@ -104,6 +101,16 @@ namespace MDA.Infrastructure
         {
             var validationResult = new ValidationResult();
             return validationResult;
+        }
+    }
+
+    public class requiredValidation : Validation
+    {
+        public override string message => "Cannot be NULL";
+
+        public override bool isValid(object instance)
+        {
+            return !(configuration == "true" && instance == null);
         }
     }
 }

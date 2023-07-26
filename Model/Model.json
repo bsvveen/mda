@@ -8,7 +8,11 @@
           "key": "Name",
           "name": "Name",
           "type": "text",
-          "notnull": true
+          "notnull": true,
+          "validations": {
+            "required": true,
+            "maxLength": 500
+          }
         },
         {
           "key": "BirthDate",
