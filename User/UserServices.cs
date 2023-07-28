@@ -45,9 +45,13 @@ namespace MDA.User
             return JsonSerializer.Deserialize<object>(stringResponse);
         }
 
-        public async Task Create(CreateRequest request)
+        public async Task<object> Create(CreateRequest request)
         {
-            await _db.Create(request);
+            Guid newID = await _db.Create(request);
+            if (newID == Guid.Empty)
+                throw new Exception($"Error creating new {request.EntityName}");
+
+            return await GetById(new GetByIdRequest { EntityName = request.EntityName, Id = newID });
         }
 
         public async Task Update(UpdateRequest request)

@@ -1,5 +1,6 @@
 ﻿
 using MDA.Admin;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Xml;
@@ -47,13 +48,13 @@ namespace MDA.Infrastructure
                 {
                     foreach (var validation in validations)
                     {
-                        Type validationType = Type.GetType($"MDA.Infrastructure.{validation.Key}Validation");
+                        Type? validationType = Type.GetType($"MDA.Infrastructure.{validation.Key}Validation");
                         if (validationType == null)                        
                             throw new Exception($"MDA.Infrastructure.{validation.Key}Validation\" was not found.");
 
-                        object validationInstance = Activator.CreateInstance(validationType, null);
-                        string validationMessage = (string)validationType.GetProperty("message").GetValue(validationInstance, null);
-                        bool isValid = (bool)validationType.GetMethod("isValid").Invoke(validationInstance, new object[] { prop.Value });
+                        object? validationInstance = Activator.CreateInstance(validationType, new object[] { validation.Value.ToString() });
+                        string? validationMessage = (string)validationType.GetProperty("Message").GetValue(validationInstance, null);                        
+                        bool isValid = (bool)validationType.GetMethod("isValid").Invoke(validationInstance, new object[] { prop.Value.ToString() });
 
                         if (!isValid)
                             retValue.ValidationErrors.AddModelError(prop.Key, validationMessage);
