@@ -53,7 +53,7 @@ namespace MDA.User
             await ExecuteNonQuery(sql);
         }
 
-        public async Task Create(CreateRequest request)
+        public async Task<Guid> Create(CreateRequest request)
         {
             var keyscollection = string.Join(',', request.Properties.Select(x => $"{x.Key}"));
             var valuescollection = string.Join(',', request.Properties.Select(x => $"'{x.Value}'"));
@@ -62,6 +62,8 @@ namespace MDA.User
 
             var sql = $"INSERT INTO {request.EntityName} (Id, {keyscollection}) VALUES('{ID}', {valuescollection});";
             await ExecuteNonQuery(sql);
+
+            return ID;
         }
 
         private string TranslatePO(PropertyOperator? @operator)

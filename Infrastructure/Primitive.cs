@@ -84,12 +84,17 @@ namespace MDA.Infrastructure
 
         public abstract class Validation
         {
-            public string configuration { get; set;  }
+            public Validation(string? configuration)
+            {
+                Configuration = configuration;
+            }
 
-            public abstract string message { get; }
+            public string? Configuration { get; set; }
 
-            public abstract bool isValid(object instance);
-        }      
+            public abstract string Message { get; }
+
+            public abstract bool isValid(string instance);
+        }
 
         public ValidationResult CheckValuesValidity(string Entity, Dictionary<string, object> Properties)
         {
@@ -102,15 +107,34 @@ namespace MDA.Infrastructure
             var validationResult = new ValidationResult();
             return validationResult;
         }
-    }
+    }    
 
     public class requiredValidation : Validation
     {
-        public override string message => "Cannot be NULL";
+        public requiredValidation(string? configuration) : base(configuration) {}
 
-        public override bool isValid(object instance)
+        public override string Message => "Cannot be NULL";
+
+        public override bool isValid(string instance)
         {
-            return !(configuration == "true" && instance == null);
+            return !(Configuration == "True" && string.IsNullOrEmpty(instance));
+        }
+    }
+
+    public class maxLengthValidation : Validation
+    {
+        public override string Message => "too long";
+        int maxLength;
+
+        public maxLengthValidation(string? configuration) : base(configuration)
+        {
+            if (!(int.TryParse(configuration, out maxLength)))
+                throw new ArgumentException("configuration is Not A Number");
+        }
+
+        public override bool isValid(string instance)
+        {
+            return ((string)instance).Length <= maxLength;
         }
     }
 }

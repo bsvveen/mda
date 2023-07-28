@@ -76,10 +76,7 @@ namespace MDA.User
                 return Conflict(requestValueValidation.ValidationErrors);
 
             var userService = new UserServices(_model);
-            await userService.Create(request);
-            Response.StatusCode = 200;
-
-            return Ok("Update Succeeded");
+            return Ok(await userService.Create(request));
         }
 
         [HttpPost("Update")]
