@@ -32,12 +32,7 @@ namespace MDA.User
         }
 
         public async Task<object> GetById(GetByIdRequest request)
-        {
-            if (request.Properties.Count == 0) {
-                Entity entity = _model.Entities.Single(e => e.Name == request.EntityName);
-                entity.Properties.ForEach(p => request.Properties.Add(p.Key));
-            }
-
+        { 
             string stringResponse = await _db.GetById(request);
 
             if (stringResponse == null || stringResponse == string.Empty) { stringResponse = "{}"; }

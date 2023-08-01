@@ -18,10 +18,8 @@ const Form = ({entityName, id, onClose}) => {
 
   if (fetchByIdResponse.data == {}) return <p>Initializing...</p>; 
   if (fetchByIdResponse.isLoading || entityModel == undefined) return <p>Loading...</p>; 
-  if (fetchByIdResponse.error) return <p>{fetchByIdResponse.error}</p>;  
-  if (updateResponse.modelstate) return <p>{updateResponse.modelstate}</p>;  
-  if (updateResponse.error) return <p>{updateResponse.error}</p>;  
-  if (createResponse.modelstate) return <p>{createResponse.modelstate}</p>;  
+  if (fetchByIdResponse.error) return <p>{fetchByIdResponse.error}</p>;    
+  if (updateResponse.error) return <p>{updateResponse.error}</p>;    
   if (createResponse.error) return <p>{createResponse.error}</p>;  
 
   const validationErrors = updateResponse.modelstate || createResponse.modelstate || [];
