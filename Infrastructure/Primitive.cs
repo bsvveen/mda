@@ -98,14 +98,12 @@ namespace MDA.Infrastructure
 
         public ValidationResult CheckValuesValidity(string Entity, Dictionary<string, object> Properties)
         {
-            var validationResult = new ValidationResult();     
-            return validationResult;
+            throw new NotImplementedException();
         }
 
         public ValidationResult CheckAuthorization(string Entity, List<string> Properties)
         {
-            var validationResult = new ValidationResult();
-            return validationResult;
+            throw new NotImplementedException();
         }
     }    
 
@@ -115,7 +113,7 @@ namespace MDA.Infrastructure
 
         public override string Message => "Cannot be NULL";
 
-        public override bool isValid(string instance)
+        public override bool isValid(string? instance)
         {
             return !(Configuration == "True" && string.IsNullOrEmpty(instance));
         }
@@ -132,9 +130,9 @@ namespace MDA.Infrastructure
                 throw new ArgumentException("configuration is Not A Number");
         }
 
-        public override bool isValid(string instance)
+        public override bool isValid(string? instance)
         {
-            return ((string)instance).Length <= maxLength;
+            return (instance == null) || instance?.Length <= maxLength;
         }
     }
 }

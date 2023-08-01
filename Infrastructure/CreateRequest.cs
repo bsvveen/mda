@@ -1,10 +1,8 @@
 ﻿
 using MDA.Admin;
-using System;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
-using System.Drawing;
-using System.Xml;
-using static MDA.Infrastructure.Primitive;
+using static MDA.Infrastructure.ErrorHandlerMiddleware;
 
 namespace MDA.Infrastructure
 {
@@ -13,36 +11,33 @@ namespace MDA.Infrastructure
         public CreateRequest()
         {
             Properties = new Dictionary<string, object>();
-            Errors = new List<string>();
         }
 
         [Required]
         public string? EntityName { get; set; }      
 
-        public Dictionary<string,object>? Properties { get; set; }
+        public Dictionary<string,object>? Properties { get; set; }         
 
-        public List<string>? Errors { get; set; }        
-
-        public ValidationResult Validate()
-        {
-            var retValue = new ValidationResult();
-            
+        public void Validate()
+        {            
             var model = new ModelServices().Model;
             var entityModel = model.Entities.SingleOrDefault(tbl => tbl.Name == EntityName);
 
             if (entityModel == null)            
-                retValue.Errors.Add($"Entity '{EntityName}' does not exists in de model");               
+                throw new ModelException($"Entity '{EntityName}' does not exists in de model");               
 
             var notInModel = Properties.Select(p => p.Key).Except(entityModel.Properties.Select(p => p.Key));
             if (notInModel.Any())
-                notInModel.ToList().ForEach(i => retValue.Errors.Add($"Property '{i}' does not exists on Entity '{EntityName}' "));
+                throw new ModelException($"Entity '{string.Join(",", notInModel)}' does not exists on Entity '{EntityName}'");
 
             if (Properties.Any(p => p.Key == "Id"))
-                retValue.Errors.Add($"The submit request properties collection should not contain an Id");
+                throw new ModelException("The submit request properties collection should not contain an Id");
 
-            foreach(var prop in Properties)
+            var ValidationErrors = new ModelStateDictionary();           
+
+            foreach (var modelProp in entityModel.Properties)
             {
-                var validations = entityModel.Properties.Single(p => p.Key == prop.Key).Validations;
+                var validations = modelProp.Validations;
 
                 if (validations != null)
                 {
@@ -53,16 +48,19 @@ namespace MDA.Infrastructure
                             throw new Exception($"MDA.Infrastructure.{validation.Key}Validation\" was not found.");
 
                         object? validationInstance = Activator.CreateInstance(validationType, new object[] { validation.Value.ToString() });
-                        string? validationMessage = (string)validationType.GetProperty("Message").GetValue(validationInstance, null);                        
-                        bool isValid = (bool)validationType.GetMethod("isValid").Invoke(validationInstance, new object[] { prop.Value.ToString() });
+                        string? validationMessage = (string)validationType.GetProperty("Message").GetValue(validationInstance, null);
+                        object? requestProp = (Properties.ContainsKey(modelProp.Key)) ? Properties[modelProp.Key] : null;
+
+                        bool isValid = (bool)validationType.GetMethod("isValid").Invoke(validationInstance, new object[] { requestProp });
 
                         if (!isValid)
-                            retValue.ValidationErrors.AddModelError(prop.Key, validationMessage);
+                            ValidationErrors.AddModelError(modelProp.Key, validationMessage??"error");                       
                     }
                 }                
             }
 
-            return retValue;           
+            if (!ValidationErrors.IsValid)
+                throw new ModelValidationException(ValidationErrors);
         }
     }  
 }

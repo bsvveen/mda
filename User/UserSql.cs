@@ -38,9 +38,7 @@ namespace MDA.User
 
         public async Task<string> GetById(GetByIdRequest request)
         {
-            var select_statement = string.Join(',', request.Properties.Select(p => $"{p} As {p}"));
-
-            var sql = $"SELECT {select_statement} FROM {request.EntityName} WHERE Id = '{request.Id}' FOR JSON AUTO, WITHOUT_ARRAY_WRAPPER; ;";
+            var sql = $"SELECT * FROM {request.EntityName} WHERE Id = '{request.Id}' FOR JSON AUTO, WITHOUT_ARRAY_WRAPPER; ;";
              
             return await ExecuteReader(sql);
         }       

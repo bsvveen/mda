@@ -12,22 +12,7 @@ namespace MDA.Infrastructure
         }
 
         public Primitive Model { get; } = new Primitive();
-    }
-
-    public class ValidationResult
-    {
-        public ValidationResult()
-        {
-            Errors = new List<string>();
-            ValidationErrors = new ModelStateDictionary();
-        }
-
-        public List<string> Errors { get; set; }
-
-        public ModelStateDictionary ValidationErrors { get; set; }
-
-        public bool IsValid { get { return Errors.Count == 0; } }
-    }
+    }   
 
     public class Constrain
     {

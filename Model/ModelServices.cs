@@ -19,7 +19,7 @@ namespace MDA.Admin
             }            
         } 
 
-        public async Task<Primitive> UpdateModel(Primitive newModel)
+        public Primitive UpdateModel(Primitive newModel)
         {
             SaveModelToFile(newModel);            
             _model = newModel;           

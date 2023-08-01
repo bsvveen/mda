@@ -80,6 +80,8 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/Model"
 });
 
+app.UseMiddleware<ErrorHandlerMiddleware>();
+
 app.MapRazorPages();
 app.MapControllers();
 
