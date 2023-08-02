@@ -139,7 +139,7 @@ DynamicForm.propTypes = {
     properties: PropTypes.object,      
     constrains: PropTypes.array,
     entityModel: PropTypes.object.isRequired,
-    errors: PropTypes.array,
+    errors: PropTypes.object,
     onCancel: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired     

@@ -72,11 +72,16 @@ const useDataApi = (initialData) => {
     
       await apiFetch(request.url, request.payload)
       .then((res) => {
-          if (res.status == "409")
-            dispatch({ type: 'VALIDATION_FAILURE', payload: JSON.stringify(res.data) });
-    
-          dispatch({ type: 'FETCH_SUCCESS', payload: res.data });
-      }) 
+        switch(res.status) {
+          case "409":
+            dispatch({ type: 'VALIDATION_FAILURE', payload: res.data });
+            break;
+          case "200":
+            dispatch({ type: 'FETCH_SUCCESS', payload: res.data });
+            break;
+          default:
+            throw error(res.data);
+      }}) 
       .catch((error) => dispatch({ type: 'FETCH_FAILURE', payload: error.message + error.stack }))  
   };
 

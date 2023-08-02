@@ -22,7 +22,9 @@ const Form = ({entityName, id, onClose}) => {
   if (updateResponse.error) return <p>{updateResponse.error}</p>;    
   if (createResponse.error) return <p>{createResponse.error}</p>;  
 
-  const validationErrors = updateResponse.modelstate || createResponse.modelstate || [];
+  const validationErrors = updateResponse.modelstate || createResponse.modelstate || {};
+
+  console.info("validationErrors",validationErrors)
 
   const onSubmit = (properties) => {   
     if (id) {

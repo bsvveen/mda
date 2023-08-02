@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 using System.Globalization;
 using System.Net;
+using System.Runtime.InteropServices;
+using System.Text.Json;
+using static System.Net.Mime.MediaTypeNames;
+using System.Text.Unicode;
 
 namespace MDA.Infrastructure
 {
@@ -28,17 +32,17 @@ namespace MDA.Infrastructure
                     case ModelException e:
                         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                         context.Response.ContentType = "application/json";
-                        await context.Response.WriteAsync(e.Message??"Error");
+                        await context.Response.WriteAsync(e.Message);
                         break;
                     case ModelValidationException e:                        
                         context.Response.StatusCode = (int)HttpStatusCode.Conflict;
-                        context.Response.ContentType = "application/json";
-                        await context.Response.WriteAsync(JsonConvert.SerializeObject(e.Modelstate) ?? "Error");
+                        context.Response.ContentType = "application/json; charset=utf-8";
+                        await context.Response.WriteAsync(JsonConvert.SerializeObject(e.Modelstate));                       
                         break;
                     default:
                         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         context.Response.ContentType = "application/json";
-                        await context.Response.WriteAsync(error.Message ?? "Error");
+                        await context.Response.WriteAsync(error.Message);
                         break;
                 }
             }           

@@ -111,7 +111,7 @@ namespace MDA.Infrastructure
     {
         public requiredValidation(string? configuration) : base(configuration) {}
 
-        public override string Message => "Cannot be NULL";
+        public override string Message => "Cannot be NULL, mister";
 
         public override bool isValid(string? instance)
         {
