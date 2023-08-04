@@ -31,6 +31,7 @@ namespace MDA.User
                 }
             }
 
+            // error when response becomes too long, end of string
             var sql = $"SELECT {select_statement} FROM {request.EntityName} {query_where} FOR JSON AUTO;";
 
             return await ExecuteReader(sql);

@@ -49,9 +49,19 @@ namespace MDA.Infrastructure
 
                         object? validationInstance = Activator.CreateInstance(validationType, new object[] { validation.Value.ToString() });
                         string? validationMessage = (string)validationType.GetProperty("Message").GetValue(validationInstance, null);
-                        object? requestProp = (Properties.ContainsKey(modelProp.Key)) ? Properties[modelProp.Key] : null;
+                        string? requestProp = (Properties.ContainsKey(modelProp.Key)) ? Properties[modelProp.Key].ToString() : null;
 
-                        bool isValid = (bool)validationType.GetMethod("isValid").Invoke(validationInstance, new object[] { requestProp });
+                        bool isValid = false;
+
+                        try
+                        {
+                            isValid = (bool)validationType.GetMethod("isValid").Invoke(validationInstance, new object[] { requestProp });
+                        } catch (Exception ex)
+                        {
+                            throw new Exception($"Error executing validation of type {validation.Key} --> " + ex.Message + ex.StackTrace);
+                        }
+                        
+                        
 
                         if (!isValid)
                             ValidationErrors.AddModelError(modelProp.Key, validationMessage??"error");                       

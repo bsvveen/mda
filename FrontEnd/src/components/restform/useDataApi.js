@@ -30,18 +30,21 @@ const dataFetchReducer = (state, action) => {
     }
 };
 
-const parseJSON = (response) => {
-  const contentType = response.headers.get("content-type");
-      
-  if (contentType && contentType.indexOf("application/json") !== -1) {
-      return new Promise((resolve, reject) => response.json()
-          .then((json) => resolve({
-              status: response.status,
-              ok: response.ok,
-              data: json
-          }))
-          .catch((error) => reject("parseJSON error", error)));
-  }  
+const parseJSON = (response) => {   
+  return new Promise((resolve, reject) => { 
+    if (response.ok) {
+      response.json().then((json) => resolve({
+          status: response.status,
+          ok: response.ok,
+          data: json
+      }))
+    } else {
+      response.text().then((text) => reject({
+          status:  response.status,
+          ok: false,
+          data: text
+      }))
+  }})
 }
 
 const apiFetch = async (url, payLoad) => {  
@@ -55,7 +58,7 @@ const apiFetch = async (url, payLoad) => {
         body: JSON.stringify(payLoad)})
       .then(parseJSON)
       .then((response) => { resolve(response); })
-      .catch((error) => reject(error))
+      .catch((error) => { alert(JSON.stringify(error)); reject(error); })
   })
 }
 
@@ -73,19 +76,18 @@ const useDataApi = (initialData) => {
       await apiFetch(request.url, request.payload)
       .then((res) => {
         switch(res.status) {
-          case "409":
+          case 409:
             dispatch({ type: 'VALIDATION_FAILURE', payload: res.data });
             break;
-          case "200":
+          case 200:
             dispatch({ type: 'FETCH_SUCCESS', payload: res.data });
             break;
           default:
+            alert(res);
             throw error(res.data);
       }}) 
       .catch((error) => dispatch({ type: 'FETCH_FAILURE', payload: error.message + error.stack }))  
-  };
-
-  console.info("useDataApi", response);
+  }; 
 
   return [response, setRequest];
 };

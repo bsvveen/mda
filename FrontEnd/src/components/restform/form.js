@@ -14,17 +14,18 @@ const Form = ({entityName, id, onClose}) => {
       setFetchByIdRequest(entityName, id);
   }, []); 
 
-  console.info("Form.fetchByIdResponse", fetchByIdResponse);
-
   if (fetchByIdResponse.data == {}) return <p>Initializing...</p>; 
-  if (fetchByIdResponse.isLoading || entityModel == undefined) return <p>Loading...</p>; 
-  if (fetchByIdResponse.error) return <p>{fetchByIdResponse.error}</p>;    
-  if (updateResponse.error) return <p>{updateResponse.error}</p>;    
-  if (createResponse.error) return <p>{createResponse.error}</p>;  
+  if (fetchByIdResponse.isLoading || entityModel == undefined) return <p>Loading...</p>;  
+  
+  const error = fetchByIdResponse.error || updateResponse.error || createResponse.error;
+  if (error) return <p>{error}</p>;   
 
   const validationErrors = updateResponse.modelstate || createResponse.modelstate || {};
 
-  console.info("validationErrors",validationErrors)
+  const succesfullFormSubmission = !error || !validationErrors;
+  if (succesfullFormSubmission) {
+    alert("succesfullFormSubmission");
+  }
 
   const onSubmit = (properties) => {   
     if (id) {
@@ -35,13 +36,14 @@ const Form = ({entityName, id, onClose}) => {
   }  
   
   const onDelete = (id) => {    
-    deleteMe(entityName, id);
-    onClose();
+    alert("Not Implemenyted yet")
   }    
 
   const onCancel = () => {    
     onClose();
   }  
+
+  
 
   return (    
     <div className="form">
