@@ -32,13 +32,14 @@ const dataFetchReducer = (state, action) => {
 
 const parseJSON = (response) => {   
   return new Promise((resolve, reject) => { 
-    if (response.ok) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.indexOf("application/json") !== -1) {    
       response.json().then((json) => resolve({
           status: response.status,
           ok: response.ok,
           data: json
       }))
-    } else {
+    } else {     
       response.text().then((text) => reject({
           status:  response.status,
           ok: false,
@@ -58,7 +59,7 @@ const apiFetch = async (url, payLoad) => {
         body: JSON.stringify(payLoad)})
       .then(parseJSON)
       .then((response) => { resolve(response); })
-      .catch((error) => { alert(JSON.stringify(error)); reject(error); })
+      .catch((error) => { alert('apiFetch error' + JSON.stringify(error)); reject(error); })
   })
 }
 
@@ -77,13 +78,14 @@ const useDataApi = (initialData) => {
       .then((res) => {
         switch(res.status) {
           case 409:
+            alert('VALIDATION_FAILURE');
             dispatch({ type: 'VALIDATION_FAILURE', payload: res.data });
             break;
           case 200:
             dispatch({ type: 'FETCH_SUCCESS', payload: res.data });
             break;
           default:
-            alert(res);
+            alert('setRequest error', res);
             throw error(res.data);
       }}) 
       .catch((error) => dispatch({ type: 'FETCH_FAILURE', payload: error.message + error.stack }))  

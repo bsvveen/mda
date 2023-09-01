@@ -21,11 +21,7 @@ const Form = ({entityName, id, onClose}) => {
   if (error) return <p>{error}</p>;   
 
   const validationErrors = updateResponse.modelstate || createResponse.modelstate || {};
-
-  const succesfullFormSubmission = !error || !validationErrors;
-  if (succesfullFormSubmission) {
-    alert("succesfullFormSubmission");
-  }
+  alert(JSON.stringify(createResponse)); 
 
   const onSubmit = (properties) => {   
     if (id) {
@@ -36,7 +32,7 @@ const Form = ({entityName, id, onClose}) => {
   }  
   
   const onDelete = (id) => {    
-    alert("Not Implemenyted yet")
+    alert("Not Implemented yet")
   }    
 
   const onCancel = () => {    

@@ -13,7 +13,7 @@ import NumberInput from './numberinput';
 import './index.css';
 
 export default class DynamicForm extends React.Component {
-    state = { errors: [], modifiedData: {} };    
+    state = { errors: {}, modifiedData: {} };    
 
     onDelete = (e) => {
         e.preventDefault();

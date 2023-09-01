@@ -18,6 +18,9 @@
           "key": "BirthDate",
           "name": "BirthDate",
           "type": "datetime",
+          "validations": {
+            "required": true            
+          },
           "notnull": true
         },
         {

@@ -4,6 +4,7 @@ using MDA.Infrastructure;
 using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Text;
 
 namespace MDA.User
 {
@@ -95,13 +96,22 @@ namespace MDA.User
                 await connection.OpenAsync();
                 using var reader = await command.ExecuteReaderAsync();
 
-                string retValue = null;
-                if (reader.Read())
-                    retValue = reader.GetString(0);
+                var retValue = new StringBuilder();               
+                if (!reader.HasRows)
+                {
+                    retValue.Append("[]");
+                }
+                else
+                {
+                    while (reader.Read())
+                    {
+                        retValue.Append(reader.GetValue(0).ToString());
+                    }
+                }
 
                 await reader.CloseAsync();     
 
-                return retValue;
+                return retValue.ToString();
             }
             catch (SqlException sqlEx)
             {
