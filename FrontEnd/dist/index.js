@@ -27147,9 +27147,12 @@ var _viewsJson = require("./views.json");
 var _viewsJsonDefault = parcelHelpers.interopDefault(_viewsJson);
 var _fullList = require("./components/restform/fullList");
 var _fullListDefault = parcelHelpers.interopDefault(_fullList);
+var _detail = require("./components/restform/detail");
+var _detailDefault = parcelHelpers.interopDefault(_detail);
 var _s = $RefreshSig$();
 const componentFactory = {
-    fullList: (0, _fullListDefault.default)
+    fullList: (0, _fullListDefault.default),
+    detail: (0, _detailDefault.default)
 };
 const gridProperties = {
     breakpoints: {
@@ -27184,7 +27187,7 @@ function App() {
         children: "Loading ..."
     }, void 0, false, {
         fileName: "src/App.js",
-        lineNumber: 33,
+        lineNumber: 35,
         columnNumber: 37
     }, this);
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _dashboardDefault.default), {
@@ -27193,7 +27196,7 @@ function App() {
         gridProperties: gridProperties
     }, void 0, false, {
         fileName: "src/App.js",
-        lineNumber: 35,
+        lineNumber: 37,
         columnNumber: 13
     }, this);
 }
@@ -27208,7 +27211,7 @@ $RefreshReg$(_c, "App");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./components/dashboard":"7UtMk","./views.json":"aEqJ4","./components/restform/fullList":"RUuD0","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"7UtMk":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./components/dashboard":"7UtMk","./views.json":"aEqJ4","./components/restform/fullList":"RUuD0","./components/restform/detail":"aJkgF","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"7UtMk":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$a6e0 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -34998,7 +35001,7 @@ function registerExportsForReactRefresh(module1) {
 }
 
 },{"2f6fa5e7ae242161":"786KC"}],"aEqJ4":[function(require,module,exports) {
-module.exports = JSON.parse('{"views":[{"titel":"Customers","component":"fullList","key":"v1","props":{"entityName":"Customers","properties":["Name","Number","BirthDate","Comment"],"constrains":[{"Property":"Name","Operator":0,"Value":"Mirjam"}]}},{"titel":"SecondView","component":"fullList","key":"v2","props":{"entityName":"Customers","properties":["Name","Number","BirthDate","Comment"],"constrains":[{"Property":"Name","Operator":0,"Value":"Boudewijn"}]}}]}');
+module.exports = JSON.parse('{"views":[{"titel":"Customers","component":"fullList","key":"v1","props":{"entityName":"Customers","properties":["Name","Number","BirthDate","Comment"],"constrains":[{"Property":"Name","Operator":0,"Value":"Mirjam"}],"publishTo":"selected_customer"}},{"titel":"Products","component":"fullList","key":"v2","props":{"entityName":"Products","properties":["Name","Number","Comment"]}},{"titel":"Detail","component":"detail","key":"v3","props":{"entityName":"Customers","id":null,"subscribeTo":"selected_customer"}}]}');
 
 },{}],"RUuD0":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$5f8e = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
@@ -35020,7 +35023,7 @@ var _detail = require("./detail");
 var _detailDefault = parcelHelpers.interopDefault(_detail);
 var _indexCss = require("./index.css");
 var _s = $RefreshSig$();
-const FullList = ({ entityName , properties , constrains  })=>{
+const FullList = ({ entityName , properties , constrains , publishTo  })=>{
     _s();
     const [current, setCurrent] = (0, _reactDefault.default).useState();
     const [mode, setMode] = (0, _reactDefault.default).useState("list");
@@ -35064,7 +35067,8 @@ const FullList = ({ entityName , properties , constrains  })=>{
                 entityName: entityName,
                 constrains: constrains,
                 properties: properties,
-                onSelect: onSelect
+                onSelect: onSelect,
+                publishTo: publishTo
             }, seed, false, {
                 fileName: "src/components/restform/fullList.js",
                 lineNumber: 41,
@@ -35120,8 +35124,9 @@ var _reactDefault = parcelHelpers.interopDefault(_react);
 var _useDataApi = require("./useDataApi");
 var _dynamicList = require("./dynamicList");
 var _dynamicListDefault = parcelHelpers.interopDefault(_dynamicList);
+var _pubsub = require("../../pubsub");
 var _s = $RefreshSig$();
-const List = ({ entityName , properties , constrains , onSelect  })=>{
+const List = ({ entityName , properties , constrains , onSelect , publishTo  })=>{
     _s();
     const [response, setRequest] = (0, _useDataApi.useFetchList)();
     (0, _reactDefault.default).useEffect(()=>{
@@ -35131,23 +35136,28 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
         children: "Loading..."
     }, void 0, false, {
         fileName: "src/components/restform/list.js",
-        lineNumber: 12,
+        lineNumber: 14,
         columnNumber: 41
     }, undefined);
     if (response.isLoading) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: "Loading..."
     }, void 0, false, {
         fileName: "src/components/restform/list.js",
-        lineNumber: 13,
+        lineNumber: 15,
         columnNumber: 34
     }, undefined);
     if (response.error) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: response.error
     }, void 0, false, {
         fileName: "src/components/restform/list.js",
-        lineNumber: 14,
+        lineNumber: 16,
         columnNumber: 30
     }, undefined);
+    const onClick = (id)=>{
+        if (publishTo) (0, _pubsub.publish)(publishTo, {
+            id: id
+        });
+    };
     const rowRender = (item, isSelected)=>{
         return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("tr", {
             className: isSelected ? "selected" : null,
@@ -35156,10 +35166,11 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
                     return key !== "Id" && !key.includes("_Id");
                 }).map((key)=>{
                     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("td", {
+                        onClick: ()=>onClick(item.Id),
                         children: item[key]
                     }, key, false, {
                         fileName: "src/components/restform/list.js",
-                        lineNumber: 22,
+                        lineNumber: 29,
                         columnNumber: 34
                     }, undefined);
                 }),
@@ -35172,12 +35183,12 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
                         children: "View"
                     }, void 0, false, {
                         fileName: "src/components/restform/list.js",
-                        lineNumber: 24,
+                        lineNumber: 31,
                         columnNumber: 31
                     }, undefined)
                 }, void 0, false, {
                     fileName: "src/components/restform/list.js",
-                    lineNumber: 24,
+                    lineNumber: 31,
                     columnNumber: 9
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("td", {
@@ -35189,18 +35200,18 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
                         children: "Edit"
                     }, void 0, false, {
                         fileName: "src/components/restform/list.js",
-                        lineNumber: 25,
+                        lineNumber: 32,
                         columnNumber: 31
                     }, undefined)
                 }, void 0, false, {
                     fileName: "src/components/restform/list.js",
-                    lineNumber: 25,
+                    lineNumber: 32,
                     columnNumber: 9
                 }, undefined)
             ]
         }, item.Id, true, {
             fileName: "src/components/restform/list.js",
-            lineNumber: 18,
+            lineNumber: 25,
             columnNumber: 7
         }, undefined);
     };
@@ -35211,12 +35222,12 @@ const List = ({ entityName , properties , constrains , onSelect  })=>{
             rowRender: rowRender
         }, void 0, false, {
             fileName: "src/components/restform/list.js",
-            lineNumber: 31,
+            lineNumber: 38,
             columnNumber: 7
         }, undefined)
     }, void 0, false, {
         fileName: "src/components/restform/list.js",
-        lineNumber: 30,
+        lineNumber: 37,
         columnNumber: 5
     }, undefined);
 };
@@ -35235,7 +35246,7 @@ $RefreshReg$(_c, "List");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./useDataApi":"fYMtK","./dynamicList":"3bOjW","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"fYMtK":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./useDataApi":"fYMtK","./dynamicList":"3bOjW","../../pubsub":"5WEsi","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"fYMtK":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$d816 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -35647,7 +35658,34 @@ $RefreshReg$(_c, "HeaderRow");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","prop-types":"7wKI2","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"cj7Fs":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","prop-types":"7wKI2","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"5WEsi":[function(require,module,exports) {
+// https://javascript.plainenglish.io/react-component-communication-using-pubsubjs-1bec85388b1e
+// https://ralexanderson.com/blog/spreading-events-in-react-with-pubsub
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "subscribe", ()=>subscribe);
+parcelHelpers.export(exports, "publish", ()=>publish);
+const topics = {};
+function subscribe(topic, fn) {
+    if (!topics[topic]) topics[topic] = {};
+    console.log("subscribe", topic);
+    const index = topics[topic].length + 1;
+    topics[topic][index] = fn;
+    return ()=>{
+        topics[topic][index] = null;
+        delete topics[topic][index];
+    };
+}
+function publish(topic, args) {
+    if (!topics[topic]) return;
+    console.log("publish", topic, args);
+    Object.values(topics[topic]).forEach((fn)=>{
+        console.log("publish fn found");
+        if (fn) fn(args);
+    });
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"cj7Fs":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$6bf1 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -51649,33 +51687,37 @@ var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
 var _useDataApi = require("./useDataApi");
+var _pubsub = require("../../pubsub");
 var _s = $RefreshSig$();
-const Detail = ({ entityName , id , onClose  })=>{
+const Detail = ({ entityName , id , onClose , subscribeTo  })=>{
     _s();
     const [response, setRequest] = (0, _useDataApi.useFetchById)();
     (0, _reactDefault.default).useEffect(()=>{
-        setRequest(entityName, id);
+        if (id !== null) setRequest(entityName, id);
+        if (subscribeTo) return (0, _pubsub.subscribe)(subscribeTo, (data)=>{
+            setRequest(entityName, data.id);
+        });
     }, []);
     console.info("Detail", response);
     if (response.data == {}) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: "Initializing..."
     }, void 0, false, {
         fileName: "src/components/restform/detail.js",
-        lineNumber: 13,
+        lineNumber: 19,
         columnNumber: 35
     }, undefined);
     if (response.isLoading) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: "Loading..."
     }, void 0, false, {
         fileName: "src/components/restform/detail.js",
-        lineNumber: 14,
+        lineNumber: 20,
         columnNumber: 34
     }, undefined);
     if (response.error) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
         children: response.error
     }, void 0, false, {
         fileName: "src/components/restform/detail.js",
-        lineNumber: 15,
+        lineNumber: 21,
         columnNumber: 30
     }, undefined);
     const Recursive = (obj)=>{
@@ -51692,7 +51734,7 @@ const Detail = ({ entityName , id , onClose  })=>{
                     ]
                 }, void 0, true, {
                     fileName: "src/components/restform/detail.js",
-                    lineNumber: 21,
+                    lineNumber: 27,
                     columnNumber: 60
                 }, undefined),
                 " ",
@@ -51705,14 +51747,14 @@ const Detail = ({ entityName , id , onClose  })=>{
                     ]
                 }, void 0, true, {
                     fileName: "src/components/restform/detail.js",
-                    lineNumber: 21,
+                    lineNumber: 27,
                     columnNumber: 98
                 }, undefined),
                 " "
             ]
         }, key, true, {
             fileName: "src/components/restform/detail.js",
-            lineNumber: 21,
+            lineNumber: 27,
             columnNumber: 23
         }, undefined)) : obj[key] && key !== "Id" && !key.includes("_Id") ? result.push(/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
             className: "row",
@@ -51725,7 +51767,7 @@ const Detail = ({ entityName , id , onClose  })=>{
                     ]
                 }, void 0, true, {
                     fileName: "src/components/restform/detail.js",
-                    lineNumber: 23,
+                    lineNumber: 29,
                     columnNumber: 56
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -51736,13 +51778,13 @@ const Detail = ({ entityName , id , onClose  })=>{
                     ]
                 }, void 0, true, {
                     fileName: "src/components/restform/detail.js",
-                    lineNumber: 23,
+                    lineNumber: 29,
                     columnNumber: 76
                 }, undefined)
             ]
         }, key, true, {
             fileName: "src/components/restform/detail.js",
-            lineNumber: 23,
+            lineNumber: 29,
             columnNumber: 25
         }, undefined)) : result.push();
         return result;
@@ -51758,19 +51800,19 @@ const Detail = ({ entityName , id , onClose  })=>{
                     children: "Close"
                 }, void 0, false, {
                     fileName: "src/components/restform/detail.js",
-                    lineNumber: 31,
+                    lineNumber: 37,
                     columnNumber: 12
                 }, undefined)
             }, void 0, false, {
                 fileName: "src/components/restform/detail.js",
-                lineNumber: 31,
+                lineNumber: 37,
                 columnNumber: 7
             }, undefined),
             Recursive(response.data)
         ]
     }, void 0, true, {
         fileName: "src/components/restform/detail.js",
-        lineNumber: 30,
+        lineNumber: 36,
         columnNumber: 5
     }, undefined);
 };
@@ -51789,6 +51831,6 @@ $RefreshReg$(_c, "Detail");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./useDataApi":"fYMtK","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"dVAdh":[function() {},{}]},["1xC6H","jC2qd","8lqZg"], "8lqZg", "parcelRequire10c2")
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./useDataApi":"fYMtK","../../pubsub":"5WEsi","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"dVAdh":[function() {},{}]},["1xC6H","jC2qd","8lqZg"], "8lqZg", "parcelRequire10c2")
 
 //# sourceMappingURL=index.js.map

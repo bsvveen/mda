@@ -1,11 +1,17 @@
 import React from 'react';
 import { useFetchById } from './useDataApi';
+import { subscribe } from "../../pubsub"
  
-const Detail = ({entityName, id, onClose}) => {    
-  const [response, setRequest] = useFetchById();   
+const Detail = ({entityName, id, onClose, subscribeTo}) => {    
+  const [response, setRequest] = useFetchById();     
 
   React.useEffect(() => {  
-    setRequest(entityName, id);
+    if (id !== null)
+      setRequest(entityName, id);
+
+    if (subscribeTo)
+        return subscribe(subscribeTo, data => { setRequest(entityName, data.id);})       
+     
   }, []); 
 
   console.info("Detail", response);
@@ -25,7 +31,7 @@ const Detail = ({entityName, id, onClose}) => {
     }     
     return result;
   }
-
+ 
   return (    
     <div className="detail">    
       <div><button onClick={() => onClose()} type="close" title="Close">Close</button></div>

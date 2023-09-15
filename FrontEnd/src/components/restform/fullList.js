@@ -4,13 +4,13 @@ import Form from "./form";
 import Detail from "./detail";
 import "./index.css";
 
-const FullList = ({entityName, properties, constrains}) => { 
+const FullList = ({entityName, properties, constrains, publishTo}) => { 
   const [current, setCurrent] = React.useState();
   const [mode, setMode] = React.useState("list");    
   const [seed, setSeed] = React.useState(1);       
   
   const onSelect = (id, mode) => {
-    console.info("onSelect", id, mode);
+    console.info("onSelect", id, mode);    
     setMode(mode);
     setCurrent(id);
   }   
@@ -38,7 +38,7 @@ const FullList = ({entityName, properties, constrains}) => {
 
 return (
   <div className="restForm">    
-    <List key={seed} entityName={entityName} constrains={constrains} properties={properties} onSelect={onSelect} />
+    <List key={seed} entityName={entityName} constrains={constrains} properties={properties} onSelect={onSelect} publishTo={publishTo} />
     <div className="actions"><button type="new" onClick={onNew} value="Nieuw">Nieuw</button></div>
   </div>
   )     

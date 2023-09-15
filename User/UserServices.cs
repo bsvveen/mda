@@ -13,7 +13,7 @@ namespace MDA.User
         public UserServices(Primitive model)
         {         
             _model = model;
-            _db = new UserSql();
+            _db = new UserSql(_model);
         }        
 
         public async Task<object> List(ListRequest request)

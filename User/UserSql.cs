@@ -5,16 +5,19 @@ using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Text;
+using static MDA.Infrastructure.Primitive;
 
 namespace MDA.User
 {
     public class UserSql
     {
         private readonly string _connectionstring;
+        private readonly Primitive _model;
 
-        public UserSql()
+        public UserSql(Primitive model)
         {
             _connectionstring = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Database")["connectionstring"]; ;
+            _model = model;
         }
 
         public async Task<string> List(ListRequest request)
@@ -40,7 +43,19 @@ namespace MDA.User
 
         public async Task<string> GetById(GetByIdRequest request)
         {
-            var sql = $"SELECT * FROM {request.EntityName} WHERE Id = '{request.Id}' FOR JSON AUTO, WITHOUT_ARRAY_WRAPPER; ;";
+            var sql = $"SELECT * FROM {request.EntityName} ";
+
+            Entity entity = _model.Entities.Single(e => e.Name == request.EntityName);
+            List<Property> FKs = entity.Properties.Where(p => p.ForeignKey != null).Select(p => p).ToList();
+            if (FKs.Any()) {
+                sql += "LEFT JOIN ";
+                FKs.ForEach(p =>
+                {
+                    sql += $"{p.ForeignKey.Relatedentity} ON {request.EntityName}.{p.Key} = {p.ForeignKey.Relatedentity}.Id";
+                });
+            };     
+
+            sql += $" WHERE {request.EntityName}.Id = '{request.Id}' FOR JSON AUTO, WITHOUT_ARRAY_WRAPPER;";
              
             return await ExecuteReader(sql);
         }       

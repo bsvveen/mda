@@ -6,16 +6,25 @@
         "props" : {
             "entityName" : "Customers",
             "properties" : ["Name","Number", "BirthDate", "Comment"],
-            "constrains": [{"Property" : "Name", "Operator": 0, "Value": "Mirjam"}]
+            "constrains": [{"Property" : "Name", "Operator": 0, "Value": "Mirjam"}],
+            "publishTo" : "selected_customer"
         }
     },{
-        "titel" : "SecondView",
+        "titel" : "Products",
         "component" : "fullList",
         "key" : "v2",       
         "props" : {
+            "entityName" : "Products",
+            "properties" : ["Name","Number", "Comment"]
+        }
+    },{
+        "titel" : "Detail",
+        "component" : "detail",
+        "key" : "v3",       
+        "props" : {
             "entityName" : "Customers",
-            "properties" : ["Name","Number", "BirthDate", "Comment"],
-            "constrains": [{"Property" : "Name", "Operator": 0, "Value": "Boudewijn"}]
+            "id" : null,
+            "subscribeTo" :  "selected_customer"
         }
     }
 ]}

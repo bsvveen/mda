@@ -3,9 +3,11 @@ import Dashboard from './components/dashboard';
 
 import importedViews from './views.json';
 import FullList from './components/restform/fullList';
+import Detail from './components/restform/detail';
 
 const componentFactory = {
-	fullList: FullList	
+	fullList: FullList,
+  detail: Detail	
 };
 
 const gridProperties = { 
