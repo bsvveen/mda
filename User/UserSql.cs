@@ -45,15 +45,19 @@ namespace MDA.User
         {
             var sql = $"SELECT * FROM {request.EntityName} ";
 
-            Entity entity = _model.Entities.Single(e => e.Name == request.EntityName);
-            List<Property> FKs = entity.Properties.Where(p => p.ForeignKey != null).Select(p => p).ToList();
-            if (FKs.Any()) {
-                sql += "LEFT JOIN ";
-                FKs.ForEach(p =>
+            if (request.IncludeRelations)
+            {
+                Entity entity = _model.Entities.Single(e => e.Name == request.EntityName);
+                List<Property> FKs = entity.Properties.Where(p => p.ForeignKey != null).Select(p => p).ToList();
+                if (FKs.Any())
                 {
-                    sql += $"{p.ForeignKey.Relatedentity} ON {request.EntityName}.{p.Key} = {p.ForeignKey.Relatedentity}.Id";
-                });
-            };     
+                    sql += "LEFT JOIN ";
+                    FKs.ForEach(p =>
+                    {
+                        sql += $"{p.ForeignKey.Relatedentity} ON {request.EntityName}.{p.Key} = {p.ForeignKey.Relatedentity}.Id";
+                    });
+                };
+            }
 
             sql += $" WHERE {request.EntityName}.Id = '{request.Id}' FOR JSON AUTO, WITHOUT_ARRAY_WRAPPER;";
              

@@ -10,7 +10,9 @@ namespace MDA.Infrastructure
         public string? EntityName { get; set; }
 
         [Required]
-        public Guid? Id { get; set; }       
+        public Guid? Id { get; set; }
+
+        public bool IncludeRelations { get; set; } = false;
 
         public void Validate()
         {

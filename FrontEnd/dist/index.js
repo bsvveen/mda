@@ -35392,12 +35392,14 @@ _s1(useFetchList, "P+OS6EMBy6PJji2gl0MzMFPXRW4=", false, function() {
 const useFetchById = ()=>{
     _s2();
     const [fetchByIdResponse, setRequest] = useDataApi({});
-    const setFetchByIdRequest = (entityName, id)=>{
+    const setFetchByIdRequest = (entityName, id, includerelations)=>{
+        includerelations = includerelations || false;
         setRequest({
             url: "/User/GetById/",
             payload: {
                 "EntityName": entityName,
-                "Id": id
+                "Id": id,
+                "IncludeRelations": includerelations
             }
         });
     };
@@ -51693,9 +51695,9 @@ const Detail = ({ entityName , id , onClose , subscribeTo  })=>{
     _s();
     const [response, setRequest] = (0, _useDataApi.useFetchById)();
     (0, _reactDefault.default).useEffect(()=>{
-        if (id !== null) setRequest(entityName, id);
+        if (id !== null) setRequest(entityName, id, true);
         if (subscribeTo) return (0, _pubsub.subscribe)(subscribeTo, (data)=>{
-            setRequest(entityName, data.id);
+            setRequest(entityName, data.id, true);
         });
     }, []);
     console.info("Detail", response);

@@ -107,8 +107,9 @@ const useFetchList = () => {
 const useFetchById = () => {  
   const [fetchByIdResponse, setRequest] = useDataApi({}) 
 
-  const setFetchByIdRequest = (entityName, id) => {
-    setRequest({url: '/User/GetById/', payload: { "EntityName": entityName, "Id" : id }})
+  const setFetchByIdRequest = (entityName, id, includerelations) => {
+    includerelations = includerelations || false;
+    setRequest({url: '/User/GetById/', payload: { "EntityName": entityName, "Id" : id, "IncludeRelations" : includerelations}})
   }
 
   return [fetchByIdResponse, setFetchByIdRequest]

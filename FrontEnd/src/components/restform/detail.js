@@ -3,14 +3,14 @@ import { useFetchById } from './useDataApi';
 import { subscribe } from "../../pubsub"
  
 const Detail = ({entityName, id, onClose, subscribeTo}) => {    
-  const [response, setRequest] = useFetchById();     
+  const [response, setRequest] = useFetchById(); 
 
   React.useEffect(() => {  
     if (id !== null)
-      setRequest(entityName, id);
+      setRequest(entityName, id, true);
 
     if (subscribeTo)
-        return subscribe(subscribeTo, data => { setRequest(entityName, data.id);})       
+        return subscribe(subscribeTo, data => { setRequest(entityName, data.id, true);})       
      
   }, []); 
 
